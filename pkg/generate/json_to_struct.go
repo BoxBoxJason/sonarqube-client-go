@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/magicsong/generate-go-for-sonarqube/pkg/gojson"
+	"github.com/boxboxjason/sonarqube-client-go/pkg/gojson"
 )
 
 func ConvertStringToStruct(json, name string) (string, error) {

@@ -1,5 +1,5 @@
 // Manage permission templates, and the granting and revoking of permissions at the global and project levels.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -25,6 +25,7 @@ type PermissionsGroupsObject struct {
 type PermissionsGroupsObject_sub1 struct {
 	Description string        `json:"description,omitempty"`
 	ID          string        `json:"id,omitempty"`
+	Managed     bool          `json:"managed,omitempty"`
 	Name        string        `json:"name,omitempty"`
 	Permissions []interface{} `json:"permissions,omitempty"`
 }
@@ -119,6 +120,7 @@ type PermissionsUsersObject_sub2 struct {
 	Avatar      string   `json:"avatar,omitempty"`
 	Email       string   `json:"email,omitempty"`
 	Login       string   `json:"login,omitempty"`
+	Managed     bool     `json:"managed,omitempty"`
 	Name        string   `json:"name,omitempty"`
 	Permissions []string `json:"permissions,omitempty"`
 }
@@ -130,14 +132,13 @@ type PermissionsUsersObject_sub1 struct {
 }
 
 type PermissionsAddGroupOption struct {
-	GroupId    string `url:"groupId,omitempty"`    // Description:"Group id, use 'name' param instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	GroupName  string `url:"groupName,omitempty"`  // Description:"Group name or 'anyone' (case insensitive)",ExampleValue:"sonar-administrators"
-	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to grant to the group.<ul><li>Possible values for global permissions: admin, profileadmin, gateadmin, scan, provisioning</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
+	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to grant to the group.<ul><li>Possible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	ProjectId  string `url:"projectId,omitempty"`  // Description:"Project id",ExampleValue:"ce4c03d6-430f-40a9-b777-ad877c00aa4d"
 	ProjectKey string `url:"projectKey,omitempty"` // Description:"Project key",ExampleValue:"my_project"
 }
 
-// AddGroup Add a permission to a group.<br /> This service defaults to global permissions, but can be limited to project permissions by providing project id or project key.<br /> The group name or group id must be provided. <br />Requires one of the following permissions:<ul><li>'Administer System'</li><li>'Administer' rights on the specified project</li></ul>
+// AddGroup Add a permission to a group.<br /> This service defaults to global permissions, but can be limited to project permissions by providing project id or project key.<br /> The group name must be provided. <br />Requires one of the following permissions:<ul><li>'Administer System'</li><li>'Administer' rights on the specified project</li></ul>
 func (s *PermissionsService) AddGroup(opt *PermissionsAddGroupOption) (resp *http.Response, err error) {
 	err = s.ValidateAddGroupOpt(opt)
 	if err != nil {
@@ -155,14 +156,13 @@ func (s *PermissionsService) AddGroup(opt *PermissionsAddGroupOption) (resp *htt
 }
 
 type PermissionsAddGroupToTemplateOption struct {
-	GroupId      string `url:"groupId,omitempty"`      // Description:"Group id, use 'name' param instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	GroupName    string `url:"groupName,omitempty"`    // Description:"Group name or 'anyone' (case insensitive)",ExampleValue:"sonar-administrators"
 	Permission   string `url:"permission,omitempty"`   // Description:"Permission<ul><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	TemplateId   string `url:"templateId,omitempty"`   // Description:"Template id",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	TemplateName string `url:"templateName,omitempty"` // Description:"Template name",ExampleValue:"Default Permission Template for Projects"
 }
 
-// AddGroupToTemplate Add a group to a permission template.<br /> The group id or group name must be provided. <br />Requires the following permission: 'Administer System'.
+// AddGroupToTemplate Add a group to a permission template.<br /> The group name must be provided. <br />Requires the following permission: 'Administer System'.
 func (s *PermissionsService) AddGroupToTemplate(opt *PermissionsAddGroupToTemplateOption) (resp *http.Response, err error) {
 	err = s.ValidateAddGroupToTemplateOpt(opt)
 	if err != nil {
@@ -204,7 +204,7 @@ func (s *PermissionsService) AddProjectCreatorToTemplate(opt *PermissionsAddProj
 
 type PermissionsAddUserOption struct {
 	Login      string `url:"login,omitempty"`      // Description:"User login",ExampleValue:"g.hopper"
-	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to grant to the user<ul><li>Possible values for global permissions: admin, profileadmin, gateadmin, scan, provisioning</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
+	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to grant to the user<ul><li>Possible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	ProjectId  string `url:"projectId,omitempty"`  // Description:"Project id",ExampleValue:"ce4c03d6-430f-40a9-b777-ad877c00aa4d"
 	ProjectKey string `url:"projectKey,omitempty"` // Description:"Project key",ExampleValue:"my_project"
 }
@@ -285,7 +285,7 @@ type PermissionsBulkApplyTemplateOption struct {
 	Visibility        string `url:"visibility,omitempty"`        // Description:"Filter the projects that should be visible to everyone (public), or only specific user/groups (private).<br/>If no visibility is specified, the default project visibility will be used.",ExampleValue:""
 }
 
-// BulkApplyTemplate Apply a permission template to several projects.<br />The template id or name must be provided.<br />Requires the following permission: 'Administer System'.
+// BulkApplyTemplate Apply a permission template to several components. Managed projects will be ignored.<br />The template id or name must be provided.<br />Requires the following permission: 'Administer System'.
 func (s *PermissionsService) BulkApplyTemplate(opt *PermissionsBulkApplyTemplateOption) (resp *http.Response, err error) {
 	err = s.ValidateBulkApplyTemplateOpt(opt)
 	if err != nil {
@@ -350,7 +350,7 @@ func (s *PermissionsService) DeleteTemplate(opt *PermissionsDeleteTemplateOption
 
 type PermissionsGroupsOption struct {
 	P          string `url:"p,omitempty"`          // Description:"1-based page number",ExampleValue:"42"
-	Permission string `url:"permission,omitempty"` // Description:"Permission.<ul><li>Possible values for global permissions: admin, profileadmin, gateadmin, scan, provisioning</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
+	Permission string `url:"permission,omitempty"` // Description:"Permission.<ul><li>Possible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	ProjectId  string `url:"projectId,omitempty"`  // Description:"Project id",ExampleValue:"ce4c03d6-430f-40a9-b777-ad877c00aa4d"
 	ProjectKey string `url:"projectKey,omitempty"` // Description:"Project key",ExampleValue:"my_project"
 	Ps         string `url:"ps,omitempty"`         // Description:"Page size. Must be greater than 0 and less or equal than 100",ExampleValue:"20"
@@ -376,14 +376,13 @@ func (s *PermissionsService) Groups(opt *PermissionsGroupsOption) (v *Permission
 }
 
 type PermissionsRemoveGroupOption struct {
-	GroupId    string `url:"groupId,omitempty"`    // Description:"Group id, use 'name' param instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	GroupName  string `url:"groupName,omitempty"`  // Description:"Group name or 'anyone' (case insensitive)",ExampleValue:"sonar-administrators"
-	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to revoke from the group.<ul><li>Possible values for global permissions: admin, profileadmin, gateadmin, scan, provisioning</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
+	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to revoke from the group.<ul><li>Possible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	ProjectId  string `url:"projectId,omitempty"`  // Description:"Project id",ExampleValue:"ce4c03d6-430f-40a9-b777-ad877c00aa4d"
 	ProjectKey string `url:"projectKey,omitempty"` // Description:"Project key",ExampleValue:"my_project"
 }
 
-// RemoveGroup Remove a permission from a group.<br /> This service defaults to global permissions, but can be limited to project permissions by providing project id or project key.<br /> The group id or group name must be provided, not both.<br />Requires one of the following permissions:<ul><li>'Administer System'</li><li>'Administer' rights on the specified project</li></ul>
+// RemoveGroup Remove a permission from a group.<br /> This service defaults to global permissions, but can be limited to project permissions by providing project id or project key.<br /> The group name must be provided.<br />Requires one of the following permissions:<ul><li>'Administer System'</li><li>'Administer' rights on the specified project</li></ul>
 func (s *PermissionsService) RemoveGroup(opt *PermissionsRemoveGroupOption) (resp *http.Response, err error) {
 	err = s.ValidateRemoveGroupOpt(opt)
 	if err != nil {
@@ -401,14 +400,13 @@ func (s *PermissionsService) RemoveGroup(opt *PermissionsRemoveGroupOption) (res
 }
 
 type PermissionsRemoveGroupFromTemplateOption struct {
-	GroupId      string `url:"groupId,omitempty"`      // Description:"Group id, use 'name' param instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	GroupName    string `url:"groupName,omitempty"`    // Description:"Group name or 'anyone' (case insensitive)",ExampleValue:"sonar-administrators"
 	Permission   string `url:"permission,omitempty"`   // Description:"Permission<ul><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	TemplateId   string `url:"templateId,omitempty"`   // Description:"Template id",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	TemplateName string `url:"templateName,omitempty"` // Description:"Template name",ExampleValue:"Default Permission Template for Projects"
 }
 
-// RemoveGroupFromTemplate Remove a group from a permission template.<br /> The group id or group name must be provided. <br />Requires the following permission: 'Administer System'.
+// RemoveGroupFromTemplate Remove a group from a permission template.<br /> The group name must be provided. <br />Requires the following permission: 'Administer System'.
 func (s *PermissionsService) RemoveGroupFromTemplate(opt *PermissionsRemoveGroupFromTemplateOption) (resp *http.Response, err error) {
 	err = s.ValidateRemoveGroupFromTemplateOpt(opt)
 	if err != nil {
@@ -450,7 +448,7 @@ func (s *PermissionsService) RemoveProjectCreatorFromTemplate(opt *PermissionsRe
 
 type PermissionsRemoveUserOption struct {
 	Login      string `url:"login,omitempty"`      // Description:"User login",ExampleValue:"g.hopper"
-	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to revoke from the user.<ul><li>Possible values for global permissions: admin, profileadmin, gateadmin, scan, provisioning</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
+	Permission string `url:"permission,omitempty"` // Description:"The permission you would like to revoke from the user.<ul><li>Possible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	ProjectId  string `url:"projectId,omitempty"`  // Description:"Project id",ExampleValue:"ce4c03d6-430f-40a9-b777-ad877c00aa4d"
 	ProjectKey string `url:"projectKey,omitempty"` // Description:"Project key",ExampleValue:"my_project"
 }
@@ -622,7 +620,7 @@ func (s *PermissionsService) UpdateTemplate(opt *PermissionsUpdateTemplateOption
 
 type PermissionsUsersOption struct {
 	P          string `url:"p,omitempty"`          // Description:"1-based page number",ExampleValue:"42"
-	Permission string `url:"permission,omitempty"` // Description:"Permission.<ul><li>Possible values for global permissions: admin, profileadmin, gateadmin, scan, provisioning</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
+	Permission string `url:"permission,omitempty"` // Description:"Permission.<ul><li>Possible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator</li><li>Possible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user</li></ul>",ExampleValue:""
 	ProjectId  string `url:"projectId,omitempty"`  // Description:"Project id",ExampleValue:"ce4c03d6-430f-40a9-b777-ad877c00aa4d"
 	ProjectKey string `url:"projectKey,omitempty"` // Description:"Project key",ExampleValue:"my_project"
 	Ps         string `url:"ps,omitempty"`         // Description:"Page size. Must be greater than 0 and less or equal than 100",ExampleValue:"20"

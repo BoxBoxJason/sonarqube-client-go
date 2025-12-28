@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/magicsong/generate-go-for-sonarqube/pkg/static"
+	"github.com/boxboxjason/sonarqube-client-go/pkg/static"
 )
 
 func main() {

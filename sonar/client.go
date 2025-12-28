@@ -1,4 +1,4 @@
-package sonar
+package sonargo
 
 import (
 	"net/http"
@@ -18,10 +18,12 @@ type Client struct {
 	Ce                        *CeService
 	Components                *ComponentsService
 	Developers                *DevelopersService
+	DismissMessage            *DismissMessageService
 	Duplications              *DuplicationsService
 	Emails                    *EmailsService
 	Favorites                 *FavoritesService
 	Features                  *FeaturesService
+	GithubProvisioning        *GithubProvisioningService
 	Hotspots                  *HotspotsService
 	Issues                    *IssuesService
 	L10N                      *L10NService
@@ -39,7 +41,6 @@ type Client struct {
 	ProjectBranches           *ProjectBranchesService
 	ProjectDump               *ProjectDumpService
 	ProjectLinks              *ProjectLinksService
-	ProjectPullRequests       *ProjectPullRequestsService
 	ProjectTags               *ProjectTagsService
 	Projects                  *ProjectsService
 	Push                      *PushService
@@ -55,6 +56,7 @@ type Client struct {
 	Users                     *UsersService
 	Webhooks                  *WebhooksService
 	Webservices               *WebservicesService
+	H                         *HService
 }
 
 func NewClient(endpoint, username, password string) (*Client, error) {
@@ -74,10 +76,12 @@ func NewClient(endpoint, username, password string) (*Client, error) {
 	c.Ce = &CeService{client: c}
 	c.Components = &ComponentsService{client: c}
 	c.Developers = &DevelopersService{client: c}
+	c.DismissMessage = &DismissMessageService{client: c}
 	c.Duplications = &DuplicationsService{client: c}
 	c.Emails = &EmailsService{client: c}
 	c.Favorites = &FavoritesService{client: c}
 	c.Features = &FeaturesService{client: c}
+	c.GithubProvisioning = &GithubProvisioningService{client: c}
 	c.Hotspots = &HotspotsService{client: c}
 	c.Issues = &IssuesService{client: c}
 	c.L10N = &L10NService{client: c}
@@ -95,7 +99,6 @@ func NewClient(endpoint, username, password string) (*Client, error) {
 	c.ProjectBranches = &ProjectBranchesService{client: c}
 	c.ProjectDump = &ProjectDumpService{client: c}
 	c.ProjectLinks = &ProjectLinksService{client: c}
-	c.ProjectPullRequests = &ProjectPullRequestsService{client: c}
 	c.ProjectTags = &ProjectTagsService{client: c}
 	c.Projects = &ProjectsService{client: c}
 	c.Push = &PushService{client: c}
@@ -111,6 +114,7 @@ func NewClient(endpoint, username, password string) (*Client, error) {
 	c.Users = &UsersService{client: c}
 	c.Webhooks = &WebhooksService{client: c}
 	c.Webservices = &WebservicesService{client: c}
+	c.H = &HService{client: c}
 	return c, nil
 }
 

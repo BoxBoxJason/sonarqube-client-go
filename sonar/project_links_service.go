@@ -1,5 +1,5 @@
 // Manage projects links.
-package sonar
+package sonargo
 
 import "net/http"
 

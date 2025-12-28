@@ -1,5 +1,5 @@
 // Get details on source files. See also api/tests.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -24,7 +24,42 @@ type SourcesIndexObject []struct {
 }
 
 type SourcesIssueSnippetsObject struct {
-	Sources [][]interface{} `json:"sources,omitempty"`
+	Test_project_src_main_java_org_example_Main_java SourcesIssueSnippetsObject_sub4 `json:"test-project:src/main/java/org/example/Main.java,omitempty"`
+}
+
+type SourcesIssueSnippetsObject_sub3 struct {
+	Code        string `json:"code,omitempty"`
+	Duplicated  bool   `json:"duplicated,omitempty"`
+	IsNew       bool   `json:"isNew,omitempty"`
+	Line        int64  `json:"line,omitempty"`
+	LineHits    int64  `json:"lineHits,omitempty"`
+	ScmAuthor   string `json:"scmAuthor,omitempty"`
+	ScmDate     string `json:"scmDate,omitempty"`
+	ScmRevision string `json:"scmRevision,omitempty"`
+	UtLineHits  int64  `json:"utLineHits,omitempty"`
+}
+
+type SourcesIssueSnippetsObject_sub4 struct {
+	Component SourcesIssueSnippetsObject_sub2   `json:"component,omitempty"`
+	Sources   []SourcesIssueSnippetsObject_sub3 `json:"sources,omitempty"`
+}
+
+type SourcesIssueSnippetsObject_sub1 struct {
+	Coverage string `json:"coverage,omitempty"`
+	Issues   string `json:"issues,omitempty"`
+	Lines    string `json:"lines,omitempty"`
+}
+
+type SourcesIssueSnippetsObject_sub2 struct {
+	Key         string                          `json:"key,omitempty"`
+	LongName    string                          `json:"longName,omitempty"`
+	Measures    SourcesIssueSnippetsObject_sub1 `json:"measures,omitempty"`
+	Name        string                          `json:"name,omitempty"`
+	Path        string                          `json:"path,omitempty"`
+	Project     string                          `json:"project,omitempty"`
+	ProjectName string                          `json:"projectName,omitempty"`
+	Q           string                          `json:"q,omitempty"`
+	UUID        string                          `json:"uuid,omitempty"`
 }
 
 type SourcesLinesObject struct {

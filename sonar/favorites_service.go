@@ -1,5 +1,5 @@
 // Manage user favorites
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -28,7 +28,7 @@ type FavoritesAddOption struct {
 	Component string `url:"component,omitempty"` // Description:"Component key. Only components with qualifiers TRK, VW, SVW, APP are supported",ExampleValue:"my_project:/src/foo/Bar.php"
 }
 
-// Add Add a component (project, file etc.) as favorite for the authenticated user.<br>Only 100 components by qualifier can be added as favorite.<br>Requires authentication and the following permission: 'Browse' on the project of the specified component.
+// Add Add a component (project, portfolio, etc.) as favorite for the authenticated user.<br>Only 100 components by qualifier can be added as favorite.<br>Requires authentication and the following permission: 'Browse' on the component.
 func (s *FavoritesService) Add(opt *FavoritesAddOption) (resp *http.Response, err error) {
 	err = s.ValidateAddOpt(opt)
 	if err != nil {

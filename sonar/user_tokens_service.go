@@ -1,13 +1,7 @@
 // List, create, and delete a user's access tokens.
-package sonar
+package sonargo
 
 import "net/http"
-
-const (
-	UserToken            = "USER_TOKEN"
-	GlobalAnalysisToken  = "GLOBAL_ANALYSIS_TOKEN"
-	ProjectAnalysisToken = "PROJECT_ANALYSIS_TOKEN"
-)
 
 type UserTokensService struct {
 	client *Client
@@ -45,8 +39,8 @@ type UserTokensGenerateOption struct {
 	ExpirationDate string `url:"expirationDate,omitempty"` // Description:"The expiration date of the token being generated, in ISO 8601 format (YYYY-MM-DD). If not set, default to no expiration.",ExampleValue:""
 	Login          string `url:"login,omitempty"`          // Description:"User login. If not set, the token is generated for the authenticated user.",ExampleValue:"g.hopper"
 	Name           string `url:"name,omitempty"`           // Description:"Token name",ExampleValue:"Project scan on Travis"
-	ProjectKey     string `url:"projectKey,omitempty"`     // Description:"The key of the only project that can be analyzed by the ProjectAnalysisToken being generated.",ExampleValue:""
-	Type           string `url:"type,omitempty"`           // Description:"Token Type. If this parameters is set to ProjectAnalysisToken, it is necessary to provide the projectKey parameter too.",ExampleValue:""
+	ProjectKey     string `url:"projectKey,omitempty"`     // Description:"The key of the only project that can be analyzed by the PROJECT_ANALYSIS_TOKEN being generated.",ExampleValue:""
+	Type           string `url:"type,omitempty"`           // Description:"Token Type. If this parameters is set to PROJECT_ANALYSIS_TOKEN, it is necessary to provide the projectKey parameter too.",ExampleValue:""
 }
 
 // Generate Generate a user access token. <br />Please keep your tokens secret. They enable to authenticate and analyze projects.<br />It requires administration permissions to specify a 'login' and generate a token for another user. Otherwise, a token is generated for the current user.

@@ -1,5 +1,5 @@
 // Get information on the web api supported on this instance.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -53,15 +53,14 @@ type WebservicesListObject_sub1 struct {
 }
 
 type WebservicesResponseExampleObject struct {
-	Example WebservicesResponseExampleObject_sub9 `json:"example,omitempty"`
+	Example WebservicesResponseExampleObject_sub8 `json:"example,omitempty"`
 	Format  string                                `json:"format,omitempty"`
 }
 
-type WebservicesResponseExampleObject_sub5 struct {
+type WebservicesResponseExampleObject_sub4 struct {
 	Actions      []string                                `json:"actions,omitempty"`
-	Attr         WebservicesResponseExampleObject_sub2   `json:"attr,omitempty"`
 	Author       string                                  `json:"author,omitempty"`
-	Comments     []WebservicesResponseExampleObject_sub3 `json:"comments,omitempty"`
+	Comments     []WebservicesResponseExampleObject_sub2 `json:"comments,omitempty"`
 	Component    string                                  `json:"component,omitempty"`
 	CreationDate string                                  `json:"creationDate,omitempty"`
 	Debt         string                                  `json:"debt,omitempty"`
@@ -74,27 +73,27 @@ type WebservicesResponseExampleObject_sub5 struct {
 	Severity     string                                  `json:"severity,omitempty"`
 	Status       string                                  `json:"status,omitempty"`
 	Tags         []string                                `json:"tags,omitempty"`
-	TextRange    WebservicesResponseExampleObject_sub4   `json:"textRange,omitempty"`
+	TextRange    WebservicesResponseExampleObject_sub3   `json:"textRange,omitempty"`
 	Transitions  []string                                `json:"transitions,omitempty"`
 	UpdateDate   string                                  `json:"updateDate,omitempty"`
 }
 
-type WebservicesResponseExampleObject_sub8 struct {
+type WebservicesResponseExampleObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
 	Name   string `json:"name,omitempty"`
 }
 
-type WebservicesResponseExampleObject_sub9 struct {
+type WebservicesResponseExampleObject_sub8 struct {
 	Components []WebservicesResponseExampleObject_sub1 `json:"components,omitempty"`
-	Issues     []WebservicesResponseExampleObject_sub5 `json:"issues,omitempty"`
-	Paging     WebservicesResponseExampleObject_sub6   `json:"paging,omitempty"`
-	Rules      []WebservicesResponseExampleObject_sub7 `json:"rules,omitempty"`
-	Users      []WebservicesResponseExampleObject_sub8 `json:"users,omitempty"`
+	Issues     []WebservicesResponseExampleObject_sub4 `json:"issues,omitempty"`
+	Paging     WebservicesResponseExampleObject_sub5   `json:"paging,omitempty"`
+	Rules      []WebservicesResponseExampleObject_sub6 `json:"rules,omitempty"`
+	Users      []WebservicesResponseExampleObject_sub7 `json:"users,omitempty"`
 }
 
-type WebservicesResponseExampleObject_sub3 struct {
+type WebservicesResponseExampleObject_sub2 struct {
 	CreatedAt string `json:"createdAt,omitempty"`
 	HTMLText  string `json:"htmlText,omitempty"`
 	Key       string `json:"key,omitempty"`
@@ -112,18 +111,14 @@ type WebservicesResponseExampleObject_sub1 struct {
 	Qualifier string `json:"qualifier,omitempty"`
 }
 
-type WebservicesResponseExampleObject_sub4 struct {
+type WebservicesResponseExampleObject_sub3 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type WebservicesResponseExampleObject_sub2 struct {
-	Jira_issue_key string `json:"jira-issue-key,omitempty"`
-}
-
-type WebservicesResponseExampleObject_sub7 struct {
+type WebservicesResponseExampleObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -131,7 +126,7 @@ type WebservicesResponseExampleObject_sub7 struct {
 	Status   string `json:"status,omitempty"`
 }
 
-type WebservicesResponseExampleObject_sub6 struct {
+type WebservicesResponseExampleObject_sub5 struct {
 	PageIndex int64 `json:"pageIndex,omitempty"`
 	PageSize  int64 `json:"pageSize,omitempty"`
 	Total     int64 `json:"total,omitempty"`

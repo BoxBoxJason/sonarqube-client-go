@@ -1,5 +1,5 @@
 // Manage DevOps Platform Settings
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -17,6 +17,7 @@ type AlmSettingsGetBindingObject struct {
 	Key                   string `json:"key,omitempty"`
 	Monorepo              bool   `json:"monorepo,omitempty"`
 	Repository            string `json:"repository,omitempty"`
+	RepositoryURL         string `json:"repositoryUrl,omitempty"`
 	SummaryCommentEnabled bool   `json:"summaryCommentEnabled,omitempty"`
 	URL                   string `json:"url,omitempty"`
 }
@@ -217,32 +218,11 @@ func (s *AlmSettingsService) Delete(opt *AlmSettingsDeleteOption) (resp *http.Re
 	return
 }
 
-type AlmSettingsDeleteBindingOption struct {
-	Project string `url:"project,omitempty"` // Description:"",ExampleValue:""
-}
-
-// DeleteBinding
-func (s *AlmSettingsService) DeleteBinding(opt *AlmSettingsDeleteBindingOption) (resp *http.Response, err error) {
-	err = s.ValidateDeleteBindingOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "alm_settings/delete_binding", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
-	}
-	return
-}
-
 type AlmSettingsGetBindingOption struct {
 	Project string `url:"project,omitempty"` // Description:"Project key",ExampleValue:""
 }
 
-// GetBinding Get DevOps Platform binding of a given project.<br/>Requires the 'Administer' permission on the project
+// GetBinding Get DevOps Platform binding of a given project.<br/>Requires the 'Browse' permission on the project
 func (s *AlmSettingsService) GetBinding(opt *AlmSettingsGetBindingOption) (v *AlmSettingsGetBindingObject, resp *http.Response, err error) {
 	err = s.ValidateGetBindingOpt(opt)
 	if err != nil {
@@ -292,129 +272,6 @@ func (s *AlmSettingsService) ListDefinitions() (v *AlmSettingsListDefinitionsObj
 	resp, err = s.client.Do(req, v)
 	if err != nil {
 		return nil, resp, err
-	}
-	return
-}
-
-type AlmSettingsSetAzureBindingOption struct {
-	AlmSetting     string `url:"almSetting,omitempty"`     // Description:"",ExampleValue:""
-	Monorepo       string `url:"monorepo,omitempty"`       // Description:"",ExampleValue:""
-	Project        string `url:"project,omitempty"`        // Description:"",ExampleValue:""
-	ProjectName    string `url:"projectName,omitempty"`    // Description:"",ExampleValue:""
-	RepositoryName string `url:"repositoryName,omitempty"` // Description:"",ExampleValue:""
-}
-
-// SetAzureBinding
-func (s *AlmSettingsService) SetAzureBinding(opt *AlmSettingsSetAzureBindingOption) (resp *http.Response, err error) {
-	err = s.ValidateSetAzureBindingOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "alm_settings/set_azure_binding", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
-	}
-	return
-}
-
-type AlmSettingsSetBitbucketBindingOption struct {
-	AlmSetting string `url:"almSetting,omitempty"` // Description:"",ExampleValue:""
-	Monorepo   string `url:"monorepo,omitempty"`   // Description:"",ExampleValue:""
-	Project    string `url:"project,omitempty"`    // Description:"",ExampleValue:""
-	Repository string `url:"repository,omitempty"` // Description:"",ExampleValue:""
-	Slug       string `url:"slug,omitempty"`       // Description:"",ExampleValue:""
-}
-
-// SetBitbucketBinding
-func (s *AlmSettingsService) SetBitbucketBinding(opt *AlmSettingsSetBitbucketBindingOption) (resp *http.Response, err error) {
-	err = s.ValidateSetBitbucketBindingOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "alm_settings/set_bitbucket_binding", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
-	}
-	return
-}
-
-type AlmSettingsSetBitbucketcloudBindingOption struct {
-	AlmSetting string `url:"almSetting,omitempty"` // Description:"",ExampleValue:""
-	Monorepo   string `url:"monorepo,omitempty"`   // Description:"",ExampleValue:""
-	Project    string `url:"project,omitempty"`    // Description:"",ExampleValue:""
-	Repository string `url:"repository,omitempty"` // Description:"",ExampleValue:""
-}
-
-// SetBitbucketcloudBinding
-func (s *AlmSettingsService) SetBitbucketcloudBinding(opt *AlmSettingsSetBitbucketcloudBindingOption) (resp *http.Response, err error) {
-	err = s.ValidateSetBitbucketcloudBindingOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "alm_settings/set_bitbucketcloud_binding", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
-	}
-	return
-}
-
-type AlmSettingsSetGithubBindingOption struct {
-	AlmSetting            string `url:"almSetting,omitempty"`            // Description:"",ExampleValue:""
-	Monorepo              string `url:"monorepo,omitempty"`              // Description:"",ExampleValue:""
-	Project               string `url:"project,omitempty"`               // Description:"",ExampleValue:""
-	Repository            string `url:"repository,omitempty"`            // Description:"",ExampleValue:""
-	SummaryCommentEnabled string `url:"summaryCommentEnabled,omitempty"` // Description:"",ExampleValue:""
-}
-
-// SetGithubBinding
-func (s *AlmSettingsService) SetGithubBinding(opt *AlmSettingsSetGithubBindingOption) (resp *http.Response, err error) {
-	err = s.ValidateSetGithubBindingOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "alm_settings/set_github_binding", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
-	}
-	return
-}
-
-type AlmSettingsSetGitlabBindingOption struct {
-	AlmSetting string `url:"almSetting,omitempty"` // Description:"",ExampleValue:""
-	Monorepo   string `url:"monorepo,omitempty"`   // Description:"",ExampleValue:""
-	Project    string `url:"project,omitempty"`    // Description:"",ExampleValue:""
-	Repository string `url:"repository,omitempty"` // Description:"",ExampleValue:""
-}
-
-// SetGitlabBinding
-func (s *AlmSettingsService) SetGitlabBinding(opt *AlmSettingsSetGitlabBindingOption) (resp *http.Response, err error) {
-	err = s.ValidateSetGitlabBindingOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "alm_settings/set_gitlab_binding", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
 	}
 	return
 }
@@ -559,28 +416,6 @@ func (s *AlmSettingsService) Validate(opt *AlmSettingsValidateOption) (v *AlmSet
 		return
 	}
 	v = new(AlmSettingsValidateObject)
-	resp, err = s.client.Do(req, v)
-	if err != nil {
-		return nil, resp, err
-	}
-	return
-}
-
-type AlmSettingsValidateBindingOption struct {
-	Project string `url:"project,omitempty"` // Description:"",ExampleValue:""
-}
-
-// ValidateBinding
-func (s *AlmSettingsService) ValidateBinding(opt *AlmSettingsValidateBindingOption) (v *string, resp *http.Response, err error) {
-	err = s.ValidateValidateBindingOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("GET", "alm_settings/validate_binding", opt)
-	if err != nil {
-		return
-	}
-	v = new(string)
 	resp, err = s.client.Do(req, v)
 	if err != nil {
 		return nil, resp, err

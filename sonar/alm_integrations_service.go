@@ -1,5 +1,5 @@
 // Manage DevOps Platform Integrations
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -131,7 +131,7 @@ type AlmIntegrationsCheckPatOption struct {
 }
 
 // CheckPat Check validity of a Personal Access Token for the given DevOps Platform setting<br/>Requires the 'Create Projects' permission
-func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v *string, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (resp *http.Response, err error) {
 	err = s.ValidateCheckPatOpt(opt)
 	if err != nil {
 		return
@@ -140,10 +140,9 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v
 	if err != nil {
 		return
 	}
-	v = new(string)
-	resp, err = s.client.Do(req, v)
+	resp, err = s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, err
+		return
 	}
 	return
 }
@@ -171,9 +170,11 @@ func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithub
 }
 
 type AlmIntegrationsImportAzureProjectOption struct {
-	AlmSetting     string `url:"almSetting,omitempty"`     // Description:"DevOps Platform setting key",ExampleValue:""
-	ProjectName    string `url:"projectName,omitempty"`    // Description:"Azure project name",ExampleValue:""
-	RepositoryName string `url:"repositoryName,omitempty"` // Description:"Azure repository name",ExampleValue:""
+	AlmSetting             string `url:"almSetting,omitempty"`             // Description:"DevOps Platform configuration key. This parameter is optional if you have only one Azure integration.",ExampleValue:""
+	NewCodeDefinitionType  string `url:"newCodeDefinitionType,omitempty"`  // Description:"Project New Code Definition Type<br/>New code definitions of the following types are allowed:<ul><li>PREVIOUS_VERSION</li><li>NUMBER_OF_DAYS</li><li>REFERENCE_BRANCH - will default to the main branch.</li></ul>",ExampleValue:""
+	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"` // Description:"Project New Code Definition Value<br/>For each new code definition type, a different value is expected:<ul><li>no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH</li><li>a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS</li></ul>",ExampleValue:""
+	ProjectName            string `url:"projectName,omitempty"`            // Description:"Azure project name",ExampleValue:""
+	RepositoryName         string `url:"repositoryName,omitempty"`         // Description:"Azure repository name",ExampleValue:""
 }
 
 // ImportAzureProject Create a SonarQube project with the information from the provided Azure DevOps project.<br/>Autoconfigure pull request decoration mechanism.<br/>Requires the 'Create Projects' permission
@@ -194,8 +195,10 @@ func (s *AlmIntegrationsService) ImportAzureProject(opt *AlmIntegrationsImportAz
 }
 
 type AlmIntegrationsImportBitbucketcloudRepoOption struct {
-	AlmSetting     string `url:"almSetting,omitempty"`     // Description:"DevOps Platform setting key",ExampleValue:""
-	RepositorySlug string `url:"repositorySlug,omitempty"` // Description:"Bitbucket Cloud repository slug",ExampleValue:""
+	AlmSetting             string `url:"almSetting,omitempty"`             // Description:"DevOps Platform configuration key. This parameter is optional if you have only one BitBucket Cloud integration.",ExampleValue:""
+	NewCodeDefinitionType  string `url:"newCodeDefinitionType,omitempty"`  // Description:"Project New Code Definition Type<br/>New code definitions of the following types are allowed:<ul><li>PREVIOUS_VERSION</li><li>NUMBER_OF_DAYS</li><li>REFERENCE_BRANCH - will default to the main branch.</li></ul>",ExampleValue:""
+	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"` // Description:"Project New Code Definition Value<br/>For each new code definition type, a different value is expected:<ul><li>no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH</li><li>a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS</li></ul>",ExampleValue:""
+	RepositorySlug         string `url:"repositorySlug,omitempty"`         // Description:"Bitbucket Cloud repository slug",ExampleValue:""
 }
 
 // ImportBitbucketcloudRepo Create a SonarQube project with the information from the provided Bitbucket Cloud repository.<br/>Autoconfigure pull request decoration mechanism.<br/>Requires the 'Create Projects' permission
@@ -216,9 +219,11 @@ func (s *AlmIntegrationsService) ImportBitbucketcloudRepo(opt *AlmIntegrationsIm
 }
 
 type AlmIntegrationsImportBitbucketserverProjectOption struct {
-	AlmSetting     string `url:"almSetting,omitempty"`     // Description:"DevOps Platform setting key",ExampleValue:""
-	ProjectKey     string `url:"projectKey,omitempty"`     // Description:"BitbucketServer project key",ExampleValue:""
-	RepositorySlug string `url:"repositorySlug,omitempty"` // Description:"BitbucketServer repository slug",ExampleValue:""
+	AlmSetting             string `url:"almSetting,omitempty"`             // Description:"DevOps Platform configuration key. This parameter is optional if you have only one BitBucket Server integration.",ExampleValue:""
+	NewCodeDefinitionType  string `url:"newCodeDefinitionType,omitempty"`  // Description:"Project New Code Definition Type<br/>New code definitions of the following types are allowed:<ul><li>PREVIOUS_VERSION</li><li>NUMBER_OF_DAYS</li><li>REFERENCE_BRANCH - will default to the main branch.</li></ul>",ExampleValue:""
+	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"` // Description:"Project New Code Definition Value<br/>For each new code definition type, a different value is expected:<ul><li>no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH</li><li>a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS</li></ul>",ExampleValue:""
+	ProjectKey             string `url:"projectKey,omitempty"`             // Description:"BitbucketServer project key",ExampleValue:""
+	RepositorySlug         string `url:"repositorySlug,omitempty"`         // Description:"BitbucketServer repository slug",ExampleValue:""
 }
 
 // ImportBitbucketserverProject Create a SonarQube project with the information from the provided BitbucketServer project.<br/>Autoconfigure pull request decoration mechanism.<br/>Requires the 'Create Projects' permission
@@ -239,12 +244,13 @@ func (s *AlmIntegrationsService) ImportBitbucketserverProject(opt *AlmIntegratio
 }
 
 type AlmIntegrationsImportGithubProjectOption struct {
-	AlmSetting    string `url:"almSetting,omitempty"`    // Description:"DevOps Platform setting key",ExampleValue:""
-	Organization  string `url:"organization,omitempty"`  // Description:"GitHub organization",ExampleValue:""
-	RepositoryKey string `url:"repositoryKey,omitempty"` // Description:"GitHub repository key",ExampleValue:""
+	AlmSetting             string `url:"almSetting,omitempty"`             // Description:"DevOps Platform configuration key. This parameter is optional if you have only one GitHub integration.",ExampleValue:""
+	NewCodeDefinitionType  string `url:"newCodeDefinitionType,omitempty"`  // Description:"Project New Code Definition Type<br/>New code definitions of the following types are allowed:<ul><li>PREVIOUS_VERSION</li><li>NUMBER_OF_DAYS</li><li>REFERENCE_BRANCH - will default to the main branch.</li></ul>",ExampleValue:""
+	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"` // Description:"Project New Code Definition Value<br/>For each new code definition type, a different value is expected:<ul><li>no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH</li><li>a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS</li></ul>",ExampleValue:""
+	RepositoryKey          string `url:"repositoryKey,omitempty"`          // Description:"GitHub repository key (organization/repoSlug",ExampleValue:""
 }
 
-// ImportGithubProject Create a SonarQube project with the information from the provided GitHub repository.<br/>Autoconfigure pull request decoration mechanism.<br/>Requires the 'Create Projects' permission
+// ImportGithubProject Create a SonarQube project with the information from the provided GitHub repository.<br/>Autoconfigure pull request decoration mechanism. If Automatic Provisioning is enable for GitHub, it will also synchronize permissions from the repository.<br/>Requires the 'Create Projects' permission
 func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportGithubProjectOption) (resp *http.Response, err error) {
 	err = s.ValidateImportGithubProjectOpt(opt)
 	if err != nil {
@@ -262,8 +268,10 @@ func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportG
 }
 
 type AlmIntegrationsImportGitlabProjectOption struct {
-	AlmSetting      string `url:"almSetting,omitempty"`      // Description:"DevOps Platform setting key",ExampleValue:""
-	GitlabProjectId string `url:"gitlabProjectId,omitempty"` // Description:"GitLab project ID",ExampleValue:""
+	AlmSetting             string `url:"almSetting,omitempty"`             // Description:"DevOps Platform configuration key. This parameter is optional if you have only one GitLab integration.",ExampleValue:""
+	GitlabProjectId        string `url:"gitlabProjectId,omitempty"`        // Description:"GitLab project ID",ExampleValue:""
+	NewCodeDefinitionType  string `url:"newCodeDefinitionType,omitempty"`  // Description:"Project New Code Definition Type<br/>New code definitions of the following types are allowed:<ul><li>PREVIOUS_VERSION</li><li>NUMBER_OF_DAYS</li><li>REFERENCE_BRANCH - will default to the main branch.</li></ul>",ExampleValue:""
+	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"` // Description:"Project New Code Definition Value<br/>For each new code definition type, a different value is expected:<ul><li>no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH</li><li>a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS</li></ul>",ExampleValue:""
 }
 
 // ImportGitlabProject Import a GitLab project to SonarQube, creating a new project and configuring MR decoration<br/>Requires the 'Create Projects' permission
@@ -307,6 +315,8 @@ func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzure
 
 type AlmIntegrationsListBitbucketserverProjectsOption struct {
 	AlmSetting string `url:"almSetting,omitempty"` // Description:"DevOps Platform setting key",ExampleValue:""
+	PageSize   string `url:"pageSize,omitempty"`   // Description:"Number of items to return.",ExampleValue:""
+	Start      string `url:"start,omitempty"`      // Description:"Start number for the page (inclusive). If not passed, the first page is assumed.",ExampleValue:"2154"
 }
 
 // ListBitbucketserverProjects List the Bitbucket Server projects<br/>Requires the 'Create Projects' permission
@@ -429,8 +439,10 @@ func (s *AlmIntegrationsService) SearchBitbucketcloudRepos(opt *AlmIntegrationsS
 
 type AlmIntegrationsSearchBitbucketserverReposOption struct {
 	AlmSetting     string `url:"almSetting,omitempty"`     // Description:"DevOps Platform setting key",ExampleValue:""
+	PageSize       string `url:"pageSize,omitempty"`       // Description:"Number of items to return.",ExampleValue:""
 	ProjectName    string `url:"projectName,omitempty"`    // Description:"Project name filter",ExampleValue:""
 	RepositoryName string `url:"repositoryName,omitempty"` // Description:"Repository name filter",ExampleValue:""
+	Start          string `url:"start,omitempty"`          // Description:"Start number for the page (inclusive). If not passed, the first page is assumed.",ExampleValue:"2154"
 }
 
 // SearchBitbucketserverRepos Search the Bitbucket Server repositories with REPO_ADMIN access<br/>Requires the 'Create Projects' permission
@@ -455,7 +467,7 @@ type AlmIntegrationsSearchGitlabReposOption struct {
 	AlmSetting  string `url:"almSetting,omitempty"`  // Description:"DevOps Platform setting key",ExampleValue:""
 	P           string `url:"p,omitempty"`           // Description:"1-based page number",ExampleValue:"42"
 	ProjectName string `url:"projectName,omitempty"` // Description:"Project name filter",ExampleValue:""
-	Ps          string `url:"ps,omitempty"`          // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
+	Ps          string `url:"ps,omitempty"`          // Description:"Page size. Must be greater than 0 and less or equal than 100",ExampleValue:"20"
 }
 
 // SearchGitlabRepos Search the GitLab projects.<br/>Requires the 'Create Projects' permission
@@ -477,12 +489,12 @@ func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGit
 }
 
 type AlmIntegrationsSetPatOption struct {
-	AlmSetting string `url:"almSetting,omitempty"` // Description:"DevOps Platform setting key",ExampleValue:""
+	AlmSetting string `url:"almSetting,omitempty"` // Description:"DevOps Platform configuration key. This parameter is optional if you have only one single DevOps Platform integration.",ExampleValue:""
 	Pat        string `url:"pat,omitempty"`        // Description:"Personal Access Token",ExampleValue:""
 	Username   string `url:"username,omitempty"`   // Description:"Username",ExampleValue:""
 }
 
-// SetPat Set a Personal Access Token for the given DevOps Platform setting<br/>Only valid for Azure DevOps, Bitbucket Server, GitLab and Bitbucket Cloud Setting<br/>Requires the 'Create Projects' permission
+// SetPat Set a Personal Access Token for the given DevOps Platform setting<br/>Requires the 'Create Projects' permission
 func (s *AlmIntegrationsService) SetPat(opt *AlmIntegrationsSetPatOption) (resp *http.Response, err error) {
 	err = s.ValidateSetPatOpt(opt)
 	if err != nil {

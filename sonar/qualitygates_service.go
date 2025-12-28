@@ -1,5 +1,5 @@
 // Manage quality gates, including conditions and project association.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -26,32 +26,34 @@ type QualitygatesGetByProjectObject struct {
 
 type QualitygatesGetByProjectObject_sub1 struct {
 	Default bool   `json:"default,omitempty"`
-	ID      string `json:"id,omitempty"`
 	Name    string `json:"name,omitempty"`
 }
 
 type QualitygatesListObject struct {
 	Actions      QualitygatesListObject_sub1   `json:"actions,omitempty"`
-	Default      int64                         `json:"default,omitempty"`
 	Qualitygates []QualitygatesListObject_sub3 `json:"qualitygates,omitempty"`
 }
 
 type QualitygatesListObject_sub3 struct {
-	Actions   QualitygatesListObject_sub2 `json:"actions,omitempty"`
-	ID        string                      `json:"id,omitempty"`
-	IsBuiltIn bool                        `json:"isBuiltIn,omitempty"`
-	IsDefault bool                        `json:"isDefault,omitempty"`
-	Name      string                      `json:"name,omitempty"`
+	Actions               QualitygatesListObject_sub2 `json:"actions,omitempty"`
+	CaycStatus            string                      `json:"caycStatus,omitempty"`
+	HasMQRConditions      bool                        `json:"hasMQRConditions,omitempty"`
+	HasStandardConditions bool                        `json:"hasStandardConditions,omitempty"`
+	IsAiCodeSupported     bool                        `json:"isAiCodeSupported,omitempty"`
+	IsBuiltIn             bool                        `json:"isBuiltIn,omitempty"`
+	IsDefault             bool                        `json:"isDefault,omitempty"`
+	Name                  string                      `json:"name,omitempty"`
 }
 
 type QualitygatesListObject_sub2 struct {
-	AssociateProjects bool `json:"associateProjects,omitempty"`
-	Copy              bool `json:"copy,omitempty"`
-	Delegate          bool `json:"delegate,omitempty"`
-	Delete            bool `json:"delete,omitempty"`
-	ManageConditions  bool `json:"manageConditions,omitempty"`
-	Rename            bool `json:"rename,omitempty"`
-	SetAsDefault      bool `json:"setAsDefault,omitempty"`
+	AssociateProjects     bool `json:"associateProjects,omitempty"`
+	Copy                  bool `json:"copy,omitempty"`
+	Delegate              bool `json:"delegate,omitempty"`
+	Delete                bool `json:"delete,omitempty"`
+	ManageAiCodeAssurance bool `json:"manageAiCodeAssurance,omitempty"`
+	ManageConditions      bool `json:"manageConditions,omitempty"`
+	Rename                bool `json:"rename,omitempty"`
+	SetAsDefault          bool `json:"setAsDefault,omitempty"`
 }
 
 type QualitygatesListObject_sub1 struct {
@@ -59,7 +61,7 @@ type QualitygatesListObject_sub1 struct {
 }
 
 type QualitygatesProjectStatusObject struct {
-	ProjectStatus QualitygatesProjectStatusObject_sub4 `json:"projectStatus,omitempty"`
+	ProjectStatus QualitygatesProjectStatusObject_sub3 `json:"projectStatus,omitempty"`
 }
 
 type QualitygatesProjectStatusObject_sub1 struct {
@@ -67,24 +69,15 @@ type QualitygatesProjectStatusObject_sub1 struct {
 	Comparator     string `json:"comparator,omitempty"`
 	ErrorThreshold string `json:"errorThreshold,omitempty"`
 	MetricKey      string `json:"metricKey,omitempty"`
-	PeriodIndex    int64  `json:"periodIndex,omitempty"`
 	Status         string `json:"status,omitempty"`
 }
 
-type QualitygatesProjectStatusObject_sub4 struct {
+type QualitygatesProjectStatusObject_sub3 struct {
 	CaycStatus        string                                 `json:"caycStatus,omitempty"`
 	Conditions        []QualitygatesProjectStatusObject_sub1 `json:"conditions,omitempty"`
 	IgnoredConditions bool                                   `json:"ignoredConditions,omitempty"`
 	Period            QualitygatesProjectStatusObject_sub2   `json:"period,omitempty"`
-	Periods           []QualitygatesProjectStatusObject_sub3 `json:"periods,omitempty"`
 	Status            string                                 `json:"status,omitempty"`
-}
-
-type QualitygatesProjectStatusObject_sub3 struct {
-	Date      string `json:"date,omitempty"`
-	Index     int64  `json:"index,omitempty"`
-	Mode      string `json:"mode,omitempty"`
-	Parameter string `json:"parameter,omitempty"`
 }
 
 type QualitygatesProjectStatusObject_sub2 struct {
@@ -99,9 +92,10 @@ type QualitygatesSearchObject struct {
 }
 
 type QualitygatesSearchObject_sub2 struct {
-	Key      string `json:"key,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Selected bool   `json:"selected,omitempty"`
+	AiCodeAssurance string `json:"aiCodeAssurance,omitempty"`
+	Key             string `json:"key,omitempty"`
+	Name            string `json:"name,omitempty"`
+	Selected        bool   `json:"selected,omitempty"`
 }
 
 type QualitygatesSearchObject_sub1 struct {
@@ -146,21 +140,24 @@ type QualitygatesSearchUsersObject_sub1 struct {
 }
 
 type QualitygatesShowObject struct {
-	Actions    QualitygatesShowObject_sub1   `json:"actions,omitempty"`
-	Conditions []QualitygatesShowObject_sub2 `json:"conditions,omitempty"`
-	ID         int64                         `json:"id,omitempty"`
-	IsBuiltIn  bool                          `json:"isBuiltIn,omitempty"`
-	Name       string                        `json:"name,omitempty"`
+	Actions           QualitygatesShowObject_sub1   `json:"actions,omitempty"`
+	CaycStatus        string                        `json:"caycStatus,omitempty"`
+	Conditions        []QualitygatesShowObject_sub2 `json:"conditions,omitempty"`
+	IsAiCodeSupported bool                          `json:"isAiCodeSupported,omitempty"`
+	IsBuiltIn         bool                          `json:"isBuiltIn,omitempty"`
+	IsDefault         bool                          `json:"isDefault,omitempty"`
+	Name              string                        `json:"name,omitempty"`
 }
 
 type QualitygatesShowObject_sub1 struct {
-	AssociateProjects bool `json:"associateProjects,omitempty"`
-	Copy              bool `json:"copy,omitempty"`
-	Delegate          bool `json:"delegate,omitempty"`
-	Delete            bool `json:"delete,omitempty"`
-	ManageConditions  bool `json:"manageConditions,omitempty"`
-	Rename            bool `json:"rename,omitempty"`
-	SetAsDefault      bool `json:"setAsDefault,omitempty"`
+	AssociateProjects     bool `json:"associateProjects,omitempty"`
+	Copy                  bool `json:"copy,omitempty"`
+	Delegate              bool `json:"delegate,omitempty"`
+	Delete                bool `json:"delete,omitempty"`
+	ManageAiCodeAssurance bool `json:"manageAiCodeAssurance,omitempty"`
+	ManageConditions      bool `json:"manageConditions,omitempty"`
+	Rename                bool `json:"rename,omitempty"`
+	SetAsDefault          bool `json:"setAsDefault,omitempty"`
 }
 
 type QualitygatesShowObject_sub2 struct {
@@ -219,7 +216,7 @@ type QualitygatesCopyOption struct {
 	SourceName string `url:"sourceName,omitempty"` // Description:"The name of the quality gate to copy",ExampleValue:"My Quality Gate"
 }
 
-// Copy Copy a Quality Gate.<br>Either 'sourceName' or 'id' must be provided. Requires the 'Administer Quality Gates' permission.
+// Copy Copy a Quality Gate.<br>'sourceName' must be provided. Requires the 'Administer Quality Gates' permission.
 func (s *QualitygatesService) Copy(opt *QualitygatesCopyOption) (resp *http.Response, err error) {
 	err = s.ValidateCopyOpt(opt)
 	if err != nil {
@@ -265,7 +262,7 @@ type QualitygatesCreateConditionOption struct {
 	Op       string `url:"op,omitempty"`       // Description:"Condition operator:<br/><ul><li>LT = is lower than</li><li>GT = is greater than</li></ul>",ExampleValue:"GT"
 }
 
-// CreateCondition Add a new condition to a quality gate.<br>Either 'gateId' or 'gateName' must be provided. Requires the 'Administer Quality Gates' permission.
+// CreateCondition Add a new condition to a quality gate.<br>Parameter 'gateName' must be provided. Requires the 'Administer Quality Gates' permission.
 func (s *QualitygatesService) CreateCondition(opt *QualitygatesCreateConditionOption) (v *QualitygatesCreateConditionObject, resp *http.Response, err error) {
 	err = s.ValidateCreateConditionOpt(opt)
 	if err != nil {
@@ -329,7 +326,7 @@ type QualitygatesDestroyOption struct {
 	Name string `url:"name,omitempty"` // Description:"Name of the quality gate to delete",ExampleValue:"SonarSource Way"
 }
 
-// Destroy Delete a Quality Gate.<br>Either 'id' or 'name' must be specified. Requires the 'Administer Quality Gates' permission.
+// Destroy Delete a Quality Gate.<br>Parameter 'name' must be specified. Requires the 'Administer Quality Gates' permission.
 func (s *QualitygatesService) Destroy(opt *QualitygatesDestroyOption) (resp *http.Response, err error) {
 	err = s.ValidateDestroyOpt(opt)
 	if err != nil {
@@ -457,7 +454,7 @@ type QualitygatesRenameOption struct {
 	Name        string `url:"name,omitempty"`        // Description:"New name of the quality gate",ExampleValue:"My New Quality Gate"
 }
 
-// Rename Rename a Quality Gate.<br>Either 'id' or 'currentName' must be specified. Requires the 'Administer Quality Gates' permission.
+// Rename Rename a Quality Gate.<br>'currentName' must be specified. Requires the 'Administer Quality Gates' permission.
 func (s *QualitygatesService) Rename(opt *QualitygatesRenameOption) (resp *http.Response, err error) {
 	err = s.ValidateRenameOpt(opt)
 	if err != nil {
@@ -578,7 +575,7 @@ type QualitygatesSetAsDefaultOption struct {
 	Name string `url:"name,omitempty"` // Description:"Name of the quality gate to set as default",ExampleValue:"SonarSource Way"
 }
 
-// SetAsDefault Set a quality gate as the default quality gate.<br>Either 'id' or 'name' must be specified. Requires the 'Administer Quality Gates' permission.
+// SetAsDefault Set a quality gate as the default quality gate.<br>Parameter 'name' must be specified. Requires the 'Administer Quality Gates' permission.
 func (s *QualitygatesService) SetAsDefault(opt *QualitygatesSetAsDefaultOption) (resp *http.Response, err error) {
 	err = s.ValidateSetAsDefaultOpt(opt)
 	if err != nil {
@@ -596,7 +593,6 @@ func (s *QualitygatesService) SetAsDefault(opt *QualitygatesSetAsDefaultOption) 
 }
 
 type QualitygatesShowOption struct {
-	Id   string `url:"id,omitempty"`   // Description:"ID of the quality gate. Either id or name must be set",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Name string `url:"name,omitempty"` // Description:"Name of the quality gate. Either id or name must be set",ExampleValue:"My Quality Gate"
 }
 

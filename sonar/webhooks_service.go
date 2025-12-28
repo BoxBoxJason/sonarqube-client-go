@@ -1,5 +1,5 @@
 // Webhooks allow to notify external services when a project analysis is done
-package sonar
+package sonargo
 
 import "net/http"
 

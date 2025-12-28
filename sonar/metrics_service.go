@@ -1,5 +1,5 @@
 // Get information on automatic metrics
-package sonar
+package sonargo
 
 import "net/http"
 

@@ -1,5 +1,5 @@
 // Manage user groups.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -28,7 +28,7 @@ type UserGroupsSearchObject struct {
 type UserGroupsSearchObject_sub1 struct {
 	Default      bool   `json:"default,omitempty"`
 	Description  string `json:"description,omitempty"`
-	ID           string `json:"id,omitempty"`
+	Managed      bool   `json:"managed,omitempty"`
 	MembersCount int64  `json:"membersCount,omitempty"`
 	Name         string `json:"name,omitempty"`
 }
@@ -46,6 +46,7 @@ type UserGroupsUsersObject struct {
 
 type UserGroupsUsersObject_sub2 struct {
 	Login    string `json:"login,omitempty"`
+	Managed  bool   `json:"managed,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Selected bool   `json:"selected,omitempty"`
 }
@@ -57,12 +58,11 @@ type UserGroupsUsersObject_sub1 struct {
 }
 
 type UserGroupsAddUserOption struct {
-	Id    string `url:"id,omitempty"`    // Description:"Group id, use 'name' instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Login string `url:"login,omitempty"` // Description:"User login",ExampleValue:"g.hopper"
 	Name  string `url:"name,omitempty"`  // Description:"Group name",ExampleValue:"sonar-administrators"
 }
 
-// AddUser Add a user to a group.<br />'id' or 'name' must be provided.<br />Requires the following permission: 'Administer System'.
+// AddUser Add a user to a group.<br />'name' must be provided.<br />Requires the following permission: 'Administer System'.
 func (s *UserGroupsService) AddUser(opt *UserGroupsAddUserOption) (resp *http.Response, err error) {
 	err = s.ValidateAddUserOpt(opt)
 	if err != nil {
@@ -103,11 +103,10 @@ func (s *UserGroupsService) Create(opt *UserGroupsCreateOption) (v *UserGroupsCr
 }
 
 type UserGroupsDeleteOption struct {
-	Id   string `url:"id,omitempty"`   // Description:"Group id, use 'name' instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Name string `url:"name,omitempty"` // Description:"Group name",ExampleValue:"sonar-administrators"
 }
 
-// Delete Delete a group. The default groups cannot be deleted.<br/>'id' or 'name' must be provided.<br />Requires the following permission: 'Administer System'.
+// Delete Delete a group. The default groups cannot be deleted.<br/>'name' must be provided.<br />Requires the following permission: 'Administer System'.
 func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOption) (resp *http.Response, err error) {
 	err = s.ValidateDeleteOpt(opt)
 	if err != nil {
@@ -125,12 +124,11 @@ func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOption) (resp *http.Resp
 }
 
 type UserGroupsRemoveUserOption struct {
-	Id    string `url:"id,omitempty"`    // Description:"Group id, use 'name' instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Login string `url:"login,omitempty"` // Description:"User login",ExampleValue:"g.hopper"
 	Name  string `url:"name,omitempty"`  // Description:"Group name",ExampleValue:"sonar-administrators"
 }
 
-// RemoveUser Remove a user from a group.<br />'id' or 'name' must be provided.<br>Requires the following permission: 'Administer System'.
+// RemoveUser Remove a user from a group.<br />'name' must be provided.<br>Requires the following permission: 'Administer System'.
 func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOption) (resp *http.Response, err error) {
 	err = s.ValidateRemoveUserOpt(opt)
 	if err != nil {
@@ -148,10 +146,11 @@ func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOption) (resp *h
 }
 
 type UserGroupsSearchOption struct {
-	F  string `url:"f,omitempty"`  // Description:"Comma-separated list of the fields to be returned in response. All the fields are returned by default.",ExampleValue:""
-	P  string `url:"p,omitempty"`  // Description:"1-based page number",ExampleValue:"42"
-	Ps string `url:"ps,omitempty"` // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
-	Q  string `url:"q,omitempty"`  // Description:"Limit search to names that contain the supplied string.",ExampleValue:"sonar-users"
+	F       string `url:"f,omitempty"`       // Description:"Comma-separated list of the fields to be returned in response. All the fields are returned by default.",ExampleValue:""
+	Managed string `url:"managed,omitempty"` // Description:"Return managed or non-managed groups. Only available for managed instances, throws for non-managed instances.",ExampleValue:""
+	P       string `url:"p,omitempty"`       // Description:"1-based page number",ExampleValue:"42"
+	Ps      string `url:"ps,omitempty"`      // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
+	Q       string `url:"q,omitempty"`       // Description:"Limit search to names that contain the supplied string.",ExampleValue:"sonar-users"
 }
 
 // Search Search for user groups.<br>Requires the following permission: 'Administer System'.
@@ -173,9 +172,8 @@ func (s *UserGroupsService) Search(opt *UserGroupsSearchOption) (v *UserGroupsSe
 }
 
 type UserGroupsUpdateOption struct {
-	CurrentName string `url:"currentName,omitempty"` // Description:"Name of the group to be updated. Mandatory unless 'id' is used.",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
+	CurrentName string `url:"currentName,omitempty"` // Description:"Name of the group to be updated.",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Description string `url:"description,omitempty"` // Description:"New optional description for the group. A group description cannot be larger than 200 characters. If value is not defined, then description is not changed.",ExampleValue:"Default group for new users"
-	Id          string `url:"id,omitempty"`          // Description:"Identifier of the group. Use 'currentName' instead.",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Name        string `url:"name,omitempty"`        // Description:"New optional name for the group. A group name cannot be larger than 255 characters and must be unique. Value 'anyone' (whatever the case) is reserved and cannot be used. If value is empty or not defined, then name is not changed.",ExampleValue:"my-group"
 }
 
@@ -197,7 +195,6 @@ func (s *UserGroupsService) Update(opt *UserGroupsUpdateOption) (resp *http.Resp
 }
 
 type UserGroupsUsersOption struct {
-	Id       string `url:"id,omitempty"`       // Description:"Group id, use 'name' instead",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Name     string `url:"name,omitempty"`     // Description:"Group name",ExampleValue:"sonar-administrators"
 	P        string `url:"p,omitempty"`        // Description:"1-based page number",ExampleValue:"42"
 	Ps       string `url:"ps,omitempty"`       // Description:"Page size. Must be greater than 0.",ExampleValue:"20"

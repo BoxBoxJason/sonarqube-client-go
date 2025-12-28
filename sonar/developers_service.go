@@ -1,5 +1,5 @@
 // Return data needed by SonarLint.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -23,7 +23,7 @@ type DevelopersSearchEventsOption struct {
 	Projects string `url:"projects,omitempty"` // Description:"Comma-separated list of project keys to search notifications for",ExampleValue:"my_project,another_project"
 }
 
-// SearchEvents Search for events.<br/>Requires authentication.<br/>When issue indexation is in progress returns 503 service unavailable HTTP code.
+// SearchEvents Search for events.<br/>Requires authentication.<br/>When issue indexing is in progress returns 503 service unavailable HTTP code.
 func (s *DevelopersService) SearchEvents(opt *DevelopersSearchEventsOption) (v *DevelopersSearchEventsObject, resp *http.Response, err error) {
 	err = s.ValidateSearchEventsOpt(opt)
 	if err != nil {

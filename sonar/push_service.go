@@ -1,5 +1,5 @@
 // Endpoints supporting server side events.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -13,7 +13,7 @@ type PushSonarlintEventsOption struct {
 }
 
 // SonarlintEvents Endpoint for listening to server side events. Currently it notifies listener about change to activation of a rule
-func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (v *string, resp *http.Response, err error) {
+func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (resp *http.Response, err error) {
 	err = s.ValidateSonarlintEventsOpt(opt)
 	if err != nil {
 		return
@@ -22,10 +22,9 @@ func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (v *string
 	if err != nil {
 		return
 	}
-	v = new(string)
-	resp, err = s.client.Do(req, v)
+	resp, err = s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, err
+		return
 	}
 	return
 }

@@ -1,12 +1,7 @@
 // Manage project existence.
-package sonar
+package sonargo
 
 import "net/http"
-
-const (
-	ProjectVisibilityPublic  = "public"
-	ProjectVisibilityPrivate = "private"
-)
 
 type ProjectsService struct {
 	client *Client
@@ -30,7 +25,9 @@ type ProjectsSearchObject struct {
 type ProjectsSearchObject_sub1 struct {
 	Key              string `json:"key,omitempty"`
 	LastAnalysisDate string `json:"lastAnalysisDate,omitempty"`
+	Managed          bool   `json:"managed,omitempty"`
 	Name             string `json:"name,omitempty"`
+	ProjectUUID      string `json:"projectUuid,omitempty"`
 	Qualifier        string `json:"qualifier,omitempty"`
 	Revision         string `json:"revision,omitempty"`
 	Visibility       string `json:"visibility,omitempty"`
@@ -104,13 +101,15 @@ func (s *ProjectsService) BulkDelete(opt *ProjectsBulkDeleteOption) (resp *http.
 }
 
 type ProjectsCreateOption struct {
-	MainBranch string `url:"mainBranch,omitempty"` // Description:"Key of the main branch of the project. If not provided, the default main branch key will be used.",ExampleValue:"develop"
-	Name       string `url:"name,omitempty"`       // Description:"Name of the project. If name is longer than 500, it is abbreviated.",ExampleValue:"SonarQube"
-	Project    string `url:"project,omitempty"`    // Description:"Key of the project",ExampleValue:"my_project"
-	Visibility string `url:"visibility,omitempty"` // Description:"Whether the created project should be visible to everyone, or only specific user/groups.<br/>If no visibility is specified, the default project visibility will be used.",ExampleValue:""
+	MainBranch             string `url:"mainBranch,omitempty"`             // Description:"Key of the main branch of the project. If not provided, the default main branch key will be used.",ExampleValue:"develop"
+	Name                   string `url:"name,omitempty"`                   // Description:"Name of the project. If name is longer than 500, it is abbreviated.",ExampleValue:"SonarQube"
+	NewCodeDefinitionType  string `url:"newCodeDefinitionType,omitempty"`  // Description:"Project New Code Definition Type<br/>New code definitions of the following types are allowed:<ul><li>PREVIOUS_VERSION</li><li>NUMBER_OF_DAYS</li><li>REFERENCE_BRANCH - will default to the main branch.</li></ul>",ExampleValue:""
+	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"` // Description:"Project New Code Definition Value<br/>For each new code definition type, a different value is expected:<ul><li>no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH</li><li>a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS</li></ul>",ExampleValue:""
+	Project                string `url:"project,omitempty"`                // Description:"Key of the project",ExampleValue:"my_project"
+	Visibility             string `url:"visibility,omitempty"`             // Description:"Whether the created project should be visible to everyone, or only specific user/groups.<br/>If no visibility is specified, the default project visibility will be used.",ExampleValue:""
 }
 
-// Create Create a project.<br/>Requires 'Create Projects' permission
+// Create Create a project.<br/>If your project is hosted on a DevOps Platform, please use the import endpoint under api/alm_integrations, so it creates and properly configures the project.Requires 'Create Projects' permission.<br/>
 func (s *ProjectsService) Create(opt *ProjectsCreateOption) (v *ProjectsCreateObject, resp *http.Response, err error) {
 	err = s.ValidateCreateOpt(opt)
 	if err != nil {
@@ -160,7 +159,14 @@ type ProjectsSearchOption struct {
 	Visibility        string `url:"visibility,omitempty"`        // Description:"Filter the projects that should be visible to everyone (public), or only specific user/groups (private).<br/>If no visibility is specified, the default project visibility will be used.",ExampleValue:""
 }
 
-// Search Search for projects or views to administrate them.<br>Requires 'Administer System' permission
+/*
+Search Search for projects or views to administrate them.
+<ul>
+  <li>The response field 'lastAnalysisDate' takes into account the analysis of all branches and pull requests, not only the main branch.</li>
+  <li>The response field 'revision' takes into account the analysis of the main branch only.</li>
+</ul>
+Requires 'Administer System' permission
+*/
 func (s *ProjectsService) Search(opt *ProjectsSearchOption) (v *ProjectsSearchObject, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
@@ -249,7 +255,7 @@ type ProjectsUpdateKeyOption struct {
 	To   string `url:"to,omitempty"`   // Description:"New project key",ExampleValue:"my_new_project"
 }
 
-// UpdateKey Update a project all its sub-components keys.<br>Requires one of the following permissions: <ul><li>'Administer System'</li><li>'Administer' rights on the specified project</li></ul>
+// UpdateKey Update a project all its sub-components keys.<br>Requires 'Administer' permission on the project.
 func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOption) (resp *http.Response, err error) {
 	err = s.ValidateUpdateKeyOpt(opt)
 	if err != nil {
@@ -267,11 +273,11 @@ func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOption) (resp *http.Re
 }
 
 type ProjectsUpdateVisibilityOption struct {
-	Project    string `url:"project,omitempty"`    // Description:"Project key",ExampleValue:"my_project"
+	Project    string `url:"project,omitempty"`    // Description:"Project, application or portfolio key",ExampleValue:"my_project"
 	Visibility string `url:"visibility,omitempty"` // Description:"New visibility",ExampleValue:""
 }
 
-// UpdateVisibility Updates visibility of a project or view.<br>Requires 'Project administer' permission on the specified project or view
+// UpdateVisibility Updates visibility of a project, application or a portfolio.<br>Requires 'Project administer' permission on the specified entity
 func (s *ProjectsService) UpdateVisibility(opt *ProjectsUpdateVisibilityOption) (resp *http.Response, err error) {
 	err = s.ValidateUpdateVisibilityOpt(opt)
 	if err != nil {

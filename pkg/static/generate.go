@@ -1,7 +1,7 @@
 package static
 
 import (
-	"io/ioutil"
+	"os"
 
 	gen "github.com/dave/jennifer/jen"
 )
@@ -25,7 +25,7 @@ func GenerateStaticFiles(navDir string, outputPath string) error {
 }
 
 func LoadStaticFile(path string) (string, error) {
-	bytes, err := ioutil.ReadFile(path)
+	bytes, err := os.ReadFile(path)
 	if err != nil {
 		return "", nil
 	}

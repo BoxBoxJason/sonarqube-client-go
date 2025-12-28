@@ -1,5 +1,5 @@
 // Manage branch
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -13,6 +13,7 @@ type ProjectBranchesListObject struct {
 
 type ProjectBranchesListObject_sub2 struct {
 	AnalysisDate      string                         `json:"analysisDate,omitempty"`
+	BranchID          string                         `json:"branchId,omitempty"`
 	ExcludedFromPurge bool                           `json:"excludedFromPurge,omitempty"`
 	IsMain            bool                           `json:"isMain,omitempty"`
 	Name              string                         `json:"name,omitempty"`
@@ -103,6 +104,28 @@ func (s *ProjectBranchesService) SetAutomaticDeletionProtection(opt *ProjectBran
 		return
 	}
 	req, err := s.client.NewRequest("POST", "project_branches/set_automatic_deletion_protection", opt)
+	if err != nil {
+		return
+	}
+	resp, err = s.client.Do(req, nil)
+	if err != nil {
+		return
+	}
+	return
+}
+
+type ProjectBranchesSetMainOption struct {
+	Branch  string `url:"branch,omitempty"`  // Description:"Branch key",ExampleValue:"new_master"
+	Project string `url:"project,omitempty"` // Description:"Project key",ExampleValue:"my_project"
+}
+
+// SetMain Allow to set a new main branch.<br/>. Caution, only applicable on projects.<br>Requires 'Administer' rights on the specified project or application.
+func (s *ProjectBranchesService) SetMain(opt *ProjectBranchesSetMainOption) (resp *http.Response, err error) {
+	err = s.ValidateSetMainOpt(opt)
+	if err != nil {
+		return
+	}
+	req, err := s.client.NewRequest("POST", "project_branches/set_main", opt)
 	if err != nil {
 		return
 	}

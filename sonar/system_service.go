@@ -1,5 +1,5 @@
 // Get system details, and perform some management actions, such as restarting, and initiating a database migration (as part of a system upgrade).
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -278,7 +278,6 @@ type SystemInfoObject_sub13 struct {
 	Sonar_auth_saml_user_name                                string `json:"sonar.auth.saml.user.name,omitempty"`
 	Sonar_authenticator_ignoreStartupFailure                 string `json:"sonar.authenticator.ignoreStartupFailure,omitempty"`
 	Sonar_autoDatabaseUpgrade                                string `json:"sonar.autoDatabaseUpgrade,omitempty"`
-	Sonar_blueGreenEnabled                                   string `json:"sonar.blueGreenEnabled,omitempty"`
 	Sonar_buildbreaker_skip                                  string `json:"sonar.buildbreaker.skip,omitempty"`
 	Sonar_c_predefinedMacros                                 string `json:"sonar.c.predefinedMacros,omitempty"`
 	Sonar_ce_gracefulStopTimeOutInMs                         string `json:"sonar.ce.gracefulStopTimeOutInMs,omitempty"`
@@ -447,9 +446,11 @@ type SystemStatusObject struct {
 }
 
 type SystemUpgradesObject struct {
-	LatestLTS           string                      `json:"latestLTS,omitempty"`
-	UpdateCenterRefresh string                      `json:"updateCenterRefresh,omitempty"`
-	Upgrades            []SystemUpgradesObject_sub4 `json:"upgrades,omitempty"`
+	InstalledVersionActive bool                        `json:"installedVersionActive,omitempty"`
+	LatestLTA              string                      `json:"latestLTA,omitempty"`
+	LatestLTS              string                      `json:"latestLTS,omitempty"`
+	UpdateCenterRefresh    string                      `json:"updateCenterRefresh,omitempty"`
+	Upgrades               []SystemUpgradesObject_sub4 `json:"upgrades,omitempty"`
 }
 
 type SystemUpgradesObject_sub2 struct {
@@ -525,7 +526,7 @@ func (s *SystemService) DbMigrationStatus() (v *SystemDbMigrationStatusObject, r
 	return
 }
 
-// Health Provide health status of SonarQube.<p>Although global health is calculated based on both application and search nodes, detailed information is returned only for application nodes.</p><p>  <ul> <li>GREEN: SonarQube is fully operational</li> <li>YELLOW: SonarQube is usable, but it needs attention in order to be fully operational</li> <li>RED: SonarQube is not operational</li> </ul></p>
+// Health Provide health status of SonarQube.<p>Although global health is calculated based on both application and search nodes, detailed information is returned only for application nodes.</p><p>  <ul> <li>GREEN: SonarQube is fully operational</li> <li>YELLOW: SonarQube is usable, but it needs attention in order to be fully operational</li> <li>RED: SonarQube is not operational</li> </ul></p><br>Requires the 'Administer System' permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).<br>When SonarQube is in safe mode (waiting or running a database upgrade), only the authentication with a system passcode is supported.
 func (s *SystemService) Health() (v *SystemHealthObject, resp *http.Response, err error) {
 	req, err := s.client.NewRequest("GET", "system/health", nil)
 	if err != nil {
@@ -554,21 +555,20 @@ func (s *SystemService) Info() (v *SystemInfoObject, resp *http.Response, err er
 }
 
 // Liveness Provide liveness of SonarQube, meant to be used for a liveness probe on Kubernetes<p>Require 'Administer System' permission or authentication with passcode</p><p>When SonarQube is fully started, liveness check for database connectivity, Compute Engine status, and, except for DataCenter Edition, if ElasticSearch is Green or Yellow</p><p>When SonarQube is on Safe Mode (for example when a database migration is running), liveness check only for database connectivity</p><p>  <ul> <li>HTTP 204: this SonarQube node is alive</li> <li>Any other HTTP code: this SonarQube node is not alive, and should be reschedule</li> </ul></p>
-func (s *SystemService) Liveness() (v *string, resp *http.Response, err error) {
+func (s *SystemService) Liveness() (resp *http.Response, err error) {
 	req, err := s.client.NewRequest("GET", "system/liveness", nil)
 	if err != nil {
 		return
 	}
-	v = new(string)
-	resp, err = s.client.Do(req, v)
+	resp, err = s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, err
+		return
 	}
 	return
 }
 
 type SystemLogsOption struct {
-	Process string `url:"process,omitempty"` // Description:"Process to get logs from",ExampleValue:""
+	Name string `url:"name,omitempty"` // Description:"Name of the logs to get",ExampleValue:""
 }
 
 // Logs Get system logs in plain-text format. Requires system administration permission.

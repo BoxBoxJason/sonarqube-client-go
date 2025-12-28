@@ -1,5 +1,5 @@
 // Get information required to build navigation UI components
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -61,6 +61,7 @@ type NavigationComponentObject_sub2 struct {
 
 type NavigationGlobalObject struct {
 	CanAdmin           bool                          `json:"canAdmin,omitempty"`
+	DocumentationURL   string                        `json:"documentationUrl,omitempty"`
 	Edition            string                        `json:"edition,omitempty"`
 	GlobalPages        []NavigationGlobalObject_sub1 `json:"globalPages,omitempty"`
 	LogoURL            string                        `json:"logoUrl,omitempty"`

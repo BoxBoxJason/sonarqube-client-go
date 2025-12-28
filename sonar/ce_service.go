@@ -1,5 +1,5 @@
 // Get information on Compute Engine tasks.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -13,25 +13,23 @@ type CeActivityObject struct {
 }
 
 type CeActivityObject_sub2 struct {
-	AnalysisID         string `json:"analysisId,omitempty"`
-	ComponentID        string `json:"componentId,omitempty"`
-	ComponentKey       string `json:"componentKey,omitempty"`
-	ComponentName      string `json:"componentName,omitempty"`
-	ComponentQualifier string `json:"componentQualifier,omitempty"`
-	ErrorMessage       string `json:"errorMessage,omitempty"`
-	ExecutedAt         string `json:"executedAt,omitempty"`
-	ExecutionTimeMs    int64  `json:"executionTimeMs,omitempty"`
-	HasErrorStacktrace bool   `json:"hasErrorStacktrace,omitempty"`
-	HasScannerContext  bool   `json:"hasScannerContext,omitempty"`
-	ID                 string `json:"id,omitempty"`
-	Logs               bool   `json:"logs,omitempty"`
-	Organization       string `json:"organization,omitempty"`
-	StartedAt          string `json:"startedAt,omitempty"`
-	Status             string `json:"status,omitempty"`
-	SubmittedAt        string `json:"submittedAt,omitempty"`
-	SubmitterLogin     string `json:"submitterLogin,omitempty"`
-	TaskType           string `json:"taskType,omitempty"`
-	Type               string `json:"type,omitempty"`
+	AnalysisID         string   `json:"analysisId,omitempty"`
+	ComponentID        string   `json:"componentId,omitempty"`
+	ComponentKey       string   `json:"componentKey,omitempty"`
+	ComponentName      string   `json:"componentName,omitempty"`
+	ComponentQualifier string   `json:"componentQualifier,omitempty"`
+	ExecutedAt         string   `json:"executedAt,omitempty"`
+	ExecutionTimeMs    int64    `json:"executionTimeMs,omitempty"`
+	HasScannerContext  bool     `json:"hasScannerContext,omitempty"`
+	ID                 string   `json:"id,omitempty"`
+	InfoMessages       []string `json:"infoMessages,omitempty"`
+	StartedAt          string   `json:"startedAt,omitempty"`
+	Status             string   `json:"status,omitempty"`
+	SubmittedAt        string   `json:"submittedAt,omitempty"`
+	SubmitterLogin     string   `json:"submitterLogin,omitempty"`
+	Type               string   `json:"type,omitempty"`
+	WarningCount       int64    `json:"warningCount,omitempty"`
+	Warnings           []string `json:"warnings,omitempty"`
 }
 
 type CeActivityObject_sub1 struct {
@@ -81,7 +79,6 @@ type CeComponentObject_sub1 struct {
 	HasErrorStacktrace bool   `json:"hasErrorStacktrace,omitempty"`
 	HasScannerContext  bool   `json:"hasScannerContext,omitempty"`
 	ID                 string `json:"id,omitempty"`
-	Logs               bool   `json:"logs,omitempty"`
 	Organization       string `json:"organization,omitempty"`
 	StartedAt          string `json:"startedAt,omitempty"`
 	Status             string `json:"status,omitempty"`
@@ -95,7 +92,6 @@ type CeComponentObject_sub2 struct {
 	ComponentName      string `json:"componentName,omitempty"`
 	ComponentQualifier string `json:"componentQualifier,omitempty"`
 	ID                 string `json:"id,omitempty"`
-	Logs               bool   `json:"logs,omitempty"`
 	Organization       string `json:"organization,omitempty"`
 	Status             string `json:"status,omitempty"`
 	SubmittedAt        string `json:"submittedAt,omitempty"`
@@ -103,9 +99,10 @@ type CeComponentObject_sub2 struct {
 }
 
 type CeIndexationStatusObject struct {
-	HasFailures      bool  `json:"hasFailures,omitempty"`
-	IsCompleted      bool  `json:"isCompleted,omitempty"`
-	PercentCompleted int64 `json:"percentCompleted,omitempty"`
+	CompletedCount int64 `json:"completedCount,omitempty"`
+	HasFailures    bool  `json:"hasFailures,omitempty"`
+	IsCompleted    bool  `json:"isCompleted,omitempty"`
+	Total          int64 `json:"total,omitempty"`
 }
 
 type CeInfoObject struct {
@@ -122,25 +119,22 @@ type CeTaskObject struct {
 }
 
 type CeTaskObject_sub1 struct {
-	AnalysisID         string `json:"analysisId,omitempty"`
-	ComponentID        string `json:"componentId,omitempty"`
-	ComponentKey       string `json:"componentKey,omitempty"`
-	ComponentName      string `json:"componentName,omitempty"`
-	ComponentQualifier string `json:"componentQualifier,omitempty"`
-	ErrorMessage       string `json:"errorMessage,omitempty"`
-	ErrorStacktrace    string `json:"errorStacktrace,omitempty"`
-	ExecutedAt         string `json:"executedAt,omitempty"`
-	ExecutionTimeMs    int64  `json:"executionTimeMs,omitempty"`
-	HasErrorStacktrace bool   `json:"hasErrorStacktrace,omitempty"`
-	HasScannerContext  bool   `json:"hasScannerContext,omitempty"`
-	ID                 string `json:"id,omitempty"`
-	Logs               bool   `json:"logs,omitempty"`
-	Organization       string `json:"organization,omitempty"`
-	ScannerContext     string `json:"scannerContext,omitempty"`
-	StartedAt          string `json:"startedAt,omitempty"`
-	Status             string `json:"status,omitempty"`
-	SubmittedAt        string `json:"submittedAt,omitempty"`
-	Type               string `json:"type,omitempty"`
+	AnalysisID         string   `json:"analysisId,omitempty"`
+	ComponentID        string   `json:"componentId,omitempty"`
+	ComponentKey       string   `json:"componentKey,omitempty"`
+	ComponentName      string   `json:"componentName,omitempty"`
+	ComponentQualifier string   `json:"componentQualifier,omitempty"`
+	ExecutedAt         string   `json:"executedAt,omitempty"`
+	ExecutionTimeMs    int64    `json:"executionTimeMs,omitempty"`
+	HasScannerContext  bool     `json:"hasScannerContext,omitempty"`
+	ID                 string   `json:"id,omitempty"`
+	StartedAt          string   `json:"startedAt,omitempty"`
+	Status             string   `json:"status,omitempty"`
+	SubmittedAt        string   `json:"submittedAt,omitempty"`
+	SubmitterLogin     string   `json:"submitterLogin,omitempty"`
+	Type               string   `json:"type,omitempty"`
+	WarningCount       int64    `json:"warningCount,omitempty"`
+	Warnings           []string `json:"warnings,omitempty"`
 }
 
 type CeTaskTypesObject struct {
@@ -154,18 +148,17 @@ type CeWorkerCountObject struct {
 
 type CeActivityOption struct {
 	Component      string `url:"component,omitempty"`      // Description:"Key of the component (project) to filter on",ExampleValue:"projectKey"
-	ComponentId    string `url:"componentId,omitempty"`    // Description:"Id of the component (project) to filter on",ExampleValue:"AU-TpxcA-iU5OvuD2FL0"
 	MaxExecutedAt  string `url:"maxExecutedAt,omitempty"`  // Description:"Maximum date of end of task processing (inclusive)",ExampleValue:"2017-10-19T13:00:00+0200"
 	MinSubmittedAt string `url:"minSubmittedAt,omitempty"` // Description:"Minimum date of task submission (inclusive)",ExampleValue:"2017-10-19T13:00:00+0200"
 	OnlyCurrents   string `url:"onlyCurrents,omitempty"`   // Description:"Filter on the last tasks (only the most recent finished task by project)",ExampleValue:""
 	P              string `url:"p,omitempty"`              // Description:"1-based page number",ExampleValue:"42"
 	Ps             string `url:"ps,omitempty"`             // Description:"Page size. Must be greater than 0 and less or equal than 1000",ExampleValue:"20"
-	Q              string `url:"q,omitempty"`              // Description:"Limit search to: <ul><li>component names that contain the supplied string</li><li>component keys that are exactly the same as the supplied string</li><li>task ids that are exactly the same as the supplied string</li></ul>Must not be set together with componentId",ExampleValue:"Apache"
+	Q              string `url:"q,omitempty"`              // Description:"Limit search to: <ul><li>component names that contain the supplied string</li><li>component keys that are exactly the same as the supplied string</li><li>task ids that are exactly the same as the supplied string</li></ul>",ExampleValue:"Apache"
 	Status         string `url:"status,omitempty"`         // Description:"Comma separated list of task statuses",ExampleValue:"IN_PROGRESS,SUCCESS"
 	Type           string `url:"type,omitempty"`           // Description:"Task type",ExampleValue:"REPORT"
 }
 
-// Activity Search for tasks.<br> Either componentId or component can be provided, but not both.<br> Requires the system administration permission, or project administration permission if componentId or component is set.
+// Activity Search for tasks.<br> Requires the system administration permission, or project administration permission if component is set.
 func (s *CeService) Activity(opt *CeActivityOption) (v *CeActivityObject, resp *http.Response, err error) {
 	err = s.ValidateActivityOpt(opt)
 	if err != nil {
@@ -184,8 +177,7 @@ func (s *CeService) Activity(opt *CeActivityOption) (v *CeActivityObject, resp *
 }
 
 type CeActivityStatusOption struct {
-	Component   string `url:"component,omitempty"`   // Description:"Key of the component (project) to filter on",ExampleValue:"my_project"
-	ComponentId string `url:"componentId,omitempty"` // Description:"Id of the component (project) to filter on",ExampleValue:"AU-TpxcA-iU5OvuD2FL0"
+	Component string `url:"component,omitempty"` // Description:"Key of the component (project) to filter on",ExampleValue:"my_project"
 }
 
 // ActivityStatus Returns CE activity related metrics.<br>Requires 'Administer System' permission or 'Administer' rights on the specified project.
@@ -308,7 +300,7 @@ func (s *CeService) DismissAnalysisWarning(opt *CeDismissAnalysisWarningOption) 
 	return
 }
 
-// IndexationStatus Returns percentage of completed issue synchronization.
+// IndexationStatus Returns the count of projects with completed issue indexing.
 func (s *CeService) IndexationStatus() (v *CeIndexationStatusObject, resp *http.Response, err error) {
 	req, err := s.client.NewRequest("GET", "ce/indexation_status", nil)
 	if err != nil {
@@ -392,7 +384,7 @@ type CeTaskOption struct {
 	Id               string `url:"id,omitempty"`               // Description:"Id of task",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 }
 
-// Task Give Compute Engine task details such as type, status, duration and associated component.<br />Requires 'Administer System' or 'Execute Analysis' permission.<br/>Since 6.1, field "logs" is deprecated and its value is always false.
+// Task Give Compute Engine task details such as type, status, duration and associated component.<br/>Requires one of the following permissions: <ul><li>'Administer' at global or project level</li><li>'Execute Analysis' at global or project level</li></ul>Since 6.1, field "logs" is deprecated and its value is always false.
 func (s *CeService) Task(opt *CeTaskOption) (v *CeTaskObject, resp *http.Response, err error) {
 	err = s.ValidateTaskOpt(opt)
 	if err != nil {

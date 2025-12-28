@@ -1,5 +1,5 @@
 // Get the list of programming languages supported in this instance.
-package sonar
+package sonargo
 
 import "net/http"
 

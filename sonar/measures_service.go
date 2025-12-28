@@ -1,5 +1,5 @@
 // Get components or children with specified measures.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -113,15 +113,17 @@ type MeasuresSearchObject struct {
 }
 
 type MeasuresSearchObject_sub2 struct {
-	Component string                      `json:"component,omitempty"`
-	Metric    string                      `json:"metric,omitempty"`
-	Periods   []MeasuresSearchObject_sub1 `json:"periods,omitempty"`
-	Value     string                      `json:"value,omitempty"`
+	BestValue bool                      `json:"bestValue,omitempty"`
+	Component string                    `json:"component,omitempty"`
+	Metric    string                    `json:"metric,omitempty"`
+	Period    MeasuresSearchObject_sub1 `json:"period,omitempty"`
+	Value     string                    `json:"value,omitempty"`
 }
 
 type MeasuresSearchObject_sub1 struct {
-	Index int64  `json:"index,omitempty"`
-	Value string `json:"value,omitempty"`
+	BestValue bool   `json:"bestValue,omitempty"`
+	Index     int64  `json:"index,omitempty"`
+	Value     string `json:"value,omitempty"`
 }
 
 type MeasuresSearchHistoryObject struct {
@@ -153,7 +155,7 @@ type MeasuresComponentOption struct {
 	PullRequest      string `url:"pullRequest,omitempty"`      // Description:"Pull request id. Not available in the community edition.",ExampleValue:"5461"
 }
 
-// Component Return component with specified measures.<br>Requires the following permission: 'Browse' on the project of specified component.
+// Component Return component with specified measures.<br>Requires one of the following permissions:<ul><li>'Browse' on the project of the specified component</li><li>'Execute Analysis' on the project of the specified component</li></ul>
 func (s *MeasuresService) Component(opt *MeasuresComponentOption) (v *MeasuresComponentObject, resp *http.Response, err error) {
 	err = s.ValidateComponentOpt(opt)
 	if err != nil {
@@ -176,7 +178,7 @@ type MeasuresComponentTreeOption struct {
 	Asc              string `url:"asc,omitempty"`              // Description:"Ascending sort",ExampleValue:""
 	Branch           string `url:"branch,omitempty"`           // Description:"Branch key. Not available in the community edition.",ExampleValue:"feature/my_branch"
 	Component        string `url:"component,omitempty"`        // Description:"Component key. The search is based on this component.",ExampleValue:"my_project"
-	MetricKeys       string `url:"metricKeys,omitempty"`       // Description:"Comma-separated list of metric keys. Types DATA, DISTRIB are not allowed.",ExampleValue:"ncloc,complexity,violations"
+	MetricKeys       string `url:"metricKeys,omitempty"`       // Description:"Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only security_issues, maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues metrics are supported",ExampleValue:"ncloc,complexity,violations"
 	MetricPeriodSort string `url:"metricPeriodSort,omitempty"` // Description:"Sort measures by leak period or not ?. The 's' parameter must contain the 'metricPeriod' value.",ExampleValue:""
 	MetricSort       string `url:"metricSort,omitempty"`       // Description:"Metric key to sort by. The 's' parameter must contain the 'metric' or 'metricPeriod' value. It must be part of the 'metricKeys' parameter",ExampleValue:"ncloc"
 	MetricSortFilter string `url:"metricSortFilter,omitempty"` // Description:"Filter components. Sort must be on a metric. Possible values are: <ul><li>all: return all components</li><li>withMeasuresOnly: filter out components that do not have a measure on the sorted metric</li></ul>",ExampleValue:""
@@ -184,7 +186,7 @@ type MeasuresComponentTreeOption struct {
 	Ps               string `url:"ps,omitempty"`               // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
 	PullRequest      string `url:"pullRequest,omitempty"`      // Description:"Pull request id. Not available in the community edition.",ExampleValue:"5461"
 	Q                string `url:"q,omitempty"`                // Description:"Limit search to: <ul><li>component names that contain the supplied string</li><li>component keys that are exactly the same as the supplied string</li></ul>",ExampleValue:"FILE_NAM"
-	Qualifiers       string `url:"qualifiers,omitempty"`       // Description:"Comma-separated list of component qualifiers. Filter the results with the specified qualifiers. Possible values are:<ul><li>BRC - no description available</li><li>UTS - Test Files</li><li>FIL - Files</li><li>DIR - Directories</li><li>TRK - Projects</li></ul>",ExampleValue:""
+	Qualifiers       string `url:"qualifiers,omitempty"`       // Description:"Comma-separated list of component qualifiers. Filter the results with the specified qualifiers. Possible values are:<ul><li>UTS - Test Files</li><li>FIL - Files</li><li>DIR - Directories</li><li>TRK - Projects</li></ul>",ExampleValue:""
 	S                string `url:"s,omitempty"`                // Description:"Comma-separated list of sort fields",ExampleValue:"name,path"
 	Strategy         string `url:"strategy,omitempty"`         // Description:"Strategy to search for base component descendants:<ul><li>children: return the children components of the base component. Grandchildren components are not returned</li><li>all: return all the descendants components of the base component. Grandchildren are returned.</li><li>leaves: return all the descendant components (files, in general) which don't have other children. They are the leaves of the component tree.</li></ul>",ExampleValue:""
 }

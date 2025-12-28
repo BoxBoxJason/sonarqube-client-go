@@ -1,5 +1,5 @@
 // Handle authentication.
-package sonar
+package sonargo
 
 import "net/http"
 

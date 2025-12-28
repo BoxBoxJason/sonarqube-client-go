@@ -1,5 +1,5 @@
 // Manage users.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -28,6 +28,7 @@ type UsersCurrentObject struct {
 	ExternalProvider            string                  `json:"externalProvider,omitempty"`
 	Groups                      []string                `json:"groups,omitempty"`
 	Homepage                    UsersCurrentObject_sub2 `json:"homepage,omitempty"`
+	ID                          string                  `json:"id,omitempty"`
 	IsLoggedIn                  bool                    `json:"isLoggedIn,omitempty"`
 	Local                       bool                    `json:"local,omitempty"`
 	Login                       string                  `json:"login,omitempty"`
@@ -101,17 +102,20 @@ type UsersSearchObject struct {
 }
 
 type UsersSearchObject_sub2 struct {
-	Active           bool     `json:"active,omitempty"`
-	Avatar           string   `json:"avatar,omitempty"`
-	Email            string   `json:"email,omitempty"`
-	ExternalIdentity string   `json:"externalIdentity,omitempty"`
-	ExternalProvider string   `json:"externalProvider,omitempty"`
-	Groups           []string `json:"groups,omitempty"`
-	Local            bool     `json:"local,omitempty"`
-	Login            string   `json:"login,omitempty"`
-	Name             string   `json:"name,omitempty"`
-	ScmAccounts      []string `json:"scmAccounts,omitempty"`
-	TokensCount      int64    `json:"tokensCount,omitempty"`
+	Active                      bool     `json:"active,omitempty"`
+	Avatar                      string   `json:"avatar,omitempty"`
+	Email                       string   `json:"email,omitempty"`
+	ExternalIdentity            string   `json:"externalIdentity,omitempty"`
+	ExternalProvider            string   `json:"externalProvider,omitempty"`
+	Groups                      []string `json:"groups,omitempty"`
+	LastConnectionDate          string   `json:"lastConnectionDate,omitempty"`
+	Local                       bool     `json:"local,omitempty"`
+	Login                       string   `json:"login,omitempty"`
+	Managed                     bool     `json:"managed,omitempty"`
+	Name                        string   `json:"name,omitempty"`
+	ScmAccounts                 []string `json:"scmAccounts,omitempty"`
+	SonarLintLastConnectionDate string   `json:"sonarLintLastConnectionDate,omitempty"`
+	TokensCount                 int64    `json:"tokensCount,omitempty"`
 }
 
 type UsersSearchObject_sub1 struct {
@@ -156,8 +160,8 @@ func (s *UsersService) Anonymize(opt *UsersAnonymizeOption) (resp *http.Response
 
 type UsersChangePasswordOption struct {
 	Login            string `url:"login,omitempty"`            // Description:"User login",ExampleValue:"myuser"
-	Password         string `url:"password,omitempty"`         // Description:"New password",ExampleValue:"mypassword"
-	PreviousPassword string `url:"previousPassword,omitempty"` // Description:"Previous password. Required when changing one's own password.",ExampleValue:"oldpassword"
+	Password         string `url:"password,omitempty"`         // Description:"The password needs to fulfill the following requirements: at least 12 characters and contain at least one uppercase character, one lowercase character, one digit and one special character.",ExampleValue:"My_Passw0rd%"
+	PreviousPassword string `url:"previousPassword,omitempty"` // Description:"Previous password. Required when changing one's own password.",ExampleValue:"My_Previous_Passw0rd%"
 }
 
 // ChangePassword Update a user's password. Authenticated users can change their own password, provided that the account is not linked to an external authentication system. Administer System permission is required to change another user's password.
@@ -242,7 +246,7 @@ func (s *UsersService) Deactivate(opt *UsersDeactivateOption) (v *UsersDeactivat
 }
 
 type UsersDismissNoticeOption struct {
-	Notice string `url:"notice,omitempty"` // Description:"notice key to dismiss",ExampleValue:"educationPrinciples"
+	Notice string `url:"notice,omitempty"` // Description:"notice key to dismiss",ExampleValue:"EDUCATION_PRINCIPLES"
 }
 
 // DismissNotice Dismiss a notice for the current user. Silently ignore if the notice is already dismissed.
@@ -252,19 +256,6 @@ func (s *UsersService) DismissNotice(opt *UsersDismissNoticeOption) (resp *http.
 		return
 	}
 	req, err := s.client.NewRequest("POST", "users/dismiss_notice", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
-	}
-	return
-}
-
-// DismissSonarlintAd Dismiss SonarLint advertisement. Deprecated since 9.6, replaced api/users/dismiss_notice
-func (s *UsersService) DismissSonarlintAd() (resp *http.Response, err error) {
-	req, err := s.client.NewRequest("POST", "users/dismiss_sonarlint_ad", nil)
 	if err != nil {
 		return
 	}
@@ -322,12 +313,33 @@ type UsersSearchOption struct {
 	This is case sensitive and only available with Administer System permission.
 	",ExampleValue:""
 	*/
-	P  string `url:"p,omitempty"`  // Description:"1-based page number",ExampleValue:"42"
-	Ps string `url:"ps,omitempty"` // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
-	Q  string `url:"q,omitempty"`  // Description:"Filter on login, name and email.<br />This parameter can either be case sensitive and perform an exact match, or case insensitive and perform a partial match (contains), depending on the scenario:<br /><ul>  <li>    If the search query is <em>less or equal to 15 characters</em>, then the query is <em>case insensitive</em>, and will match any login, name, or email, that     <em>contains</em> the search query.  </li>  <li>    If the search query is <em>greater than 15 characters</em>, then the query becomes <em>case sensitive</em>, and will match any login, name, or email, that     <em>exactly matches</em> the search query.  </li></ul>",ExampleValue:""
+	LastConnectedAfter string `url:"lastConnectedAfter,omitempty"` /*
+	Description:"Filter the users based on the last connection date field.
+	Only users who interacted with this instance at or after the date will be returned.
+	The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",ExampleValue:"2020-01-01T00:00:00+0100"
+	*/
+	LastConnectedBefore string `url:"lastConnectedBefore,omitempty"` /*
+	Description:"Filter the users based on the last connection date field.
+	Only users that never connected or who interacted with this instance at or before the date will be returned.
+	The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",ExampleValue:"2020-01-01T00:00:00+0100"
+	*/
+	Managed              string `url:"managed,omitempty"`              // Description:"Return managed or non-managed users. Only available for managed instances, throws for non-managed instances.",ExampleValue:""
+	P                    string `url:"p,omitempty"`                    // Description:"1-based page number",ExampleValue:"42"
+	Ps                   string `url:"ps,omitempty"`                   // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
+	Q                    string `url:"q,omitempty"`                    // Description:"Filter on login, name and email.<br />This parameter performs a partial match (contains), it is case insensitive.",ExampleValue:""
+	SlLastConnectedAfter string `url:"slLastConnectedAfter,omitempty"` /*
+	Description:"Filter the users based on the sonar lint last connection date field
+	Only users who interacted with this instance using SonarLint at or after the date will be returned.
+	The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",ExampleValue:"2020-01-01T00:00:00+0100"
+	*/
+	SlLastConnectedBefore string `url:"slLastConnectedBefore,omitempty"` /*
+	Description:"Filter the users based on the sonar lint last connection date field.
+	Only users that never connected or who interacted with this instance using SonarLint at or before the date will be returned.
+	The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",ExampleValue:"2020-01-01T00:00:00+0100"
+	*/
 }
 
-// Search Get a list of users. By default, only active users are returned.<br/>The following fields are only returned when user has Administer System permission or for logged-in in user :<ul>   <li>'email'</li>   <li>'externalIdentity'</li>   <li>'externalProvider'</li>   <li>'groups'</li>   <li>'lastConnectionDate'</li>   <li>'tokensCount'</li></ul>Field 'lastConnectionDate' is only updated every hour, so it may not be accurate, for instance when a user authenticates many times in less than one hour.
+// Search Get a list of users. By default, only active users are returned.<br/>The following fields are only returned when user has Administer System permission or for logged-in in user :<ul>   <li>'email'</li>   <li>'externalIdentity'</li>   <li>'externalProvider'</li>   <li>'groups'</li>   <li>'lastConnectionDate'</li>   <li>'sonarLintLastConnectionDate'</li>   <li>'tokensCount'</li></ul>Field 'lastConnectionDate' is only updated every hour, so it may not be accurate, for instance when a user authenticates many times in less than one hour.
 func (s *UsersService) Search(opt *UsersSearchOption) (v *UsersSearchObject, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
@@ -396,7 +408,7 @@ func (s *UsersService) Update(opt *UsersUpdateOption) (v *UsersUpdateObject, res
 type UsersUpdateIdentityProviderOption struct {
 	Login               string `url:"login,omitempty"`               // Description:"User login",ExampleValue:""
 	NewExternalIdentity string `url:"newExternalIdentity,omitempty"` // Description:"New external identity, usually the login used in the authentication system. If not provided previous identity will be used.",ExampleValue:""
-	NewExternalProvider string `url:"newExternalProvider,omitempty"` // Description:"New external provider. Only authentication system installed are available. Use 'LDAP' identity provider for single server LDAP setup.User 'LDAP_{serverKey}' identity provider for multiple LDAP server setup.",ExampleValue:""
+	NewExternalProvider string `url:"newExternalProvider,omitempty"` // Description:"New external provider. Only authentication system installed are available. Use 'LDAP' identity provider for single server LDAP setup.Use 'LDAP_{serverKey}' identity provider for multiple LDAP servers setup.",ExampleValue:""
 }
 
 // UpdateIdentityProvider Update identity provider information. <br/>It's only possible to migrate to an installed identity provider. Be careful that as soon as this information has been updated for a user, the user will only be able to authenticate on the new identity provider. It is not possible to migrate external user to local one.<br/>Requires Administer System permission.

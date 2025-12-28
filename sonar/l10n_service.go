@@ -1,5 +1,5 @@
 // Manage localization.
-package sonar
+package sonargo
 
 import "net/http"
 

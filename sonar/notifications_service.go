@@ -1,5 +1,5 @@
 // Manage notifications of the authenticated user
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -26,7 +26,7 @@ type NotificationsAddOption struct {
 	Channel string `url:"channel,omitempty"` // Description:"Channel through which the notification is sent. For example, notifications can be sent by email.",ExampleValue:""
 	Login   string `url:"login,omitempty"`   // Description:"User login",ExampleValue:""
 	Project string `url:"project,omitempty"` // Description:"Project key",ExampleValue:"my_project"
-	Type    string `url:"type,omitempty"`    // Description:"Notification type. Possible values are for:<ul>  <li>Global notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, SQ-MyNewIssues</li>  <li>Per project notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, NewFalsePositiveIssue, NewIssues, SQ-MyNewIssues</li></ul>",ExampleValue:"SQ-MyNewIssues"
+	Type    string `url:"type,omitempty"`    // Description:"Notification type. Possible values are for:<ul>  <li>Global notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, QualityGateConditionsMismatch, SQ-MyNewIssues</li>  <li>Per project notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, NewFalsePositiveIssue, NewIssues, SQ-MyNewIssues</li></ul>",ExampleValue:"SQ-MyNewIssues"
 }
 
 // Add Add a notification for the authenticated user.<br>Requires one of the following permissions:<ul> <li>Authentication if no login is provided. If a project is provided, requires the 'Browse' permission on the specified project.</li> <li>System administration if a login is provided. If a project is provided, requires the 'Browse' permission on the specified project.</li></ul>
@@ -72,7 +72,7 @@ type NotificationsRemoveOption struct {
 	Channel string `url:"channel,omitempty"` // Description:"Channel through which the notification is sent. For example, notifications can be sent by email.",ExampleValue:""
 	Login   string `url:"login,omitempty"`   // Description:"User login",ExampleValue:""
 	Project string `url:"project,omitempty"` // Description:"Project key",ExampleValue:"my_project"
-	Type    string `url:"type,omitempty"`    // Description:"Notification type. Possible values are for:<ul>  <li>Global notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, SQ-MyNewIssues</li>  <li>Per project notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, NewFalsePositiveIssue, NewIssues, SQ-MyNewIssues</li></ul>",ExampleValue:"SQ-MyNewIssues"
+	Type    string `url:"type,omitempty"`    // Description:"Notification type. Possible values are for:<ul>  <li>Global notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, QualityGateConditionsMismatch, SQ-MyNewIssues</li>  <li>Per project notifications: CeReportTaskFailure, ChangesOnMyIssue, NewAlerts, NewFalsePositiveIssue, NewIssues, SQ-MyNewIssues</li></ul>",ExampleValue:"SQ-MyNewIssues"
 }
 
 // Remove Remove a notification for the authenticated user.<br>Requires one of the following permissions:<ul>  <li>Authentication if no login is provided</li>  <li>System administration if a login is provided</li></ul>

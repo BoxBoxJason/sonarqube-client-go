@@ -1,5 +1,5 @@
 // Manage emails
-package sonar
+package sonargo
 
 import "net/http"
 

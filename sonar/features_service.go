@@ -1,5 +1,5 @@
 // Provides information about features available in SonarQube
-package sonar
+package sonargo
 
 import "net/http"
 

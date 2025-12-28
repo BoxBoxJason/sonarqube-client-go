@@ -1,5 +1,5 @@
 // Read and update Security Hotspots.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -14,6 +14,44 @@ type HotspotsEditCommentObject struct {
 	Login     string `json:"login,omitempty"`
 	Markdown  string `json:"markdown,omitempty"`
 	Updatable bool   `json:"updatable,omitempty"`
+}
+
+type HotspotsListObject struct {
+	Components []HotspotsListObject_sub1 `json:"components,omitempty"`
+	Hotspots   []HotspotsListObject_sub2 `json:"hotspots,omitempty"`
+	Paging     HotspotsListObject_sub3   `json:"paging,omitempty"`
+}
+
+type HotspotsListObject_sub2 struct {
+	Assignee                 string        `json:"assignee,omitempty"`
+	Author                   string        `json:"author,omitempty"`
+	Component                string        `json:"component,omitempty"`
+	CreationDate             string        `json:"creationDate,omitempty"`
+	Flows                    []interface{} `json:"flows,omitempty"`
+	Key                      string        `json:"key,omitempty"`
+	Line                     int64         `json:"line,omitempty"`
+	Message                  string        `json:"message,omitempty"`
+	MessageFormattings       []interface{} `json:"messageFormattings,omitempty"`
+	Project                  string        `json:"project,omitempty"`
+	RuleKey                  string        `json:"ruleKey,omitempty"`
+	SecurityCategory         string        `json:"securityCategory,omitempty"`
+	Status                   string        `json:"status,omitempty"`
+	UpdateDate               string        `json:"updateDate,omitempty"`
+	VulnerabilityProbability string        `json:"vulnerabilityProbability,omitempty"`
+}
+
+type HotspotsListObject_sub1 struct {
+	Key       string `json:"key,omitempty"`
+	LongName  string `json:"longName,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Path      string `json:"path,omitempty"`
+	Qualifier string `json:"qualifier,omitempty"`
+}
+
+type HotspotsListObject_sub3 struct {
+	PageIndex int64 `json:"pageIndex,omitempty"`
+	PageSize  int64 `json:"pageSize,omitempty"`
+	Total     int64 `json:"total,omitempty"`
 }
 
 type HotspotsSearchObject struct {
@@ -59,6 +97,7 @@ type HotspotsShowObject struct {
 	Author             string                    `json:"author,omitempty"`
 	CanChangeStatus    bool                      `json:"canChangeStatus,omitempty"`
 	Changelog          []HotspotsShowObject_sub2 `json:"changelog,omitempty"`
+	CodeVariants       []string                  `json:"codeVariants,omitempty"`
 	Comment            []HotspotsShowObject_sub3 `json:"comment,omitempty"`
 	Component          HotspotsShowObject_sub4   `json:"component,omitempty"`
 	CreationDate       string                    `json:"creationDate,omitempty"`
@@ -244,11 +283,65 @@ func (s *HotspotsService) EditComment(opt *HotspotsEditCommentOption) (v *Hotspo
 	return
 }
 
+type HotspotsListOption struct {
+	Branch          string `url:"branch,omitempty"`          // Description:"Branch key. Not available in the community edition.",ExampleValue:"feature/my_branch"
+	InNewCodePeriod string `url:"inNewCodePeriod,omitempty"` // Description:"If 'inNewCodePeriod' is provided, only Security Hotspots created in the new code period are returned.",ExampleValue:""
+	P               string `url:"p,omitempty"`               // Description:"1-based page number",ExampleValue:"42"
+	Project         string `url:"project,omitempty"`         // Description:"Key of the project",ExampleValue:"my_project"
+	Ps              string `url:"ps,omitempty"`              // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
+	PullRequest     string `url:"pullRequest,omitempty"`     // Description:"Pull request id. Not available in the community edition.",ExampleValue:"5461"
+	Resolution      string `url:"resolution,omitempty"`      // Description:"If 'project' is provided and if status is 'REVIEWED', only Security Hotspots with the specified resolution are returned.",ExampleValue:""
+	Status          string `url:"status,omitempty"`          // Description:"If 'project' is provided, only Security Hotspots with the specified status are returned.",ExampleValue:""
+}
+
+// List List Security Hotpots. This endpoint is used in degraded mode, when issue indexing is running.<br>Total number of Security Hotspots will be always equal to a page size, as counting all issues is not supported. <br>Requires the 'Browse' permission on the specified project.
+func (s *HotspotsService) List(opt *HotspotsListOption) (v *HotspotsListObject, resp *http.Response, err error) {
+	err = s.ValidateListOpt(opt)
+	if err != nil {
+		return
+	}
+	req, err := s.client.NewRequest("GET", "hotspots/list", opt)
+	if err != nil {
+		return
+	}
+	v = new(HotspotsListObject)
+	resp, err = s.client.Do(req, v)
+	if err != nil {
+		return nil, resp, err
+	}
+	return
+}
+
+type HotspotsPullOption struct {
+	BranchName   string `url:"branchName,omitempty"`   // Description:"Branch name for which hotspots are fetched.",ExampleValue:"develop"
+	ChangedSince string `url:"changedSince,omitempty"` // Description:"Timestamp. If present only hotspots modified after given timestamp are returned (both open and closed). If not present all non-closed hotspots are returned.",ExampleValue:"1654032306000"
+	Languages    string `url:"languages,omitempty"`    // Description:"Comma separated list of languages. If not present all hotspots regardless of their language are returned.",ExampleValue:"java,cobol"
+	ProjectKey   string `url:"projectKey,omitempty"`   // Description:"Project key for which hotspots are fetched.",ExampleValue:"sonarqube"
+}
+
+// Pull This endpoint fetches and returns all (unless filtered by optional params) the hotspots for a given branch. The hotspots returned are not paginated, so the response size can be big. Requires project 'Browse' permission.
+func (s *HotspotsService) Pull(opt *HotspotsPullOption) (v []byte, resp *http.Response, err error) {
+	err = s.ValidatePullOpt(opt)
+	if err != nil {
+		return
+	}
+	req, err := s.client.NewRequest("GET", "hotspots/pull", opt)
+	if err != nil {
+		return
+	}
+	resp, err = s.client.Do(req, &v)
+	if err != nil {
+		return nil, resp, err
+	}
+	return
+}
+
 type HotspotsSearchOption struct {
 	Branch              string `url:"branch,omitempty"`              // Description:"Branch key. Not available in the community edition.",ExampleValue:"feature/my_branch"
+	Casa                string `url:"casa,omitempty"`                // Description:"Comma-separated list of CASA categories.",ExampleValue:""
 	Cwe                 string `url:"cwe,omitempty"`                 // Description:"Comma-separated list of CWE numbers",ExampleValue:"89,434,352"
 	Files               string `url:"files,omitempty"`               // Description:"Comma-separated list of files. Returns only hotspots found in those files",ExampleValue:"src/main/java/org/sonar/server/Test.java"
-	Hotspots            string `url:"hotspots,omitempty"`            // Description:"Comma-separated list of Security Hotspot keys. This parameter is required unless projectKey is provided.",ExampleValue:"AWhXpLoInp4On-Y3xc8x"
+	Hotspots            string `url:"hotspots,omitempty"`            // Description:"Comma-separated list of Security Hotspot keys. This parameter is required unless project is provided.",ExampleValue:"AWhXpLoInp4On-Y3xc8x"
 	InNewCodePeriod     string `url:"inNewCodePeriod,omitempty"`     // Description:"If 'inNewCodePeriod' is provided, only Security Hotspots created in the new code period are returned.",ExampleValue:""
 	OnlyMine            string `url:"onlyMine,omitempty"`            // Description:"If 'projectKey' is provided, returns only Security Hotspots assigned to the current user",ExampleValue:""
 	OwaspAsvs40         string `url:"owaspAsvs-4.0,omitempty"`       // Description:"Comma-separated list of OWASP ASVS v4.0 categories or rules.",ExampleValue:"6,6.1.2"
@@ -258,16 +351,17 @@ type HotspotsSearchOption struct {
 	P                   string `url:"p,omitempty"`                   // Description:"1-based page number",ExampleValue:"42"
 	PciDss32            string `url:"pciDss-3.2,omitempty"`          // Description:"Comma-separated list of PCI DSS v3.2 categories.",ExampleValue:"4,6.5.8,10.1"
 	PciDss40            string `url:"pciDss-4.0,omitempty"`          // Description:"Comma-separated list of PCI DSS v4.0 categories.",ExampleValue:"4,6.5.8,10.1"
-	ProjectKey          string `url:"projectKey,omitempty"`          // Description:"Key of the project or application. This parameter is required unless hotspots is provided.",ExampleValue:"my_project"
+	Project             string `url:"project,omitempty"`             // Description:"Key of the project or application. This parameter is required unless hotspots is provided.",ExampleValue:"my_project"
 	Ps                  string `url:"ps,omitempty"`                  // Description:"Page size. Must be greater than 0.",ExampleValue:"20"
 	PullRequest         string `url:"pullRequest,omitempty"`         // Description:"Pull request id. Not available in the community edition.",ExampleValue:"5461"
-	Resolution          string `url:"resolution,omitempty"`          // Description:"If 'projectKey' is provided and if status is 'REVIEWED', only Security Hotspots with the specified resolution are returned.",ExampleValue:""
+	Resolution          string `url:"resolution,omitempty"`          // Description:"If 'project' is provided and if status is 'REVIEWED', only Security Hotspots with the specified resolution are returned.",ExampleValue:""
 	SansTop25           string `url:"sansTop25,omitempty"`           // Description:"Comma-separated list of SANS Top 25 categories.",ExampleValue:""
 	SonarsourceSecurity string `url:"sonarsourceSecurity,omitempty"` // Description:"Comma-separated list of SonarSource security categories. Use 'others' to select issues not associated with any category",ExampleValue:""
-	Status              string `url:"status,omitempty"`              // Description:"If 'projectKey' is provided, only Security Hotspots with the specified status are returned.",ExampleValue:""
+	Status              string `url:"status,omitempty"`              // Description:"If 'project' is provided, only Security Hotspots with the specified status are returned.",ExampleValue:""
+	StigASDV5R3         string `url:"stig-ASD_V5R3,omitempty"`       // Description:"Comma-separated list of STIG V5R3 lowercase categories.",ExampleValue:""
 }
 
-// Search Search for Security Hotpots. <br>Requires the 'Browse' permission on the specified project(s). <br>For applications, it also requires 'Browse' permission on its child projects. <br>When issue indexation is in progress returns 503 service unavailable HTTP code.
+// Search Search for Security Hotpots. <br>Requires the 'Browse' permission on the specified project(s). <br>For applications, it also requires 'Browse' permission on its child projects. <br>When issue indexing is in progress returns 503 service unavailable HTTP code.
 func (s *HotspotsService) Search(opt *HotspotsSearchOption) (v *HotspotsSearchObject, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {

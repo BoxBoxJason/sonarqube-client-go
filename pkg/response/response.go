@@ -3,9 +3,9 @@ package response
 import (
 	"errors"
 
-	"github.com/magicsong/color-glog"
+	glog "github.com/magicsong/color-glog"
 
-	"github.com/magicsong/generate-go-for-sonarqube/pkg/api"
+	"github.com/boxboxjason/sonarqube-client-go/pkg/api"
 )
 
 type ExampleFetcher struct {

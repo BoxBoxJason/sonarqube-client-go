@@ -1,5 +1,5 @@
 // Manage project analyses.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -19,8 +19,8 @@ type ProjectAnalysesCreateEventObject_sub1 struct {
 }
 
 type ProjectAnalysesSearchObject struct {
-	Analyses []ProjectAnalysesSearchObject_sub4 `json:"analyses,omitempty"`
-	Paging   ProjectAnalysesSearchObject_sub5   `json:"paging,omitempty"`
+	Analyses []ProjectAnalysesSearchObject_sub5 `json:"analyses,omitempty"`
+	Paging   ProjectAnalysesSearchObject_sub6   `json:"paging,omitempty"`
 }
 
 type ProjectAnalysesSearchObject_sub1 struct {
@@ -29,23 +29,24 @@ type ProjectAnalysesSearchObject_sub1 struct {
 	Name   string `json:"name,omitempty"`
 }
 
-type ProjectAnalysesSearchObject_sub4 struct {
+type ProjectAnalysesSearchObject_sub5 struct {
 	BuildString                 string                             `json:"buildString,omitempty"`
 	Date                        string                             `json:"date,omitempty"`
 	DetectedCI                  string                             `json:"detectedCI,omitempty"`
-	Events                      []ProjectAnalysesSearchObject_sub3 `json:"events,omitempty"`
+	Events                      []ProjectAnalysesSearchObject_sub4 `json:"events,omitempty"`
 	Key                         string                             `json:"key,omitempty"`
 	ManualNewCodePeriodBaseline bool                               `json:"manualNewCodePeriodBaseline,omitempty"`
 	ProjectVersion              string                             `json:"projectVersion,omitempty"`
 	Revision                    string                             `json:"revision,omitempty"`
 }
 
-type ProjectAnalysesSearchObject_sub3 struct {
-	Category    string                           `json:"category,omitempty"`
-	Description string                           `json:"description,omitempty"`
-	Key         string                           `json:"key,omitempty"`
-	Name        string                           `json:"name,omitempty"`
-	QualityGate ProjectAnalysesSearchObject_sub2 `json:"qualityGate,omitempty"`
+type ProjectAnalysesSearchObject_sub4 struct {
+	Category       string                           `json:"category,omitempty"`
+	Description    string                           `json:"description,omitempty"`
+	Key            string                           `json:"key,omitempty"`
+	Name           string                           `json:"name,omitempty"`
+	QualityGate    ProjectAnalysesSearchObject_sub2 `json:"qualityGate,omitempty"`
+	QualityProfile ProjectAnalysesSearchObject_sub3 `json:"qualityProfile,omitempty"`
 }
 
 type ProjectAnalysesSearchObject_sub2 struct {
@@ -54,7 +55,13 @@ type ProjectAnalysesSearchObject_sub2 struct {
 	StillFailing bool                               `json:"stillFailing,omitempty"`
 }
 
-type ProjectAnalysesSearchObject_sub5 struct {
+type ProjectAnalysesSearchObject_sub3 struct {
+	Key         string `json:"key,omitempty"`
+	LanguageKey string `json:"languageKey,omitempty"`
+	Name        string `json:"name,omitempty"`
+}
+
+type ProjectAnalysesSearchObject_sub6 struct {
 	PageIndex int64 `json:"pageIndex,omitempty"`
 	PageSize  int64 `json:"pageSize,omitempty"`
 	Total     int64 `json:"total,omitempty"`
@@ -162,51 +169,6 @@ func (s *ProjectAnalysesService) Search(opt *ProjectAnalysesSearchOption) (v *Pr
 	resp, err = s.client.Do(req, v)
 	if err != nil {
 		return nil, resp, err
-	}
-	return
-}
-
-type ProjectAnalysesSetBaselineOption struct {
-	Analysis string `url:"analysis,omitempty"` // Description:"Analysis key",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
-	Branch   string `url:"branch,omitempty"`   // Description:"Branch key",ExampleValue:""
-	Project  string `url:"project,omitempty"`  // Description:"Project key",ExampleValue:""
-}
-
-// SetBaseline Set an analysis as the baseline of the New Code Period on a project or a branch.<br/>This manually set baseline.<br/>Requires one of the following permissions:<ul>  <li>'Administer System'</li>  <li>'Administer' rights on the specified project</li></ul>
-func (s *ProjectAnalysesService) SetBaseline(opt *ProjectAnalysesSetBaselineOption) (resp *http.Response, err error) {
-	err = s.ValidateSetBaselineOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "project_analyses/set_baseline", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
-	}
-	return
-}
-
-type ProjectAnalysesUnsetBaselineOption struct {
-	Branch  string `url:"branch,omitempty"`  // Description:"Branch key",ExampleValue:""
-	Project string `url:"project,omitempty"` // Description:"Project key",ExampleValue:""
-}
-
-// UnsetBaseline Unset any manually-set New Code Period baseline on a project or a branch.<br/>Unsetting a manual baseline restores the use of the default new code period setting.<br/>Requires one of the following permissions:<ul>  <li>'Administer System'</li>  <li>'Administer' rights on the specified project</li></ul>
-func (s *ProjectAnalysesService) UnsetBaseline(opt *ProjectAnalysesUnsetBaselineOption) (resp *http.Response, err error) {
-	err = s.ValidateUnsetBaselineOpt(opt)
-	if err != nil {
-		return
-	}
-	req, err := s.client.NewRequest("POST", "project_analyses/unset_baseline", opt)
-	if err != nil {
-		return
-	}
-	resp, err = s.client.Do(req, nil)
-	if err != nil {
-		return
 	}
 	return
 }

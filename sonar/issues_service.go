@@ -1,5 +1,5 @@
 // Read and update issues.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -9,37 +9,38 @@ type IssuesService struct {
 
 type IssuesAddCommentObject struct {
 	Components []IssuesAddCommentObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesAddCommentObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesAddCommentObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesAddCommentObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesAddCommentObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesAddCommentObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesAddCommentObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesAddCommentObject_sub4 struct {
-	Actions                   []string                      `json:"actions,omitempty"`
-	Assignee                  string                        `json:"assignee,omitempty"`
-	Author                    string                        `json:"author,omitempty"`
-	Comments                  []IssuesAddCommentObject_sub2 `json:"comments,omitempty"`
-	Component                 string                        `json:"component,omitempty"`
-	CreationDate              string                        `json:"creationDate,omitempty"`
-	Debt                      string                        `json:"debt,omitempty"`
-	Effort                    string                        `json:"effort,omitempty"`
-	Flows                     []interface{}                 `json:"flows,omitempty"`
-	Key                       string                        `json:"key,omitempty"`
-	Line                      int64                         `json:"line,omitempty"`
-	Message                   string                        `json:"message,omitempty"`
-	Project                   string                        `json:"project,omitempty"`
-	Rule                      string                        `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                        `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                        `json:"severity,omitempty"`
-	Status                    string                        `json:"status,omitempty"`
-	Tags                      []string                      `json:"tags,omitempty"`
-	TextRange                 IssuesAddCommentObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                      `json:"transitions,omitempty"`
-	Type                      string                        `json:"type,omitempty"`
-	UpdateDate                string                        `json:"updateDate,omitempty"`
+type IssuesAddCommentObject_sub5 struct {
+	Actions                    []string                      `json:"actions,omitempty"`
+	Assignee                   string                        `json:"assignee,omitempty"`
+	Author                     string                        `json:"author,omitempty"`
+	CleanCodeAttribute         string                        `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                        `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesAddCommentObject_sub2 `json:"comments,omitempty"`
+	Component                  string                        `json:"component,omitempty"`
+	CreationDate               string                        `json:"creationDate,omitempty"`
+	Debt                       string                        `json:"debt,omitempty"`
+	Effort                     string                        `json:"effort,omitempty"`
+	Flows                      []interface{}                 `json:"flows,omitempty"`
+	Impacts                    []IssuesAddCommentObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                        `json:"issueStatus,omitempty"`
+	Key                        string                        `json:"key,omitempty"`
+	Line                       int64                         `json:"line,omitempty"`
+	Message                    string                        `json:"message,omitempty"`
+	Project                    string                        `json:"project,omitempty"`
+	Rule                       string                        `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                        `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                      `json:"tags,omitempty"`
+	TextRange                  IssuesAddCommentObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                      `json:"transitions,omitempty"`
+	UpdateDate                 string                        `json:"updateDate,omitempty"`
 }
 
-type IssuesAddCommentObject_sub6 struct {
+type IssuesAddCommentObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -63,17 +64,16 @@ type IssuesAddCommentObject_sub1 struct {
 	Name      string `json:"name,omitempty"`
 	Path      string `json:"path,omitempty"`
 	Qualifier string `json:"qualifier,omitempty"`
-	UUID      string `json:"uuid,omitempty"`
 }
 
-type IssuesAddCommentObject_sub3 struct {
+type IssuesAddCommentObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesAddCommentObject_sub5 struct {
+type IssuesAddCommentObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -81,39 +81,45 @@ type IssuesAddCommentObject_sub5 struct {
 	Status   string `json:"status,omitempty"`
 }
 
+type IssuesAddCommentObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
 type IssuesAssignObject struct {
 	Components []IssuesAssignObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesAssignObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesAssignObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesAssignObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesAssignObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesAssignObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesAssignObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesAssignObject_sub4 struct {
-	Actions                   []string                  `json:"actions,omitempty"`
-	Assignee                  string                    `json:"assignee,omitempty"`
-	Author                    string                    `json:"author,omitempty"`
-	Comments                  []IssuesAssignObject_sub2 `json:"comments,omitempty"`
-	Component                 string                    `json:"component,omitempty"`
-	CreationDate              string                    `json:"creationDate,omitempty"`
-	Debt                      string                    `json:"debt,omitempty"`
-	Effort                    string                    `json:"effort,omitempty"`
-	Flows                     []interface{}             `json:"flows,omitempty"`
-	Key                       string                    `json:"key,omitempty"`
-	Line                      int64                     `json:"line,omitempty"`
-	Message                   string                    `json:"message,omitempty"`
-	Project                   string                    `json:"project,omitempty"`
-	Rule                      string                    `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                    `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                    `json:"severity,omitempty"`
-	Status                    string                    `json:"status,omitempty"`
-	Tags                      []string                  `json:"tags,omitempty"`
-	TextRange                 IssuesAssignObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                  `json:"transitions,omitempty"`
-	Type                      string                    `json:"type,omitempty"`
-	UpdateDate                string                    `json:"updateDate,omitempty"`
+type IssuesAssignObject_sub5 struct {
+	Actions                    []string                  `json:"actions,omitempty"`
+	Assignee                   string                    `json:"assignee,omitempty"`
+	Author                     string                    `json:"author,omitempty"`
+	CleanCodeAttribute         string                    `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                    `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesAssignObject_sub2 `json:"comments,omitempty"`
+	Component                  string                    `json:"component,omitempty"`
+	CreationDate               string                    `json:"creationDate,omitempty"`
+	Debt                       string                    `json:"debt,omitempty"`
+	Effort                     string                    `json:"effort,omitempty"`
+	Flows                      []interface{}             `json:"flows,omitempty"`
+	Impacts                    []IssuesAssignObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                    `json:"issueStatus,omitempty"`
+	Key                        string                    `json:"key,omitempty"`
+	Line                       int64                     `json:"line,omitempty"`
+	Message                    string                    `json:"message,omitempty"`
+	Project                    string                    `json:"project,omitempty"`
+	Rule                       string                    `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                    `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                  `json:"tags,omitempty"`
+	TextRange                  IssuesAssignObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                  `json:"transitions,omitempty"`
+	UpdateDate                 string                    `json:"updateDate,omitempty"`
 }
 
-type IssuesAssignObject_sub6 struct {
+type IssuesAssignObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -136,22 +142,26 @@ type IssuesAssignObject_sub1 struct {
 	Name      string `json:"name,omitempty"`
 	Path      string `json:"path,omitempty"`
 	Qualifier string `json:"qualifier,omitempty"`
-	UUID      string `json:"uuid,omitempty"`
 }
 
-type IssuesAssignObject_sub3 struct {
+type IssuesAssignObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesAssignObject_sub5 struct {
+type IssuesAssignObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Status   string `json:"status,omitempty"`
+}
+
+type IssuesAssignObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
 }
 
 type IssuesAuthorsObject struct {
@@ -197,37 +207,38 @@ type IssuesComponentTagsObject_sub1 struct {
 
 type IssuesDeleteCommentObject struct {
 	Components []IssuesDeleteCommentObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesDeleteCommentObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesDeleteCommentObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesDeleteCommentObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesDeleteCommentObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesDeleteCommentObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesDeleteCommentObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesDeleteCommentObject_sub4 struct {
-	Actions                   []string                         `json:"actions,omitempty"`
-	Assignee                  string                           `json:"assignee,omitempty"`
-	Author                    string                           `json:"author,omitempty"`
-	Comments                  []IssuesDeleteCommentObject_sub2 `json:"comments,omitempty"`
-	Component                 string                           `json:"component,omitempty"`
-	CreationDate              string                           `json:"creationDate,omitempty"`
-	Debt                      string                           `json:"debt,omitempty"`
-	Effort                    string                           `json:"effort,omitempty"`
-	Flows                     []interface{}                    `json:"flows,omitempty"`
-	Key                       string                           `json:"key,omitempty"`
-	Line                      int64                            `json:"line,omitempty"`
-	Message                   string                           `json:"message,omitempty"`
-	Project                   string                           `json:"project,omitempty"`
-	Rule                      string                           `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                           `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                           `json:"severity,omitempty"`
-	Status                    string                           `json:"status,omitempty"`
-	Tags                      []string                         `json:"tags,omitempty"`
-	TextRange                 IssuesDeleteCommentObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                         `json:"transitions,omitempty"`
-	Type                      string                           `json:"type,omitempty"`
-	UpdateDate                string                           `json:"updateDate,omitempty"`
+type IssuesDeleteCommentObject_sub5 struct {
+	Actions                    []string                         `json:"actions,omitempty"`
+	Assignee                   string                           `json:"assignee,omitempty"`
+	Author                     string                           `json:"author,omitempty"`
+	CleanCodeAttribute         string                           `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                           `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesDeleteCommentObject_sub2 `json:"comments,omitempty"`
+	Component                  string                           `json:"component,omitempty"`
+	CreationDate               string                           `json:"creationDate,omitempty"`
+	Debt                       string                           `json:"debt,omitempty"`
+	Effort                     string                           `json:"effort,omitempty"`
+	Flows                      []interface{}                    `json:"flows,omitempty"`
+	Impacts                    []IssuesDeleteCommentObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                           `json:"issueStatus,omitempty"`
+	Key                        string                           `json:"key,omitempty"`
+	Line                       int64                            `json:"line,omitempty"`
+	Message                    string                           `json:"message,omitempty"`
+	Project                    string                           `json:"project,omitempty"`
+	Rule                       string                           `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                           `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                         `json:"tags,omitempty"`
+	TextRange                  IssuesDeleteCommentObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                         `json:"transitions,omitempty"`
+	UpdateDate                 string                           `json:"updateDate,omitempty"`
 }
 
-type IssuesDeleteCommentObject_sub6 struct {
+type IssuesDeleteCommentObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -250,17 +261,16 @@ type IssuesDeleteCommentObject_sub1 struct {
 	Name      string `json:"name,omitempty"`
 	Path      string `json:"path,omitempty"`
 	Qualifier string `json:"qualifier,omitempty"`
-	UUID      string `json:"uuid,omitempty"`
 }
 
-type IssuesDeleteCommentObject_sub3 struct {
+type IssuesDeleteCommentObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesDeleteCommentObject_sub5 struct {
+type IssuesDeleteCommentObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -268,39 +278,45 @@ type IssuesDeleteCommentObject_sub5 struct {
 	Status   string `json:"status,omitempty"`
 }
 
+type IssuesDeleteCommentObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
 type IssuesDoTransitionObject struct {
 	Components []IssuesDoTransitionObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesDoTransitionObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesDoTransitionObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesDoTransitionObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesDoTransitionObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesDoTransitionObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesDoTransitionObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesDoTransitionObject_sub4 struct {
-	Actions                   []string                        `json:"actions,omitempty"`
-	Assignee                  string                          `json:"assignee,omitempty"`
-	Author                    string                          `json:"author,omitempty"`
-	Comments                  []IssuesDoTransitionObject_sub2 `json:"comments,omitempty"`
-	Component                 string                          `json:"component,omitempty"`
-	CreationDate              string                          `json:"creationDate,omitempty"`
-	Debt                      string                          `json:"debt,omitempty"`
-	Effort                    string                          `json:"effort,omitempty"`
-	Flows                     []interface{}                   `json:"flows,omitempty"`
-	Key                       string                          `json:"key,omitempty"`
-	Line                      int64                           `json:"line,omitempty"`
-	Message                   string                          `json:"message,omitempty"`
-	Project                   string                          `json:"project,omitempty"`
-	Rule                      string                          `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                          `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                          `json:"severity,omitempty"`
-	Status                    string                          `json:"status,omitempty"`
-	Tags                      []string                        `json:"tags,omitempty"`
-	TextRange                 IssuesDoTransitionObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                        `json:"transitions,omitempty"`
-	Type                      string                          `json:"type,omitempty"`
-	UpdateDate                string                          `json:"updateDate,omitempty"`
+type IssuesDoTransitionObject_sub5 struct {
+	Actions                    []string                        `json:"actions,omitempty"`
+	Assignee                   string                          `json:"assignee,omitempty"`
+	Author                     string                          `json:"author,omitempty"`
+	CleanCodeAttribute         string                          `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                          `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesDoTransitionObject_sub2 `json:"comments,omitempty"`
+	Component                  string                          `json:"component,omitempty"`
+	CreationDate               string                          `json:"creationDate,omitempty"`
+	Debt                       string                          `json:"debt,omitempty"`
+	Effort                     string                          `json:"effort,omitempty"`
+	Flows                      []interface{}                   `json:"flows,omitempty"`
+	Impacts                    []IssuesDoTransitionObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                          `json:"issueStatus,omitempty"`
+	Key                        string                          `json:"key,omitempty"`
+	Line                       int64                           `json:"line,omitempty"`
+	Message                    string                          `json:"message,omitempty"`
+	Project                    string                          `json:"project,omitempty"`
+	Rule                       string                          `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                          `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                        `json:"tags,omitempty"`
+	TextRange                  IssuesDoTransitionObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                        `json:"transitions,omitempty"`
+	UpdateDate                 string                          `json:"updateDate,omitempty"`
 }
 
-type IssuesDoTransitionObject_sub6 struct {
+type IssuesDoTransitionObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -323,17 +339,16 @@ type IssuesDoTransitionObject_sub1 struct {
 	Name      string `json:"name,omitempty"`
 	Path      string `json:"path,omitempty"`
 	Qualifier string `json:"qualifier,omitempty"`
-	UUID      string `json:"uuid,omitempty"`
 }
 
-type IssuesDoTransitionObject_sub3 struct {
+type IssuesDoTransitionObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesDoTransitionObject_sub5 struct {
+type IssuesDoTransitionObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -341,39 +356,45 @@ type IssuesDoTransitionObject_sub5 struct {
 	Status   string `json:"status,omitempty"`
 }
 
+type IssuesDoTransitionObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
 type IssuesEditCommentObject struct {
 	Components []IssuesEditCommentObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesEditCommentObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesEditCommentObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesEditCommentObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesEditCommentObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesEditCommentObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesEditCommentObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesEditCommentObject_sub4 struct {
-	Actions                   []string                       `json:"actions,omitempty"`
-	Assignee                  string                         `json:"assignee,omitempty"`
-	Author                    string                         `json:"author,omitempty"`
-	Comments                  []IssuesEditCommentObject_sub2 `json:"comments,omitempty"`
-	Component                 string                         `json:"component,omitempty"`
-	CreationDate              string                         `json:"creationDate,omitempty"`
-	Debt                      string                         `json:"debt,omitempty"`
-	Effort                    string                         `json:"effort,omitempty"`
-	Flows                     []interface{}                  `json:"flows,omitempty"`
-	Key                       string                         `json:"key,omitempty"`
-	Line                      int64                          `json:"line,omitempty"`
-	Message                   string                         `json:"message,omitempty"`
-	Project                   string                         `json:"project,omitempty"`
-	Rule                      string                         `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                         `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                         `json:"severity,omitempty"`
-	Status                    string                         `json:"status,omitempty"`
-	Tags                      []string                       `json:"tags,omitempty"`
-	TextRange                 IssuesEditCommentObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                       `json:"transitions,omitempty"`
-	Type                      string                         `json:"type,omitempty"`
-	UpdateDate                string                         `json:"updateDate,omitempty"`
+type IssuesEditCommentObject_sub5 struct {
+	Actions                    []string                       `json:"actions,omitempty"`
+	Assignee                   string                         `json:"assignee,omitempty"`
+	Author                     string                         `json:"author,omitempty"`
+	CleanCodeAttribute         string                         `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                         `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesEditCommentObject_sub2 `json:"comments,omitempty"`
+	Component                  string                         `json:"component,omitempty"`
+	CreationDate               string                         `json:"creationDate,omitempty"`
+	Debt                       string                         `json:"debt,omitempty"`
+	Effort                     string                         `json:"effort,omitempty"`
+	Flows                      []interface{}                  `json:"flows,omitempty"`
+	Impacts                    []IssuesEditCommentObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                         `json:"issueStatus,omitempty"`
+	Key                        string                         `json:"key,omitempty"`
+	Line                       int64                          `json:"line,omitempty"`
+	Message                    string                         `json:"message,omitempty"`
+	Project                    string                         `json:"project,omitempty"`
+	Rule                       string                         `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                         `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                       `json:"tags,omitempty"`
+	TextRange                  IssuesEditCommentObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                       `json:"transitions,omitempty"`
+	UpdateDate                 string                         `json:"updateDate,omitempty"`
 }
 
-type IssuesEditCommentObject_sub6 struct {
+type IssuesEditCommentObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -396,17 +417,16 @@ type IssuesEditCommentObject_sub1 struct {
 	Name      string `json:"name,omitempty"`
 	Path      string `json:"path,omitempty"`
 	Qualifier string `json:"qualifier,omitempty"`
-	UUID      string `json:"uuid,omitempty"`
 }
 
-type IssuesEditCommentObject_sub3 struct {
+type IssuesEditCommentObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesEditCommentObject_sub5 struct {
+type IssuesEditCommentObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -414,50 +434,151 @@ type IssuesEditCommentObject_sub5 struct {
 	Status   string `json:"status,omitempty"`
 }
 
+type IssuesEditCommentObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
+type IssuesListObject struct {
+	Components []IssuesListObject_sub1 `json:"components,omitempty"`
+	Issues     []IssuesListObject_sub8 `json:"issues,omitempty"`
+	Paging     IssuesListObject_sub9   `json:"paging,omitempty"`
+}
+
+type IssuesListObject_sub8 struct {
+	Actions                    []string                `json:"actions,omitempty"`
+	Author                     string                  `json:"author,omitempty"`
+	CleanCodeAttribute         string                  `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                  `json:"cleanCodeAttributeCategory,omitempty"`
+	CodeVariants               []string                `json:"codeVariants,omitempty"`
+	Comments                   []IssuesListObject_sub2 `json:"comments,omitempty"`
+	Component                  string                  `json:"component,omitempty"`
+	CreationDate               string                  `json:"creationDate,omitempty"`
+	Effort                     string                  `json:"effort,omitempty"`
+	Flows                      []IssuesListObject_sub6 `json:"flows,omitempty"`
+	Hash                       string                  `json:"hash,omitempty"`
+	Impacts                    []IssuesListObject_sub7 `json:"impacts,omitempty"`
+	InternalTags               []string                `json:"internalTags,omitempty"`
+	IssueStatus                string                  `json:"issueStatus,omitempty"`
+	Key                        string                  `json:"key,omitempty"`
+	Line                       int64                   `json:"line,omitempty"`
+	Message                    string                  `json:"message,omitempty"`
+	MessageFormattings         []IssuesListObject_sub3 `json:"messageFormattings,omitempty"`
+	Project                    string                  `json:"project,omitempty"`
+	QuickFixAvailable          bool                    `json:"quickFixAvailable,omitempty"`
+	Rule                       string                  `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                  `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                `json:"tags,omitempty"`
+	TextRange                  IssuesListObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                `json:"transitions,omitempty"`
+	UpdateDate                 string                  `json:"updateDate,omitempty"`
+}
+
+type IssuesListObject_sub2 struct {
+	CreatedAt string `json:"createdAt,omitempty"`
+	HTMLText  string `json:"htmlText,omitempty"`
+	Key       string `json:"key,omitempty"`
+	Login     string `json:"login,omitempty"`
+	Markdown  string `json:"markdown,omitempty"`
+	Updatable bool   `json:"updatable,omitempty"`
+}
+
+type IssuesListObject_sub1 struct {
+	Enabled   bool   `json:"enabled,omitempty"`
+	Key       string `json:"key,omitempty"`
+	LongName  string `json:"longName,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Path      string `json:"path,omitempty"`
+	Qualifier string `json:"qualifier,omitempty"`
+}
+
+type IssuesListObject_sub3 struct {
+	End   int64  `json:"end,omitempty"`
+	Start int64  `json:"start,omitempty"`
+	Type  string `json:"type,omitempty"`
+}
+
+type IssuesListObject_sub4 struct {
+	EndLine     int64 `json:"endLine,omitempty"`
+	EndOffset   int64 `json:"endOffset,omitempty"`
+	StartLine   int64 `json:"startLine,omitempty"`
+	StartOffset int64 `json:"startOffset,omitempty"`
+}
+
+type IssuesListObject_sub6 struct {
+	Locations []IssuesListObject_sub5 `json:"locations,omitempty"`
+}
+
+type IssuesListObject_sub5 struct {
+	Msg            string                  `json:"msg,omitempty"`
+	MsgFormattings []IssuesListObject_sub3 `json:"msgFormattings,omitempty"`
+	TextRange      IssuesListObject_sub4   `json:"textRange,omitempty"`
+}
+
+type IssuesListObject_sub9 struct {
+	PageIndex int64 `json:"pageIndex,omitempty"`
+	PageSize  int64 `json:"pageSize,omitempty"`
+	Total     int64 `json:"total,omitempty"`
+}
+
+type IssuesListObject_sub7 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
 type IssuesSearchObject struct {
 	Components []IssuesSearchObject_sub1  `json:"components,omitempty"`
-	Issues     []IssuesSearchObject_sub8  `json:"issues,omitempty"`
-	Paging     IssuesSearchObject_sub9    `json:"paging,omitempty"`
-	Rules      []IssuesSearchObject_sub10 `json:"rules,omitempty"`
-	Users      []IssuesSearchObject_sub11 `json:"users,omitempty"`
+	Facets     []IssuesSearchObject_sub3  `json:"facets,omitempty"`
+	Issues     []IssuesSearchObject_sub10 `json:"issues,omitempty"`
+	Paging     IssuesSearchObject_sub11   `json:"paging,omitempty"`
+	Rules      []IssuesSearchObject_sub12 `json:"rules,omitempty"`
+	Users      []IssuesSearchObject_sub13 `json:"users,omitempty"`
 }
 
-type IssuesSearchObject_sub8 struct {
-	Actions                   []string                  `json:"actions,omitempty"`
-	Attr                      IssuesSearchObject_sub2   `json:"attr,omitempty"`
-	Author                    string                    `json:"author,omitempty"`
-	Comments                  []IssuesSearchObject_sub3 `json:"comments,omitempty"`
-	Component                 string                    `json:"component,omitempty"`
-	CreationDate              string                    `json:"creationDate,omitempty"`
-	Effort                    string                    `json:"effort,omitempty"`
-	Flows                     []IssuesSearchObject_sub7 `json:"flows,omitempty"`
-	Hash                      string                    `json:"hash,omitempty"`
-	Key                       string                    `json:"key,omitempty"`
-	Line                      int64                     `json:"line,omitempty"`
-	Message                   string                    `json:"message,omitempty"`
-	MessageFormattings        []IssuesSearchObject_sub4 `json:"messageFormattings,omitempty"`
-	Project                   string                    `json:"project,omitempty"`
-	QuickFixAvailable         bool                      `json:"quickFixAvailable,omitempty"`
-	Resolution                string                    `json:"resolution,omitempty"`
-	Rule                      string                    `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                    `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                    `json:"severity,omitempty"`
-	Status                    string                    `json:"status,omitempty"`
-	Tags                      []string                  `json:"tags,omitempty"`
-	TextRange                 IssuesSearchObject_sub5   `json:"textRange,omitempty"`
-	Transitions               []string                  `json:"transitions,omitempty"`
-	Type                      string                    `json:"type,omitempty"`
-	UpdateDate                string                    `json:"updateDate,omitempty"`
+type IssuesSearchObject_sub10 struct {
+	Actions                    []string                  `json:"actions,omitempty"`
+	Author                     string                    `json:"author,omitempty"`
+	CleanCodeAttribute         string                    `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                    `json:"cleanCodeAttributeCategory,omitempty"`
+	CodeVariants               []string                  `json:"codeVariants,omitempty"`
+	Comments                   []IssuesSearchObject_sub4 `json:"comments,omitempty"`
+	Component                  string                    `json:"component,omitempty"`
+	CreationDate               string                    `json:"creationDate,omitempty"`
+	Effort                     string                    `json:"effort,omitempty"`
+	Flows                      []IssuesSearchObject_sub8 `json:"flows,omitempty"`
+	Hash                       string                    `json:"hash,omitempty"`
+	Impacts                    []IssuesSearchObject_sub9 `json:"impacts,omitempty"`
+	InternalTags               []string                  `json:"internalTags,omitempty"`
+	IssueStatus                string                    `json:"issueStatus,omitempty"`
+	Key                        string                    `json:"key,omitempty"`
+	Line                       int64                     `json:"line,omitempty"`
+	LinkedTicketStatus         string                    `json:"linkedTicketStatus,omitempty"`
+	Message                    string                    `json:"message,omitempty"`
+	MessageFormattings         []IssuesSearchObject_sub5 `json:"messageFormattings,omitempty"`
+	PrioritizedRule            bool                      `json:"prioritizedRule,omitempty"`
+	Project                    string                    `json:"project,omitempty"`
+	QuickFixAvailable          bool                      `json:"quickFixAvailable,omitempty"`
+	Rule                       string                    `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                    `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                  `json:"tags,omitempty"`
+	TextRange                  IssuesSearchObject_sub6   `json:"textRange,omitempty"`
+	Transitions                []string                  `json:"transitions,omitempty"`
+	UpdateDate                 string                    `json:"updateDate,omitempty"`
 }
 
-type IssuesSearchObject_sub11 struct {
+type IssuesSearchObject_sub13 struct {
 	Active bool   `json:"active,omitempty"`
 	Avatar string `json:"avatar,omitempty"`
 	Login  string `json:"login,omitempty"`
 	Name   string `json:"name,omitempty"`
 }
 
-type IssuesSearchObject_sub3 struct {
+type IssuesSearchObject_sub2 struct {
+	Count int64  `json:"count,omitempty"`
+	Val   string `json:"val,omitempty"`
+}
+
+type IssuesSearchObject_sub4 struct {
 	CreatedAt string `json:"createdAt,omitempty"`
 	HTMLText  string `json:"htmlText,omitempty"`
 	Key       string `json:"key,omitempty"`
@@ -475,24 +596,20 @@ type IssuesSearchObject_sub1 struct {
 	Qualifier string `json:"qualifier,omitempty"`
 }
 
-type IssuesSearchObject_sub4 struct {
+type IssuesSearchObject_sub5 struct {
 	End   int64  `json:"end,omitempty"`
 	Start int64  `json:"start,omitempty"`
 	Type  string `json:"type,omitempty"`
 }
 
-type IssuesSearchObject_sub5 struct {
+type IssuesSearchObject_sub6 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesSearchObject_sub2 struct {
-	Jira_issue_key string `json:"jira-issue-key,omitempty"`
-}
-
-type IssuesSearchObject_sub10 struct {
+type IssuesSearchObject_sub12 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -500,55 +617,69 @@ type IssuesSearchObject_sub10 struct {
 	Status   string `json:"status,omitempty"`
 }
 
+type IssuesSearchObject_sub8 struct {
+	Locations []IssuesSearchObject_sub7 `json:"locations,omitempty"`
+}
+
 type IssuesSearchObject_sub7 struct {
-	Locations []IssuesSearchObject_sub6 `json:"locations,omitempty"`
-}
-
-type IssuesSearchObject_sub6 struct {
 	Msg            string                    `json:"msg,omitempty"`
-	MsgFormattings []IssuesSearchObject_sub4 `json:"msgFormattings,omitempty"`
-	TextRange      IssuesSearchObject_sub5   `json:"textRange,omitempty"`
+	MsgFormattings []IssuesSearchObject_sub5 `json:"msgFormattings,omitempty"`
+	TextRange      IssuesSearchObject_sub6   `json:"textRange,omitempty"`
 }
 
-type IssuesSearchObject_sub9 struct {
+type IssuesSearchObject_sub11 struct {
 	PageIndex int64 `json:"pageIndex,omitempty"`
 	PageSize  int64 `json:"pageSize,omitempty"`
 	Total     int64 `json:"total,omitempty"`
 }
 
+type IssuesSearchObject_sub3 struct {
+	Property string                    `json:"property,omitempty"`
+	Values   []IssuesSearchObject_sub2 `json:"values,omitempty"`
+}
+
+type IssuesSearchObject_sub9 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
 type IssuesSetSeverityObject struct {
 	Components []IssuesSetSeverityObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesSetSeverityObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesSetSeverityObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesSetSeverityObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesSetSeverityObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesSetSeverityObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesSetSeverityObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesSetSeverityObject_sub4 struct {
-	Actions                   []string                       `json:"actions,omitempty"`
-	Assignee                  string                         `json:"assignee,omitempty"`
-	Author                    string                         `json:"author,omitempty"`
-	Comments                  []IssuesSetSeverityObject_sub2 `json:"comments,omitempty"`
-	Component                 string                         `json:"component,omitempty"`
-	CreationDate              string                         `json:"creationDate,omitempty"`
-	Debt                      string                         `json:"debt,omitempty"`
-	Effort                    string                         `json:"effort,omitempty"`
-	Flows                     []interface{}                  `json:"flows,omitempty"`
-	Key                       string                         `json:"key,omitempty"`
-	Line                      int64                          `json:"line,omitempty"`
-	Message                   string                         `json:"message,omitempty"`
-	Project                   string                         `json:"project,omitempty"`
-	Rule                      string                         `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                         `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                         `json:"severity,omitempty"`
-	Status                    string                         `json:"status,omitempty"`
-	Tags                      []string                       `json:"tags,omitempty"`
-	TextRange                 IssuesSetSeverityObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                       `json:"transitions,omitempty"`
-	Type                      string                         `json:"type,omitempty"`
-	UpdateDate                string                         `json:"updateDate,omitempty"`
+type IssuesSetSeverityObject_sub5 struct {
+	Actions                    []string                       `json:"actions,omitempty"`
+	Assignee                   string                         `json:"assignee,omitempty"`
+	Author                     string                         `json:"author,omitempty"`
+	CleanCodeAttribute         string                         `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                         `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesSetSeverityObject_sub2 `json:"comments,omitempty"`
+	Component                  string                         `json:"component,omitempty"`
+	CreationDate               string                         `json:"creationDate,omitempty"`
+	Debt                       string                         `json:"debt,omitempty"`
+	Effort                     string                         `json:"effort,omitempty"`
+	Flows                      []interface{}                  `json:"flows,omitempty"`
+	Impacts                    []IssuesSetSeverityObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                         `json:"issueStatus,omitempty"`
+	Key                        string                         `json:"key,omitempty"`
+	Line                       int64                          `json:"line,omitempty"`
+	Message                    string                         `json:"message,omitempty"`
+	Project                    string                         `json:"project,omitempty"`
+	Rule                       string                         `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                         `json:"ruleDescriptionContextKey,omitempty"`
+	Severity                   string                         `json:"severity,omitempty"`
+	Status                     string                         `json:"status,omitempty"`
+	Tags                       []string                       `json:"tags,omitempty"`
+	TextRange                  IssuesSetSeverityObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                       `json:"transitions,omitempty"`
+	Type                       string                         `json:"type,omitempty"`
+	UpdateDate                 string                         `json:"updateDate,omitempty"`
 }
 
-type IssuesSetSeverityObject_sub6 struct {
+type IssuesSetSeverityObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -571,17 +702,16 @@ type IssuesSetSeverityObject_sub1 struct {
 	Name      string `json:"name,omitempty"`
 	Path      string `json:"path,omitempty"`
 	Qualifier string `json:"qualifier,omitempty"`
-	UUID      string `json:"uuid,omitempty"`
 }
 
-type IssuesSetSeverityObject_sub3 struct {
+type IssuesSetSeverityObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesSetSeverityObject_sub5 struct {
+type IssuesSetSeverityObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -589,39 +719,45 @@ type IssuesSetSeverityObject_sub5 struct {
 	Status   string `json:"status,omitempty"`
 }
 
+type IssuesSetSeverityObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
 type IssuesSetTagsObject struct {
 	Components []IssuesSetTagsObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesSetTagsObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesSetTagsObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesSetTagsObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesSetTagsObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesSetTagsObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesSetTagsObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesSetTagsObject_sub4 struct {
-	Actions                   []string                   `json:"actions,omitempty"`
-	Assignee                  string                     `json:"assignee,omitempty"`
-	Author                    string                     `json:"author,omitempty"`
-	Comments                  []IssuesSetTagsObject_sub2 `json:"comments,omitempty"`
-	Component                 string                     `json:"component,omitempty"`
-	CreationDate              string                     `json:"creationDate,omitempty"`
-	Debt                      string                     `json:"debt,omitempty"`
-	Effort                    string                     `json:"effort,omitempty"`
-	Flows                     []interface{}              `json:"flows,omitempty"`
-	Key                       string                     `json:"key,omitempty"`
-	Line                      int64                      `json:"line,omitempty"`
-	Message                   string                     `json:"message,omitempty"`
-	Project                   string                     `json:"project,omitempty"`
-	Rule                      string                     `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                     `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                     `json:"severity,omitempty"`
-	Status                    string                     `json:"status,omitempty"`
-	Tags                      []string                   `json:"tags,omitempty"`
-	TextRange                 IssuesSetTagsObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                   `json:"transitions,omitempty"`
-	Type                      string                     `json:"type,omitempty"`
-	UpdateDate                string                     `json:"updateDate,omitempty"`
+type IssuesSetTagsObject_sub5 struct {
+	Actions                    []string                   `json:"actions,omitempty"`
+	Assignee                   string                     `json:"assignee,omitempty"`
+	Author                     string                     `json:"author,omitempty"`
+	CleanCodeAttribute         string                     `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                     `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesSetTagsObject_sub2 `json:"comments,omitempty"`
+	Component                  string                     `json:"component,omitempty"`
+	CreationDate               string                     `json:"creationDate,omitempty"`
+	Debt                       string                     `json:"debt,omitempty"`
+	Effort                     string                     `json:"effort,omitempty"`
+	Flows                      []interface{}              `json:"flows,omitempty"`
+	Impacts                    []IssuesSetTagsObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                     `json:"issueStatus,omitempty"`
+	Key                        string                     `json:"key,omitempty"`
+	Line                       int64                      `json:"line,omitempty"`
+	Message                    string                     `json:"message,omitempty"`
+	Project                    string                     `json:"project,omitempty"`
+	Rule                       string                     `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                     `json:"ruleDescriptionContextKey,omitempty"`
+	Tags                       []string                   `json:"tags,omitempty"`
+	TextRange                  IssuesSetTagsObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                   `json:"transitions,omitempty"`
+	UpdateDate                 string                     `json:"updateDate,omitempty"`
 }
 
-type IssuesSetTagsObject_sub6 struct {
+type IssuesSetTagsObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -646,17 +782,16 @@ type IssuesSetTagsObject_sub1 struct {
 	ProjectID    int64  `json:"projectId,omitempty"`
 	Qualifier    string `json:"qualifier,omitempty"`
 	SubProjectID int64  `json:"subProjectId,omitempty"`
-	UUID         string `json:"uuid,omitempty"`
 }
 
-type IssuesSetTagsObject_sub3 struct {
+type IssuesSetTagsObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesSetTagsObject_sub5 struct {
+type IssuesSetTagsObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
@@ -664,39 +799,48 @@ type IssuesSetTagsObject_sub5 struct {
 	Status   string `json:"status,omitempty"`
 }
 
+type IssuesSetTagsObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
+}
+
 type IssuesSetTypeObject struct {
 	Components []IssuesSetTypeObject_sub1 `json:"components,omitempty"`
-	Issue      IssuesSetTypeObject_sub4   `json:"issue,omitempty"`
-	Rules      []IssuesSetTypeObject_sub5 `json:"rules,omitempty"`
-	Users      []IssuesSetTypeObject_sub6 `json:"users,omitempty"`
+	Issue      IssuesSetTypeObject_sub5   `json:"issue,omitempty"`
+	Rules      []IssuesSetTypeObject_sub6 `json:"rules,omitempty"`
+	Users      []IssuesSetTypeObject_sub7 `json:"users,omitempty"`
 }
 
-type IssuesSetTypeObject_sub4 struct {
-	Actions                   []string                   `json:"actions,omitempty"`
-	Assignee                  string                     `json:"assignee,omitempty"`
-	Author                    string                     `json:"author,omitempty"`
-	Comments                  []IssuesSetTypeObject_sub2 `json:"comments,omitempty"`
-	Component                 string                     `json:"component,omitempty"`
-	CreationDate              string                     `json:"creationDate,omitempty"`
-	Debt                      string                     `json:"debt,omitempty"`
-	Effort                    string                     `json:"effort,omitempty"`
-	Flows                     []interface{}              `json:"flows,omitempty"`
-	Key                       string                     `json:"key,omitempty"`
-	Line                      int64                      `json:"line,omitempty"`
-	Message                   string                     `json:"message,omitempty"`
-	Project                   string                     `json:"project,omitempty"`
-	Rule                      string                     `json:"rule,omitempty"`
-	RuleDescriptionContextKey string                     `json:"ruleDescriptionContextKey,omitempty"`
-	Severity                  string                     `json:"severity,omitempty"`
-	Status                    string                     `json:"status,omitempty"`
-	Tags                      []string                   `json:"tags,omitempty"`
-	TextRange                 IssuesSetTypeObject_sub3   `json:"textRange,omitempty"`
-	Transitions               []string                   `json:"transitions,omitempty"`
-	Type                      string                     `json:"type,omitempty"`
-	UpdateDate                string                     `json:"updateDate,omitempty"`
+type IssuesSetTypeObject_sub5 struct {
+	Actions                    []string                   `json:"actions,omitempty"`
+	Assignee                   string                     `json:"assignee,omitempty"`
+	Author                     string                     `json:"author,omitempty"`
+	CleanCodeAttribute         string                     `json:"cleanCodeAttribute,omitempty"`
+	CleanCodeAttributeCategory string                     `json:"cleanCodeAttributeCategory,omitempty"`
+	Comments                   []IssuesSetTypeObject_sub2 `json:"comments,omitempty"`
+	Component                  string                     `json:"component,omitempty"`
+	CreationDate               string                     `json:"creationDate,omitempty"`
+	Debt                       string                     `json:"debt,omitempty"`
+	Effort                     string                     `json:"effort,omitempty"`
+	Flows                      []interface{}              `json:"flows,omitempty"`
+	Impacts                    []IssuesSetTypeObject_sub3 `json:"impacts,omitempty"`
+	IssueStatus                string                     `json:"issueStatus,omitempty"`
+	Key                        string                     `json:"key,omitempty"`
+	Line                       int64                      `json:"line,omitempty"`
+	Message                    string                     `json:"message,omitempty"`
+	Project                    string                     `json:"project,omitempty"`
+	Rule                       string                     `json:"rule,omitempty"`
+	RuleDescriptionContextKey  string                     `json:"ruleDescriptionContextKey,omitempty"`
+	Severity                   string                     `json:"severity,omitempty"`
+	Status                     string                     `json:"status,omitempty"`
+	Tags                       []string                   `json:"tags,omitempty"`
+	TextRange                  IssuesSetTypeObject_sub4   `json:"textRange,omitempty"`
+	Transitions                []string                   `json:"transitions,omitempty"`
+	Type                       string                     `json:"type,omitempty"`
+	UpdateDate                 string                     `json:"updateDate,omitempty"`
 }
 
-type IssuesSetTypeObject_sub6 struct {
+type IssuesSetTypeObject_sub7 struct {
 	Active bool   `json:"active,omitempty"`
 	Email  string `json:"email,omitempty"`
 	Login  string `json:"login,omitempty"`
@@ -719,22 +863,26 @@ type IssuesSetTypeObject_sub1 struct {
 	Name      string `json:"name,omitempty"`
 	Path      string `json:"path,omitempty"`
 	Qualifier string `json:"qualifier,omitempty"`
-	UUID      string `json:"uuid,omitempty"`
 }
 
-type IssuesSetTypeObject_sub3 struct {
+type IssuesSetTypeObject_sub4 struct {
 	EndLine     int64 `json:"endLine,omitempty"`
 	EndOffset   int64 `json:"endOffset,omitempty"`
 	StartLine   int64 `json:"startLine,omitempty"`
 	StartOffset int64 `json:"startOffset,omitempty"`
 }
 
-type IssuesSetTypeObject_sub5 struct {
+type IssuesSetTypeObject_sub6 struct {
 	Key      string `json:"key,omitempty"`
 	Lang     string `json:"lang,omitempty"`
 	LangName string `json:"langName,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Status   string `json:"status,omitempty"`
+}
+
+type IssuesSetTypeObject_sub3 struct {
+	Severity        string `json:"severity,omitempty"`
+	SoftwareQuality string `json:"softwareQuality,omitempty"`
 }
 
 type IssuesTagsObject struct {
@@ -760,6 +908,53 @@ func (s *IssuesService) AddComment(opt *IssuesAddCommentOption) (v *IssuesAddCom
 	resp, err = s.client.Do(req, v)
 	if err != nil {
 		return nil, resp, err
+	}
+	return
+}
+
+type IssuesAnticipatedTransitionsOption struct {
+	ProjectKey string `url:"projectKey,omitempty"` // Description:"The key of the project",ExampleValue:"my_project"
+}
+
+/*
+AnticipatedTransitions Receive a list of anticipated transitions that can be applied to not yet discovered issues on a specific project.<br>
+Requires the following permission: 'Administer Issues' on the specified project.<br>
+Only <code>falsepositive</code>, <code>wontfix</code> and <code>accept</code> transitions are supported.<br>
+Upon successful execution, the HTTP status code returned is 202 (Accepted).<br><br>
+Request example:
+<pre><code>[
+  {
+    "ruleKey": "squid:S0001",
+    "issueMessage": "issueMessage1",
+    "filePath": "filePath1",
+    "line": 1,
+    "lineHash": "lineHash1",
+    "transition": "falsepositive",
+    "comment": "comment1"
+  },
+  {
+    "ruleKey": "squid:S0002",
+    "issueMessage": "issueMessage2",
+    "filePath": "filePath2",
+    "line": 2,
+    "lineHash": "lineHash2",
+    "transition": "wontfix",
+    "comment": "comment2"
+  }
+]</code></pre>
+*/
+func (s *IssuesService) AnticipatedTransitions(opt *IssuesAnticipatedTransitionsOption) (resp *http.Response, err error) {
+	err = s.ValidateAnticipatedTransitionsOpt(opt)
+	if err != nil {
+		return
+	}
+	req, err := s.client.NewRequest("POST", "issues/anticipated_transitions", opt)
+	if err != nil {
+		return
+	}
+	resp, err = s.client.Do(req, nil)
+	if err != nil {
+		return
 	}
 	return
 }
@@ -793,7 +988,7 @@ type IssuesAuthorsOption struct {
 	Q       string `url:"q,omitempty"`       // Description:"Limit search to authors that contain the supplied string.",ExampleValue:"luke"
 }
 
-// Authors Search SCM accounts which match a given query.<br/>Requires authentication.<br/>When issue indexation is in progress returns 503 service unavailable HTTP code.
+// Authors Search SCM accounts which match a given query.<br/>Requires authentication.<br/>When issue indexing is in progress returns 503 service unavailable HTTP code.
 func (s *IssuesService) Authors(opt *IssuesAuthorsOption) (v *IssuesAuthorsObject, resp *http.Response, err error) {
 	err = s.ValidateAuthorsOpt(opt)
 	if err != nil {
@@ -869,7 +1064,7 @@ type IssuesComponentTagsOption struct {
 	Ps            string `url:"ps,omitempty"`            // Description:"The maximum size of the list to return",ExampleValue:"25"
 }
 
-// ComponentTags List tags for the issues under a given component (including issues on the descendants of the component)<br/>When issue indexation is in progress returns 503 service unavailable HTTP code.
+// ComponentTags List tags for the issues under a given component (including issues on the descendants of the component)<br/>When issue indexing is in progress returns 503 service unavailable HTTP code.
 func (s *IssuesService) ComponentTags(opt *IssuesComponentTagsOption) (v *IssuesComponentTagsObject, resp *http.Response, err error) {
 	err = s.ValidateComponentTagsOpt(opt)
 	if err != nil {
@@ -914,7 +1109,11 @@ type IssuesDoTransitionOption struct {
 	Transition string `url:"transition,omitempty"` // Description:"Transition",ExampleValue:""
 }
 
-// DoTransition Do workflow transition on an issue. Requires authentication and Browse permission on project.<br/>The transitions 'wontfix' and 'falsepositive' require the permission 'Administer Issues'.<br/>The transitions involving security hotspots require the permission 'Administer Security Hotspot'.
+/*
+DoTransition Do workflow transition on an issue. Requires authentication and Browse permission on project.<br/>
+The transitions 'accept', 'wontfix' and 'falsepositive' require the permission 'Administer Issues'.<br/>
+The transitions involving security hotspots require the permission 'Administer Security Hotspot'.
+*/
 func (s *IssuesService) DoTransition(opt *IssuesDoTransitionOption) (v *IssuesDoTransitionObject, resp *http.Response, err error) {
 	err = s.ValidateDoTransitionOpt(opt)
 	if err != nil {
@@ -955,6 +1154,36 @@ func (s *IssuesService) EditComment(opt *IssuesEditCommentOption) (v *IssuesEdit
 	return
 }
 
+type IssuesListOption struct {
+	Branch          string `url:"branch,omitempty"`          // Description:"Branch key. Not available in the community edition.",ExampleValue:"feature/my-new-feature"
+	Component       string `url:"component,omitempty"`       // Description:"Component key",ExampleValue:"my_project:my_file.js"
+	InNewCodePeriod string `url:"inNewCodePeriod,omitempty"` // Description:"Filter issues created in the new code period of the project",ExampleValue:"true"
+	P               string `url:"p,omitempty"`               // Description:"1-based page number",ExampleValue:"42"
+	Project         string `url:"project,omitempty"`         // Description:"Project key",ExampleValue:"my-project-key"
+	Ps              string `url:"ps,omitempty"`              // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
+	PullRequest     string `url:"pullRequest,omitempty"`     // Description:"Filter issues that belong to the specified pull request. Not available in the community edition.",ExampleValue:"42"
+	Resolved        string `url:"resolved,omitempty"`        // Description:"Filter issues that are resolved or not, if not provided all issues will be returned",ExampleValue:"true"
+	Types           string `url:"types,omitempty"`           // Description:"Comma-separated list of issue types",ExampleValue:"BUG, VULNERABILITY"
+}
+
+// List List issues. This endpoint is used in degraded mode, when issue indexing is running.<br>Either 'project' or 'component' parameter is required.<br>Total number of issues will be always equal to a page size, as this counting all issues is not supported. <br>Requires the 'Browse' permission on the specified project.
+func (s *IssuesService) List(opt *IssuesListOption) (v *IssuesListObject, resp *http.Response, err error) {
+	err = s.ValidateListOpt(opt)
+	if err != nil {
+		return
+	}
+	req, err := s.client.NewRequest("GET", "issues/list", opt)
+	if err != nil {
+		return
+	}
+	v = new(IssuesListObject)
+	resp, err = s.client.Do(req, v)
+	if err != nil {
+		return nil, resp, err
+	}
+	return
+}
+
 type IssuesPullOption struct {
 	BranchName       string `url:"branchName,omitempty"`       // Description:"Branch name for which issues are fetched.",ExampleValue:"develop"
 	ChangedSince     string `url:"changedSince,omitempty"`     // Description:"Timestamp. If present only issues modified after given timestamp are returned (both open and closed). If not present all non-closed issues are returned.",ExampleValue:"1654032306000"
@@ -965,7 +1194,7 @@ type IssuesPullOption struct {
 }
 
 // Pull This endpoint fetches and returns all (unless filtered by optional params) the issues for a given branch. The issues returned are not paginated, so the response size can be big. Requires project 'Browse' permission.
-func (s *IssuesService) Pull(opt *IssuesPullOption) (v *string, resp *http.Response, err error) {
+func (s *IssuesService) Pull(opt *IssuesPullOption) (v []byte, resp *http.Response, err error) {
 	err = s.ValidatePullOpt(opt)
 	if err != nil {
 		return
@@ -974,8 +1203,7 @@ func (s *IssuesService) Pull(opt *IssuesPullOption) (v *string, resp *http.Respo
 	if err != nil {
 		return
 	}
-	v = new(string)
-	resp, err = s.client.Do(req, v)
+	resp, err = s.client.Do(req, &v)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -990,7 +1218,7 @@ type IssuesPullTaintOption struct {
 }
 
 // PullTaint This endpoint fetches and returns all (unless filtered by optional params) the taint vulnerabilities for a given branch. The taint vulnerabilities returned are not paginated, so the response size can be big. Requires project 'Browse' permission.
-func (s *IssuesService) PullTaint(opt *IssuesPullTaintOption) (v *string, resp *http.Response, err error) {
+func (s *IssuesService) PullTaint(opt *IssuesPullTaintOption) (v []byte, resp *http.Response, err error) {
 	err = s.ValidatePullTaintOpt(opt)
 	if err != nil {
 		return
@@ -999,8 +1227,7 @@ func (s *IssuesService) PullTaint(opt *IssuesPullTaintOption) (v *string, resp *
 	if err != nil {
 		return
 	}
-	v = new(string)
-	resp, err = s.client.Do(req, v)
+	resp, err = s.client.Do(req, &v)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -1029,51 +1256,61 @@ func (s *IssuesService) Reindex(opt *IssuesReindexOption) (resp *http.Response, 
 }
 
 type IssuesSearchOption struct {
-	AdditionalFields    string `url:"additionalFields,omitempty"`    // Description:"Comma-separated list of the optional fields to be returned in response. Action plans are dropped in 5.5, it is not returned in the response.",ExampleValue:""
-	Asc                 string `url:"asc,omitempty"`                 // Description:"Ascending sort",ExampleValue:""
-	Assigned            string `url:"assigned,omitempty"`            // Description:"To retrieve assigned or unassigned issues",ExampleValue:""
-	Assignees           string `url:"assignees,omitempty"`           // Description:"Comma-separated list of assignee logins. The value '__me__' can be used as a placeholder for user who performs the request",ExampleValue:"admin,usera,__me__"
-	Author              string `url:"author,omitempty"`              // Description:"SCM accounts. To set several values, the parameter must be called once for each value.",ExampleValue:"author=torvalds@linux-foundation.org&author=linux@fondation.org"
-	Branch              string `url:"branch,omitempty"`              // Description:"Branch key. Not available in the community edition.",ExampleValue:"feature/my_branch"
-	ComponentKeys       string `url:"componentKeys,omitempty"`       // Description:"Comma-separated list of component keys. Retrieve issues associated to a specific list of components (and all its descendants). A component can be a portfolio, project, module, directory or file.",ExampleValue:"my_project"
-	CreatedAfter        string `url:"createdAfter,omitempty"`        // Description:"To retrieve issues created after the given date (inclusive). <br>Either a date (use 'timeZone' attribute or it will default to server timezone) or datetime can be provided. <br>If this parameter is set, createdInLast must not be set",ExampleValue:"2017-10-19 or 2017-10-19T13:00:00+0200"
-	CreatedAt           string `url:"createdAt,omitempty"`           // Description:"Datetime to retrieve issues created during a specific analysis",ExampleValue:"2017-10-19T13:00:00+0200"
-	CreatedBefore       string `url:"createdBefore,omitempty"`       // Description:"To retrieve issues created before the given date (exclusive). <br>Either a date (use 'timeZone' attribute or it will default to server timezone) or datetime can be provided.",ExampleValue:"2017-10-19 or 2017-10-19T13:00:00+0200"
-	CreatedInLast       string `url:"createdInLast,omitempty"`       // Description:"To retrieve issues created during a time span before the current time (exclusive). Accepted units are 'y' for year, 'm' for month, 'w' for week and 'd' for day. If this parameter is set, createdAfter must not be set",ExampleValue:"1m2w (1 month 2 weeks)"
-	Cwe                 string `url:"cwe,omitempty"`                 // Description:"Comma-separated list of CWE identifiers. Use 'unknown' to select issues not associated to any CWE.",ExampleValue:"12,125,unknown"
-	Directories         string `url:"directories,omitempty"`         // Description:"To retrieve issues associated to a specific list of directories (comma-separated list of directory paths). This parameter is only meaningful when a module is selected. This parameter is mostly used by the Issues page, please prefer usage of the componentKeys parameter. ",ExampleValue:"src/main/java/org/sonar/server/"
-	Facets              string `url:"facets,omitempty"`              // Description:"Comma-separated list of the facets to be computed. No facet is computed by default.",ExampleValue:""
-	Files               string `url:"files,omitempty"`               // Description:"To retrieve issues associated to a specific list of files (comma-separated list of file paths). This parameter is mostly used by the Issues page, please prefer usage of the componentKeys parameter. ",ExampleValue:"src/main/java/org/sonar/server/Test.java"
-	InNewCodePeriod     string `url:"inNewCodePeriod,omitempty"`     // Description:"To retrieve issues created in the new code period.<br>If this parameter is set to a truthy value, createdAfter must not be set and one component uuid or key must be provided.",ExampleValue:""
-	Issues              string `url:"issues,omitempty"`              // Description:"Comma-separated list of issue keys",ExampleValue:"5bccd6e8-f525-43a2-8d76-fcb13dde79ef"
-	Languages           string `url:"languages,omitempty"`           // Description:"Comma-separated list of languages. Available since 4.4",ExampleValue:"java,js"
-	OnComponentOnly     string `url:"onComponentOnly,omitempty"`     // Description:"Return only issues at a component's level, not on its descendants (modules, directories, files, etc). This parameter is only considered when componentKeys is set.",ExampleValue:""
-	OwaspAsvs40         string `url:"owaspAsvs-4.0,omitempty"`       // Description:"Comma-separated list of OWASP ASVS v4.0 categories.",ExampleValue:"6,10.1.1"
-	OwaspAsvsLevel      string `url:"owaspAsvsLevel,omitempty"`      // Description:"Level of OWASP ASVS categories.",ExampleValue:""
-	OwaspTop10          string `url:"owaspTop10,omitempty"`          // Description:"Comma-separated list of OWASP Top 10 2017 lowercase categories.",ExampleValue:""
-	OwaspTop102021      string `url:"owaspTop10-2021,omitempty"`     // Description:"Comma-separated list of OWASP Top 10 2021 lowercase categories.",ExampleValue:""
-	P                   string `url:"p,omitempty"`                   // Description:"1-based page number",ExampleValue:"42"
-	PciDss32            string `url:"pciDss-3.2,omitempty"`          // Description:"Comma-separated list of PCI DSS v3.2 categories.",ExampleValue:"4,6.5.8,10.1"
-	PciDss40            string `url:"pciDss-4.0,omitempty"`          // Description:"Comma-separated list of PCI DSS v4.0 categories.",ExampleValue:"4,6.5.8,10.1"
-	Projects            string `url:"projects,omitempty"`            // Description:"To retrieve issues associated to a specific list of projects (comma-separated list of project keys). This parameter is mostly used by the Issues page, please prefer usage of the componentKeys parameter. If this parameter is set, projectUuids must not be set.",ExampleValue:"my_project"
-	Ps                  string `url:"ps,omitempty"`                  // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
-	PullRequest         string `url:"pullRequest,omitempty"`         // Description:"Pull request id. Not available in the community edition.",ExampleValue:"5461"
-	Resolutions         string `url:"resolutions,omitempty"`         // Description:"Comma-separated list of resolutions",ExampleValue:"FIXED,REMOVED"
-	Resolved            string `url:"resolved,omitempty"`            // Description:"To match resolved or unresolved issues",ExampleValue:""
-	Rules               string `url:"rules,omitempty"`               // Description:"Comma-separated list of coding rule keys. Format is &lt;repository&gt;:&lt;rule&gt;",ExampleValue:"java:S1144"
-	S                   string `url:"s,omitempty"`                   // Description:"Sort field",ExampleValue:""
-	SansTop25           string `url:"sansTop25,omitempty"`           // Description:"Comma-separated list of SANS Top 25 categories.",ExampleValue:""
-	Scopes              string `url:"scopes,omitempty"`              // Description:"Comma-separated list of scopes. Available since 8.5",ExampleValue:"MAIN,TEST"
-	Severities          string `url:"severities,omitempty"`          // Description:"Comma-separated list of severities",ExampleValue:"BLOCKER,CRITICAL"
-	SinceLeakPeriod     string `url:"sinceLeakPeriod,omitempty"`     // Description:"To retrieve issues created since the leak period.<br>If this parameter is set to a truthy value, createdAfter must not be set and one component uuid or key must be provided.",ExampleValue:""
-	SonarsourceSecurity string `url:"sonarsourceSecurity,omitempty"` // Description:"Comma-separated list of SonarSource security categories. Use 'others' to select issues not associated with any category",ExampleValue:""
-	Statuses            string `url:"statuses,omitempty"`            // Description:"Comma-separated list of statuses",ExampleValue:"OPEN,REOPENED"
-	Tags                string `url:"tags,omitempty"`                // Description:"Comma-separated list of tags.",ExampleValue:"security,convention"
-	TimeZone            string `url:"timeZone,omitempty"`            // Description:"To resolve dates passed to 'createdAfter' or 'createdBefore' (does not apply to datetime) and to compute creation date histogram",ExampleValue:"'Europe/Paris', 'Z' or '+02:00'"
-	Types               string `url:"types,omitempty"`               // Description:"Comma-separated list of types.",ExampleValue:"CODE_SMELL,BUG"
+	AdditionalFields             string `url:"additionalFields,omitempty"`             // Description:"Comma-separated list of the optional fields to be returned in response. Action plans are dropped in 5.5, it is not returned in the response.",ExampleValue:""
+	Asc                          string `url:"asc,omitempty"`                          // Description:"Ascending sort",ExampleValue:""
+	Assigned                     string `url:"assigned,omitempty"`                     // Description:"To retrieve assigned or unassigned issues",ExampleValue:""
+	Assignees                    string `url:"assignees,omitempty"`                    // Description:"Comma-separated list of assignee logins. The value '__me__' can be used as a placeholder for user who performs the request",ExampleValue:"admin,usera,__me__"
+	Author                       string `url:"author,omitempty"`                       // Description:"SCM accounts. To set several values, the parameter must be called once for each value.",ExampleValue:"author=torvalds@linux-foundation.org&author=linux@fondation.org"
+	Branch                       string `url:"branch,omitempty"`                       // Description:"Branch key. Not available in the community edition.",ExampleValue:"feature/my_branch"
+	Casa                         string `url:"casa,omitempty"`                         // Description:"Comma-separated list of CASA categories.",ExampleValue:""
+	CleanCodeAttributeCategories string `url:"cleanCodeAttributeCategories,omitempty"` // Description:"Comma-separated list of Clean Code Attribute Categories",ExampleValue:"ADAPTABLE,INTENTIONAL"
+	CodeVariants                 string `url:"codeVariants,omitempty"`                 // Description:"Comma-separated list of code variants.",ExampleValue:"windows,linux"
+	ComplianceStandards          string `url:"complianceStandards,omitempty"`          // Description:"Comma-separated list of compliance standards",ExampleValue:"asvs:4.0.3=6.1.2"
+	Components                   string `url:"components,omitempty"`                   // Description:"Comma-separated list of component keys. Retrieve issues associated to a specific list of components (and all its descendants). A component can be a portfolio, project, module, directory or file.",ExampleValue:"my_project"
+	CreatedAfter                 string `url:"createdAfter,omitempty"`                 // Description:"To retrieve issues created after the given date (inclusive). <br>Either a date (use 'timeZone' attribute or it will default to server timezone) or datetime can be provided. <br>If this parameter is set, createdInLast must not be set",ExampleValue:"2017-10-19 or 2017-10-19T13:00:00+0200"
+	CreatedAt                    string `url:"createdAt,omitempty"`                    // Description:"Datetime to retrieve issues created during a specific analysis",ExampleValue:"2017-10-19T13:00:00+0200"
+	CreatedBefore                string `url:"createdBefore,omitempty"`                // Description:"To retrieve issues created before the given date (exclusive). <br>Either a date (use 'timeZone' attribute or it will default to server timezone) or datetime can be provided.",ExampleValue:"2017-10-19 or 2017-10-19T13:00:00+0200"
+	CreatedInLast                string `url:"createdInLast,omitempty"`                // Description:"To retrieve issues created during a time span before the current time (exclusive). Accepted units are 'y' for year, 'm' for month, 'w' for week and 'd' for day. If this parameter is set, createdAfter must not be set",ExampleValue:"1m2w (1 month 2 weeks)"
+	Cwe                          string `url:"cwe,omitempty"`                          // Description:"Comma-separated list of CWE identifiers. Use 'unknown' to select issues not associated to any CWE.",ExampleValue:"12,125,unknown"
+	Directories                  string `url:"directories,omitempty"`                  // Description:"To retrieve issues associated to a specific list of directories (comma-separated list of directory paths). This parameter is only meaningful when a module is selected. This parameter is mostly used by the Issues page, please prefer usage of the componentKeys parameter. ",ExampleValue:"src/main/java/org/sonar/server/"
+	Facets                       string `url:"facets,omitempty"`                       // Description:"Comma-separated list of the facets to be computed. No facet is computed by default.",ExampleValue:""
+	Files                        string `url:"files,omitempty"`                        // Description:"To retrieve issues associated to a specific list of files (comma-separated list of file paths). This parameter is mostly used by the Issues page, please prefer usage of the componentKeys parameter. ",ExampleValue:"src/main/java/org/sonar/server/Test.java"
+	FixedInPullRequest           string `url:"fixedInPullRequest,omitempty"`           // Description:"Pull request id to filter issues that would be fixed in the specified project or branch by the pull request. Should not be used together with + 'pullRequest'. At least the 'components' must be be specified when this param is used.  Not available in the community edition.",ExampleValue:"5461"
+	ImpactSeverities             string `url:"impactSeverities,omitempty"`             // Description:"Comma-separated list of Software Quality Severities",ExampleValue:"HIGH,MEDIUM"
+	ImpactSoftwareQualities      string `url:"impactSoftwareQualities,omitempty"`      // Description:"Comma-separated list of Software Qualities",ExampleValue:"MAINTAINABILITY,RELIABILITY"
+	InNewCodePeriod              string `url:"inNewCodePeriod,omitempty"`              // Description:"To retrieve issues created in the new code period.<br>If this parameter is set to a truthy value, createdAfter must not be set and one component uuid or key must be provided.<br>This parameter is ignored if the requested component is Application or Portfolio.",ExampleValue:""
+	IssueStatuses                string `url:"issueStatuses,omitempty"`                // Description:"",ExampleValue:"ACCEPTED,FIXED"
+	Issues                       string `url:"issues,omitempty"`                       // Description:"Comma-separated list of issue keys",ExampleValue:"5bccd6e8-f525-43a2-8d76-fcb13dde79ef"
+	Languages                    string `url:"languages,omitempty"`                    // Description:"Comma-separated list of languages. Available since 4.4",ExampleValue:"java,js"
+	OnComponentOnly              string `url:"onComponentOnly,omitempty"`              // Description:"Return only issues at a component's level, not on its descendants (modules, directories, files, etc). This parameter is only considered when componentKeys is set.",ExampleValue:""
+	OwaspAsvs40                  string `url:"owaspAsvs-4.0,omitempty"`                // Description:"Comma-separated list of OWASP ASVS v4.0 categories.",ExampleValue:"6,10.1.1"
+	OwaspAsvsLevel               string `url:"owaspAsvsLevel,omitempty"`               // Description:"Level of OWASP ASVS categories.",ExampleValue:""
+	OwaspMobileTop102024         string `url:"owaspMobileTop10-2024,omitempty"`        // Description:"Comma-separated list of OWASP Mobile Top 10 2024 lowercase categories.",ExampleValue:""
+	OwaspTop10                   string `url:"owaspTop10,omitempty"`                   // Description:"Comma-separated list of OWASP Top 10 2017 lowercase categories.",ExampleValue:""
+	OwaspTop102021               string `url:"owaspTop10-2021,omitempty"`              // Description:"Comma-separated list of OWASP Top 10 2021 lowercase categories.",ExampleValue:""
+	P                            string `url:"p,omitempty"`                            // Description:"1-based page number",ExampleValue:"42"
+	PciDss32                     string `url:"pciDss-3.2,omitempty"`                   // Description:"Comma-separated list of PCI DSS v3.2 categories.",ExampleValue:"4,6.5.8,10.1"
+	PciDss40                     string `url:"pciDss-4.0,omitempty"`                   // Description:"Comma-separated list of PCI DSS v4.0 categories.",ExampleValue:"4,6.5.8,10.1"
+	PrioritizedRule              string `url:"prioritizedRule,omitempty"`              // Description:"To match issues with prioritized rule or not",ExampleValue:""
+	Projects                     string `url:"projects,omitempty"`                     // Description:"To retrieve issues associated to a specific list of projects (comma-separated list of project keys). This parameter is mostly used by the Issues page, please prefer usage of the componentKeys parameter. If this parameter is set, projectUuids must not be set.",ExampleValue:"my_project"
+	Ps                           string `url:"ps,omitempty"`                           // Description:"Page size. Must be greater than 0 and less or equal than 500",ExampleValue:"20"
+	PullRequest                  string `url:"pullRequest,omitempty"`                  // Description:"Pull request id. Not available in the community edition.",ExampleValue:"5461"
+	Resolutions                  string `url:"resolutions,omitempty"`                  // Description:"Comma-separated list of resolutions",ExampleValue:"FIXED,REMOVED"
+	Resolved                     string `url:"resolved,omitempty"`                     // Description:"To match resolved or unresolved issues",ExampleValue:""
+	Rules                        string `url:"rules,omitempty"`                        // Description:"Comma-separated list of coding rule keys. Format is &lt;repository&gt;:&lt;rule&gt;",ExampleValue:"java:S1144"
+	S                            string `url:"s,omitempty"`                            // Description:"Sort field",ExampleValue:""
+	SansTop25                    string `url:"sansTop25,omitempty"`                    // Description:"Comma-separated list of SANS Top 25 categories.",ExampleValue:""
+	Scopes                       string `url:"scopes,omitempty"`                       // Description:"Comma-separated list of scopes. Available since 8.5",ExampleValue:"MAIN,TEST"
+	Severities                   string `url:"severities,omitempty"`                   // Description:"Comma-separated list of severities",ExampleValue:"BLOCKER,CRITICAL"
+	SonarsourceSecurity          string `url:"sonarsourceSecurity,omitempty"`          // Description:"Comma-separated list of SonarSource security categories. Use 'others' to select issues not associated with any category",ExampleValue:""
+	Statuses                     string `url:"statuses,omitempty"`                     // Description:"Comma-separated list of statuses",ExampleValue:"OPEN,REOPENED"
+	StigASDV5R3                  string `url:"stig-ASD_V5R3,omitempty"`                // Description:"Comma-separated list of STIG V5R3 categories.",ExampleValue:""
+	Tags                         string `url:"tags,omitempty"`                         // Description:"Comma-separated list of tags.",ExampleValue:"security,convention"
+	TimeZone                     string `url:"timeZone,omitempty"`                     // Description:"To resolve dates passed to 'createdAfter' or 'createdBefore' (does not apply to datetime) and to compute creation date histogram",ExampleValue:"'Europe/Paris', 'Z' or '+02:00'"
+	Types                        string `url:"types,omitempty"`                        // Description:"Comma-separated list of types.",ExampleValue:"CODE_SMELL,BUG"
 }
 
-// Search Search for issues.<br>Requires the 'Browse' permission on the specified project(s). <br>For applications, it also requires 'Browse' permission on its child projects.<br/>When issue indexation is in progress returns 503 service unavailable HTTP code.
+// Search Search for issues.<br>Requires the 'Browse' permission on the specified project(s). <br>For applications, it also requires 'Browse' permission on its child projects.<br/>When issue indexing is in progress returns 503 service unavailable HTTP code.
 func (s *IssuesService) Search(opt *IssuesSearchOption) (v *IssuesSearchObject, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
@@ -1092,6 +1329,7 @@ func (s *IssuesService) Search(opt *IssuesSearchOption) (v *IssuesSearchObject, 
 }
 
 type IssuesSetSeverityOption struct {
+	Impact   string `url:"impact,omitempty"`   // Description:"Override of impact severity for the rule. Cannot be used as the same time as 'severity'",ExampleValue:"impact=MAINTAINABILITY=HIGH"
 	Issue    string `url:"issue,omitempty"`    // Description:"Issue key",ExampleValue:"AU-Tpxb--iU5OvuD2FLy"
 	Severity string `url:"severity,omitempty"` // Description:"New severity",ExampleValue:""
 }

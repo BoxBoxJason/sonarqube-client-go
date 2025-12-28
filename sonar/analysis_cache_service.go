@@ -1,5 +1,5 @@
 // Access the analysis cache
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -35,7 +35,7 @@ type AnalysisCacheGetOption struct {
 }
 
 // Get Get the scanner's cached data for a branch. Requires scan permission on the project. Data is returned gzipped if the corresponding 'Accept-Encoding' header is set in the request.
-func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (v *string, resp *http.Response, err error) {
+func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (resp *http.Response, err error) {
 	err = s.ValidateGetOpt(opt)
 	if err != nil {
 		return
@@ -44,10 +44,9 @@ func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (v *string, resp
 	if err != nil {
 		return
 	}
-	v = new(string)
-	resp, err = s.client.Do(req, v)
+	resp, err = s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, err
+		return
 	}
 	return
 }

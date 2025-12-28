@@ -10,9 +10,9 @@ import (
 
 	"github.com/fatih/color"
 
+	"github.com/boxboxjason/sonarqube-client-go/pkg/api"
+	"github.com/boxboxjason/sonarqube-client-go/pkg/generate"
 	glog "github.com/magicsong/color-glog"
-	"github.com/magicsong/generate-go-for-sonarqube/pkg/api"
-	"github.com/magicsong/generate-go-for-sonarqube/pkg/generate"
 )
 
 var (
@@ -44,7 +44,7 @@ func validate() error {
 	if JsonPath == "" {
 		return errors.New("Must specify the json location,please add -f [filepath]")
 	}
-	_, err := os.Stat(JsonPath) // os.Stat获取文件信息
+	_, err := os.Stat(JsonPath)
 	if err != nil {
 		glog.Errorln(err)
 		return errors.New("No such api file")
@@ -86,7 +86,7 @@ func main() {
 
 func usage() {
 	fmt.Fprintf(os.Stderr, ` generate-go-for-sonarqube version: 0.0.1
-Usage: main.go [-h] -f jsonpath  -e endpoint [-n packagename] [-o outputpath]  [-u username] [-p password] 
+Usage: main.go [-h] -f jsonpath  -e endpoint [-n packagename] [-o outputpath]  [-u username] [-p password]
 
 Options:
 `)

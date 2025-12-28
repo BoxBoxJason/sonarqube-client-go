@@ -1,5 +1,5 @@
 // Manage the plugins on the server, including installing, uninstalling, and upgrading.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -47,22 +47,23 @@ type PluginsInstalledObject struct {
 }
 
 type PluginsInstalledObject_sub1 struct {
-	Description         string `json:"description,omitempty"`
-	DocumentationPath   string `json:"documentationPath,omitempty"`
-	EditionBundled      bool   `json:"editionBundled,omitempty"`
-	Filename            string `json:"filename,omitempty"`
-	Hash                string `json:"hash,omitempty"`
-	HomepageURL         string `json:"homepageUrl,omitempty"`
-	ImplementationBuild string `json:"implementationBuild,omitempty"`
-	IssueTrackerURL     string `json:"issueTrackerUrl,omitempty"`
-	Key                 string `json:"key,omitempty"`
-	License             string `json:"license,omitempty"`
-	Name                string `json:"name,omitempty"`
-	OrganizationName    string `json:"organizationName,omitempty"`
-	OrganizationURL     string `json:"organizationUrl,omitempty"`
-	SonarLintSupported  bool   `json:"sonarLintSupported,omitempty"`
-	UpdatedAt           int64  `json:"updatedAt,omitempty"`
-	Version             string `json:"version,omitempty"`
+	Description          string   `json:"description,omitempty"`
+	DocumentationPath    string   `json:"documentationPath,omitempty"`
+	EditionBundled       bool     `json:"editionBundled,omitempty"`
+	Filename             string   `json:"filename,omitempty"`
+	Hash                 string   `json:"hash,omitempty"`
+	HomepageURL          string   `json:"homepageUrl,omitempty"`
+	ImplementationBuild  string   `json:"implementationBuild,omitempty"`
+	IssueTrackerURL      string   `json:"issueTrackerUrl,omitempty"`
+	Key                  string   `json:"key,omitempty"`
+	License              string   `json:"license,omitempty"`
+	Name                 string   `json:"name,omitempty"`
+	OrganizationName     string   `json:"organizationName,omitempty"`
+	OrganizationURL      string   `json:"organizationUrl,omitempty"`
+	RequiredForLanguages []string `json:"requiredForLanguages,omitempty"`
+	SonarLintSupported   bool     `json:"sonarLintSupported,omitempty"`
+	UpdatedAt            int64    `json:"updatedAt,omitempty"`
+	Version              string   `json:"version,omitempty"`
 }
 
 type PluginsPendingObject struct {
@@ -168,7 +169,7 @@ type PluginsDownloadOption struct {
 }
 
 // Download Download plugin JAR, for usage by scanner engine
-func (s *PluginsService) Download(opt *PluginsDownloadOption) (v *string, resp *http.Response, err error) {
+func (s *PluginsService) Download(opt *PluginsDownloadOption) (resp *http.Response, err error) {
 	err = s.ValidateDownloadOpt(opt)
 	if err != nil {
 		return
@@ -177,10 +178,9 @@ func (s *PluginsService) Download(opt *PluginsDownloadOption) (v *string, resp *
 	if err != nil {
 		return
 	}
-	v = new(string)
-	resp, err = s.client.Do(req, v)
+	resp, err = s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, err
+		return
 	}
 	return
 }

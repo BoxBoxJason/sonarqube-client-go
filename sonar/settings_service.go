@@ -1,5 +1,5 @@
 // Manage settings.
-package sonar
+package sonargo
 
 import "net/http"
 
@@ -153,10 +153,8 @@ func (s *SettingsService) LoginMessage() (v *SettingsLoginMessageObject, resp *h
 }
 
 type SettingsResetOption struct {
-	Branch      string `url:"branch,omitempty"`      // Description:"Branch key",ExampleValue:"feature/my_branch"
-	Component   string `url:"component,omitempty"`   // Description:"Component key",ExampleValue:"my_project"
-	Keys        string `url:"keys,omitempty"`        // Description:"Comma-separated list of keys",ExampleValue:"sonar.links.scm,sonar.debt.hoursInDay"
-	PullRequest string `url:"pullRequest,omitempty"` // Description:"Pull request id",ExampleValue:"5461"
+	Component string `url:"component,omitempty"` // Description:"Component key. Only keys for projects, applications, portfolios or subportfolios are accepted.",ExampleValue:"my_project"
+	Keys      string `url:"keys,omitempty"`      // Description:"Comma-separated list of keys",ExampleValue:"sonar.links.scm,sonar.debt.hoursInDay"
 }
 
 // Reset Remove a setting value.<br>The settings defined in conf/sonar.properties are read-only and can't be changed.<br/>Requires one of the following permissions: <ul><li>'Administer System'</li><li>'Administer' rights on the specified component</li></ul>
@@ -177,7 +175,7 @@ func (s *SettingsService) Reset(opt *SettingsResetOption) (resp *http.Response, 
 }
 
 type SettingsSetOption struct {
-	Component   string `url:"component,omitempty"`   // Description:"Component key",ExampleValue:"my_project"
+	Component   string `url:"component,omitempty"`   // Description:"Component key. Only keys for projects, applications, portfolios or subportfolios are accepted.",ExampleValue:"my_project"
 	FieldValues string `url:"fieldValues,omitempty"` // Description:"Setting field values. To set several values, the parameter must be called once for each value.",ExampleValue:"fieldValues={"firstField":"first value", "secondField":"second value", "thirdField":"third value"}"
 	Key         string `url:"key,omitempty"`         // Description:"Setting key",ExampleValue:"sonar.core.serverBaseURL"
 	Value       string `url:"value,omitempty"`       // Description:"Setting value. To reset a value, please use the reset web service.",ExampleValue:"http://my-sonarqube-instance.com"
