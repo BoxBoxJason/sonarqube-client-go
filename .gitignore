@@ -13,3 +13,4 @@
 *.out
 test
 integration_testing
+codequality/

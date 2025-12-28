@@ -1,0 +1,47 @@
+title = "Changelog"
+# Match semver tags like v1.2.3 or 1.2.3
+tag_pattern = "^v?\\d+\\.\\d+\\.\\d+$"
+
+# Default unreleased section title
+unreleased = "Unreleased"
+
+# Header template
+[templates]
+header = """# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [git-cliff](https://github.com/orhun/git-cliff) and Conventional Commits.
+"""
+
+# Sections grouped by conventional commit types
+[[sections]]
+title = "Added"
+types = ["feat"]
+
+[[sections]]
+title = "Changed"
+types = ["feat!", "refactor"]
+
+[[sections]]
+title = "Fixed"
+types = ["fix"]
+
+[[sections]]
+title = "Documentation"
+types = ["docs"]
+
+[[sections]]
+title = "Performance"
+types = ["perf"]
+
+[[sections]]
+title = "Tests"
+types = ["test"]
+
+[[sections]]
+title = "Chores"
+types = ["chore", "build", "ci", "style"]
+
+# Optionally ignore generated or vendor files
+ignore = ["**/vendor/**"]
