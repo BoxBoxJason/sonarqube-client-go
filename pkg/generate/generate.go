@@ -59,6 +59,23 @@ func GenerateClient() error {
 		}
 		g.Return(Id("c"), Nil())
 	})
+	// Generate NewClientWithToken function
+	client.Func().Id("NewClientWithToken").Params(List(Id("endpoint"), Id("token")).String()).Params(Op("*").Id("Client"), Error()).BlockFunc(func(g *Group) {
+		g.Id("c").Op(":=").Op("&Client{token: token, authType: privateToken, httpClient: http.DefaultClient}")
+		g.If(
+			Id("endpoint").Op("==").Lit(""),
+		).Block(
+			Id("c").Dot("SetBaseURL").Call(Id("defaultBaseURL")),
+		).Else().Block(
+			If(Err().Op(" := c.SetBaseURL(endpoint); err != nil").Block(
+				Return(Nil(), Err()),
+			)),
+		)
+		for _, service := range services {
+			g.Id("c").Dot(strcase.ToCamel(service)).Op("=&").Id(strcase.ToCamel(service) + "Service").Values(Dict{Id("client"): Id("c")})
+		}
+		g.Return(Id("c"), Nil())
+	})
 	return client.Save(WorkingDir + "/client.go")
 }
 func prepare(pkgName, workingDir, endpoint, username, password string) error {
@@ -153,6 +170,12 @@ func Build(pkgName, workingDir, endpoint, username, password string, apidoc *api
 		err = AddIntegrationFile(&item)
 		if err != nil {
 			glog.Errorf("Failed to create integration_testing file of service %s", name)
+			return err
+		}
+		// Generate unit tests for the service
+		err = AddServiceTestFile(&item)
+		if err != nil {
+			glog.Errorf("Failed to create unit test file for service %s", name)
 			return err
 		}
 	}
@@ -296,7 +319,138 @@ func AddStaticFile() error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(WorkingDir+"/client_util.go", []byte(s2), 0644)
+	// write core client and util files
+	if err := os.WriteFile(WorkingDir+"/client_util.go", []byte(s2), 0644); err != nil {
+		return err
+	}
+	// write generated tests for core client utilities
+	ctBody := strings.ReplaceAll(ClientTestConst, "\r\n", "\n")
+	ctBody = strings.ReplaceAll(ctBody, "\r", "\n")
+	ct := fmt.Sprintf("package %s\n\n%s", PackageName, ctBody)
+	if err := ioutil.WriteFile(WorkingDir+"/client_test.go", []byte(ct), 0644); err != nil {
+		return err
+	}
+	cutBody := strings.ReplaceAll(ClientUtilTestConst, "\r\n", "\n")
+	cutBody = strings.ReplaceAll(cutBody, "\r", "\n")
+	cut := fmt.Sprintf("package %s\n\n%s", PackageName, cutBody)
+	if err := ioutil.WriteFile(WorkingDir+"/client_util_test.go", []byte(cut), 0644); err != nil {
+		return err
+	}
+	return nil
+}
+
+// AddServiceTestFile generates unit tests for a service using httptest mock server
+func AddServiceTestFile(service *api.WebService) error {
+	if service == nil || len(service.Actions) == 0 {
+		return nil
+	}
+	serviceName := service.Path[4:]
+	serviceNameCamel := strcase.ToCamel(serviceName)
+
+	f := NewFile(PackageName)
+	f.ImportName("net/http", "http")
+	f.ImportName("net/http/httptest", "httptest")
+	f.ImportName("testing", "testing")
+	f.ImportName("encoding/json", "json")
+
+	// Generate test for each action
+	for _, action := range service.Actions {
+		actionName := strcase.ToCamel(action.Key)
+		hasOption := len(action.Params) > 0
+
+		// Determine if the method returns a response value (3 return values) or just (resp, err)
+		// This must match the logic in GenerateGoContent
+		method := "GET"
+		if action.Post {
+			method = "POST"
+		}
+		noResp := false
+		switch action.ResponseType {
+		case "json", "txt", "log", "svg", "xml", "proto":
+			noResp = false
+		case "no-content", "":
+			noResp = true
+		default:
+			// For unknown response types, GET returns response, POST doesn't
+			if method != "GET" {
+				noResp = true
+			}
+		}
+		hasResp := !noResp
+		isProto := action.ResponseType == "proto"
+
+		testFuncName := "Test" + serviceNameCamel + "_" + actionName
+
+		f.Func().Id(testFuncName).Params(Id("t").Op("*").Qual("testing", "T")).BlockFunc(func(g *Group) {
+			// Create mock server
+			g.Comment("Create mock server")
+			g.Id("ts").Op(":=").Qual("net/http/httptest", "NewServer").Call(
+				Qual("net/http", "HandlerFunc").Call(
+					Func().Params(Id("w").Qual("net/http", "ResponseWriter"), Id("r").Op("*").Qual("net/http", "Request")).BlockFunc(func(h *Group) {
+						h.Comment("Verify request method")
+						h.If(Id("r").Dot("Method").Op("!=").Lit(method)).Block(
+							Id("t").Dot("Errorf").Call(Lit("expected method "+method+", got %s"), Id("r").Dot("Method")),
+						)
+						h.Comment("Return mock response")
+						if isProto {
+							// For proto responses, return 200 with valid JSON empty array
+							// The Do function uses json.Decode for []byte type
+							h.Id("w").Dot("Header").Call().Dot("Set").Call(Lit("Content-Type"), Lit("application/json"))
+							h.Id("w").Dot("WriteHeader").Call(Lit(200))
+							h.Id("w").Dot("Write").Call(Index().Byte().Call(Lit("[]")))
+						} else if noResp {
+							// No response body expected
+							h.Id("w").Dot("WriteHeader").Call(Lit(204))
+						} else {
+							// Use null for JSON which is valid for any pointer/slice type
+							h.Id("w").Dot("Header").Call().Dot("Set").Call(Lit("Content-Type"), Lit("application/json"))
+							h.Id("w").Dot("WriteHeader").Call(Lit(200))
+							h.Id("w").Dot("Write").Call(Index().Byte().Call(Lit("null")))
+						}
+					}),
+				),
+			)
+			g.Defer().Id("ts").Dot("Close").Call()
+
+			// Create client pointing to mock server
+			g.Comment("Create client pointing to mock server")
+			g.List(Id("client"), Id("err")).Op(":=").Id("NewClient").Call(Id("ts").Dot("URL").Op("+").Lit("/api/"), Lit("user"), Lit("pass"))
+			g.If(Err().Op("!=").Nil()).Block(
+				Id("t").Dot("Fatalf").Call(Lit("failed to create client: %v"), Err()),
+			)
+
+			// Call the service method
+			g.Comment("Call service method")
+			if hasOption {
+				g.Id("opt").Op(":=").Op("&").Id(serviceNameCamel + strcase.ToCamel(action.Key) + "Option").Values()
+				if hasResp {
+					g.List(Id("_"), Id("resp"), Id("err")).Op(":=").Id("client").Dot(serviceNameCamel).Dot(actionName).Call(Id("opt"))
+				} else {
+					g.List(Id("resp"), Id("err")).Op(":=").Id("client").Dot(serviceNameCamel).Dot(actionName).Call(Id("opt"))
+				}
+			} else {
+				if hasResp {
+					g.List(Id("_"), Id("resp"), Id("err")).Op(":=").Id("client").Dot(serviceNameCamel).Dot(actionName).Call()
+				} else {
+					g.List(Id("resp"), Id("err")).Op(":=").Id("client").Dot(serviceNameCamel).Dot(actionName).Call()
+				}
+			}
+			g.If(Err().Op("!=").Nil()).Block(
+				Id("t").Dot("Fatalf").Call(Lit(actionName+" failed: %v"), Err()),
+			)
+			// Check expected status code
+			expectedStatus := 200
+			if noResp {
+				expectedStatus = 204
+			}
+			g.If(Id("resp").Dot("StatusCode").Op("!=").Lit(expectedStatus)).Block(
+				Id("t").Dot("Errorf").Call(Lit(fmt.Sprintf("expected status %d, got %%d", expectedStatus)), Id("resp").Dot("StatusCode")),
+			)
+		})
+		f.Line()
+	}
+
+	return f.Save(WorkingDir + "/" + serviceName + "_service_test.go")
 }
 
 func GenerateGoContent(packageName string, service *api.WebService) (f *File, err error) {

@@ -1,0 +1,311 @@
+package sonargo
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+)
+
+func TestSystem_ChangeLogLevel(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.WriteHeader(204)
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &SystemChangeLogLevelOption{}
+	resp, err := client.System.ChangeLogLevel(opt)
+	if err != nil {
+		t.Fatalf("ChangeLogLevel failed: %v", err)
+	}
+	if resp.StatusCode != 204 {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_DbMigrationStatus(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	_, resp, err := client.System.DbMigrationStatus()
+	if err != nil {
+		t.Fatalf("DbMigrationStatus failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Health(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	_, resp, err := client.System.Health()
+	if err != nil {
+		t.Fatalf("Health failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Info(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	_, resp, err := client.System.Info()
+	if err != nil {
+		t.Fatalf("Info failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Liveness(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.WriteHeader(204)
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	resp, err := client.System.Liveness()
+	if err != nil {
+		t.Fatalf("Liveness failed: %v", err)
+	}
+	if resp.StatusCode != 204 {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Logs(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &SystemLogsOption{}
+	_, resp, err := client.System.Logs(opt)
+	if err != nil {
+		t.Fatalf("Logs failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_MigrateDb(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	_, resp, err := client.System.MigrateDb()
+	if err != nil {
+		t.Fatalf("MigrateDb failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Ping(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	_, resp, err := client.System.Ping()
+	if err != nil {
+		t.Fatalf("Ping failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Restart(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.WriteHeader(204)
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	resp, err := client.System.Restart()
+	if err != nil {
+		t.Fatalf("Restart failed: %v", err)
+	}
+	if resp.StatusCode != 204 {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Status(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	_, resp, err := client.System.Status()
+	if err != nil {
+		t.Fatalf("Status failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestSystem_Upgrades(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	_, resp, err := client.System.Upgrades()
+	if err != nil {
+		t.Fatalf("Upgrades failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}

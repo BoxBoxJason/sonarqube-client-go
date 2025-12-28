@@ -1,0 +1,260 @@
+package sonargo
+
+import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+)
+
+func TestHotspots_AddComment(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.WriteHeader(204)
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsAddCommentOption{}
+	resp, err := client.Hotspots.AddComment(opt)
+	if err != nil {
+		t.Fatalf("AddComment failed: %v", err)
+	}
+	if resp.StatusCode != 204 {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_Assign(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.WriteHeader(204)
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsAssignOption{}
+	resp, err := client.Hotspots.Assign(opt)
+	if err != nil {
+		t.Fatalf("Assign failed: %v", err)
+	}
+	if resp.StatusCode != 204 {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_ChangeStatus(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.WriteHeader(204)
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsChangeStatusOption{}
+	resp, err := client.Hotspots.ChangeStatus(opt)
+	if err != nil {
+		t.Fatalf("ChangeStatus failed: %v", err)
+	}
+	if resp.StatusCode != 204 {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_DeleteComment(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.WriteHeader(204)
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsDeleteCommentOption{}
+	resp, err := client.Hotspots.DeleteComment(opt)
+	if err != nil {
+		t.Fatalf("DeleteComment failed: %v", err)
+	}
+	if resp.StatusCode != 204 {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_EditComment(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "POST" {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsEditCommentOption{}
+	_, resp, err := client.Hotspots.EditComment(opt)
+	if err != nil {
+		t.Fatalf("EditComment failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_List(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsListOption{}
+	_, resp, err := client.Hotspots.List(opt)
+	if err != nil {
+		t.Fatalf("List failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_Pull(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("[]"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsPullOption{}
+	_, resp, err := client.Hotspots.Pull(opt)
+	if err != nil {
+		t.Fatalf("Pull failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_Search(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsSearchOption{}
+	_, resp, err := client.Hotspots.Search(opt)
+	if err != nil {
+		t.Fatalf("Search failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_Show(t *testing.T) {
+	// Create mock server
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Verify request method
+		if r.Method != "GET" {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
+		// Return mock response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
+	}))
+	defer ts.Close()
+	// Create client pointing to mock server
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+	// Call service method
+	opt := &HotspotsShowOption{}
+	_, resp, err := client.Hotspots.Show(opt)
+	if err != nil {
+		t.Fatalf("Show failed: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
