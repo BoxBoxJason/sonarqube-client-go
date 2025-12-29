@@ -82,7 +82,7 @@ type SourcesScmObject struct {
 }
 
 type SourcesShowObject struct {
-	Sources [][]interface{} `json:"sources,omitempty"`
+	Sources [][]any `json:"sources,omitempty"`
 }
 
 type SourcesIndexOption struct {

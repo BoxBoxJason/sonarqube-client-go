@@ -25,11 +25,11 @@ type PermissionsGroupsObject struct {
 }
 
 type PermissionsGroupsObject_sub1 struct {
-	Description string        `json:"description,omitempty"`
-	ID          string        `json:"id,omitempty"`
-	Managed     bool          `json:"managed,omitempty"`
-	Name        string        `json:"name,omitempty"`
-	Permissions []interface{} `json:"permissions,omitempty"`
+	Description string `json:"description,omitempty"`
+	ID          string `json:"id,omitempty"`
+	Managed     bool   `json:"managed,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Permissions []any  `json:"permissions,omitempty"`
 }
 
 type PermissionsGroupsObject_sub2 struct {

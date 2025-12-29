@@ -9,6 +9,9 @@ type AlmIntegrationsService struct {
 	client *Client
 }
 
+// [TODO] cannot fetch response example for <check_pat>, struct needs to be filled manually
+type AlmIntegrationsCheckPatObject struct{}
+
 type AlmIntegrationsGetGithubClientIdObject struct {
 	ClientID string `json:"clientId,omitempty"`
 }
@@ -133,7 +136,7 @@ type AlmIntegrationsCheckPatOption struct {
 }
 
 // CheckPat Check validity of a Personal Access Token for the given DevOps Platform setting<br/>Requires the 'Create Projects' permission
-func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v *AlmIntegrationsCheckPatObject, resp *http.Response, err error) {
 	err = s.ValidateCheckPatOpt(opt)
 	if err != nil {
 		return
@@ -142,9 +145,10 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (r
 	if err != nil {
 		return
 	}
-	resp, err = s.client.Do(req, nil)
+	v = new(AlmIntegrationsCheckPatObject)
+	resp, err = s.client.Do(req, v)
 	if err != nil {
-		return
+		return nil, resp, err
 	}
 	return
 }

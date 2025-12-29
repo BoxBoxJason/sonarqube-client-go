@@ -35,11 +35,11 @@ type AlmSettingsListObject_sub1 struct {
 }
 
 type AlmSettingsListDefinitionsObject struct {
-	Azure          []interface{}                           `json:"azure,omitempty"`
-	Bitbucket      []interface{}                           `json:"bitbucket,omitempty"`
-	Bitbucketcloud []interface{}                           `json:"bitbucketcloud,omitempty"`
+	Azure          []any                                   `json:"azure,omitempty"`
+	Bitbucket      []any                                   `json:"bitbucket,omitempty"`
+	Bitbucketcloud []any                                   `json:"bitbucketcloud,omitempty"`
 	Github         []AlmSettingsListDefinitionsObject_sub1 `json:"github,omitempty"`
-	Gitlab         []interface{}                           `json:"gitlab,omitempty"`
+	Gitlab         []any                                   `json:"gitlab,omitempty"`
 }
 
 type AlmSettingsListDefinitionsObject_sub1 struct {

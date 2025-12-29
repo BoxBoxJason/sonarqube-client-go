@@ -1,42 +1,44 @@
+version: 2
+
 run:
   timeout: 5m
-  tests: true
+  tests: false
+
+# Output format to generate checkstyle report (used by CI)
+output:
+  formats:
+    checkstyle:
+      path: codequality/golangci-lint-report.xml
+    text:
+      path: stdout
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes: github.com/boxjason/sonarqube-client-go
+    gofmt:
+      simplify: true
 
 linters:
-  enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - unused
-    - gofmt
-    - goimports
+  default: all
   disable:
-    - structcheck # deprecated
-    - varcheck # deprecated
-    - deadcode # deprecated
-
-linters-settings:
-  gofmt:
-    simplify: true
-  goimports:
-    local-prefixes: github.com/boxboxjason/sonarqube-client-go
-
-issues:
-  exclude-rules:
-    # Ignore long lines in generated code
-    - path: generated_static_file_const\.go
-      linters:
-        - lll
-    # Ignore complexity in test files
-    - path: _test\.go
-      linters:
-        - cyclop
-        - funlen
-    # Ignore unused parameters in test helper functions
-    - path: pkg/testutil/
-      linters:
-        - unused
-  max-issues-per-linter: 50
-  max-same-issues: 3
+    - depguard
+    - lll
+    - err113
+  settings:
+    govet:
+      enable-all: true
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/boxjason/sonarqube-client-go)
+      skip-generated: true
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2

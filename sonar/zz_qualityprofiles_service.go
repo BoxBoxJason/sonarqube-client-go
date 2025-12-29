@@ -131,11 +131,11 @@ type QualityprofilesCreateObject_sub1 struct {
 }
 
 type QualityprofilesExportersObject struct {
-	Exporters []interface{} `json:"exporters,omitempty"`
+	Exporters []any `json:"exporters,omitempty"`
 }
 
 type QualityprofilesImportersObject struct {
-	Importers []interface{} `json:"importers,omitempty"`
+	Importers []any `json:"importers,omitempty"`
 }
 
 type QualityprofilesInheritanceObject struct {

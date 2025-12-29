@@ -99,11 +99,6 @@ func TestAddStaticFile(t *testing.T) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	// Set up the package variables
-	WorkingDir = tempDir
-	PackageName = "testpkg"
-	CurrentRepo = "github.com/boxboxjason/sonarqube-client-go/testpkg"
-
 	// Create integration_testing directory at module root level
 	integrationDir := filepath.Join(moduleRoot, "integration_testing")
 	if _, err := os.Stat(integrationDir); os.IsNotExist(err) {
@@ -113,7 +108,14 @@ func TestAddStaticFile(t *testing.T) {
 		}
 	}
 
-	err = AddStaticFile()
+	// Create Generator instance
+	gen := &Generator{
+		WorkingDir:  tempDir,
+		PackageName: "testpkg",
+		CurrentRepo: "github.com/boxboxjason/sonarqube-client-go/testpkg",
+	}
+
+	err = gen.AddStaticFile()
 	if err != nil {
 		t.Logf("AddStaticFile failed (expected in test environment): %v", err)
 		// Don't fail the test - this is expected behavior in test environment
@@ -121,21 +123,23 @@ func TestAddStaticFile(t *testing.T) {
 	}
 
 	// Check that sonarqube.go was created
-	sonarqubeFile := filepath.Join(tempDir, "sonarqube.go")
+	sonarqubeFile := filepath.Join(tempDir, "zz_sonarqube.go")
 	if _, err := os.Stat(sonarqubeFile); os.IsNotExist(err) {
-		t.Error("sonarqube.go was not created")
+		t.Error("zz_sonarqube.go was not created")
 	}
 
 	// Check that client_util.go was created
-	clientUtilFile := filepath.Join(tempDir, "client_util.go")
+	clientUtilFile := filepath.Join(tempDir, "zz_client_util.go")
 	if _, err := os.Stat(clientUtilFile); os.IsNotExist(err) {
-		t.Error("client_util.go was not created")
+		t.Error("zz_client_util.go was not created")
 	}
 }
 
 func TestGenerateGoContent(t *testing.T) {
-	// Initialize required global variables
-	CurrentRepo = testRepo
+	// Create Generator instance
+	gen := &Generator{
+		CurrentRepo: testRepo,
+	}
 
 	// Test with a simple WebService
 	service := &api.WebService{
@@ -151,7 +155,7 @@ func TestGenerateGoContent(t *testing.T) {
 		},
 	}
 
-	file, err := GenerateGoContent("testpkg", service)
+	file, err := gen.GenerateGoContent("testpkg", service)
 	if err != nil {
 		t.Fatalf("GenerateGoContent failed: %v", err)
 	}

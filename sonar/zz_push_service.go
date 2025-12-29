@@ -9,13 +9,16 @@ type PushService struct {
 	client *Client
 }
 
+// [TODO] cannot fetch response example for <sonarlint_events>, struct needs to be filled manually
+type PushSonarlintEventsObject struct{}
+
 type PushSonarlintEventsOption struct {
 	Languages   string `url:"languages,omitempty"`   // Description:"Comma-separated list of languages for which events will be delivered",ExampleValue:"java,cobol"
 	ProjectKeys string `url:"projectKeys,omitempty"` // Description:"Comma-separated list of projects keys for which events will be delivered",ExampleValue:"example-project-key,example-project-key2"
 }
 
 // SonarlintEvents Endpoint for listening to server side events. Currently it notifies listener about change to activation of a rule
-func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (resp *http.Response, err error) {
+func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (v *PushSonarlintEventsObject, resp *http.Response, err error) {
 	err = s.ValidateSonarlintEventsOpt(opt)
 	if err != nil {
 		return
@@ -24,9 +27,10 @@ func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (resp *htt
 	if err != nil {
 		return
 	}
-	resp, err = s.client.Do(req, nil)
+	v = new(PushSonarlintEventsObject)
+	resp, err = s.client.Do(req, v)
 	if err != nil {
-		return
+		return nil, resp, err
 	}
 	return
 }

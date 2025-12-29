@@ -9,6 +9,9 @@ type SystemService struct {
 	client *Client
 }
 
+// [TODO] cannot fetch response example for <liveness>, struct needs to be filled manually
+type SystemLivenessObject struct{}
+
 type SystemDbMigrationStatusObject struct {
 	Message   string `json:"message,omitempty"`
 	StartedAt string `json:"startedAt,omitempty"`
@@ -45,7 +48,7 @@ type SystemInfoObject struct {
 	Compute_Engine_Tasks               SystemInfoObject_sub7  `json:"Compute Engine Tasks,omitempty"`
 	Database                           SystemInfoObject_sub8  `json:"Database,omitempty"`
 	Health                             string                 `json:"Health,omitempty"`
-	Health_Causes                      []interface{}          `json:"Health Causes,omitempty"`
+	Health_Causes                      []any                  `json:"Health Causes,omitempty"`
 	Plugins                            SystemInfoObject_sub9  `json:"Plugins,omitempty"`
 	Search_Indexes                     SystemInfoObject_sub10 `json:"Search Indexes,omitempty"`
 	Search_State                       SystemInfoObject_sub11 `json:"Search State,omitempty"`
@@ -557,14 +560,15 @@ func (s *SystemService) Info() (v *SystemInfoObject, resp *http.Response, err er
 }
 
 // Liveness Provide liveness of SonarQube, meant to be used for a liveness probe on Kubernetes<p>Require 'Administer System' permission or authentication with passcode</p><p>When SonarQube is fully started, liveness check for database connectivity, Compute Engine status, and, except for DataCenter Edition, if ElasticSearch is Green or Yellow</p><p>When SonarQube is on Safe Mode (for example when a database migration is running), liveness check only for database connectivity</p><p>  <ul> <li>HTTP 204: this SonarQube node is alive</li> <li>Any other HTTP code: this SonarQube node is not alive, and should be reschedule</li> </ul></p>
-func (s *SystemService) Liveness() (resp *http.Response, err error) {
+func (s *SystemService) Liveness() (v *SystemLivenessObject, resp *http.Response, err error) {
 	req, err := s.client.NewRequest("GET", "system/liveness", nil)
 	if err != nil {
 		return
 	}
-	resp, err = s.client.Do(req, nil)
+	v = new(SystemLivenessObject)
+	resp, err = s.client.Do(req, v)
 	if err != nil {
-		return
+		return nil, resp, err
 	}
 	return
 }

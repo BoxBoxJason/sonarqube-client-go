@@ -16,7 +16,9 @@ func TestAlmIntegrations_CheckPat(t *testing.T) {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 		// Return mock response
-		w.WriteHeader(204)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
 	}))
 	defer ts.Close()
 	// Create client pointing to mock server
@@ -26,12 +28,12 @@ func TestAlmIntegrations_CheckPat(t *testing.T) {
 	}
 	// Call service method
 	opt := &AlmIntegrationsCheckPatOption{}
-	resp, err := client.AlmIntegrations.CheckPat(opt)
+	_, resp, err := client.AlmIntegrations.CheckPat(opt)
 	if err != nil {
 		t.Fatalf("CheckPat failed: %v", err)
 	}
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
 	}
 }
 

@@ -63,7 +63,7 @@ type RulesCreateObject_sub3 struct {
 	Scope                      string                   `json:"scope,omitempty"`
 	Severity                   string                   `json:"severity,omitempty"`
 	Status                     string                   `json:"status,omitempty"`
-	SysTags                    []interface{}            `json:"sysTags,omitempty"`
+	SysTags                    []any                    `json:"sysTags,omitempty"`
 	TemplateKey                string                   `json:"templateKey,omitempty"`
 	Type                       string                   `json:"type,omitempty"`
 }
@@ -120,7 +120,7 @@ type RulesSearchObject_sub11 struct {
 	Severity                   string                    `json:"severity,omitempty"`
 	Status                     string                    `json:"status,omitempty"`
 	SysTags                    []string                  `json:"sysTags,omitempty"`
-	Tags                       []interface{}             `json:"tags,omitempty"`
+	Tags                       []any                     `json:"tags,omitempty"`
 	TemplateKey                string                    `json:"templateKey,omitempty"`
 	Type                       string                    `json:"type,omitempty"`
 	UpdatedAt                  string                    `json:"updatedAt,omitempty"`
@@ -213,7 +213,7 @@ type RulesShowObject_sub7 struct {
 	Severity                   string                 `json:"severity,omitempty"`
 	Status                     string                 `json:"status,omitempty"`
 	SysTags                    []string               `json:"sysTags,omitempty"`
-	Tags                       []interface{}          `json:"tags,omitempty"`
+	Tags                       []any                  `json:"tags,omitempty"`
 	Template                   bool                   `json:"template,omitempty"`
 	Type                       string                 `json:"type,omitempty"`
 }
@@ -280,8 +280,8 @@ type RulesUpdateObject_sub3 struct {
 	Scope                      string                   `json:"scope,omitempty"`
 	Severity                   string                   `json:"severity,omitempty"`
 	Status                     string                   `json:"status,omitempty"`
-	SysTags                    []interface{}            `json:"sysTags,omitempty"`
-	Tags                       []interface{}            `json:"tags,omitempty"`
+	SysTags                    []any                    `json:"sysTags,omitempty"`
+	Tags                       []any                    `json:"tags,omitempty"`
 	TemplateKey                string                   `json:"templateKey,omitempty"`
 	Type                       string                   `json:"type,omitempty"`
 }

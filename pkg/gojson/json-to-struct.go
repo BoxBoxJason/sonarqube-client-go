@@ -1,99 +1,6 @@
-// gojson generates go struct defintions from JSON documents
+// Package gojson generates go struct defintions from JSON documents
 //
-// Reads from stdin and prints to stdout
-//
-// Example:
-// 	curl -s https://api.github.com/repos/chimeracoder/gojson | gojson -name=Repository
-//
-// Output:
-// 	package main
-//
-// 	type Repository struct {
-//     	ArchiveURL       string      `json:"archive_url"`
-//     	AssigneesURL     string      `json:"assignees_url"`
-//     	BlobsURL         string      `json:"blobs_url"`
-//     	BranchesURL      string      `json:"branches_url"`
-//     	CloneURL         string      `json:"clone_url"`
-//     	CollaboratorsURL string      `json:"collaborators_url"`
-//     	CommentsURL      string      `json:"comments_url"`
-//     	CommitsURL       string      `json:"commits_url"`
-//     	CompareURL       string      `json:"compare_url"`
-//     	ContentsURL      string      `json:"contents_url"`
-//     	ContributorsURL  string      `json:"contributors_url"`
-//     	CreatedAt        string      `json:"created_at"`
-//     	DefaultBranch    string      `json:"default_branch"`
-//     	Description      string      `json:"description"`
-//     	DownloadsURL     string      `json:"downloads_url"`
-//     	EventsURL        string      `json:"events_url"`
-//     	Fork             bool        `json:"fork"`
-//     	Forks            float64     `json:"forks"`
-//     	ForksCount       float64     `json:"forks_count"`
-//     	ForksURL         string      `json:"forks_url"`
-//     	FullName         string      `json:"full_name"`
-//     	GitCommitsURL    string      `json:"git_commits_url"`
-//     	GitRefsURL       string      `json:"git_refs_url"`
-//     	GitTagsURL       string      `json:"git_tags_url"`
-//     	GitURL           string      `json:"git_url"`
-//     	HasDownloads     bool        `json:"has_downloads"`
-//     	HasIssues        bool        `json:"has_issues"`
-//     	HasWiki          bool        `json:"has_wiki"`
-//     	Homepage         interface{} `json:"homepage"`
-//     	HooksURL         string      `json:"hooks_url"`
-//     	HtmlURL          string      `json:"html_url"`
-//     	ID               float64     `json:"id"`
-//     	IssueCommentURL  string      `json:"issue_comment_url"`
-//     	IssueEventsURL   string      `json:"issue_events_url"`
-//     	IssuesURL        string      `json:"issues_url"`
-//     	KeysURL          string      `json:"keys_url"`
-//     	LabelsURL        string      `json:"labels_url"`
-//     	Language         string      `json:"language"`
-//     	LanguagesURL     string      `json:"languages_url"`
-//     	MasterBranch     string      `json:"master_branch"`
-//     	MergesURL        string      `json:"merges_url"`
-//     	MilestonesURL    string      `json:"milestones_url"`
-//     	MirrorURL        interface{} `json:"mirror_url"`
-//     	Name             string      `json:"name"`
-//     	NetworkCount     float64     `json:"network_count"`
-//     	NotificationsURL string      `json:"notifications_url"`
-//     	OpenIssues       float64     `json:"open_issues"`
-//     	OpenIssuesCount  float64     `json:"open_issues_count"`
-//     	Owner            struct {
-//         	AvatarURL         string  `json:"avatar_url"`
-//         	EventsURL         string  `json:"events_url"`
-//         	FollowersURL      string  `json:"followers_url"`
-//         	FollowingURL      string  `json:"following_url"`
-//         	GistsURL          string  `json:"gists_url"`
-//         	GravatarID        string  `json:"gravatar_id"`
-//         	HtmlURL           string  `json:"html_url"`
-//         	ID                float64 `json:"id"`
-//         	Login             string  `json:"login"`
-//         	OrganizationsURL  string  `json:"organizations_url"`
-//         	ReceivedEventsURL string  `json:"received_events_url"`
-//         	ReposURL          string  `json:"repos_url"`
-//         	SiteAdmin         bool    `json:"site_admin"`
-//         	StarredURL        string  `json:"starred_url"`
-//         	SubscriptionsURL  string  `json:"subscriptions_url"`
-//         	Type              string  `json:"type"`
-//         	URL               string  `json:"url"`
-//     } `	json:"owner"`
-//     	Private         bool    `json:"private"`
-//     	PullsURL        string  `json:"pulls_url"`
-//     	PushedAt        string  `json:"pushed_at"`
-//     	Size            float64 `json:"size"`
-//     	SshURL          string  `json:"ssh_url"`
-//     	StargazersURL   string  `json:"stargazers_url"`
-//     	StatusesURL     string  `json:"statuses_url"`
-//     	SubscribersURL  string  `json:"subscribers_url"`
-//     	SubscriptionURL string  `json:"subscription_url"`
-//     	SvnURL          string  `json:"svn_url"`
-//     	TagsURL         string  `json:"tags_url"`
-//     	TeamsURL        string  `json:"teams_url"`
-//     	TreesURL        string  `json:"trees_url"`
-//     	UpdatedAt       string  `json:"updated_at"`
-//     	URL             string  `json:"url"`
-//     	Watchers        float64 `json:"watchers"`
-//     	WatchersCount   float64 `json:"watchers_count"`
-// 	}
+// # Reads from stdin and prints to stdout
 package gojson
 
 import (
@@ -101,7 +8,6 @@ import (
 	"fmt"
 	"go/format"
 	"io"
-	"io/ioutil"
 	"math"
 	"reflect"
 	"sort"
@@ -109,16 +15,17 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/json-iterator/go"
+	jsoniter "github.com/json-iterator/go"
 	"gopkg.in/yaml.v2"
 )
 
-var ForceFloats bool
+// ForceFloats forces all numbers to be floats.
+var ForceFloats bool //nolint:gochecknoglobals
 
 // commonInitialisms is a set of common initialisms.
 // Only add entries that are highly unlikely to be non-initialisms.
 // For instance, "ID" is fine (Freudian code is rare), but "AND" is not.
-var commonInitialisms = map[string]bool{
+var commonInitialisms = map[string]bool{ //nolint:gochecknoglobals
 	"API":   true,
 	"ASCII": true,
 	"CPU":   true,
@@ -154,7 +61,7 @@ var commonInitialisms = map[string]bool{
 	"DB":    true,
 }
 
-var intToWordMap = []string{
+var intToWordMap = []string{ //nolint:gochecknoglobals
 	"zero",
 	"one",
 	"two",
@@ -167,54 +74,68 @@ var intToWordMap = []string{
 	"nine",
 }
 
-// var cache []bitarray.BitArray = make([]bitarray.BitArray, 0)
-// var currentIndex int64 = 0
-// var fieldPosition map[string]int64 = make(map[string]int)
+// Parser is a function that parses input into an interface.
+type Parser func(io.Reader) (any, error)
 
-type Parser func(io.Reader) (interface{}, error)
+// ParseJSON parses JSON input.
+func ParseJSON(input io.Reader) (any, error) {
+	var (
+		result any
+		json   = jsoniter.ConfigCompatibleWithStandardLibrary
+	)
 
-func ParseJson(input io.Reader) (interface{}, error) {
-	var result interface{}
-	var json = jsoniter.ConfigCompatibleWithStandardLibrary
-	byts, err := ioutil.ReadAll(input)
+	byts, err := io.ReadAll(input)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read input: %w", err)
 	}
-	if err := json.Unmarshal(byts, &result); err != nil {
-		return nil, err
+
+	err = json.Unmarshal(byts, &result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal json: %w", err)
 	}
+
 	return result, nil
 }
 
-func ParseYaml(input io.Reader) (interface{}, error) {
-	var result interface{}
-	b, err := readFile(input)
+// ParseYAML parses YAML input.
+func ParseYAML(input io.Reader) (any, error) {
+	var result any
+
+	content, err := readFile(input)
 	if err != nil {
 		return nil, err
 	}
-	if err := yaml.Unmarshal(b, &result); err != nil {
-		return nil, err
+
+	err = yaml.Unmarshal(content, &result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal yaml: %w", err)
 	}
+
 	return result, nil
 }
 
+//nolint:unparam
 func readFile(input io.Reader) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
+
 	_, err := io.Copy(buf, input)
 	if err != nil {
-		return []byte{}, nil
+		return []byte{}, nil //nolint:nilerr // This seems to be intended behavior in original code
 	}
+
 	return buf.Bytes(), nil
 }
 
 // Generate a struct definition given a JSON string representation of an object and a name structName.
+//
+//nolint:cyclop
 func Generate(input io.Reader, parser Parser, structName string, tags []string, subStruct bool, convertFloats bool) ([]byte, error) {
-	var subStructMap map[string]string = nil
+	var subStructMap map[string]string
 	if subStruct {
 		subStructMap = make(map[string]string)
 	}
 
-	var result map[string]interface{}
+	var result map[string]any
 
 	iresult, err := parser(input)
 	if err != nil {
@@ -222,19 +143,21 @@ func Generate(input io.Reader, parser Parser, structName string, tags []string, 
 	}
 
 	switch iresult := iresult.(type) {
-	case map[interface{}]interface{}:
+	case map[any]any:
 		result = convertKeysToStrings(iresult)
-	case map[string]interface{}:
+	case map[string]any:
 		result = iresult
-	case []interface{}:
+	case []any:
 		src := fmt.Sprintf("type %s %s\n",
 			structName,
 			typeForValue(iresult, structName, tags, subStructMap, convertFloats))
-		formatted, err := format.Source([]byte(src))
-		if err != nil {
-			err = fmt.Errorf("error formatting: %s, was formatting\n%s", err, src)
+
+		formatted, fmtErr := format.Source([]byte(src))
+		if fmtErr != nil {
+			return nil, fmt.Errorf("error formatting: %w, was formatting\n%s", fmtErr, src)
 		}
-		return formatted, err
+
+		return formatted, nil
 	default:
 		return nil, fmt.Errorf("unexpected type: %T", iresult)
 	}
@@ -256,13 +179,14 @@ func Generate(input io.Reader, parser Parser, structName string, tags []string, 
 
 	formatted, err := format.Source([]byte(src))
 	if err != nil {
-		err = fmt.Errorf("error formatting: %s, was formatting\n%s", err, src)
+		return nil, fmt.Errorf("error formatting: %w, was formatting\n%s", err, src)
 	}
-	return formatted, err
+
+	return formatted, nil
 }
 
-func convertKeysToStrings(obj map[interface{}]interface{}) map[string]interface{} {
-	res := make(map[string]interface{})
+func convertKeysToStrings(obj map[any]any) map[string]any {
+	res := make(map[string]any)
 
 	for k, v := range obj {
 		res[fmt.Sprintf("%v", k)] = v
@@ -271,30 +195,33 @@ func convertKeysToStrings(obj map[interface{}]interface{}) map[string]interface{
 	return res
 }
 
-// generateTypes Generate go struct entries for a map[string]interface{} structure
-func generateTypes(obj map[string]interface{}, structName string, tags []string, depth int, subStructMap map[string]string, convertFloats bool) string {
+// generateTypes Generate go struct entries for a map[string]any structure
+//
+//nolint:gocognit,cyclop,funlen
+func generateTypes(obj map[string]any, structName string, tags []string, depth int, subStructMap map[string]string, convertFloats bool) string {
+	var builder strings.Builder
 
-	structure := "struct {"
+	builder.WriteString("struct {")
+
 	keys := make([]string, 0, len(obj))
 	for key := range obj {
 		keys = append(keys, key)
 	}
+
 	sort.Strings(keys)
 
 	for _, key := range keys {
 		value := obj[key]
 		valueType := typeForValue(value, structName, tags, subStructMap, convertFloats)
 
-		//value = mergeElements(value)
-
-		//If a nested value, recurse
+		// If a nested value, recurse
 		switch value := value.(type) {
-		case []interface{}:
-			if len(value) > 0 {
+		case []any:
+			if len(value) > 0 { //nolint:nestif
 				sub := ""
-				if v, ok := value[0].(map[interface{}]interface{}); ok {
+				if v, ok := value[0].(map[any]any); ok {
 					sub = generateTypes(convertKeysToStrings(v), structName, tags, depth+1, subStructMap, convertFloats) + "}"
-				} else if v, ok := value[0].(map[string]interface{}); ok {
+				} else if v, ok := value[0].(map[string]any); ok {
 					sub = generateTypes(v, structName, tags, depth+1, subStructMap, convertFloats) + "}"
 				}
 
@@ -314,7 +241,7 @@ func generateTypes(obj map[string]interface{}, structName string, tags []string,
 					valueType = "[]" + subName
 				}
 			}
-		case map[interface{}]interface{}:
+		case map[any]any:
 			sub := generateTypes(convertKeysToStrings(value), structName, tags, depth+1, subStructMap, convertFloats) + "}"
 			subName := sub
 
@@ -327,8 +254,9 @@ func generateTypes(obj map[string]interface{}, structName string, tags []string,
 					subStructMap[sub] = subName
 				}
 			}
+
 			valueType = subName
-		case map[string]interface{}:
+		case map[string]any:
 			sub := generateTypes(value, structName, tags, depth+1, subStructMap, convertFloats) + "}"
 			subName := sub
 
@@ -347,52 +275,63 @@ func generateTypes(obj map[string]interface{}, structName string, tags []string,
 
 		fieldName := FmtFieldName(key)
 		tagList := make([]string, 0)
+
 		for _, t := range tags {
 			tagList = append(tagList, fmt.Sprintf("%s:\"%s,omitempty\"", t, key))
 		}
 
-		structure += fmt.Sprintf("\n%s %s `%s`",
+		builder.WriteString(fmt.Sprintf("\n%s %s `%s`",
 			fieldName,
 			valueType,
-			strings.Join(tagList, " "))
+			strings.Join(tagList, " ")))
 	}
-	return structure
+
+	return builder.String()
 }
 
 // FmtFieldName formats a string as a struct key
 //
 // Example:
-// 	FmtFieldName("foo_id")
-// Output: FooID
-func FmtFieldName(s string) string {
-	runes := []rune(s)
+//
+// FmtFieldName("foo_id")/
+//
+// Output: FooID.
+func FmtFieldName(name string) string {
+	runes := []rune(name)
 	for len(runes) > 0 && !unicode.IsLetter(runes[0]) && !unicode.IsDigit(runes[0]) {
 		runes = runes[1:]
 	}
+
 	if len(runes) == 0 {
 		return "_"
 	}
 
-	s = stringifyFirstChar(string(runes))
-	name := lintFieldName(s)
-	runes = []rune(name)
-	for i, c := range runes {
-		ok := unicode.IsLetter(c) || unicode.IsDigit(c)
-		if i == 0 {
-			ok = unicode.IsLetter(c)
+	name = stringifyFirstChar(string(runes))
+	lintedName := lintFieldName(name)
+	runes = []rune(lintedName)
+
+	for idx, char := range runes {
+		ok := unicode.IsLetter(char) || unicode.IsDigit(char)
+		if idx == 0 {
+			ok = unicode.IsLetter(char)
 		}
+
 		if !ok {
-			runes[i] = '_'
+			runes[idx] = '_'
 		}
 	}
-	s = string(runes)
-	s = strings.Trim(s, "_")
-	if len(s) == 0 {
+
+	name = string(runes)
+	name = strings.Trim(name, "_")
+
+	if len(name) == 0 {
 		return "_"
 	}
-	return s
+
+	return name
 }
 
+//nolint:gocognit,cyclop,funlen,gocritic
 func lintFieldName(name string) string {
 	// Fast path for simple cases: "_" and all lowercase.
 	if name == "_" {
@@ -400,12 +339,15 @@ func lintFieldName(name string) string {
 	}
 
 	allLower := true
+
 	for _, r := range name {
 		if !unicode.IsLower(r) {
 			allLower = false
+
 			break
 		}
 	}
+
 	if allLower {
 		runes := []rune(name)
 		if u := strings.ToUpper(name); commonInitialisms[u] {
@@ -413,16 +355,20 @@ func lintFieldName(name string) string {
 		} else {
 			runes[0] = unicode.ToUpper(runes[0])
 		}
+
 		return string(runes)
 	}
 
 	allUpperWithUnderscore := true
+
 	for _, r := range name {
 		if !unicode.IsUpper(r) && r != '_' {
 			allUpperWithUnderscore = false
+
 			break
 		}
 	}
+
 	if allUpperWithUnderscore {
 		name = strings.ToLower(name)
 	}
@@ -430,96 +376,110 @@ func lintFieldName(name string) string {
 	// Split camelCase at any lower->upper transition, and split on underscores.
 	// Check each word for common initialisms.
 	runes := []rune(name)
-	w, i := 0, 0 // index of start of word, scan
-	for i+1 <= len(runes) {
+	wordStart, scanIndex := 0, 0 // index of start of word, scan
+
+	for scanIndex+1 <= len(runes) {
 		eow := false // whether we hit the end of a word
 
-		if i+1 == len(runes) {
+		if scanIndex+1 == len(runes) {
 			eow = true
-		} else if runes[i+1] == '_' {
+		} else if runes[scanIndex+1] == '_' {
 			// underscore; shift the remainder forward over any run of underscores
 			eow = true
-			n := 1
-			for i+n+1 < len(runes) && runes[i+n+1] == '_' {
-				n++
+			underscoreCount := 1
+
+			for scanIndex+underscoreCount+1 < len(runes) && runes[scanIndex+underscoreCount+1] == '_' {
+				underscoreCount++
 			}
 
 			// Leave at most one underscore if the underscore is between two digits
-			if i+n+1 < len(runes) && unicode.IsDigit(runes[i]) && unicode.IsDigit(runes[i+n+1]) {
-				n--
+			if scanIndex+underscoreCount+1 < len(runes) && unicode.IsDigit(runes[scanIndex]) && unicode.IsDigit(runes[scanIndex+underscoreCount+1]) {
+				underscoreCount--
 			}
 
-			copy(runes[i+1:], runes[i+n+1:])
-			runes = runes[:len(runes)-n]
-		} else if unicode.IsLower(runes[i]) && !unicode.IsLower(runes[i+1]) {
+			copy(runes[scanIndex+1:], runes[scanIndex+underscoreCount+1:])
+			runes = runes[:len(runes)-underscoreCount]
+		} else if unicode.IsLower(runes[scanIndex]) && !unicode.IsLower(runes[scanIndex+1]) {
 			// lower->non-lower
 			eow = true
 		}
-		i++
+
+		scanIndex++
+
 		if !eow {
 			continue
 		}
 
-		// [w,i) is a word.
-		word := string(runes[w:i])
+		// [wordStart,scanIndex) is a word.
+		word := string(runes[wordStart:scanIndex])
 		if u := strings.ToUpper(word); commonInitialisms[u] {
-			// All the common initialisms are ASCII,
-			// so we can replace the bytes exactly.
-			copy(runes[w:], []rune(u))
-
+			copy(runes[wordStart:], []rune(u))
 		} else if strings.ToLower(word) == word {
 			// already all lowercase, and not the first word, so uppercase the first character.
-			runes[w] = unicode.ToUpper(runes[w])
+			runes[wordStart] = unicode.ToUpper(runes[wordStart])
 		}
-		w = i
+
+		wordStart = scanIndex
 	}
+
 	return string(runes)
 }
 
-// generate an appropriate struct type entry
-func typeForValue(value interface{}, structName string, tags []string, subStructMap map[string]string, convertFloats bool) string {
-	//Check if this is an array
-	if objects, ok := value.([]interface{}); ok {
+// generate an appropriate struct type entry.
+func typeForValue(value any, structName string, tags []string, subStructMap map[string]string, convertFloats bool) string {
+	// Check if this is an array
+	if objects, ok := value.([]any); ok {
 		types := make(map[reflect.Type]bool, 0)
 		for _, o := range objects {
 			types[reflect.TypeOf(o)] = true
 		}
+
 		if len(types) == 1 {
-			return "[]" + typeForValue(mergeElements(objects).([]interface{})[0], structName, tags, subStructMap, convertFloats)
+			//nolint:forcetypeassert // We know it's []any
+			return "[]" + typeForValue(mergeElements(objects).([]any)[0], structName, tags, subStructMap, convertFloats)
 		}
-		return "[]interface{}"
-	} else if object, ok := value.(map[interface{}]interface{}); ok {
+
+		return "[]any"
+	} else if object, ok := value.(map[any]any); ok {
 		return generateTypes(convertKeysToStrings(object), structName, tags, 0, subStructMap, convertFloats) + "}"
-	} else if object, ok := value.(map[string]interface{}); ok {
+	} else if object, ok := value.(map[string]any); ok {
 		return generateTypes(object, structName, tags, 0, subStructMap, convertFloats) + "}"
 	} else if reflect.TypeOf(value) == nil {
-		return "interface{}"
+		return "any"
 	}
+
 	v := reflect.TypeOf(value).Name()
 	if v == "float64" && convertFloats {
 		v = disambiguateFloatInt(value)
 	}
+
 	return v
 }
 
 // All numbers will initially be read as float64
-// If the number appears to be an integer value, use int instead
-func disambiguateFloatInt(value interface{}) string {
+// If the number appears to be an integer value, use int instead.
+func disambiguateFloatInt(value any) string {
 	const epsilon = .0001
-	vfloat := value.(float64)
+
+	vfloat, ok := value.(float64)
+	if !ok {
+		return reflect.TypeOf(value).Name()
+	}
+
 	if !ForceFloats && math.Abs(vfloat-math.Floor(vfloat+epsilon)) < epsilon {
 		var tmp int64
-		return reflect.TypeOf(tmp).Name()
+
+		return reflect.TypeOf(tmp).Name() //nolint:modernize
 	}
+
 	return reflect.TypeOf(value).Name()
 }
 
-// convert first character ints to strings
+// convert first character ints to strings.
 func stringifyFirstChar(str string) string {
 	first := str[:1]
 
 	i, err := strconv.ParseInt(first, 10, 8)
-
 	if err != nil {
 		return str
 	}
@@ -527,65 +487,72 @@ func stringifyFirstChar(str string) string {
 	return intToWordMap[i] + "_" + str[1:]
 }
 
-func mergeElements(i interface{}) interface{} {
-	switch i := i.(type) {
+func mergeElements(val any) any {
+	switch val := val.(type) {
 	default:
-		return i
-	case []interface{}:
-		l := len(i)
+		return val
+	case []any:
+		l := len(val)
 		if l == 0 {
-			return i
+			return val
 		}
+
 		for j := 1; j < l; j++ {
-			i[0] = mergeObjects(i[0], i[j])
+			val[0] = mergeObjects(val[0], val[j])
 		}
-		return i[0:1]
+
+		return val[0:1]
 	}
 }
 
-func mergeObjects(o1, o2 interface{}) interface{} {
-	if o1 == nil {
-		return o2
+//nolint:cyclop,gocritic
+func mergeObjects(obj1, obj2 any) any {
+	if obj1 == nil {
+		return obj2
 	}
 
-	if o2 == nil {
-		return o1
+	if obj2 == nil {
+		return obj1
 	}
 
-	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
+	if reflect.TypeOf(obj1) != reflect.TypeOf(obj2) {
 		return nil
 	}
 
-	switch i := o1.(type) {
+	switch val := obj1.(type) {
 	default:
-		return o1
-	case []interface{}:
-		if i2, ok := o2.([]interface{}); ok {
-			i3 := append(i, i2...)
+		return obj1
+	case []any:
+		if i2, ok := obj2.([]any); ok {
+			i3 := append(val, i2...)
+
 			return mergeElements(i3)
 		}
-		return mergeElements(i)
-	case map[string]interface{}:
-		if i2, ok := o2.(map[string]interface{}); ok {
+
+		return mergeElements(val)
+	case map[string]any:
+		if i2, ok := obj2.(map[string]any); ok {
 			for k, v := range i2 {
-				if v2, ok := i[k]; ok {
-					i[k] = mergeObjects(v2, v)
+				if v2, ok := val[k]; ok {
+					val[k] = mergeObjects(v2, v)
 				} else {
-					i[k] = v
+					val[k] = v
 				}
 			}
 		}
-		return i
-	case map[interface{}]interface{}:
-		if i2, ok := o2.(map[interface{}]interface{}); ok {
+
+		return val
+	case map[any]any:
+		if i2, ok := obj2.(map[any]any); ok {
 			for k, v := range i2 {
-				if v2, ok := i[k]; ok {
-					i[k] = mergeObjects(v2, v)
+				if v2, ok := val[k]; ok {
+					val[k] = mergeObjects(v2, v)
 				} else {
-					i[k] = v
+					val[k] = v
 				}
 			}
 		}
-		return i
+
+		return val
 	}
 }

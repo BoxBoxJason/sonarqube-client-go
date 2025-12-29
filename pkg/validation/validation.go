@@ -1,3 +1,4 @@
+// Package validation provides validation types and functions.
 package validation
 
 import "fmt"
@@ -24,22 +25,26 @@ type Error struct {
 	Reason string
 }
 
+// NewFieldRequired creates a new error indicating a required field is missing.
 func NewFieldRequired(field string) Error {
+	//nolint:exhaustruct
 	return Error{Type: ErrorTypeRequired, Field: field}
 }
 
-// NewFieldInvalidValue returns a ValidationError indicating "invalid value"
+// NewFieldInvalidValue returns a ValidationError indicating "invalid value".
 func NewFieldInvalidValue(field string) Error {
+	//nolint:exhaustruct
 	return Error{Type: ErrorInvalidValue, Field: field}
 }
 
-// NewFieldInvalidValueWithReason returns a ValidationError indicating "invalid value" and a reason for the error
+// NewFieldInvalidValueWithReason returns a ValidationError indicating "invalid value" and a reason for the error.
 func NewFieldInvalidValueWithReason(field, reason string) Error {
 	return Error{Type: ErrorInvalidValue, Field: field, Reason: reason}
 }
 
 func (v Error) Error() string {
 	var msg string
+
 	switch v.Type {
 	case ErrorInvalidValue:
 		msg = fmt.Sprintf("Invalid value specified for %q", v.Field)
@@ -48,8 +53,10 @@ func (v Error) Error() string {
 	default:
 		msg = fmt.Sprintf("%s: %s", v.Type, v.Field)
 	}
+
 	if len(v.Reason) > 0 {
 		msg = fmt.Sprintf("%s: %s", msg, v.Reason)
 	}
+
 	return msg
 }

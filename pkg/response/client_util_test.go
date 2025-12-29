@@ -259,8 +259,8 @@ func TestCheckResponseFunction(t *testing.T) {
 	}
 }
 
-func TestErrorResponseError(t *testing.T) {
-	errResp := &ErrorResponse{
+func TestResponseErrorError(t *testing.T) {
+	errResp := &Error{
 		Response: &http.Response{
 			StatusCode: 404,
 			Request: &http.Request{

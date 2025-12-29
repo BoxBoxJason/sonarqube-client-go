@@ -16,7 +16,9 @@ func TestPush_SonarlintEvents(t *testing.T) {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 		// Return mock response
-		w.WriteHeader(204)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
 	}))
 	defer ts.Close()
 	// Create client pointing to mock server
@@ -26,11 +28,11 @@ func TestPush_SonarlintEvents(t *testing.T) {
 	}
 	// Call service method
 	opt := &PushSonarlintEventsOption{}
-	resp, err := client.Push.SonarlintEvents(opt)
+	_, resp, err := client.Push.SonarlintEvents(opt)
 	if err != nil {
 		t.Fatalf("SonarlintEvents failed: %v", err)
 	}
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
 	}
 }

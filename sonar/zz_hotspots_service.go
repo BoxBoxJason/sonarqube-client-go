@@ -25,21 +25,21 @@ type HotspotsListObject struct {
 }
 
 type HotspotsListObject_sub2 struct {
-	Assignee                 string        `json:"assignee,omitempty"`
-	Author                   string        `json:"author,omitempty"`
-	Component                string        `json:"component,omitempty"`
-	CreationDate             string        `json:"creationDate,omitempty"`
-	Flows                    []interface{} `json:"flows,omitempty"`
-	Key                      string        `json:"key,omitempty"`
-	Line                     int64         `json:"line,omitempty"`
-	Message                  string        `json:"message,omitempty"`
-	MessageFormattings       []interface{} `json:"messageFormattings,omitempty"`
-	Project                  string        `json:"project,omitempty"`
-	RuleKey                  string        `json:"ruleKey,omitempty"`
-	SecurityCategory         string        `json:"securityCategory,omitempty"`
-	Status                   string        `json:"status,omitempty"`
-	UpdateDate               string        `json:"updateDate,omitempty"`
-	VulnerabilityProbability string        `json:"vulnerabilityProbability,omitempty"`
+	Assignee                 string `json:"assignee,omitempty"`
+	Author                   string `json:"author,omitempty"`
+	Component                string `json:"component,omitempty"`
+	CreationDate             string `json:"creationDate,omitempty"`
+	Flows                    []any  `json:"flows,omitempty"`
+	Key                      string `json:"key,omitempty"`
+	Line                     int64  `json:"line,omitempty"`
+	Message                  string `json:"message,omitempty"`
+	MessageFormattings       []any  `json:"messageFormattings,omitempty"`
+	Project                  string `json:"project,omitempty"`
+	RuleKey                  string `json:"ruleKey,omitempty"`
+	SecurityCategory         string `json:"securityCategory,omitempty"`
+	Status                   string `json:"status,omitempty"`
+	UpdateDate               string `json:"updateDate,omitempty"`
+	VulnerabilityProbability string `json:"vulnerabilityProbability,omitempty"`
 }
 
 type HotspotsListObject_sub1 struct {
@@ -63,21 +63,21 @@ type HotspotsSearchObject struct {
 }
 
 type HotspotsSearchObject_sub2 struct {
-	Assignee                 string        `json:"assignee,omitempty"`
-	Author                   string        `json:"author,omitempty"`
-	Component                string        `json:"component,omitempty"`
-	CreationDate             string        `json:"creationDate,omitempty"`
-	Flows                    []interface{} `json:"flows,omitempty"`
-	Key                      string        `json:"key,omitempty"`
-	Line                     int64         `json:"line,omitempty"`
-	Message                  string        `json:"message,omitempty"`
-	MessageFormattings       []interface{} `json:"messageFormattings,omitempty"`
-	Project                  string        `json:"project,omitempty"`
-	RuleKey                  string        `json:"ruleKey,omitempty"`
-	SecurityCategory         string        `json:"securityCategory,omitempty"`
-	Status                   string        `json:"status,omitempty"`
-	UpdateDate               string        `json:"updateDate,omitempty"`
-	VulnerabilityProbability string        `json:"vulnerabilityProbability,omitempty"`
+	Assignee                 string `json:"assignee,omitempty"`
+	Author                   string `json:"author,omitempty"`
+	Component                string `json:"component,omitempty"`
+	CreationDate             string `json:"creationDate,omitempty"`
+	Flows                    []any  `json:"flows,omitempty"`
+	Key                      string `json:"key,omitempty"`
+	Line                     int64  `json:"line,omitempty"`
+	Message                  string `json:"message,omitempty"`
+	MessageFormattings       []any  `json:"messageFormattings,omitempty"`
+	Project                  string `json:"project,omitempty"`
+	RuleKey                  string `json:"ruleKey,omitempty"`
+	SecurityCategory         string `json:"securityCategory,omitempty"`
+	Status                   string `json:"status,omitempty"`
+	UpdateDate               string `json:"updateDate,omitempty"`
+	VulnerabilityProbability string `json:"vulnerabilityProbability,omitempty"`
 }
 
 type HotspotsSearchObject_sub1 struct {

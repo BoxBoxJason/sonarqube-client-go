@@ -39,12 +39,12 @@ coverage:
 # Generate changelog using git-cliff
 changelog:
 	@command -v git-cliff >/dev/null 2>&1 || { echo "Please install git-cliff: https://github.com/orhun/git-cliff/releases"; exit 1; }
-	git-cliff -c .git-cliff.toml -o CHANGELOG.md
+	git-cliff -c cliff.toml -o CHANGELOG.md
 
 # Verify changelog is up-to-date (CI-friendly)
 changelog-check:
 	@command -v git-cliff >/dev/null 2>&1 || { echo "Please install git-cliff: https://github.com/orhun/git-cliff/releases"; exit 1; }
-	@git-cliff -c .git-cliff.toml -o /tmp/CHANGELOG.md
+	@git-cliff -c cliff.toml -o /tmp/CHANGELOG.md
 	@if [ ! -f CHANGELOG.md ]; then \
 		echo "CHANGELOG.md does not exist, generating one with 'make changelog'"; \
 		rm -f /tmp/CHANGELOG.md; \
@@ -61,7 +61,7 @@ changelog-check:
 
 # Run golangci-lint
 lint:
-	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; }
+	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; }
 	@mkdir -p codequality
 	golangci-lint run ./...
 
