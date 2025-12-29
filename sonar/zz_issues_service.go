@@ -27,7 +27,7 @@ type IssuesAddCommentObject_sub5 struct {
 	CreationDate               string                        `json:"creationDate,omitempty"`
 	Debt                       string                        `json:"debt,omitempty"`
 	Effort                     string                        `json:"effort,omitempty"`
-	Flows                      []interface{}                 `json:"flows,omitempty"`
+	Flows                      []any                         `json:"flows,omitempty"`
 	Impacts                    []IssuesAddCommentObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                        `json:"issueStatus,omitempty"`
 	Key                        string                        `json:"key,omitempty"`
@@ -106,7 +106,7 @@ type IssuesAssignObject_sub5 struct {
 	CreationDate               string                    `json:"creationDate,omitempty"`
 	Debt                       string                    `json:"debt,omitempty"`
 	Effort                     string                    `json:"effort,omitempty"`
-	Flows                      []interface{}             `json:"flows,omitempty"`
+	Flows                      []any                     `json:"flows,omitempty"`
 	Impacts                    []IssuesAssignObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                    `json:"issueStatus,omitempty"`
 	Key                        string                    `json:"key,omitempty"`
@@ -225,7 +225,7 @@ type IssuesDeleteCommentObject_sub5 struct {
 	CreationDate               string                           `json:"creationDate,omitempty"`
 	Debt                       string                           `json:"debt,omitempty"`
 	Effort                     string                           `json:"effort,omitempty"`
-	Flows                      []interface{}                    `json:"flows,omitempty"`
+	Flows                      []any                            `json:"flows,omitempty"`
 	Impacts                    []IssuesDeleteCommentObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                           `json:"issueStatus,omitempty"`
 	Key                        string                           `json:"key,omitempty"`
@@ -303,7 +303,7 @@ type IssuesDoTransitionObject_sub5 struct {
 	CreationDate               string                          `json:"creationDate,omitempty"`
 	Debt                       string                          `json:"debt,omitempty"`
 	Effort                     string                          `json:"effort,omitempty"`
-	Flows                      []interface{}                   `json:"flows,omitempty"`
+	Flows                      []any                           `json:"flows,omitempty"`
 	Impacts                    []IssuesDoTransitionObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                          `json:"issueStatus,omitempty"`
 	Key                        string                          `json:"key,omitempty"`
@@ -381,7 +381,7 @@ type IssuesEditCommentObject_sub5 struct {
 	CreationDate               string                         `json:"creationDate,omitempty"`
 	Debt                       string                         `json:"debt,omitempty"`
 	Effort                     string                         `json:"effort,omitempty"`
-	Flows                      []interface{}                  `json:"flows,omitempty"`
+	Flows                      []any                          `json:"flows,omitempty"`
 	Impacts                    []IssuesEditCommentObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                         `json:"issueStatus,omitempty"`
 	Key                        string                         `json:"key,omitempty"`
@@ -663,7 +663,7 @@ type IssuesSetSeverityObject_sub5 struct {
 	CreationDate               string                         `json:"creationDate,omitempty"`
 	Debt                       string                         `json:"debt,omitempty"`
 	Effort                     string                         `json:"effort,omitempty"`
-	Flows                      []interface{}                  `json:"flows,omitempty"`
+	Flows                      []any                          `json:"flows,omitempty"`
 	Impacts                    []IssuesSetSeverityObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                         `json:"issueStatus,omitempty"`
 	Key                        string                         `json:"key,omitempty"`
@@ -744,7 +744,7 @@ type IssuesSetTagsObject_sub5 struct {
 	CreationDate               string                     `json:"creationDate,omitempty"`
 	Debt                       string                     `json:"debt,omitempty"`
 	Effort                     string                     `json:"effort,omitempty"`
-	Flows                      []interface{}              `json:"flows,omitempty"`
+	Flows                      []any                      `json:"flows,omitempty"`
 	Impacts                    []IssuesSetTagsObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                     `json:"issueStatus,omitempty"`
 	Key                        string                     `json:"key,omitempty"`
@@ -824,7 +824,7 @@ type IssuesSetTypeObject_sub5 struct {
 	CreationDate               string                     `json:"creationDate,omitempty"`
 	Debt                       string                     `json:"debt,omitempty"`
 	Effort                     string                     `json:"effort,omitempty"`
-	Flows                      []interface{}              `json:"flows,omitempty"`
+	Flows                      []any                      `json:"flows,omitempty"`
 	Impacts                    []IssuesSetTypeObject_sub3 `json:"impacts,omitempty"`
 	IssueStatus                string                     `json:"issueStatus,omitempty"`
 	Key                        string                     `json:"key,omitempty"`

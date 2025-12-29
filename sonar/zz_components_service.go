@@ -114,7 +114,7 @@ type ComponentsShowObject_sub2 struct {
 }
 
 type ComponentsSuggestionsObject struct {
-	Projects []interface{}                      `json:"projects,omitempty"`
+	Projects []any                              `json:"projects,omitempty"`
 	Results  []ComponentsSuggestionsObject_sub2 `json:"results,omitempty"`
 }
 

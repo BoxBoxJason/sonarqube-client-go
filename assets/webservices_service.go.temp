@@ -1,5 +1,3 @@
-package response
-
 import "fmt"
 
 // WebservicesService handles web services related operations.
@@ -10,9 +8,7 @@ type WebservicesService struct {
 // WebservicesListResp is the response for List.
 // [TODO] you should call the <List> func manually and complete the fields of this struct.
 type WebservicesListResp struct {
-	//nolint:govet // fieldalignment
 	Webservices []struct {
-		//nolint:govet // fieldalignment
 		Actions []struct {
 			Changelog []struct {
 				Description string `json:"description,omitempty"`
@@ -22,8 +18,7 @@ type WebservicesListResp struct {
 			HasResponseExample bool   `json:"hasResponseExample,omitempty"`
 			Internal           bool   `json:"internal,omitempty"`
 			Key                string `json:"key,omitempty"`
-			//nolint:govet // fieldalignment
-			Params []struct {
+			Params             []struct {
 				Description        string   `json:"description,omitempty"`
 				Internal           bool     `json:"internal,omitempty"`
 				Key                string   `json:"key,omitempty"`
@@ -59,7 +54,6 @@ func (s *WebservicesService) List(opt *WebservicesListOption) (*WebservicesListR
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	//nolint:exhaustruct
 	resp := &WebservicesListResp{}
 
 	err = s.client.Do(req, resp)
@@ -91,16 +85,11 @@ func (s *WebservicesService) ResponseExample(opt *WebservicesResponseExampleOpti
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	//nolint:exhaustruct
 	resp := &WebservicesResponseExampleResp{}
 
 	err = s.client.Do(req, resp)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute request: %w", err)
-	}
-
-	if opt != nil {
-		resp.Name = opt.Action
 	}
 
 	return resp, nil

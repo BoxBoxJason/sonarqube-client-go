@@ -59,12 +59,12 @@ type UsersDeactivateObject struct {
 }
 
 type UsersDeactivateObject_sub1 struct {
-	Active      bool          `json:"active,omitempty"`
-	Groups      []interface{} `json:"groups,omitempty"`
-	Local       bool          `json:"local,omitempty"`
-	Login       string        `json:"login,omitempty"`
-	Name        string        `json:"name,omitempty"`
-	ScmAccounts []interface{} `json:"scmAccounts,omitempty"`
+	Active      bool   `json:"active,omitempty"`
+	Groups      []any  `json:"groups,omitempty"`
+	Local       bool   `json:"local,omitempty"`
+	Login       string `json:"login,omitempty"`
+	Name        string `json:"name,omitempty"`
+	ScmAccounts []any  `json:"scmAccounts,omitempty"`
 }
 
 type UsersGroupsObject struct {

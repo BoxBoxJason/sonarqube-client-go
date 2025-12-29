@@ -1,4 +1,5 @@
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 
@@ -18,13 +19,7 @@ const (
 	privateToken
 )
 
-const (
-	QualifierSubProject = "BRC"
-	QualifierDirectory  = "DIR"
-	QualifierFile       = "FIL"
-	QualifierProject    = "TRK"
-	QualifierTestFile   = "UTS"
-)
+// BaseURL returns the base URL of the client.
 func (c *Client) BaseURL() *url.URL {
 	u := *c.baseURL
 	return &u
@@ -33,11 +28,13 @@ func (c *Client) BaseURL() *url.URL {
 // SetBaseURL sets the base URL for API requests to a custom endpoint. urlStr
 // should always be specified with a trailing slash.
 func (c *Client) SetBaseURL(urlStr string) error {
-	if u, err := SetBaseURLUtil(urlStr); err != nil {
+	u, err := SetBaseURLUtil(urlStr)
+	if err != nil {
 		return err
-	} else {
-		c.baseURL = u
 	}
+
+	c.baseURL = u
+
 	return nil
 }
 
@@ -46,40 +43,31 @@ func (c *Client) SetBaseURL(urlStr string) error {
 // Relative URL paths should always be specified without a preceding slash. If
 // specified, the value pointed to by body is JSON encoded and included as the
 // request body.
-func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request, error) {
-	u := *c.baseURL
+func (c *Client) NewRequest(method, path string, opt any) (*http.Request, error) {
+	parsedURL := *c.baseURL
 	// Set the encoded opaque data
-	u.Opaque = c.baseURL.Path + path
+	parsedURL.Opaque = c.baseURL.Path + path
 
 	if opt != nil {
 		q, err := query.Values(opt)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to encode query parameters: %w", err)
 		}
-		u.RawQuery = q.Encode()
+
+		parsedURL.RawQuery = q.Encode()
 	}
 
 	req := &http.Request{
 		Method:     method,
-		URL:        &u,
+		URL:        &parsedURL,
 		Proto:      "HTTP/1.1",
 		ProtoMajor: 1,
 		ProtoMinor: 1,
 		Header:     make(http.Header),
-		Host:       u.Host,
+		Host:       parsedURL.Host,
 	}
 
 	if method == "POST" || method == "PUT" {
-		// SonarQube use RawQuery even method is POST
-		// bodyBytes, err := json.Marshal(opt)
-		// if err != nil {
-		// 	return nil, err
-		// }
-		// bodyReader := bytes.NewReader(bodyBytes)
-
-		// u.RawQuery = ""
-		// req.Body = ioutil.NopCloser(bodyReader)
-		// req.ContentLength = int64(bodyReader.Len())
 		req.Header.Set("Content-Type", "application/json")
 	}
 
@@ -91,7 +79,9 @@ func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request
 	case privateToken:
 		req.SetBasicAuth(c.token, "")
 	}
+
 	req.Header.Set("User-Agent", userAgent)
+
 	return req, nil
 }
 
@@ -100,13 +90,6 @@ func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request
 // error if an API error has occurred. If v implements the io.Writer
 // interface, the raw response body will be written to v, without attempting to
 // first decode it.
-func (c *Client) Do(req *http.Request, v interface{}) (*http.Response,error) {
-	return Do(c.httpClient, req, v)
-}
-
-//Paging is used in many apis
-type Paging struct {
-	PageIndex int64 `json:"pageIndex,omitempty"`
-	PageSize  int64 `json:"pageSize,omitempty"`
-	Total     int64 `json:"total,omitempty"`
+func (c *Client) Do(req *http.Request, dest any) error {
+	return Do(c.httpClient, req, dest)
 }

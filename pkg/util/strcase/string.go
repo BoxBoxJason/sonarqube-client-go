@@ -4,47 +4,60 @@ import (
 	"strings"
 )
 
-// Converts a string to CamelCase
-func toCamelInitCase(s string, initCase bool) string {
-	s = addWordBoundariesToNumbers(s)
-	s = strings.Trim(s, " ")
-	n := ""
+// toCamelInitCase converts a string to CamelCase.
+//
+//nolint:cyclop
+func toCamelInitCase(str string, initCase bool) string {
+	str = addWordBoundariesToNumbers(str)
+	str = strings.Trim(str, " ")
+	result := ""
 	capNext := initCase
-	for _, v := range s {
-		if v >= 'A' && v <= 'Z' {
-			n += string(v)
+
+	var nSb13 strings.Builder
+
+	for _, char := range str {
+		if char >= 'A' && char <= 'Z' {
+			nSb13.WriteRune(char)
 		}
-		if v >= '0' && v <= '9' {
-			n += string(v)
+
+		if char >= '0' && char <= '9' {
+			nSb13.WriteRune(char)
 		}
-		if v >= 'a' && v <= 'z' {
+
+		if char >= 'a' && char <= 'z' {
 			if capNext {
-				n += strings.ToUpper(string(v))
+				nSb13.WriteString(strings.ToUpper(string(char)))
 			} else {
-				n += string(v)
+				nSb13.WriteRune(char)
 			}
 		}
-		if v == '_' || v == ' ' || v == '-' {
+
+		if char == '_' || char == ' ' || char == '-' {
 			capNext = true
 		} else {
 			capNext = false
 		}
 	}
-	return n
+
+	result += nSb13.String()
+
+	return result
 }
 
-// Converts a string to CamelCase
+// ToCamel converts a string to CamelCase.
 func ToCamel(s string) string {
 	return toCamelInitCase(s, true)
 }
 
-// Converts a string to lowerCamelCase
-func ToLowerCamel(s string) string {
-	if s == "" {
-		return s
+// ToLowerCamel converts a string to lowerCamelCase.
+func ToLowerCamel(str string) string {
+	if str == "" {
+		return str
 	}
-	if r := rune(s[0]); r >= 'A' && r <= 'Z' {
-		s = strings.ToLower(string(r)) + s[1:]
+
+	if r := rune(str[0]); r >= 'A' && r <= 'Z' {
+		str = strings.ToLower(string(r)) + str[1:]
 	}
-	return toCamelInitCase(s, false)
+
+	return toCamelInitCase(str, false)
 }

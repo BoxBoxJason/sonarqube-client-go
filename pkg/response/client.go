@@ -1,27 +1,48 @@
+// Package response provides the client and response types for the SonarQube API.
 package response
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 )
 
+// Client communicates with the SonarQube API.
 type Client struct {
-	baseURL                   *url.URL
-	username, password, token string
-	authType                  authType
-	httpClient                *http.Client
-	Webservices               *WebservicesService
+	baseURL     *url.URL
+	httpClient  *http.Client
+	Webservices *WebservicesService
+	username    string
+	password    string
+	token       string
+	authType    authType
 }
 
+// NewClient returns a new SonarQube API client.
 func NewClient(endpoint, username, password string) (*Client, error) {
-	c := &Client{username: username, password: password, authType: basicAuth, httpClient: http.DefaultClient}
+	client := &Client{
+		username:    username,
+		password:    password,
+		authType:    basicAuth,
+		httpClient:  http.DefaultClient,
+		baseURL:     nil,
+		token:       "",
+		Webservices: nil,
+	}
+
 	if endpoint == "" {
-		c.SetBaseURL(defaultBaseURL)
+		err := client.SetBaseURL(defaultBaseURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to set default base URL: %w", err)
+		}
 	} else {
-		if err := c.SetBaseURL(endpoint); err != nil {
+		err := client.SetBaseURL(endpoint)
+		if err != nil {
 			return nil, err
 		}
 	}
-	c.Webservices = &WebservicesService{client: c}
-	return c, nil
+
+	client.Webservices = &WebservicesService{client: client}
+
+	return client, nil
 }

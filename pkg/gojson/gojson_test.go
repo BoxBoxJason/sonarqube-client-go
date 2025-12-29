@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestParseJson(t *testing.T) {
+func TestParseJSON(t *testing.T) {
 	tests := []struct {
 		name        string
 		input       string
@@ -42,7 +42,7 @@ func TestParseJson(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			reader := bytes.NewReader([]byte(tt.input))
-			result, err := ParseJson(reader)
+			result, err := ParseJSON(reader)
 
 			if tt.expectError && err == nil {
 				t.Error("expected error but got nil")
@@ -57,7 +57,7 @@ func TestParseJson(t *testing.T) {
 	}
 }
 
-func TestParseYaml(t *testing.T) {
+func TestParseYAML(t *testing.T) {
 	tests := []struct {
 		name        string
 		input       string
@@ -81,7 +81,7 @@ value: 123`,
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			reader := bytes.NewReader([]byte(tt.input))
-			result, err := ParseYaml(reader)
+			result, err := ParseYAML(reader)
 
 			if tt.expectError && err == nil {
 				t.Error("expected error but got nil")
@@ -142,7 +142,7 @@ func TestGenerate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			reader := bytes.NewReader([]byte(tt.input))
-			result, err := Generate(reader, ParseJson, tt.structName, tt.tags, tt.subStruct, tt.convertFloats)
+			result, err := Generate(reader, ParseJSON, tt.structName, tt.tags, tt.subStruct, tt.convertFloats)
 
 			if tt.wantError && err == nil {
 				t.Error("expected error but got nil")

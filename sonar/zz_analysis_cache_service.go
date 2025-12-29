@@ -9,6 +9,9 @@ type AnalysisCacheService struct {
 	client *Client
 }
 
+// [TODO] cannot fetch response example for <get>, struct needs to be filled manually
+type AnalysisCacheGetObject struct{}
+
 type AnalysisCacheClearOption struct {
 	Branch  string `url:"branch,omitempty"`  // Description:"Filter which project's branch's cached data will be cleared with the provided key. 'project' parameter must be set.",ExampleValue:"6468"
 	Project string `url:"project,omitempty"` // Description:"Filter which project's cached data will be cleared with the provided key.",ExampleValue:"org.sonarsource.sonarqube:sonarqube-private"
@@ -37,7 +40,7 @@ type AnalysisCacheGetOption struct {
 }
 
 // Get Get the scanner's cached data for a branch. Requires scan permission on the project. Data is returned gzipped if the corresponding 'Accept-Encoding' header is set in the request.
-func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (resp *http.Response, err error) {
+func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (v *AnalysisCacheGetObject, resp *http.Response, err error) {
 	err = s.ValidateGetOpt(opt)
 	if err != nil {
 		return
@@ -46,9 +49,10 @@ func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (resp *http.Resp
 	if err != nil {
 		return
 	}
-	resp, err = s.client.Do(req, nil)
+	v = new(AnalysisCacheGetObject)
+	resp, err = s.client.Do(req, v)
 	if err != nil {
-		return
+		return nil, resp, err
 	}
 	return
 }

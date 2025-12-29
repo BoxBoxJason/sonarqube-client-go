@@ -9,6 +9,9 @@ type PluginsService struct {
 	client *Client
 }
 
+// [TODO] cannot fetch response example for <download>, struct needs to be filled manually
+type PluginsDownloadObject struct{}
+
 type PluginsAvailableObject struct {
 	Plugins             []PluginsAvailableObject_sub4 `json:"plugins,omitempty"`
 	UpdateCenterRefresh string                        `json:"updateCenterRefresh,omitempty"`
@@ -171,7 +174,7 @@ type PluginsDownloadOption struct {
 }
 
 // Download Download plugin JAR, for usage by scanner engine
-func (s *PluginsService) Download(opt *PluginsDownloadOption) (resp *http.Response, err error) {
+func (s *PluginsService) Download(opt *PluginsDownloadOption) (v *PluginsDownloadObject, resp *http.Response, err error) {
 	err = s.ValidateDownloadOpt(opt)
 	if err != nil {
 		return
@@ -180,9 +183,10 @@ func (s *PluginsService) Download(opt *PluginsDownloadOption) (resp *http.Respon
 	if err != nil {
 		return
 	}
-	resp, err = s.client.Do(req, nil)
+	v = new(PluginsDownloadObject)
+	resp, err = s.client.Do(req, v)
 	if err != nil {
-		return
+		return nil, resp, err
 	}
 	return
 }

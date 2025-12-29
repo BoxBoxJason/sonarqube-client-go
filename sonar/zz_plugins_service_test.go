@@ -70,7 +70,9 @@ func TestPlugins_Download(t *testing.T) {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 		// Return mock response
-		w.WriteHeader(204)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		w.Write([]byte("null"))
 	}))
 	defer ts.Close()
 	// Create client pointing to mock server
@@ -80,12 +82,12 @@ func TestPlugins_Download(t *testing.T) {
 	}
 	// Call service method
 	opt := &PluginsDownloadOption{}
-	resp, err := client.Plugins.Download(opt)
+	_, resp, err := client.Plugins.Download(opt)
 	if err != nil {
 		t.Fatalf("Download failed: %v", err)
 	}
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	if resp.StatusCode != 200 {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
 	}
 }
 

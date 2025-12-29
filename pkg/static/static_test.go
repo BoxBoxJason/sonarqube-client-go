@@ -33,13 +33,9 @@ func TestLoadStaticFile(t *testing.T) {
 	})
 
 	t.Run("non-existing file", func(t *testing.T) {
-		content, err := LoadStaticFile(filepath.Join(tempDir, "nonexistent.txt"))
-		// Based on the code, it returns "", nil for non-existent files
-		if err != nil {
-			t.Errorf("Unexpected error: %v", err)
-		}
-		if content != "" {
-			t.Errorf("Expected empty string for non-existent file, got %q", content)
+		_, err := LoadStaticFile(filepath.Join(tempDir, "nonexistent.txt"))
+		if err == nil {
+			t.Error("Expected error for non-existent file, got nil")
 		}
 	})
 }
