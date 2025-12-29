@@ -16,10 +16,8 @@ update: init-clean
 	go run ./cmd/main/main.go -f assets/api.json -n ${package_name}  -o ${target_dir} -e ${endpoint} -logtostderr=true -u ${username} -p ${password}
 	rm -rf integration_testing
 
-generate: init-clean
-	go mod tidy
-	go run ./cmd/main/main.go -f assets/api.json -n ${package_name} -o ${target_dir} -e ${endpoint} -logtostderr=true -u ${username} -p ${password}
-	rm -rf integration_testing
+generate:
+	go generate ./...
 
 # Run all unit tests
 test:
@@ -64,6 +62,7 @@ changelog-check:
 # Run golangci-lint
 lint:
 	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; }
+	@mkdir -p codequality
 	golangci-lint run ./...
 
 # Check for uncommitted changes after generation (useful for CI)
