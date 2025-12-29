@@ -29,6 +29,7 @@ const (
 	QualifierProject    = "TRK"
 	QualifierTestFile   = "UTS"
 )
+
 func (c *Client) BaseURL() *url.URL {
 	u := *c.baseURL
 	return &u
@@ -53,7 +54,7 @@ func (c *Client) SetBaseURL(urlStr string) error {
 func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request, error) {
 	u := *c.baseURL
 	// Set the encoded opaque data
-	u.Opaque = c.baseURL.Path + path
+	u.Path = c.baseURL.Path + path
 
 	if opt != nil {
 		q, err := query.Values(opt)
@@ -63,14 +64,9 @@ func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request
 		u.RawQuery = q.Encode()
 	}
 
-	req := &http.Request{
-		Method:     method,
-		URL:        &u,
-		Proto:      "HTTP/1.1",
-		ProtoMajor: 1,
-		ProtoMinor: 1,
-		Header:     make(http.Header),
-		Host:       u.Host,
+	req, err := http.NewRequest(method, u.String(), nil)
+	if err != nil {
+		return nil, err
 	}
 
 	if method == "POST" || method == "PUT" {
@@ -104,11 +100,11 @@ func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request
 // error if an API error has occurred. If v implements the io.Writer
 // interface, the raw response body will be written to v, without attempting to
 // first decode it.
-func (c *Client) Do(req *http.Request, v interface{}) (*http.Response,error) {
+func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	return Do(c.httpClient, req, v)
 }
 
-//Paging is used in many apis
+// Paging is used in many apis
 type Paging struct {
 	PageIndex int64 `json:"pageIndex,omitempty"`
 	PageSize  int64 `json:"pageSize,omitempty"`

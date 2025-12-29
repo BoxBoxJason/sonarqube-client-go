@@ -15,7 +15,7 @@ func TestPermissions_AddGroup(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestPermissions_AddGroup(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsAddGroupOption{}
 	resp, err := client.Permissions.AddGroup(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestPermissions_AddGroupToTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -51,7 +51,7 @@ func TestPermissions_AddGroupToTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsAddGroupToTemplateOption{}
 	resp, err := client.Permissions.AddGroupToTemplate(opt)
 	if err != nil {
@@ -69,7 +69,7 @@ func TestPermissions_AddProjectCreatorToTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -78,7 +78,7 @@ func TestPermissions_AddProjectCreatorToTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsAddProjectCreatorToTemplateOption{}
 	resp, err := client.Permissions.AddProjectCreatorToTemplate(opt)
 	if err != nil {
@@ -96,7 +96,7 @@ func TestPermissions_AddUser(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -105,7 +105,7 @@ func TestPermissions_AddUser(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsAddUserOption{}
 	resp, err := client.Permissions.AddUser(opt)
 	if err != nil {
@@ -123,7 +123,7 @@ func TestPermissions_AddUserToTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -132,7 +132,7 @@ func TestPermissions_AddUserToTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsAddUserToTemplateOption{}
 	resp, err := client.Permissions.AddUserToTemplate(opt)
 	if err != nil {
@@ -150,7 +150,7 @@ func TestPermissions_ApplyTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -159,7 +159,7 @@ func TestPermissions_ApplyTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsApplyTemplateOption{}
 	resp, err := client.Permissions.ApplyTemplate(opt)
 	if err != nil {
@@ -177,7 +177,7 @@ func TestPermissions_BulkApplyTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -186,7 +186,7 @@ func TestPermissions_BulkApplyTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsBulkApplyTemplateOption{}
 	resp, err := client.Permissions.BulkApplyTemplate(opt)
 	if err != nil {
@@ -204,7 +204,7 @@ func TestPermissions_CreateTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -215,7 +215,7 @@ func TestPermissions_CreateTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsCreateTemplateOption{}
 	_, resp, err := client.Permissions.CreateTemplate(opt)
 	if err != nil {
@@ -233,7 +233,7 @@ func TestPermissions_DeleteTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -242,7 +242,7 @@ func TestPermissions_DeleteTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsDeleteTemplateOption{}
 	resp, err := client.Permissions.DeleteTemplate(opt)
 	if err != nil {
@@ -260,7 +260,7 @@ func TestPermissions_Groups(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -271,7 +271,7 @@ func TestPermissions_Groups(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsGroupsOption{}
 	_, resp, err := client.Permissions.Groups(opt)
 	if err != nil {
@@ -289,7 +289,7 @@ func TestPermissions_RemoveGroup(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -298,7 +298,7 @@ func TestPermissions_RemoveGroup(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsRemoveGroupOption{}
 	resp, err := client.Permissions.RemoveGroup(opt)
 	if err != nil {
@@ -316,7 +316,7 @@ func TestPermissions_RemoveGroupFromTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -325,7 +325,7 @@ func TestPermissions_RemoveGroupFromTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsRemoveGroupFromTemplateOption{}
 	resp, err := client.Permissions.RemoveGroupFromTemplate(opt)
 	if err != nil {
@@ -343,7 +343,7 @@ func TestPermissions_RemoveProjectCreatorFromTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -352,7 +352,7 @@ func TestPermissions_RemoveProjectCreatorFromTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsRemoveProjectCreatorFromTemplateOption{}
 	resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(opt)
 	if err != nil {
@@ -370,7 +370,7 @@ func TestPermissions_RemoveUser(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -379,7 +379,7 @@ func TestPermissions_RemoveUser(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsRemoveUserOption{}
 	resp, err := client.Permissions.RemoveUser(opt)
 	if err != nil {
@@ -397,7 +397,7 @@ func TestPermissions_RemoveUserFromTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -406,7 +406,7 @@ func TestPermissions_RemoveUserFromTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsRemoveUserFromTemplateOption{}
 	resp, err := client.Permissions.RemoveUserFromTemplate(opt)
 	if err != nil {
@@ -424,7 +424,7 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -435,7 +435,7 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsSearchTemplatesOption{}
 	_, resp, err := client.Permissions.SearchTemplates(opt)
 	if err != nil {
@@ -453,7 +453,7 @@ func TestPermissions_SetDefaultTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -462,7 +462,7 @@ func TestPermissions_SetDefaultTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsSetDefaultTemplateOption{}
 	resp, err := client.Permissions.SetDefaultTemplate(opt)
 	if err != nil {
@@ -480,7 +480,7 @@ func TestPermissions_TemplateGroups(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -491,7 +491,7 @@ func TestPermissions_TemplateGroups(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsTemplateGroupsOption{}
 	_, resp, err := client.Permissions.TemplateGroups(opt)
 	if err != nil {
@@ -509,7 +509,7 @@ func TestPermissions_TemplateUsers(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -520,7 +520,7 @@ func TestPermissions_TemplateUsers(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsTemplateUsersOption{}
 	_, resp, err := client.Permissions.TemplateUsers(opt)
 	if err != nil {
@@ -538,7 +538,7 @@ func TestPermissions_UpdateTemplate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -549,7 +549,7 @@ func TestPermissions_UpdateTemplate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsUpdateTemplateOption{}
 	_, resp, err := client.Permissions.UpdateTemplate(opt)
 	if err != nil {
@@ -567,7 +567,7 @@ func TestPermissions_Users(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -578,7 +578,7 @@ func TestPermissions_Users(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PermissionsUsersOption{}
 	_, resp, err := client.Permissions.Users(opt)
 	if err != nil {

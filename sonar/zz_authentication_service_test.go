@@ -15,7 +15,7 @@ func TestAuthentication_Login(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestAuthentication_Login(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AuthenticationLoginOption{}
 	resp, err := client.Authentication.Login(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestAuthentication_Logout(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -51,7 +51,7 @@ func TestAuthentication_Logout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	resp, err := client.Authentication.Logout()
 	if err != nil {
 		t.Fatalf("Logout failed: %v", err)
@@ -68,7 +68,7 @@ func TestAuthentication_Validate(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -79,7 +79,7 @@ func TestAuthentication_Validate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Authentication.Validate()
 	if err != nil {
 		t.Fatalf("Validate failed: %v", err)

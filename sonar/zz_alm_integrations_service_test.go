@@ -15,7 +15,7 @@ func TestAlmIntegrations_CheckPat(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestAlmIntegrations_CheckPat(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsCheckPatOption{}
 	_, resp, err := client.AlmIntegrations.CheckPat(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestAlmIntegrations_GetGithubClientId(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -55,7 +55,7 @@ func TestAlmIntegrations_GetGithubClientId(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsGetGithubClientIdOption{}
 	_, resp, err := client.AlmIntegrations.GetGithubClientId(opt)
 	if err != nil {
@@ -73,7 +73,7 @@ func TestAlmIntegrations_ImportAzureProject(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -82,7 +82,7 @@ func TestAlmIntegrations_ImportAzureProject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsImportAzureProjectOption{}
 	resp, err := client.AlmIntegrations.ImportAzureProject(opt)
 	if err != nil {
@@ -100,7 +100,7 @@ func TestAlmIntegrations_ImportBitbucketcloudRepo(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -109,7 +109,7 @@ func TestAlmIntegrations_ImportBitbucketcloudRepo(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsImportBitbucketcloudRepoOption{}
 	resp, err := client.AlmIntegrations.ImportBitbucketcloudRepo(opt)
 	if err != nil {
@@ -127,7 +127,7 @@ func TestAlmIntegrations_ImportBitbucketserverProject(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -136,7 +136,7 @@ func TestAlmIntegrations_ImportBitbucketserverProject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsImportBitbucketserverProjectOption{}
 	resp, err := client.AlmIntegrations.ImportBitbucketserverProject(opt)
 	if err != nil {
@@ -154,7 +154,7 @@ func TestAlmIntegrations_ImportGithubProject(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -163,7 +163,7 @@ func TestAlmIntegrations_ImportGithubProject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsImportGithubProjectOption{}
 	resp, err := client.AlmIntegrations.ImportGithubProject(opt)
 	if err != nil {
@@ -181,7 +181,7 @@ func TestAlmIntegrations_ImportGitlabProject(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -190,7 +190,7 @@ func TestAlmIntegrations_ImportGitlabProject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsImportGitlabProjectOption{}
 	resp, err := client.AlmIntegrations.ImportGitlabProject(opt)
 	if err != nil {
@@ -208,7 +208,7 @@ func TestAlmIntegrations_ListAzureProjects(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -219,7 +219,7 @@ func TestAlmIntegrations_ListAzureProjects(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsListAzureProjectsOption{}
 	_, resp, err := client.AlmIntegrations.ListAzureProjects(opt)
 	if err != nil {
@@ -237,7 +237,7 @@ func TestAlmIntegrations_ListBitbucketserverProjects(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -248,7 +248,7 @@ func TestAlmIntegrations_ListBitbucketserverProjects(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsListBitbucketserverProjectsOption{}
 	_, resp, err := client.AlmIntegrations.ListBitbucketserverProjects(opt)
 	if err != nil {
@@ -266,7 +266,7 @@ func TestAlmIntegrations_ListGithubOrganizations(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -277,7 +277,7 @@ func TestAlmIntegrations_ListGithubOrganizations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsListGithubOrganizationsOption{}
 	_, resp, err := client.AlmIntegrations.ListGithubOrganizations(opt)
 	if err != nil {
@@ -295,7 +295,7 @@ func TestAlmIntegrations_ListGithubRepositories(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -306,7 +306,7 @@ func TestAlmIntegrations_ListGithubRepositories(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsListGithubRepositoriesOption{}
 	_, resp, err := client.AlmIntegrations.ListGithubRepositories(opt)
 	if err != nil {
@@ -324,7 +324,7 @@ func TestAlmIntegrations_SearchAzureRepos(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -335,7 +335,7 @@ func TestAlmIntegrations_SearchAzureRepos(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsSearchAzureReposOption{}
 	_, resp, err := client.AlmIntegrations.SearchAzureRepos(opt)
 	if err != nil {
@@ -353,7 +353,7 @@ func TestAlmIntegrations_SearchBitbucketcloudRepos(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -364,7 +364,7 @@ func TestAlmIntegrations_SearchBitbucketcloudRepos(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsSearchBitbucketcloudReposOption{}
 	_, resp, err := client.AlmIntegrations.SearchBitbucketcloudRepos(opt)
 	if err != nil {
@@ -382,7 +382,7 @@ func TestAlmIntegrations_SearchBitbucketserverRepos(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -393,7 +393,7 @@ func TestAlmIntegrations_SearchBitbucketserverRepos(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsSearchBitbucketserverReposOption{}
 	_, resp, err := client.AlmIntegrations.SearchBitbucketserverRepos(opt)
 	if err != nil {
@@ -411,7 +411,7 @@ func TestAlmIntegrations_SearchGitlabRepos(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -422,7 +422,7 @@ func TestAlmIntegrations_SearchGitlabRepos(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsSearchGitlabReposOption{}
 	_, resp, err := client.AlmIntegrations.SearchGitlabRepos(opt)
 	if err != nil {
@@ -440,7 +440,7 @@ func TestAlmIntegrations_SetPat(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -449,7 +449,7 @@ func TestAlmIntegrations_SetPat(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmIntegrationsSetPatOption{}
 	resp, err := client.AlmIntegrations.SetPat(opt)
 	if err != nil {

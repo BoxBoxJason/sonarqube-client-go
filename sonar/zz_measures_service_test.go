@@ -15,7 +15,7 @@ func TestMeasures_Component(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestMeasures_Component(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &MeasuresComponentOption{}
 	_, resp, err := client.Measures.Component(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestMeasures_ComponentTree(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -55,7 +55,7 @@ func TestMeasures_ComponentTree(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &MeasuresComponentTreeOption{}
 	_, resp, err := client.Measures.ComponentTree(opt)
 	if err != nil {
@@ -73,7 +73,7 @@ func TestMeasures_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -84,7 +84,7 @@ func TestMeasures_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &MeasuresSearchOption{}
 	_, resp, err := client.Measures.Search(opt)
 	if err != nil {
@@ -102,7 +102,7 @@ func TestMeasures_SearchHistory(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -113,7 +113,7 @@ func TestMeasures_SearchHistory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &MeasuresSearchHistoryOption{}
 	_, resp, err := client.Measures.SearchHistory(opt)
 	if err != nil {

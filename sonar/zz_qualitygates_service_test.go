@@ -15,7 +15,7 @@ func TestQualitygates_AddGroup(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestQualitygates_AddGroup(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesAddGroupOption{}
 	resp, err := client.Qualitygates.AddGroup(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestQualitygates_AddUser(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -51,7 +51,7 @@ func TestQualitygates_AddUser(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesAddUserOption{}
 	resp, err := client.Qualitygates.AddUser(opt)
 	if err != nil {
@@ -69,7 +69,7 @@ func TestQualitygates_Copy(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -78,7 +78,7 @@ func TestQualitygates_Copy(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesCopyOption{}
 	resp, err := client.Qualitygates.Copy(opt)
 	if err != nil {
@@ -96,7 +96,7 @@ func TestQualitygates_Create(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -107,7 +107,7 @@ func TestQualitygates_Create(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesCreateOption{}
 	_, resp, err := client.Qualitygates.Create(opt)
 	if err != nil {
@@ -125,7 +125,7 @@ func TestQualitygates_CreateCondition(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -136,7 +136,7 @@ func TestQualitygates_CreateCondition(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesCreateConditionOption{}
 	_, resp, err := client.Qualitygates.CreateCondition(opt)
 	if err != nil {
@@ -154,7 +154,7 @@ func TestQualitygates_DeleteCondition(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -163,7 +163,7 @@ func TestQualitygates_DeleteCondition(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesDeleteConditionOption{}
 	resp, err := client.Qualitygates.DeleteCondition(opt)
 	if err != nil {
@@ -181,7 +181,7 @@ func TestQualitygates_Deselect(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -190,7 +190,7 @@ func TestQualitygates_Deselect(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesDeselectOption{}
 	resp, err := client.Qualitygates.Deselect(opt)
 	if err != nil {
@@ -208,7 +208,7 @@ func TestQualitygates_Destroy(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -217,7 +217,7 @@ func TestQualitygates_Destroy(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesDestroyOption{}
 	resp, err := client.Qualitygates.Destroy(opt)
 	if err != nil {
@@ -235,7 +235,7 @@ func TestQualitygates_GetByProject(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -246,7 +246,7 @@ func TestQualitygates_GetByProject(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesGetByProjectOption{}
 	_, resp, err := client.Qualitygates.GetByProject(opt)
 	if err != nil {
@@ -264,7 +264,7 @@ func TestQualitygates_List(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -275,7 +275,7 @@ func TestQualitygates_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Qualitygates.List()
 	if err != nil {
 		t.Fatalf("List failed: %v", err)
@@ -292,7 +292,7 @@ func TestQualitygates_ProjectStatus(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -303,7 +303,7 @@ func TestQualitygates_ProjectStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesProjectStatusOption{}
 	_, resp, err := client.Qualitygates.ProjectStatus(opt)
 	if err != nil {
@@ -321,7 +321,7 @@ func TestQualitygates_RemoveGroup(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -330,7 +330,7 @@ func TestQualitygates_RemoveGroup(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesRemoveGroupOption{}
 	resp, err := client.Qualitygates.RemoveGroup(opt)
 	if err != nil {
@@ -348,7 +348,7 @@ func TestQualitygates_RemoveUser(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -357,7 +357,7 @@ func TestQualitygates_RemoveUser(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesRemoveUserOption{}
 	resp, err := client.Qualitygates.RemoveUser(opt)
 	if err != nil {
@@ -375,7 +375,7 @@ func TestQualitygates_Rename(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -384,7 +384,7 @@ func TestQualitygates_Rename(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesRenameOption{}
 	resp, err := client.Qualitygates.Rename(opt)
 	if err != nil {
@@ -402,7 +402,7 @@ func TestQualitygates_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -413,7 +413,7 @@ func TestQualitygates_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesSearchOption{}
 	_, resp, err := client.Qualitygates.Search(opt)
 	if err != nil {
@@ -431,7 +431,7 @@ func TestQualitygates_SearchGroups(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -442,7 +442,7 @@ func TestQualitygates_SearchGroups(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesSearchGroupsOption{}
 	_, resp, err := client.Qualitygates.SearchGroups(opt)
 	if err != nil {
@@ -460,7 +460,7 @@ func TestQualitygates_SearchUsers(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -471,7 +471,7 @@ func TestQualitygates_SearchUsers(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesSearchUsersOption{}
 	_, resp, err := client.Qualitygates.SearchUsers(opt)
 	if err != nil {
@@ -489,7 +489,7 @@ func TestQualitygates_Select(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -498,7 +498,7 @@ func TestQualitygates_Select(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesSelectOption{}
 	resp, err := client.Qualitygates.Select(opt)
 	if err != nil {
@@ -516,7 +516,7 @@ func TestQualitygates_SetAsDefault(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -525,7 +525,7 @@ func TestQualitygates_SetAsDefault(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesSetAsDefaultOption{}
 	resp, err := client.Qualitygates.SetAsDefault(opt)
 	if err != nil {
@@ -543,7 +543,7 @@ func TestQualitygates_Show(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -554,7 +554,7 @@ func TestQualitygates_Show(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesShowOption{}
 	_, resp, err := client.Qualitygates.Show(opt)
 	if err != nil {
@@ -572,7 +572,7 @@ func TestQualitygates_UpdateCondition(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -581,7 +581,7 @@ func TestQualitygates_UpdateCondition(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &QualitygatesUpdateConditionOption{}
 	resp, err := client.Qualitygates.UpdateCondition(opt)
 	if err != nil {

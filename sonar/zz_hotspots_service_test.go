@@ -15,7 +15,7 @@ func TestHotspots_AddComment(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestHotspots_AddComment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsAddCommentOption{}
 	resp, err := client.Hotspots.AddComment(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestHotspots_Assign(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -51,7 +51,7 @@ func TestHotspots_Assign(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsAssignOption{}
 	resp, err := client.Hotspots.Assign(opt)
 	if err != nil {
@@ -69,7 +69,7 @@ func TestHotspots_ChangeStatus(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -78,7 +78,7 @@ func TestHotspots_ChangeStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsChangeStatusOption{}
 	resp, err := client.Hotspots.ChangeStatus(opt)
 	if err != nil {
@@ -96,7 +96,7 @@ func TestHotspots_DeleteComment(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -105,7 +105,7 @@ func TestHotspots_DeleteComment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsDeleteCommentOption{}
 	resp, err := client.Hotspots.DeleteComment(opt)
 	if err != nil {
@@ -123,7 +123,7 @@ func TestHotspots_EditComment(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -134,7 +134,7 @@ func TestHotspots_EditComment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsEditCommentOption{}
 	_, resp, err := client.Hotspots.EditComment(opt)
 	if err != nil {
@@ -152,7 +152,7 @@ func TestHotspots_List(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -163,7 +163,7 @@ func TestHotspots_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsListOption{}
 	_, resp, err := client.Hotspots.List(opt)
 	if err != nil {
@@ -181,7 +181,7 @@ func TestHotspots_Pull(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("[]"))
@@ -192,7 +192,7 @@ func TestHotspots_Pull(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsPullOption{}
 	_, resp, err := client.Hotspots.Pull(opt)
 	if err != nil {
@@ -210,7 +210,7 @@ func TestHotspots_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -221,7 +221,7 @@ func TestHotspots_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsSearchOption{}
 	_, resp, err := client.Hotspots.Search(opt)
 	if err != nil {
@@ -239,7 +239,7 @@ func TestHotspots_Show(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -250,7 +250,7 @@ func TestHotspots_Show(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &HotspotsShowOption{}
 	_, resp, err := client.Hotspots.Show(opt)
 	if err != nil {
