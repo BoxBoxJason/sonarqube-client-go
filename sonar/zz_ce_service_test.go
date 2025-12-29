@@ -15,7 +15,7 @@ func TestCe_Activity(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestCe_Activity(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeActivityOption{}
 	_, resp, err := client.Ce.Activity(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestCe_ActivityStatus(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -55,7 +55,7 @@ func TestCe_ActivityStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeActivityStatusOption{}
 	_, resp, err := client.Ce.ActivityStatus(opt)
 	if err != nil {
@@ -73,7 +73,7 @@ func TestCe_AnalysisStatus(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -84,7 +84,7 @@ func TestCe_AnalysisStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeAnalysisStatusOption{}
 	_, resp, err := client.Ce.AnalysisStatus(opt)
 	if err != nil {
@@ -102,7 +102,7 @@ func TestCe_Cancel(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -111,7 +111,7 @@ func TestCe_Cancel(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeCancelOption{}
 	resp, err := client.Ce.Cancel(opt)
 	if err != nil {
@@ -129,7 +129,7 @@ func TestCe_CancelAll(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -138,7 +138,7 @@ func TestCe_CancelAll(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	resp, err := client.Ce.CancelAll()
 	if err != nil {
 		t.Fatalf("CancelAll failed: %v", err)
@@ -155,7 +155,7 @@ func TestCe_Component(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -166,7 +166,7 @@ func TestCe_Component(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeComponentOption{}
 	_, resp, err := client.Ce.Component(opt)
 	if err != nil {
@@ -184,7 +184,7 @@ func TestCe_DismissAnalysisWarning(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -193,7 +193,7 @@ func TestCe_DismissAnalysisWarning(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeDismissAnalysisWarningOption{}
 	resp, err := client.Ce.DismissAnalysisWarning(opt)
 	if err != nil {
@@ -211,7 +211,7 @@ func TestCe_IndexationStatus(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -222,7 +222,7 @@ func TestCe_IndexationStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Ce.IndexationStatus()
 	if err != nil {
 		t.Fatalf("IndexationStatus failed: %v", err)
@@ -239,7 +239,7 @@ func TestCe_Info(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -250,7 +250,7 @@ func TestCe_Info(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Ce.Info()
 	if err != nil {
 		t.Fatalf("Info failed: %v", err)
@@ -267,7 +267,7 @@ func TestCe_Pause(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -276,7 +276,7 @@ func TestCe_Pause(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	resp, err := client.Ce.Pause()
 	if err != nil {
 		t.Fatalf("Pause failed: %v", err)
@@ -293,7 +293,7 @@ func TestCe_Resume(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -302,7 +302,7 @@ func TestCe_Resume(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	resp, err := client.Ce.Resume()
 	if err != nil {
 		t.Fatalf("Resume failed: %v", err)
@@ -319,7 +319,7 @@ func TestCe_Submit(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -330,7 +330,7 @@ func TestCe_Submit(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeSubmitOption{}
 	_, resp, err := client.Ce.Submit(opt)
 	if err != nil {
@@ -348,7 +348,7 @@ func TestCe_Task(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -359,7 +359,7 @@ func TestCe_Task(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &CeTaskOption{}
 	_, resp, err := client.Ce.Task(opt)
 	if err != nil {
@@ -377,7 +377,7 @@ func TestCe_TaskTypes(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -388,7 +388,7 @@ func TestCe_TaskTypes(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Ce.TaskTypes()
 	if err != nil {
 		t.Fatalf("TaskTypes failed: %v", err)
@@ -405,7 +405,7 @@ func TestCe_WorkerCount(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -416,7 +416,7 @@ func TestCe_WorkerCount(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Ce.WorkerCount()
 	if err != nil {
 		t.Fatalf("WorkerCount failed: %v", err)

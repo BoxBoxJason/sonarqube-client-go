@@ -15,7 +15,7 @@ func TestSettings_CheckSecretKey(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestSettings_CheckSecretKey(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Settings.CheckSecretKey()
 	if err != nil {
 		t.Fatalf("CheckSecretKey failed: %v", err)
@@ -43,7 +43,7 @@ func TestSettings_Encrypt(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -54,7 +54,7 @@ func TestSettings_Encrypt(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &SettingsEncryptOption{}
 	_, resp, err := client.Settings.Encrypt(opt)
 	if err != nil {
@@ -72,7 +72,7 @@ func TestSettings_GenerateSecretKey(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -83,7 +83,7 @@ func TestSettings_GenerateSecretKey(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Settings.GenerateSecretKey()
 	if err != nil {
 		t.Fatalf("GenerateSecretKey failed: %v", err)
@@ -100,7 +100,7 @@ func TestSettings_ListDefinitions(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -111,7 +111,7 @@ func TestSettings_ListDefinitions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &SettingsListDefinitionsOption{}
 	_, resp, err := client.Settings.ListDefinitions(opt)
 	if err != nil {
@@ -129,7 +129,7 @@ func TestSettings_LoginMessage(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -140,7 +140,7 @@ func TestSettings_LoginMessage(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Settings.LoginMessage()
 	if err != nil {
 		t.Fatalf("LoginMessage failed: %v", err)
@@ -157,7 +157,7 @@ func TestSettings_Reset(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -166,7 +166,7 @@ func TestSettings_Reset(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &SettingsResetOption{}
 	resp, err := client.Settings.Reset(opt)
 	if err != nil {
@@ -184,7 +184,7 @@ func TestSettings_Set(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -193,7 +193,7 @@ func TestSettings_Set(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &SettingsSetOption{}
 	resp, err := client.Settings.Set(opt)
 	if err != nil {
@@ -211,7 +211,7 @@ func TestSettings_Values(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -222,7 +222,7 @@ func TestSettings_Values(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &SettingsValuesOption{}
 	_, resp, err := client.Settings.Values(opt)
 	if err != nil {

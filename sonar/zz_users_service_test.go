@@ -15,7 +15,7 @@ func TestUsers_Anonymize(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestUsers_Anonymize(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersAnonymizeOption{}
 	resp, err := client.Users.Anonymize(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestUsers_ChangePassword(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -51,7 +51,7 @@ func TestUsers_ChangePassword(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersChangePasswordOption{}
 	resp, err := client.Users.ChangePassword(opt)
 	if err != nil {
@@ -69,7 +69,7 @@ func TestUsers_Create(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -80,7 +80,7 @@ func TestUsers_Create(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersCreateOption{}
 	_, resp, err := client.Users.Create(opt)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestUsers_Current(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -109,7 +109,7 @@ func TestUsers_Current(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Users.Current()
 	if err != nil {
 		t.Fatalf("Current failed: %v", err)
@@ -126,7 +126,7 @@ func TestUsers_Deactivate(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -137,7 +137,7 @@ func TestUsers_Deactivate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersDeactivateOption{}
 	_, resp, err := client.Users.Deactivate(opt)
 	if err != nil {
@@ -155,7 +155,7 @@ func TestUsers_DismissNotice(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -164,7 +164,7 @@ func TestUsers_DismissNotice(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersDismissNoticeOption{}
 	resp, err := client.Users.DismissNotice(opt)
 	if err != nil {
@@ -182,7 +182,7 @@ func TestUsers_Groups(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -193,7 +193,7 @@ func TestUsers_Groups(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersGroupsOption{}
 	_, resp, err := client.Users.Groups(opt)
 	if err != nil {
@@ -211,7 +211,7 @@ func TestUsers_IdentityProviders(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -222,7 +222,7 @@ func TestUsers_IdentityProviders(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Users.IdentityProviders()
 	if err != nil {
 		t.Fatalf("IdentityProviders failed: %v", err)
@@ -239,7 +239,7 @@ func TestUsers_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -250,7 +250,7 @@ func TestUsers_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersSearchOption{}
 	_, resp, err := client.Users.Search(opt)
 	if err != nil {
@@ -268,7 +268,7 @@ func TestUsers_SetHomepage(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -277,7 +277,7 @@ func TestUsers_SetHomepage(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersSetHomepageOption{}
 	resp, err := client.Users.SetHomepage(opt)
 	if err != nil {
@@ -295,7 +295,7 @@ func TestUsers_Update(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -306,7 +306,7 @@ func TestUsers_Update(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersUpdateOption{}
 	_, resp, err := client.Users.Update(opt)
 	if err != nil {
@@ -324,7 +324,7 @@ func TestUsers_UpdateIdentityProvider(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -333,7 +333,7 @@ func TestUsers_UpdateIdentityProvider(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersUpdateIdentityProviderOption{}
 	resp, err := client.Users.UpdateIdentityProvider(opt)
 	if err != nil {
@@ -351,7 +351,7 @@ func TestUsers_UpdateLogin(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -360,7 +360,7 @@ func TestUsers_UpdateLogin(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &UsersUpdateLoginOption{}
 	resp, err := client.Users.UpdateLogin(opt)
 	if err != nil {

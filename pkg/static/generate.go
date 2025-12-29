@@ -9,7 +9,7 @@ import (
 )
 
 // ConstFileName is the name of the generated file containing static constants.
-const ConstFileName = "generated_static_file_const.go"
+const ConstFileName = "zz_static_file_const.go"
 
 var (
 	//nolint:gochecknoglobals

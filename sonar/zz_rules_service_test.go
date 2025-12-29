@@ -15,7 +15,7 @@ func TestRules_App(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestRules_App(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Rules.App()
 	if err != nil {
 		t.Fatalf("App failed: %v", err)
@@ -43,7 +43,7 @@ func TestRules_Create(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -54,7 +54,7 @@ func TestRules_Create(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesCreateOption{}
 	_, resp, err := client.Rules.Create(opt)
 	if err != nil {
@@ -72,7 +72,7 @@ func TestRules_Delete(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -81,7 +81,7 @@ func TestRules_Delete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesDeleteOption{}
 	resp, err := client.Rules.Delete(opt)
 	if err != nil {
@@ -99,7 +99,7 @@ func TestRules_List(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -110,7 +110,7 @@ func TestRules_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesListOption{}
 	_, resp, err := client.Rules.List(opt)
 	if err != nil {
@@ -128,7 +128,7 @@ func TestRules_Repositories(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -139,7 +139,7 @@ func TestRules_Repositories(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesRepositoriesOption{}
 	_, resp, err := client.Rules.Repositories(opt)
 	if err != nil {
@@ -157,7 +157,7 @@ func TestRules_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -168,7 +168,7 @@ func TestRules_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesSearchOption{}
 	_, resp, err := client.Rules.Search(opt)
 	if err != nil {
@@ -186,7 +186,7 @@ func TestRules_Show(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -197,7 +197,7 @@ func TestRules_Show(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesShowOption{}
 	_, resp, err := client.Rules.Show(opt)
 	if err != nil {
@@ -215,7 +215,7 @@ func TestRules_Tags(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -226,7 +226,7 @@ func TestRules_Tags(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesTagsOption{}
 	_, resp, err := client.Rules.Tags(opt)
 	if err != nil {
@@ -244,7 +244,7 @@ func TestRules_Update(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -255,7 +255,7 @@ func TestRules_Update(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &RulesUpdateOption{}
 	_, resp, err := client.Rules.Update(opt)
 	if err != nil {

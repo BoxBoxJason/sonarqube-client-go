@@ -15,7 +15,7 @@ func TestL10N_Index(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestL10N_Index(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &L10NIndexOption{}
 	_, resp, err := client.L10N.Index(opt)
 	if err != nil {

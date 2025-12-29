@@ -63,7 +63,7 @@ password := admin
 ### 3. Generate the code
 
 ```bash
-make update
+make generate
 ```
 
 This will generate client code in the `sonar/` directory based on your SonarQube API specification.
@@ -78,7 +78,7 @@ This will generate client code in the `sonar/` directory based on your SonarQube
 
 ## Requirements
 
-- Go 1.21 or higher
+- Go 1.25 or higher
 - Access to a SonarQube instance (for code generation)
 
 ## License

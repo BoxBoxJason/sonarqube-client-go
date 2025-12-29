@@ -15,7 +15,7 @@ func TestWebhooks_Create(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestWebhooks_Create(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &WebhooksCreateOption{}
 	_, resp, err := client.Webhooks.Create(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestWebhooks_Delete(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -53,7 +53,7 @@ func TestWebhooks_Delete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &WebhooksDeleteOption{}
 	resp, err := client.Webhooks.Delete(opt)
 	if err != nil {
@@ -71,7 +71,7 @@ func TestWebhooks_Deliveries(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -82,7 +82,7 @@ func TestWebhooks_Deliveries(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &WebhooksDeliveriesOption{}
 	_, resp, err := client.Webhooks.Deliveries(opt)
 	if err != nil {
@@ -100,7 +100,7 @@ func TestWebhooks_Delivery(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -111,7 +111,7 @@ func TestWebhooks_Delivery(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &WebhooksDeliveryOption{}
 	_, resp, err := client.Webhooks.Delivery(opt)
 	if err != nil {
@@ -129,7 +129,7 @@ func TestWebhooks_List(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -140,7 +140,7 @@ func TestWebhooks_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &WebhooksListOption{}
 	_, resp, err := client.Webhooks.List(opt)
 	if err != nil {
@@ -158,7 +158,7 @@ func TestWebhooks_Update(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -167,7 +167,7 @@ func TestWebhooks_Update(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &WebhooksUpdateOption{}
 	resp, err := client.Webhooks.Update(opt)
 	if err != nil {

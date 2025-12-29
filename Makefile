@@ -1,6 +1,6 @@
 package_name := sonargo
 target_dir := sonar
-endpoint := http://127.0.0.1:9000/api
+endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
 container_engine := docker
@@ -10,27 +10,27 @@ sonarqube_version := 25.12.0.117093-community
 
 clean:
 	rm -f ${target_dir}/*.go
-	rm -rf integration_testing
 
 generate: setup.sonar
 	go generate ./...
 
 # Run all unit tests
 test:
-	rm -rf integration_testing
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@latest; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ./...
-	rm -rf integration_testing
+	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ./pkg/... ./${target_dir}/...
 
 # Run tests with coverage report
 coverage:
-	rm -rf integration_testing
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@latest; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./...
-	rm -rf integration_testing
+	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./pkg/... ./${target_dir}/...
 	@echo "Coverage report generated: codequality/coverage.html"
+
+# Run integration tests
+e2e-test: setup.sonar
+	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/ginkgo@latest; }
+	SONAR_URL=${endpoint} ginkgo -r integration_testing
 
 # Generate changelog using git-cliff
 changelog:
@@ -59,7 +59,7 @@ changelog-check:
 lint:
 	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; }
 	@mkdir -p codequality
-	golangci-lint run ./...
+	golangci-lint run ./pkg/... ./${target_dir}/...
 
 # Check for uncommitted changes after generation (useful for CI)
 no-diff: generate
@@ -78,17 +78,17 @@ no-diff: generate
 # Else use container engine to start a SonarQube instance with a port mapping
 setup.sonar:
 	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
-	@if curl -s -u ${username}:${password} ${endpoint}/system/health | grep -q "GREEN"; then \
-		echo "SonarQube API is reachable at ${endpoint}. Skipping setup."; \
+	@if curl -s -u ${username}:${password} ${endpoint}/api/system/health | grep -q "GREEN"; then \
+		echo "SonarQube API is reachable at ${endpoint}/api. Skipping setup."; \
 	else \
 		if [ -n "$$GITHUB_ACTIONS" ] || [ -n "$$CI" ]; then \
-			echo "Detected CI environment; not starting container. Waiting for SonarQube at ${endpoint}..."; \
+			echo "Detected CI environment; not starting container. Waiting for SonarQube at ${endpoint}/api..."; \
 		else \
 			echo "Starting SonarQube instance using ${container_engine}..."; \
 			${container_engine} run -d --name sonargo-sonarqube -p 9000:9000 docker.io/library/sonarqube:${sonarqube_version}; \
 			echo "Waiting for SonarQube to be ready..."; \
 		fi; \
-		until curl -s -u ${username}:${password} ${endpoint}/system/health | grep -q "GREEN"; do \
+		until curl -s -u ${username}:${password} ${endpoint}/api/system/health | grep -q "GREEN"; do \
 			printf "."; \
 			sleep 5; \
 		done; \

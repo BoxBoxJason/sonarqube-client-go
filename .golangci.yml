@@ -19,7 +19,7 @@ formatters:
     - goimports
   settings:
     goimports:
-      local-prefixes: github.com/boxjason/sonarqube-client-go
+      # local-prefixes: github.com/boxboxjason/sonarqube-client-go
     gofmt:
       simplify: true
 
@@ -33,10 +33,11 @@ linters:
     govet:
       enable-all: true
     gci:
+      custom-order: true
       sections:
         - standard
         - default
-        - prefix(github.com/boxjason/sonarqube-client-go)
+        - prefix(github.com/boxboxjason)
       skip-generated: true
     wsl_v5:
       allow-first-in-block: true

@@ -15,7 +15,7 @@ func TestProjects_BulkDelete(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestProjects_BulkDelete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsBulkDeleteOption{}
 	resp, err := client.Projects.BulkDelete(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestProjects_Create(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -53,7 +53,7 @@ func TestProjects_Create(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsCreateOption{}
 	_, resp, err := client.Projects.Create(opt)
 	if err != nil {
@@ -71,7 +71,7 @@ func TestProjects_Delete(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -80,7 +80,7 @@ func TestProjects_Delete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsDeleteOption{}
 	resp, err := client.Projects.Delete(opt)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestProjects_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -109,7 +109,7 @@ func TestProjects_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsSearchOption{}
 	_, resp, err := client.Projects.Search(opt)
 	if err != nil {
@@ -127,7 +127,7 @@ func TestProjects_SearchMyProjects(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -138,7 +138,7 @@ func TestProjects_SearchMyProjects(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsSearchMyProjectsOption{}
 	_, resp, err := client.Projects.SearchMyProjects(opt)
 	if err != nil {
@@ -156,7 +156,7 @@ func TestProjects_SearchMyScannableProjects(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -167,7 +167,7 @@ func TestProjects_SearchMyScannableProjects(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsSearchMyScannableProjectsOption{}
 	_, resp, err := client.Projects.SearchMyScannableProjects(opt)
 	if err != nil {
@@ -185,7 +185,7 @@ func TestProjects_UpdateDefaultVisibility(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -194,7 +194,7 @@ func TestProjects_UpdateDefaultVisibility(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsUpdateDefaultVisibilityOption{}
 	resp, err := client.Projects.UpdateDefaultVisibility(opt)
 	if err != nil {
@@ -212,7 +212,7 @@ func TestProjects_UpdateKey(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -221,7 +221,7 @@ func TestProjects_UpdateKey(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsUpdateKeyOption{}
 	resp, err := client.Projects.UpdateKey(opt)
 	if err != nil {
@@ -239,7 +239,7 @@ func TestProjects_UpdateVisibility(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -248,7 +248,7 @@ func TestProjects_UpdateVisibility(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectsUpdateVisibilityOption{}
 	resp, err := client.Projects.UpdateVisibility(opt)
 	if err != nil {

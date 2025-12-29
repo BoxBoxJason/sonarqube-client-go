@@ -15,7 +15,7 @@ func TestProjectBranches_Delete(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestProjectBranches_Delete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBranchesDeleteOption{}
 	resp, err := client.ProjectBranches.Delete(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestProjectBranches_List(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -53,7 +53,7 @@ func TestProjectBranches_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBranchesListOption{}
 	_, resp, err := client.ProjectBranches.List(opt)
 	if err != nil {
@@ -71,7 +71,7 @@ func TestProjectBranches_Rename(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -80,7 +80,7 @@ func TestProjectBranches_Rename(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBranchesRenameOption{}
 	resp, err := client.ProjectBranches.Rename(opt)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestProjectBranches_SetAutomaticDeletionProtection(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -107,7 +107,7 @@ func TestProjectBranches_SetAutomaticDeletionProtection(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBranchesSetAutomaticDeletionProtectionOption{}
 	resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(opt)
 	if err != nil {
@@ -125,7 +125,7 @@ func TestProjectBranches_SetMain(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -134,7 +134,7 @@ func TestProjectBranches_SetMain(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBranchesSetMainOption{}
 	resp, err := client.ProjectBranches.SetMain(opt)
 	if err != nil {

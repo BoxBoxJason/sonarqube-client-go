@@ -90,7 +90,7 @@ func TestAddStaticFile(t *testing.T) {
 		}
 		os.Chdir("..")
 	}
-	moduleRoot, _ := os.Getwd()
+	// moduleRoot, _ := os.Getwd()
 
 	// Create a temporary directory for testing
 	tempDir, err := os.MkdirTemp("", "generate-test-*")
@@ -99,18 +99,19 @@ func TestAddStaticFile(t *testing.T) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	// Create integration_testing directory at module root level
-	integrationDir := filepath.Join(moduleRoot, "integration_testing")
-	if _, err := os.Stat(integrationDir); os.IsNotExist(err) {
-		err = os.MkdirAll(integrationDir, 0755)
-		if err != nil {
-			t.Skip("Cannot create integration_testing directory for test")
-		}
+	// Change to temp dir so relative paths work
+	os.Chdir(tempDir)
+
+	// Create integration_testing directory in temp dir
+	integrationDir := "integration_testing"
+	err = os.MkdirAll(integrationDir, 0755)
+	if err != nil {
+		t.Fatalf("Cannot create integration_testing directory for test: %v", err)
 	}
 
 	// Create Generator instance
 	gen := &Generator{
-		WorkingDir:  tempDir,
+		WorkingDir:  ".",
 		PackageName: "testpkg",
 		CurrentRepo: "github.com/boxboxjason/sonarqube-client-go/testpkg",
 	}
@@ -122,16 +123,16 @@ func TestAddStaticFile(t *testing.T) {
 		return
 	}
 
-	// Check that sonarqube.go was created
-	sonarqubeFile := filepath.Join(tempDir, "zz_sonarqube.go")
-	if _, err := os.Stat(sonarqubeFile); os.IsNotExist(err) {
-		t.Error("zz_sonarqube.go was not created")
+	// Check that client.go was created
+	clientFile := filepath.Join(tempDir, GeneratedFilenamePrefix+"client.go")
+	if _, err := os.Stat(clientFile); os.IsNotExist(err) {
+		t.Error(GeneratedFilenamePrefix + "client.go was not created")
 	}
 
 	// Check that client_util.go was created
-	clientUtilFile := filepath.Join(tempDir, "zz_client_util.go")
+	clientUtilFile := filepath.Join(tempDir, GeneratedFilenamePrefix+"client_util.go")
 	if _, err := os.Stat(clientUtilFile); os.IsNotExist(err) {
-		t.Error("zz_client_util.go was not created")
+		t.Error(GeneratedFilenamePrefix + "client_util.go was not created")
 	}
 }
 

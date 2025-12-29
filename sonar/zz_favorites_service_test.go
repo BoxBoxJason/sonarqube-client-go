@@ -15,7 +15,7 @@ func TestFavorites_Add(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestFavorites_Add(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &FavoritesAddOption{}
 	resp, err := client.Favorites.Add(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestFavorites_Remove(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -51,7 +51,7 @@ func TestFavorites_Remove(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &FavoritesRemoveOption{}
 	resp, err := client.Favorites.Remove(opt)
 	if err != nil {
@@ -69,7 +69,7 @@ func TestFavorites_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -80,7 +80,7 @@ func TestFavorites_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &FavoritesSearchOption{}
 	_, resp, err := client.Favorites.Search(opt)
 	if err != nil {

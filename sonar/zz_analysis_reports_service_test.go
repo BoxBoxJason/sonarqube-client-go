@@ -15,7 +15,7 @@ func TestAnalysisReports_IsQueueEmpty(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestAnalysisReports_IsQueueEmpty(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.AnalysisReports.IsQueueEmpty()
 	if err != nil {
 		t.Fatalf("IsQueueEmpty failed: %v", err)

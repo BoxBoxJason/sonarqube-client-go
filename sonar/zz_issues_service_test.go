@@ -15,7 +15,7 @@ func TestIssues_AddComment(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestIssues_AddComment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesAddCommentOption{}
 	_, resp, err := client.Issues.AddComment(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestIssues_AnticipatedTransitions(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -53,7 +53,7 @@ func TestIssues_AnticipatedTransitions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesAnticipatedTransitionsOption{}
 	resp, err := client.Issues.AnticipatedTransitions(opt)
 	if err != nil {
@@ -71,7 +71,7 @@ func TestIssues_Assign(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -82,7 +82,7 @@ func TestIssues_Assign(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesAssignOption{}
 	_, resp, err := client.Issues.Assign(opt)
 	if err != nil {
@@ -100,7 +100,7 @@ func TestIssues_Authors(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -111,7 +111,7 @@ func TestIssues_Authors(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesAuthorsOption{}
 	_, resp, err := client.Issues.Authors(opt)
 	if err != nil {
@@ -129,7 +129,7 @@ func TestIssues_BulkChange(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -140,7 +140,7 @@ func TestIssues_BulkChange(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesBulkChangeOption{}
 	_, resp, err := client.Issues.BulkChange(opt)
 	if err != nil {
@@ -158,7 +158,7 @@ func TestIssues_Changelog(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -169,7 +169,7 @@ func TestIssues_Changelog(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesChangelogOption{}
 	_, resp, err := client.Issues.Changelog(opt)
 	if err != nil {
@@ -187,7 +187,7 @@ func TestIssues_ComponentTags(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -198,7 +198,7 @@ func TestIssues_ComponentTags(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesComponentTagsOption{}
 	_, resp, err := client.Issues.ComponentTags(opt)
 	if err != nil {
@@ -216,7 +216,7 @@ func TestIssues_DeleteComment(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -227,7 +227,7 @@ func TestIssues_DeleteComment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesDeleteCommentOption{}
 	_, resp, err := client.Issues.DeleteComment(opt)
 	if err != nil {
@@ -245,7 +245,7 @@ func TestIssues_DoTransition(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -256,7 +256,7 @@ func TestIssues_DoTransition(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesDoTransitionOption{}
 	_, resp, err := client.Issues.DoTransition(opt)
 	if err != nil {
@@ -274,7 +274,7 @@ func TestIssues_EditComment(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -285,7 +285,7 @@ func TestIssues_EditComment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesEditCommentOption{}
 	_, resp, err := client.Issues.EditComment(opt)
 	if err != nil {
@@ -303,7 +303,7 @@ func TestIssues_List(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -314,7 +314,7 @@ func TestIssues_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesListOption{}
 	_, resp, err := client.Issues.List(opt)
 	if err != nil {
@@ -332,7 +332,7 @@ func TestIssues_Pull(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("[]"))
@@ -343,7 +343,7 @@ func TestIssues_Pull(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesPullOption{}
 	_, resp, err := client.Issues.Pull(opt)
 	if err != nil {
@@ -361,7 +361,7 @@ func TestIssues_PullTaint(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("[]"))
@@ -372,7 +372,7 @@ func TestIssues_PullTaint(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesPullTaintOption{}
 	_, resp, err := client.Issues.PullTaint(opt)
 	if err != nil {
@@ -390,7 +390,7 @@ func TestIssues_Reindex(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -399,7 +399,7 @@ func TestIssues_Reindex(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesReindexOption{}
 	resp, err := client.Issues.Reindex(opt)
 	if err != nil {
@@ -417,7 +417,7 @@ func TestIssues_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -428,7 +428,7 @@ func TestIssues_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesSearchOption{}
 	_, resp, err := client.Issues.Search(opt)
 	if err != nil {
@@ -446,7 +446,7 @@ func TestIssues_SetSeverity(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -457,7 +457,7 @@ func TestIssues_SetSeverity(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesSetSeverityOption{}
 	_, resp, err := client.Issues.SetSeverity(opt)
 	if err != nil {
@@ -475,7 +475,7 @@ func TestIssues_SetTags(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -486,7 +486,7 @@ func TestIssues_SetTags(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesSetTagsOption{}
 	_, resp, err := client.Issues.SetTags(opt)
 	if err != nil {
@@ -504,7 +504,7 @@ func TestIssues_SetType(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -515,7 +515,7 @@ func TestIssues_SetType(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesSetTypeOption{}
 	_, resp, err := client.Issues.SetType(opt)
 	if err != nil {
@@ -533,7 +533,7 @@ func TestIssues_Tags(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -544,7 +544,7 @@ func TestIssues_Tags(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &IssuesTagsOption{}
 	_, resp, err := client.Issues.Tags(opt)
 	if err != nil {

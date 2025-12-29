@@ -15,7 +15,7 @@ func TestComponents_App(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestComponents_App(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ComponentsAppOption{}
 	_, resp, err := client.Components.App(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestComponents_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -55,7 +55,7 @@ func TestComponents_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ComponentsSearchOption{}
 	_, resp, err := client.Components.Search(opt)
 	if err != nil {
@@ -73,7 +73,7 @@ func TestComponents_SearchProjects(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -84,7 +84,7 @@ func TestComponents_SearchProjects(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ComponentsSearchProjectsOption{}
 	_, resp, err := client.Components.SearchProjects(opt)
 	if err != nil {
@@ -102,7 +102,7 @@ func TestComponents_Show(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -113,7 +113,7 @@ func TestComponents_Show(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ComponentsShowOption{}
 	_, resp, err := client.Components.Show(opt)
 	if err != nil {
@@ -131,7 +131,7 @@ func TestComponents_Suggestions(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -142,7 +142,7 @@ func TestComponents_Suggestions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ComponentsSuggestionsOption{}
 	_, resp, err := client.Components.Suggestions(opt)
 	if err != nil {
@@ -160,7 +160,7 @@ func TestComponents_Tree(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -171,7 +171,7 @@ func TestComponents_Tree(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ComponentsTreeOption{}
 	_, resp, err := client.Components.Tree(opt)
 	if err != nil {

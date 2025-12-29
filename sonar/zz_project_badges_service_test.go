@@ -15,7 +15,7 @@ func TestProjectBadges_Measure(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestProjectBadges_Measure(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBadgesMeasureOption{}
 	_, resp, err := client.ProjectBadges.Measure(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestProjectBadges_QualityGate(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -55,7 +55,7 @@ func TestProjectBadges_QualityGate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBadgesQualityGateOption{}
 	_, resp, err := client.ProjectBadges.QualityGate(opt)
 	if err != nil {
@@ -73,7 +73,7 @@ func TestProjectBadges_RenewToken(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -82,7 +82,7 @@ func TestProjectBadges_RenewToken(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBadgesRenewTokenOption{}
 	resp, err := client.ProjectBadges.RenewToken(opt)
 	if err != nil {
@@ -100,7 +100,7 @@ func TestProjectBadges_Token(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -111,7 +111,7 @@ func TestProjectBadges_Token(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectBadgesTokenOption{}
 	_, resp, err := client.ProjectBadges.Token(opt)
 	if err != nil {

@@ -15,7 +15,7 @@ func TestPlugins_Available(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestPlugins_Available(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Plugins.Available()
 	if err != nil {
 		t.Fatalf("Available failed: %v", err)
@@ -43,7 +43,7 @@ func TestPlugins_CancelAll(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -52,7 +52,7 @@ func TestPlugins_CancelAll(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	resp, err := client.Plugins.CancelAll()
 	if err != nil {
 		t.Fatalf("CancelAll failed: %v", err)
@@ -69,7 +69,7 @@ func TestPlugins_Download(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -80,7 +80,7 @@ func TestPlugins_Download(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PluginsDownloadOption{}
 	_, resp, err := client.Plugins.Download(opt)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestPlugins_Install(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -107,7 +107,7 @@ func TestPlugins_Install(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PluginsInstallOption{}
 	resp, err := client.Plugins.Install(opt)
 	if err != nil {
@@ -125,7 +125,7 @@ func TestPlugins_Installed(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -136,7 +136,7 @@ func TestPlugins_Installed(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PluginsInstalledOption{}
 	_, resp, err := client.Plugins.Installed(opt)
 	if err != nil {
@@ -154,7 +154,7 @@ func TestPlugins_Pending(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -165,7 +165,7 @@ func TestPlugins_Pending(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Plugins.Pending()
 	if err != nil {
 		t.Fatalf("Pending failed: %v", err)
@@ -182,7 +182,7 @@ func TestPlugins_Uninstall(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -191,7 +191,7 @@ func TestPlugins_Uninstall(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PluginsUninstallOption{}
 	resp, err := client.Plugins.Uninstall(opt)
 	if err != nil {
@@ -209,7 +209,7 @@ func TestPlugins_Update(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -218,7 +218,7 @@ func TestPlugins_Update(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &PluginsUpdateOption{}
 	resp, err := client.Plugins.Update(opt)
 	if err != nil {
@@ -236,7 +236,7 @@ func TestPlugins_Updates(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -247,7 +247,7 @@ func TestPlugins_Updates(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.Plugins.Updates()
 	if err != nil {
 		t.Fatalf("Updates failed: %v", err)

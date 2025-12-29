@@ -15,7 +15,7 @@ func TestAlmSettings_CountBinding(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestAlmSettings_CountBinding(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsCountBindingOption{}
 	_, resp, err := client.AlmSettings.CountBinding(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestAlmSettings_CreateAzure(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -53,7 +53,7 @@ func TestAlmSettings_CreateAzure(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsCreateAzureOption{}
 	resp, err := client.AlmSettings.CreateAzure(opt)
 	if err != nil {
@@ -71,7 +71,7 @@ func TestAlmSettings_CreateBitbucket(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -80,7 +80,7 @@ func TestAlmSettings_CreateBitbucket(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsCreateBitbucketOption{}
 	resp, err := client.AlmSettings.CreateBitbucket(opt)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestAlmSettings_CreateBitbucketcloud(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -107,7 +107,7 @@ func TestAlmSettings_CreateBitbucketcloud(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsCreateBitbucketcloudOption{}
 	resp, err := client.AlmSettings.CreateBitbucketcloud(opt)
 	if err != nil {
@@ -125,7 +125,7 @@ func TestAlmSettings_CreateGithub(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -134,7 +134,7 @@ func TestAlmSettings_CreateGithub(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsCreateGithubOption{}
 	resp, err := client.AlmSettings.CreateGithub(opt)
 	if err != nil {
@@ -152,7 +152,7 @@ func TestAlmSettings_CreateGitlab(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -161,7 +161,7 @@ func TestAlmSettings_CreateGitlab(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsCreateGitlabOption{}
 	resp, err := client.AlmSettings.CreateGitlab(opt)
 	if err != nil {
@@ -179,7 +179,7 @@ func TestAlmSettings_Delete(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -188,7 +188,7 @@ func TestAlmSettings_Delete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsDeleteOption{}
 	resp, err := client.AlmSettings.Delete(opt)
 	if err != nil {
@@ -206,7 +206,7 @@ func TestAlmSettings_GetBinding(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -217,7 +217,7 @@ func TestAlmSettings_GetBinding(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsGetBindingOption{}
 	_, resp, err := client.AlmSettings.GetBinding(opt)
 	if err != nil {
@@ -235,7 +235,7 @@ func TestAlmSettings_List(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -246,7 +246,7 @@ func TestAlmSettings_List(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsListOption{}
 	_, resp, err := client.AlmSettings.List(opt)
 	if err != nil {
@@ -264,7 +264,7 @@ func TestAlmSettings_ListDefinitions(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -275,7 +275,7 @@ func TestAlmSettings_ListDefinitions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	_, resp, err := client.AlmSettings.ListDefinitions()
 	if err != nil {
 		t.Fatalf("ListDefinitions failed: %v", err)
@@ -292,7 +292,7 @@ func TestAlmSettings_UpdateAzure(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -301,7 +301,7 @@ func TestAlmSettings_UpdateAzure(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsUpdateAzureOption{}
 	resp, err := client.AlmSettings.UpdateAzure(opt)
 	if err != nil {
@@ -319,7 +319,7 @@ func TestAlmSettings_UpdateBitbucket(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -328,7 +328,7 @@ func TestAlmSettings_UpdateBitbucket(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsUpdateBitbucketOption{}
 	resp, err := client.AlmSettings.UpdateBitbucket(opt)
 	if err != nil {
@@ -346,7 +346,7 @@ func TestAlmSettings_UpdateBitbucketcloud(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -355,7 +355,7 @@ func TestAlmSettings_UpdateBitbucketcloud(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsUpdateBitbucketcloudOption{}
 	resp, err := client.AlmSettings.UpdateBitbucketcloud(opt)
 	if err != nil {
@@ -373,7 +373,7 @@ func TestAlmSettings_UpdateGithub(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -382,7 +382,7 @@ func TestAlmSettings_UpdateGithub(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsUpdateGithubOption{}
 	resp, err := client.AlmSettings.UpdateGithub(opt)
 	if err != nil {
@@ -400,7 +400,7 @@ func TestAlmSettings_UpdateGitlab(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -409,7 +409,7 @@ func TestAlmSettings_UpdateGitlab(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsUpdateGitlabOption{}
 	resp, err := client.AlmSettings.UpdateGitlab(opt)
 	if err != nil {
@@ -427,7 +427,7 @@ func TestAlmSettings_Validate(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -438,7 +438,7 @@ func TestAlmSettings_Validate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AlmSettingsValidateOption{}
 	_, resp, err := client.AlmSettings.Validate(opt)
 	if err != nil {

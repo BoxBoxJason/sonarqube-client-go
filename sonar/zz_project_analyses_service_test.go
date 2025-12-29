@@ -15,7 +15,7 @@ func TestProjectAnalyses_CreateEvent(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -26,7 +26,7 @@ func TestProjectAnalyses_CreateEvent(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectAnalysesCreateEventOption{}
 	_, resp, err := client.ProjectAnalyses.CreateEvent(opt)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestProjectAnalyses_Delete(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -53,7 +53,7 @@ func TestProjectAnalyses_Delete(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectAnalysesDeleteOption{}
 	resp, err := client.ProjectAnalyses.Delete(opt)
 	if err != nil {
@@ -71,7 +71,7 @@ func TestProjectAnalyses_DeleteEvent(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -80,7 +80,7 @@ func TestProjectAnalyses_DeleteEvent(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectAnalysesDeleteEventOption{}
 	resp, err := client.ProjectAnalyses.DeleteEvent(opt)
 	if err != nil {
@@ -98,7 +98,7 @@ func TestProjectAnalyses_Search(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -109,7 +109,7 @@ func TestProjectAnalyses_Search(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectAnalysesSearchOption{}
 	_, resp, err := client.ProjectAnalyses.Search(opt)
 	if err != nil {
@@ -127,7 +127,7 @@ func TestProjectAnalyses_UpdateEvent(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -138,7 +138,7 @@ func TestProjectAnalyses_UpdateEvent(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &ProjectAnalysesUpdateEventOption{}
 	_, resp, err := client.ProjectAnalyses.UpdateEvent(opt)
 	if err != nil {

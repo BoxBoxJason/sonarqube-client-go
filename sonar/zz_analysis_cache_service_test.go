@@ -15,7 +15,7 @@ func TestAnalysisCache_Clear(t *testing.T) {
 		if r.Method != "POST" {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.WriteHeader(204)
 	}))
 	defer ts.Close()
@@ -24,7 +24,7 @@ func TestAnalysisCache_Clear(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AnalysisCacheClearOption{}
 	resp, err := client.AnalysisCache.Clear(opt)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestAnalysisCache_Get(t *testing.T) {
 		if r.Method != "GET" {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
-		// Return mock response
+		// jen.Return mock response
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		w.Write([]byte("null"))
@@ -53,7 +53,7 @@ func TestAnalysisCache_Get(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create client: %v", err)
 	}
-	// Call service method
+	// jen.Call service method
 	opt := &AnalysisCacheGetOption{}
 	_, resp, err := client.AnalysisCache.Get(opt)
 	if err != nil {
