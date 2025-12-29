@@ -1,4 +1,4 @@
-name: CI
+name: Validation
 
 on:
   push:
@@ -52,6 +52,13 @@ jobs:
   no-diff:
     name: No-Diff Check
     runs-on: ubuntu-latest
+    services:
+      sonarqube:
+        image: docker.io/library/sonarqube:25.12.0.117093-community
+        ports:
+          - 9000:9000
+        env:
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

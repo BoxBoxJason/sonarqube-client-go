@@ -3,20 +3,16 @@ target_dir := sonar
 endpoint := http://127.0.0.1:9000/api
 username := admin
 password := admin
+container_engine := docker
+sonarqube_version := 25.12.0.117093-community
 
-.PHONY: init-clean update generate test lint no-diff coverage
+.PHONY: setup.sonar clean generate test lint no-diff coverage
 
-init-clean:
+clean:
 	rm -f ${target_dir}/*.go
 	rm -rf integration_testing
-	echo "package $(package_name)" > doc.go
 
-update: init-clean
-	go mod tidy
-	go run ./cmd/main/main.go -f assets/api.json -n ${package_name}  -o ${target_dir} -e ${endpoint} -logtostderr=true -u ${username} -p ${password}
-	rm -rf integration_testing
-
-generate:
+generate: setup.sonar
 	go generate ./...
 
 # Run all unit tests
@@ -75,4 +71,26 @@ no-diff: generate
 		exit 1; \
 	else \
 		echo "Success: No uncommitted changes detected."; \
+	fi
+
+# Setup SonarQube instance for generation / integration testing
+# If SonarQube API is already reachable, skip setup
+# Else use container engine to start a SonarQube instance with a port mapping
+setup.sonar:
+	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
+	@if curl -s -u ${username}:${password} ${endpoint}/system/health | grep -q "GREEN"; then \
+		echo "SonarQube API is reachable at ${endpoint}. Skipping setup."; \
+	else \
+		if [ -n "$$GITHUB_ACTIONS" ] || [ -n "$$CI" ]; then \
+			echo "Detected CI environment; not starting container. Waiting for SonarQube at ${endpoint}..."; \
+		else \
+			echo "Starting SonarQube instance using ${container_engine}..."; \
+			${container_engine} run -d --name sonargo-sonarqube -p 9000:9000 docker.io/library/sonarqube:${sonarqube_version}; \
+			echo "Waiting for SonarQube to be ready..."; \
+		fi; \
+		until curl -s -u ${username}:${password} ${endpoint}/system/health | grep -q "GREEN"; do \
+			printf "."; \
+			sleep 5; \
+		done; \
+		echo "\nSonarQube is ready at ${endpoint}."; \
 	fi
