@@ -45,7 +45,6 @@ const (
 type Generator struct { //nolint:govet // jen.Struct alignment is fine
 	validation  *jen.File
 	client      *jen.File
-	fTestRun    *jen.File
 	WorkingDir  string
 	PackageName string
 	services    []string
@@ -71,7 +70,6 @@ func NewGenerator(pkgName, workingDir, endpoint, username, password string) *Gen
 		services:         make([]string, 0),
 		validation:       nil,
 		client:           nil,
-		fTestRun:         nil,
 		CurrentRepo:      "",
 		specificValues:   loadSpecificValues(),
 		skipParams:       loadSkipParams(),
@@ -124,12 +122,6 @@ func (gen *Generator) Run(apidoc *api.API) error {
 		glog.Errorln("Failed creating client codes")
 
 		return err
-	}
-
-	// write test main
-	err = gen.fTestRun.Save("integration_testing/run/" + GeneratedFilenamePrefix + "main.go")
-	if err != nil {
-		return fmt.Errorf("failed to save test run file: %w", err)
 	}
 
 	// Write validation file
@@ -271,29 +263,6 @@ func (gen *Generator) prepare() error {
 	gen.validation = jen.NewFile(gen.PackageName)
 	gen.validation.HeaderComment(generatedHeader)
 	gen.validation.ImportName("github.com/boxboxjason/sonarqube-client-go/pkg/validation", "validation")
-
-	// set up can-be-run test file
-	gen.fTestRun = jen.NewFile("main")
-	gen.fTestRun.HeaderComment(generatedHeader)
-	gen.fTestRun.ImportAlias(gen.CurrentRepo, ".")
-
-	gen.fTestRun.Var().Id("client").Op("*").Qual(gen.CurrentRepo, "Client")
-
-	staticCode := `sonarURL := os.Getenv("SONAR_URL")
-if sonarURL == "" {
-fmt.Println("Sonar URL has not been set")
-os.Exit(1)
-}
-c, err := NewClient(sonarURL+"/api", "admin", "admin")
-if err != nil {
-fmt.Println(err.Error())
-os.Exit(1)
-}
-client = c
-`
-	gen.fTestRun.Func().Id("init").Call().Block(jen.Op(staticCode))
-	gen.fTestRun.Comment("You should MANUALLY add the test func in here ")
-	gen.fTestRun.Func().Id("main").Call().Block(jen.Return())
 
 	return nil
 }

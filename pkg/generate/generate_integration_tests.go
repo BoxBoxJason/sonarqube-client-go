@@ -63,9 +63,6 @@ func (gen *Generator) generateIntegrationTest(group *jen.Group, serviceName, ser
 		return
 	}
 
-	// generate code in test main
-	gen.generateTestRunFunc(serviceName, actionName, action, hasOption, hasResp)
-
 	// integration files
 	group.Qual(pkgGinkgo, "Describe").Call(jen.Lit("Test "+actionName+" in "+servicePath), jen.Func().Call().BlockFunc(func(g1 *jen.Group) {
 		g1.Qual(pkgGinkgo, "It").Call(jen.Lit("Should be ok"), jen.Func().Call().BlockFunc(func(group *jen.Group) {
@@ -138,47 +135,6 @@ func (gen *Generator) generateGinkgoTestBody(group *jen.Group, serviceName, acti
 	} else {
 		group.Qual(pkgGomega, "Expect").Call(jen.Id("resp").Dot("ContentLength")).Dot("To").Call(jen.Qual(pkgGomega, "Equal").Call(jen.Id("int64").Call(jen.Lit(0))))
 	}
-}
-
-func (gen *Generator) generateTestRunFunc(serviceName, actionName string, action api.Action, hasOption, hasResp bool) {
-	testFuncName := strcase.ToCamel(serviceName + actionName + "jen.Func")
-	gen.fTestRun.Commentf("%s testing %s", testFuncName, action.Description)
-	gen.fTestRun.Func().Id(testFuncName).Call().BlockFunc(func(group *jen.Group) {
-		if hasOption {
-			// Use static values for run/main.go
-			group.Id("opt").Op(":= &").Id(strcase.ToCamel(serviceName + "_" + action.Key + "Option")).Values(jen.DictFunc(gen.generateOptionValues(serviceName, action)))
-			group.ListFunc(func(grp *jen.Group) {
-				if hasResp {
-					grp.Id("v")
-				}
-
-				grp.Id("resp")
-				grp.Err()
-			}).Op(":=").Id("client").Dot(serviceName).Dot(actionName).Call(jen.Id("opt"))
-		} else {
-			group.ListFunc(func(grp *jen.Group) {
-				if hasResp {
-					grp.Id("v")
-				}
-
-				grp.Id("resp")
-				grp.Err()
-			}).Op(":=").Id("client").Dot(serviceName).Dot(actionName).Call()
-		}
-
-		group.If(
-			jen.Err().Op("!=").Nil(),
-		).Block(
-			jen.Qual("fmt", "Println").Call(jen.Err().Dot("jen.Error").Call()),
-			jen.Qual("os", "Exit").Call(jen.Id("1")),
-		)
-		group.Qual("fmt", "Println").Call(jen.Id("resp").Dot("StatusCode"))
-
-		if hasResp {
-			group.Qual("github.com/davecgh/go-spew/spew", "Dump").Call(jen.Id("v"))
-		}
-	})
-	gen.fTestRun.Line()
 }
 
 func (gen *Generator) generateOptionValues(serviceName string, action api.Action) func(jen.Dict) {
