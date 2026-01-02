@@ -177,3 +177,6 @@ func NewClientWithToken(endpoint, token string) (*Client, error) {
 	c.H = &HService{client: c}
 	return c, nil
 }
+func (c *Client) SetHTTPClient(client *http.Client) {
+	c.httpClient = client
+}

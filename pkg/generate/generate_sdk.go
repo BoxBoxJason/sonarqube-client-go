@@ -38,6 +38,11 @@ func (gen *Generator) GenerateClient() error {
 		gen.generateClientInitBody(group)
 	})
 
+	// Generate SetHTTPClient method
+	gen.client.Func().Params(jen.Id("c").Op("*").Id("Client")).Id("SetHTTPClient").Params(jen.Id("client").Op("*").Qual(pkgNetHTTP, "Client")).Block(
+		jen.Id("c").Dot("httpClient").Op("=").Id("client"),
+	)
+
 	err := gen.client.Save(gen.WorkingDir + "/" + GeneratedFilenamePrefix + "client.go")
 	if err != nil {
 		return fmt.Errorf("failed to save client file: %w", err)
