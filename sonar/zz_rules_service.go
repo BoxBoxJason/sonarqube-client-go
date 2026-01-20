@@ -91,10 +91,10 @@ type RulesRepositoriesObject_sub1 struct {
 }
 
 type RulesSearchObject struct {
-	Actives RulesSearchObject_sub3    `json:"actives,omitempty"`
-	Facets  []RulesSearchObject_sub5  `json:"facets,omitempty"`
-	Paging  RulesSearchObject_sub6    `json:"paging,omitempty"`
-	Rules   []RulesSearchObject_sub11 `json:"rules,omitempty"`
+	Actives map[string][]RulesSearchObject_sub2 `json:"actives,omitempty"`
+	Facets  []RulesSearchObject_sub5            `json:"facets,omitempty"`
+	Paging  RulesSearchObject_sub6              `json:"paging,omitempty"`
+	Rules   []RulesSearchObject_sub11           `json:"rules,omitempty"`
 }
 
 type RulesSearchObject_sub11 struct {
@@ -174,12 +174,6 @@ type RulesSearchObject_sub6 struct {
 type RulesSearchObject_sub9 struct {
 	Severity        string `json:"severity,omitempty"`
 	SoftwareQuality string `json:"softwareQuality,omitempty"`
-}
-
-type RulesSearchObject_sub3 struct {
-	Squid_ClassCyclomaticComplexity  []RulesSearchObject_sub2 `json:"squid:ClassCyclomaticComplexity,omitempty"`
-	Squid_MethodCyclomaticComplexity []RulesSearchObject_sub2 `json:"squid:MethodCyclomaticComplexity,omitempty"`
-	Squid_S1067                      []RulesSearchObject_sub2 `json:"squid:S1067,omitempty"`
 }
 
 type RulesShowObject struct {
