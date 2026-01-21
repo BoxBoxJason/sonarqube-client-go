@@ -30,6 +30,8 @@ linters:
     - lll
     - err113
     - wsl
+    - nonamedreturns
+    - revive
   settings:
     govet:
       enable-all: true

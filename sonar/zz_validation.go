@@ -611,30 +611,6 @@ func (s *QualityprofilesService) ValidateSetDefaultOpt(opt *QualityprofilesSetDe
 func (s *QualityprofilesService) ValidateShowOpt(opt *QualityprofilesShowOption) error {
 	return nil
 }
-func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOption) error {
-	return nil
-}
-func (s *RulesService) ValidateDeleteOpt(opt *RulesDeleteOption) error {
-	return nil
-}
-func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
-	return nil
-}
-func (s *RulesService) ValidateRepositoriesOpt(opt *RulesRepositoriesOption) error {
-	return nil
-}
-func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOption) error {
-	return nil
-}
-func (s *RulesService) ValidateShowOpt(opt *RulesShowOption) error {
-	return nil
-}
-func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOption) error {
-	return nil
-}
-func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
-	return nil
-}
 func (s *SettingsService) ValidateEncryptOpt(opt *SettingsEncryptOption) error {
 	return nil
 }
