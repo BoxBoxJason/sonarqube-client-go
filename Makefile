@@ -16,7 +16,7 @@ generate: setup.sonar
 
 # Run all unit tests
 test:
-	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@latest; }
+	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@2.8.0; }
 	@mkdir -p codequality
 	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ./pkg/... ./${target_dir}/...
 

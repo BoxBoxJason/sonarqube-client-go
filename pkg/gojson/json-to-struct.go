@@ -274,10 +274,10 @@ func generateTypes(obj map[string]any, structName string, tags []string, depth i
 		}
 
 		fieldName := FmtFieldName(key)
-		tagList := make([]string, 0)
+		tagList := make([]string, len(tags))
 
-		for _, t := range tags {
-			tagList = append(tagList, fmt.Sprintf("%s:\"%s,omitempty\"", t, key))
+		for i, t := range tags {
+			tagList[i] = fmt.Sprintf("%s:\"%s,omitempty\"", t, key)
 		}
 
 		builder.WriteString(fmt.Sprintf("\n%s %s `%s`",
