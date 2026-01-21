@@ -68,7 +68,7 @@ func NewRequest(method, path string, baseURL *url.URL, username, password string
 	}
 
 	if method == "POST" || method == "PUT" {
-		// SonarQube use RawQuery even method is POST
+		// SonarQube use RawQuery even when method is POST
 		bodyBytes, err := json.Marshal(opt)
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal request body: %w", err)
