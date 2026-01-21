@@ -29,6 +29,7 @@ linters:
     - depguard
     - lll
     - err113
+    - wsl
   settings:
     govet:
       enable-all: true
