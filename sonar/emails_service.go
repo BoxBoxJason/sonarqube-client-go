@@ -58,7 +58,7 @@ func (s *EmailsService) ValidateSendOpt(opt *EmailsSendOption) error {
 // Requires 'Administer System' permission.
 //
 // API endpoint: POST /api/emails/send.
-// Since: 6.1 (internal).
+// WARNING: This is an internal API and may change without notice.
 func (s *EmailsService) Send(opt *EmailsSendOption) (*http.Response, error) {
 	err := s.ValidateSendOpt(opt)
 	if err != nil {

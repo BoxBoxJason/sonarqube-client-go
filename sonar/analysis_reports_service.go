@@ -28,7 +28,7 @@ type AnalysisReportsQueueStatus struct {
 // Returns true if the queue is empty, false otherwise.
 //
 // API endpoint: GET /api/analysis_reports/is_queue_empty.
-// Since: 5.1 (internal).
+// WARNING: this is an internal API and may change without notice.
 func (s *AnalysisReportsService) IsQueueEmpty() (*AnalysisReportsQueueStatus, *http.Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "analysis_reports/is_queue_empty", nil)
 	if err != nil {

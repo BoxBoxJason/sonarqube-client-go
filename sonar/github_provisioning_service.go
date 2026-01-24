@@ -61,7 +61,7 @@ type JitStatus struct {
 // Check validates the GitHub provisioning configuration.
 //
 // API endpoint: POST /api/github_provisioning/check.
-// Since: 10.1 (internal).
+// WARNING: This is an internal API and may change without notice.
 func (s *GithubProvisioningService) Check() (*GithubProvisioningCheck, *http.Response, error) {
 	req, err := s.client.NewRequest(http.MethodPost, "github_provisioning/check", nil)
 	if err != nil {

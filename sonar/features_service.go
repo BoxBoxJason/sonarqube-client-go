@@ -25,7 +25,7 @@ type FeaturesList []string
 // List returns the list of supported features in the SonarQube instance.
 //
 // API endpoint: GET /api/features/list.
-// Since: 9.6 (internal).
+// WARNING: This is an internal API and may change without notice.
 func (s *FeaturesService) List() (*FeaturesList, *http.Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "features/list", nil)
 	if err != nil {

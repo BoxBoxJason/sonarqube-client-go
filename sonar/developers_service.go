@@ -77,7 +77,7 @@ func (s *DevelopersService) ValidateSearchEventsOpt(opt *DevelopersSearchEventsO
 // When issue indexing is in progress, returns 503 service unavailable HTTP code.
 //
 // API endpoint: GET /api/developers/search_events.
-// Since: 1.0 (internal).
+// WARNING: This is an internal API and may change without notice.
 func (s *DevelopersService) SearchEvents(opt *DevelopersSearchEventsOption) (*DevelopersSearchEvents, *http.Response, error) {
 	err := s.ValidateSearchEventsOpt(opt)
 	if err != nil {
