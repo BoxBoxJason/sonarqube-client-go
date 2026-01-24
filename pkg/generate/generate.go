@@ -280,7 +280,7 @@ func (gen *Generator) prepare() error {
 
 // isManualService checks if a service should be manually maintained instead of auto-generated.
 func (gen *Generator) isManualService(serviceName string) bool {
-	manualServices := []string{"rules", "qualitygates", "qualityprofiles"}
+	manualServices := []string{"rules", "qualitygates", "qualityprofiles", "alm_integrations"}
 
 	return slices.Contains(manualServices, serviceName)
 }
