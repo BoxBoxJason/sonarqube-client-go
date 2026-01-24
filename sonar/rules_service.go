@@ -1,6 +1,7 @@
 package sonargo
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -979,8 +980,8 @@ func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOption) error {
 	}
 
 	// Validate page size
-	if opt.PageSize != 0 && (opt.PageSize < 1 || opt.PageSize > 500) {
-		return NewValidationError("PageSize", "must be between 1 and 500", ErrOutOfRange)
+	if opt.PageSize != 0 && (opt.PageSize < MinPageSize || opt.PageSize > MaxPageSize) {
+		return NewValidationError("PageSize", fmt.Sprintf("must be between %d and %d", MinPageSize, MaxPageSize), ErrOutOfRange)
 	}
 
 	return nil

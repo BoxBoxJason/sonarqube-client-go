@@ -1007,7 +1007,7 @@ func TestPaginationValidation(t *testing.T) {
 		{"invalid page", -1, 50, true},
 		{"invalid page size - too small", 1, -1, true},
 		{"invalid page size - too large", 1, 600, true},
-		{"valid max page size", 1, 500, false},
+		{"valid max page size", MinPageSize, MaxPageSize, false},
 	}
 
 	for _, tt := range tests {

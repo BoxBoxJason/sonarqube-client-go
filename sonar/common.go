@@ -1,5 +1,12 @@
 package sonargo
 
+const (
+	// MaxPageSize is the maximum allowed page size for pagination.
+	MaxPageSize = 500
+	// MinPageSize is the minimum allowed page size for pagination.
+	MinPageSize = 1
+)
+
 // PaginationArgs contains common pagination parameters for API requests.
 type PaginationArgs struct {
 	// Page is the response page number. Must be strictly greater than 0.

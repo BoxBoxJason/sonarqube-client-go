@@ -157,12 +157,12 @@ func ValidateRange(value, minValue, maxValue int64, fieldName string) error {
 
 // ValidatePagination validates common pagination parameters.
 func ValidatePagination(page, pageSize int64) error {
-	if page != 0 && page < 1 {
+	if page != 0 && page < MinPageSize {
 		return NewValidationError("Page", "must be greater than 0", ErrOutOfRange)
 	}
 
-	if pageSize != 0 && (pageSize < 1 || pageSize > 500) {
-		return NewValidationError("PageSize", "must be between 1 and 500", ErrOutOfRange)
+	if pageSize != 0 && (pageSize < MinPageSize || pageSize > MaxPageSize) {
+		return NewValidationError("PageSize", fmt.Sprintf("must be between %d and %d", MinPageSize, MaxPageSize), ErrOutOfRange)
 	}
 
 	return nil
