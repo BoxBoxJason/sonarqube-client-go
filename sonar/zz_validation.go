@@ -470,66 +470,6 @@ func (s *ProjectsService) ValidateUpdateVisibilityOpt(opt *ProjectsUpdateVisibil
 func (s *PushService) ValidateSonarlintEventsOpt(opt *PushSonarlintEventsOption) error {
 	return nil
 }
-func (s *QualitygatesService) ValidateAddGroupOpt(opt *QualitygatesAddGroupOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateAddUserOpt(opt *QualitygatesAddUserOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateCopyOpt(opt *QualitygatesCopyOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateCreateOpt(opt *QualitygatesCreateOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateCreateConditionOpt(opt *QualitygatesCreateConditionOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateDeleteConditionOpt(opt *QualitygatesDeleteConditionOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateDeselectOpt(opt *QualitygatesDeselectOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateDestroyOpt(opt *QualitygatesDestroyOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateGetByProjectOpt(opt *QualitygatesGetByProjectOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateProjectStatusOpt(opt *QualitygatesProjectStatusOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateRemoveGroupOpt(opt *QualitygatesRemoveGroupOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateRemoveUserOpt(opt *QualitygatesRemoveUserOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateRenameOpt(opt *QualitygatesRenameOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateSearchOpt(opt *QualitygatesSearchOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateSearchGroupsOpt(opt *QualitygatesSearchGroupsOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateSearchUsersOpt(opt *QualitygatesSearchUsersOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateSelectOpt(opt *QualitygatesSelectOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateSetAsDefaultOpt(opt *QualitygatesSetAsDefaultOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateShowOpt(opt *QualitygatesShowOption) error {
-	return nil
-}
-func (s *QualitygatesService) ValidateUpdateConditionOpt(opt *QualitygatesUpdateConditionOption) error {
-	return nil
-}
 func (s *QualityprofilesService) ValidateActivateRuleOpt(opt *QualityprofilesActivateRuleOption) error {
 	return nil
 }
