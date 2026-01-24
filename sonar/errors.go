@@ -50,27 +50,26 @@ func (e *ValidationError) Unwrap() error {
 	return e.Err
 }
 
-// ValidateInSlice checks if a value is in the allowed slice of values.
-func ValidateInSlice(value string, allowed []string, fieldName string) error {
+// IsValueAuthorized checks if a value is in the allowed set of values.
+func IsValueAuthorized(value string, allowed map[string]struct{}, fieldName string) error {
 	if value == "" {
 		return nil
 	}
 
-	for _, allowedValue := range allowed {
-		if strings.EqualFold(value, allowedValue) {
-			return nil
-		}
+	_, isInSlice := allowed[value]
+	if !isInSlice {
+		return NewValidationError(fieldName, "must be one of: "+BuildAuthorizedValuesList(allowed), ErrInvalidValue)
 	}
 
-	return NewValidationError(fieldName, "must be one of: "+strings.Join(allowed, ", "), ErrInvalidValue)
+	return nil
 }
 
-// ValidateSliceValues checks if all values in a slice are in the allowed values.
-func ValidateSliceValues(values []string, allowed []string, fieldName string) error {
+// AreValuesAuthorized checks if all values in a slice are in the allowed values.
+func AreValuesAuthorized(values []string, allowed map[string]struct{}, fieldName string) error {
 	for _, value := range values {
-		err := ValidateInSlice(value, allowed, fieldName)
-		if err != nil {
-			return err
+		_, isInSlice := allowed[value]
+		if !isInSlice {
+			return NewValidationError(fieldName, fmt.Sprintf("value %q is not allowed. Must be one of: %s", value, BuildAuthorizedValuesList(allowed)), ErrInvalidValue)
 		}
 	}
 
@@ -78,20 +77,12 @@ func ValidateSliceValues(values []string, allowed []string, fieldName string) er
 }
 
 // ValidateMapKeys checks if all keys in a map are in the allowed keys.
-func ValidateMapKeys(m map[string]string, allowedKeys []string, fieldName string) error {
+func ValidateMapKeys(m map[string]string, allowedKeys map[string]struct{}, fieldName string) error {
 	for key := range m {
-		found := false
-
-		for _, allowed := range allowedKeys {
-			if strings.EqualFold(key, allowed) {
-				found = true
-
-				break
-			}
-		}
+		_, found := allowedKeys[key]
 
 		if !found {
-			return NewValidationError(fieldName, fmt.Sprintf("key %q is not allowed. Must be one of: %s", key, strings.Join(allowedKeys, ", ")), ErrInvalidValue)
+			return NewValidationError(fieldName, fmt.Sprintf("key %q is not allowed. Must be one of: %s", key, BuildAuthorizedValuesList(allowedKeys)), ErrInvalidValue)
 		}
 	}
 
@@ -99,20 +90,12 @@ func ValidateMapKeys(m map[string]string, allowedKeys []string, fieldName string
 }
 
 // ValidateMapValues checks if all values in a map are in the allowed values.
-func ValidateMapValues(m map[string]string, allowedValues []string, fieldName string) error {
+func ValidateMapValues(m map[string]string, allowedValues map[string]struct{}, fieldName string) error {
 	for key, value := range m {
-		found := false
-
-		for _, allowed := range allowedValues {
-			if strings.EqualFold(value, allowed) {
-				found = true
-
-				break
-			}
-		}
+		_, found := allowedValues[value]
 
 		if !found {
-			return NewValidationError(fieldName, fmt.Sprintf("value %q for key %q is not allowed. Must be one of: %s", value, key, strings.Join(allowedValues, ", ")), ErrInvalidValue)
+			return NewValidationError(fieldName, fmt.Sprintf("value %q for key %q is not allowed. Must be one of: %s", value, key, BuildAuthorizedValuesList(allowedValues)), ErrInvalidValue)
 		}
 	}
 
@@ -166,4 +149,32 @@ func ValidatePagination(page, pageSize int64) error {
 	}
 
 	return nil
+}
+
+// ValidateLanguage checks if the provided language is among the allowed languages.
+func ValidateLanguage(language string) error {
+	return IsValueAuthorized(language, allowedLanguages, "Language")
+}
+
+// ValidateLanguages checks if all provided languages are among the allowed languages.
+func ValidateLanguages(languages []string) error {
+	return AreValuesAuthorized(languages, allowedLanguages, "Languages")
+}
+
+// BuildAuthorizedValuesList builds a comma-separated string of allowed values.
+func BuildAuthorizedValuesList(allowed map[string]struct{}) string {
+	responseBuilder := strings.Builder{}
+	index := 0
+
+	for key := range allowed {
+		responseBuilder.WriteString(key)
+
+		if index < len(allowed)-1 {
+			responseBuilder.WriteString(", ")
+		}
+
+		index++
+	}
+
+	return responseBuilder.String()
 }

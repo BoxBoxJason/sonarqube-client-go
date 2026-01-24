@@ -10,7 +10,7 @@ import (
 
 func TestRules_App(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -41,7 +41,7 @@ func TestRules_App(t *testing.T) {
 
 func TestRules_Create(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -78,7 +78,7 @@ func TestRules_Create(t *testing.T) {
 
 func TestRules_Delete(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -104,7 +104,7 @@ func TestRules_Delete(t *testing.T) {
 
 func TestRules_Search(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -189,7 +189,7 @@ func TestRulesSearchResponse_DynamicActives(t *testing.T) {
 
 func TestRules_Show(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -221,7 +221,7 @@ func TestRules_Show(t *testing.T) {
 
 func TestRules_Tags(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -253,7 +253,7 @@ func TestRules_Tags(t *testing.T) {
 
 func TestRules_Update(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -285,7 +285,7 @@ func TestRules_Update(t *testing.T) {
 
 func TestRules_Repositories(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -317,7 +317,7 @@ func TestRules_Repositories(t *testing.T) {
 
 func TestRules_List(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -539,12 +539,12 @@ func TestValidateSearchOpt(t *testing.T) {
 			errMsg:  "PageSize",
 		},
 		{
-			name: "Q too short",
+			name: "Query too short",
 			opt: &RulesSearchOption{
-				Q: "a",
+				Query: "a",
 			},
 			wantErr: true,
-			errMsg:  "Q",
+			errMsg:  "Query",
 		},
 		{
 			name: "invalid ActiveSeverities",
@@ -614,7 +614,7 @@ func TestValidateSearchOpt(t *testing.T) {
 			name: "valid option",
 			opt: &RulesSearchOption{
 				PaginationArgs: PaginationArgs{Page: 1, PageSize: 50},
-				Q:              "test",
+				Query:          "test",
 				Languages:      []string{"java", "go"},
 				Severities:     []string{"MAJOR", "CRITICAL"},
 				Statuses:       []string{"READY", "DEPRECATED"},
@@ -859,7 +859,7 @@ func TestValidateTagsOpt(t *testing.T) {
 			name: "valid option",
 			opt: &RulesTagsOption{
 				PageSize: 100,
-				Q:        "security",
+				Query:    "security",
 			},
 			wantErr: false,
 		},

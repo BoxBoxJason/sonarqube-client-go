@@ -7,6 +7,163 @@ const (
 	MinPageSize = 1
 )
 
+//nolint:gochecknoglobals // these are constant sets of allowed values
+var (
+	// allowedLanguages is the set of supported programming languages.
+	allowedLanguages = map[string]struct{}{
+		"azureresourcemanager": {},
+		"cloudformation":       {},
+		"cs":                   {},
+		"css":                  {},
+		"docker":               {},
+		"flex":                 {},
+		"go":                   {},
+		"ipynb":                {},
+		"java":                 {},
+		"js":                   {},
+		"json":                 {},
+		"jsp":                  {},
+		"kotlin":               {},
+		"kubernetes":           {},
+		"php":                  {},
+		"py":                   {},
+		"ruby":                 {},
+		"rust":                 {},
+		"scala":                {},
+		"secrets":              {},
+		"terraform":            {},
+		"text":                 {},
+		"ts":                   {},
+		"vbnet":                {},
+		"web":                  {},
+		"xml":                  {},
+		"yaml":                 {},
+	}
+
+	// allowedSeverities is the set of supported severity levels.
+	allowedSeverities = map[string]struct{}{
+		"BLOCKER":  {},
+		"CRITICAL": {},
+		"MAJOR":    {},
+		"MINOR":    {},
+		"INFO":     {},
+	}
+
+	// allowedImpactSeverities is the set of supported impact severity levels.
+	allowedImpactSeverities = map[string]struct{}{
+		"BLOCKER": {},
+		"HIGH":    {},
+		"MEDIUM":  {},
+		"LOW":     {},
+		"INFO":    {},
+	}
+
+	// allowedCleanCodeAttributesCategories is the set of supported Clean Code attribute categories.
+	allowedCleanCodeAttributesCategories = map[string]struct{}{
+		"ADAPTABLE":   {},
+		"CONSISTENT":  {},
+		"INTENTIONAL": {},
+		"RESPONSIBLE": {},
+	}
+
+	// allowedCleanCodeAttributes is the set of supported Clean Code attributes.
+	allowedCleanCodeAttributes = map[string]struct{}{
+		"CONVENTIONAL": {},
+		"FORMATTED":    {},
+		"IDENTIFIABLE": {},
+		"CLEAR":        {},
+		"COMPLETE":     {},
+		"EFFICIENT":    {},
+		"LOGICAL":      {},
+		"DISTINCT":     {},
+		"FOCUSED":      {},
+		"MODULAR":      {},
+		"TESTED":       {},
+		"LAWFUL":       {},
+		"RESPECTFUL":   {},
+		"TRUSTWORTHY":  {},
+	}
+
+	// allowedImpactSoftwareQualities is the set of supported impact software qualities.
+	allowedImpactSoftwareQualities = map[string]struct{}{
+		"MAINTAINABILITY": {},
+		"RELIABILITY":     {},
+		"SECURITY":        {},
+	}
+
+	// allowedInheritanceTypes is the set of supported inheritance types.
+	allowedInheritanceTypes = map[string]struct{}{
+		"NONE":       {},
+		"INHERITED":  {},
+		"OVERRIDDES": {},
+	}
+
+	// allowedOwaspCategories is the set of supported OWASP categories.
+	allowedOwaspCategories = map[string]struct{}{
+		"a1":  {},
+		"a2":  {},
+		"a3":  {},
+		"a4":  {},
+		"a5":  {},
+		"a6":  {},
+		"a7":  {},
+		"a8":  {},
+		"a9":  {},
+		"a10": {},
+	}
+
+	// allowedOwaspMobileCategories is the set of supported OWASP Mobile categories.
+	allowedOwaspMobileCategories = map[string]struct{}{
+		"m1":  {},
+		"m2":  {},
+		"m3":  {},
+		"m4":  {},
+		"m5":  {},
+		"m6":  {},
+		"m7":  {},
+		"m8":  {},
+		"m9":  {},
+		"m10": {},
+	}
+
+	// allowedRulesStatuses is the set of supported statuses.
+	allowedRulesStatuses = map[string]struct{}{
+		"READY":      {},
+		"DEPRECATED": {},
+		"REMOVED":    {},
+		"BETA":       {},
+	}
+
+	// allowedRulesExistingStatuses is the set of supported existing statuses.
+	allowedRulesExistingStatuses = map[string]struct{}{
+		"READY":      {},
+		"DEPRECATED": {},
+		"BETA":       {},
+	}
+
+	// allowedRulesTypes is the set of supported rule types.
+	allowedRulesTypes = map[string]struct{}{
+		"CODE_SMELL":       {},
+		"BUG":              {},
+		"VULNERABILITY":    {},
+		"SECURITY_HOTSPOT": {},
+	}
+
+	// allowedSansTop25Categories is the set of supported SANS Top 25 categories.
+	allowedSansTop25Categories = map[string]struct{}{
+		"insecure-interaction": {},
+		"risky-resource":       {},
+		"porous-defenses":      {},
+	}
+
+	// allowedSelectedFilters is the set of supported selected filters.
+	allowedSelectedFilters = map[string]struct{}{
+		"all":        {},
+		"selected":   {},
+		"deselected": {},
+	}
+)
+
 // PaginationArgs contains common pagination parameters for API requests.
 type PaginationArgs struct {
 	// Page is the response page number. Must be strictly greater than 0.
