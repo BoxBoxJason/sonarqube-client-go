@@ -2,54 +2,6 @@
 
 package sonargo
 
-func (s *AlmIntegrationsService) ValidateCheckPatOpt(opt *AlmIntegrationsCheckPatOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateGetGithubClientIdOpt(opt *AlmIntegrationsGetGithubClientIdOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateImportAzureProjectOpt(opt *AlmIntegrationsImportAzureProjectOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateImportBitbucketcloudRepoOpt(opt *AlmIntegrationsImportBitbucketcloudRepoOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateImportBitbucketserverProjectOpt(opt *AlmIntegrationsImportBitbucketserverProjectOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateImportGithubProjectOpt(opt *AlmIntegrationsImportGithubProjectOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateImportGitlabProjectOpt(opt *AlmIntegrationsImportGitlabProjectOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateListAzureProjectsOpt(opt *AlmIntegrationsListAzureProjectsOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateListBitbucketserverProjectsOpt(opt *AlmIntegrationsListBitbucketserverProjectsOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateListGithubOrganizationsOpt(opt *AlmIntegrationsListGithubOrganizationsOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateListGithubRepositoriesOpt(opt *AlmIntegrationsListGithubRepositoriesOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateSearchAzureReposOpt(opt *AlmIntegrationsSearchAzureReposOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateSearchBitbucketcloudReposOpt(opt *AlmIntegrationsSearchBitbucketcloudReposOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateSearchBitbucketserverReposOpt(opt *AlmIntegrationsSearchBitbucketserverReposOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateSearchGitlabReposOpt(opt *AlmIntegrationsSearchGitlabReposOption) error {
-	return nil
-}
-func (s *AlmIntegrationsService) ValidateSetPatOpt(opt *AlmIntegrationsSetPatOption) error {
-	return nil
-}
 func (s *AlmSettingsService) ValidateCountBindingOpt(opt *AlmSettingsCountBindingOption) error {
 	return nil
 }
