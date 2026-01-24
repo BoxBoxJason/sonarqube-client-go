@@ -1,7 +1,7 @@
 // Package generate handles the generation of the SonarQube client code.
 package generate
 
-//go:generate rm -f ../../sonar/*.go
+//go:generate rm -f ../../sonar/zz_*.go
 //go:generate sh -c "cd ../../ && go run ./cmd/main/main.go -f assets/api.json -n sonargo -o sonar -e http://127.0.0.1:9000/api -logtostderr=true -u admin -p admin"
 //go:generate sh -c "cd ../../ && go mod tidy"
 
@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/boxboxjason/sonarqube-client-go/pkg/api"
@@ -193,6 +194,15 @@ func (gen *Generator) processService(item api.WebService) error {
 		return nil
 	}
 
+	// Skip manually maintained services
+	if gen.isManualService(name) {
+		glog.V(1).Infof("Skipping manually maintained service: %s\n", name)
+		// Add to services list so it's included in the client
+		gen.services = append(gen.services, name)
+
+		return nil
+	}
+
 	deprecatedWords := []string{"removed", "deprecated", "not_in_cli"}
 	for _, word := range deprecatedWords {
 		if strings.Contains(strings.ToLower(item.Description), word) {
@@ -265,6 +275,13 @@ func (gen *Generator) prepare() error {
 	gen.validation.ImportName("github.com/boxboxjason/sonarqube-client-go/pkg/validation", "validation")
 
 	return nil
+}
+
+// isManualService checks if a service should be manually maintained instead of auto-generated.
+func (gen *Generator) isManualService(serviceName string) bool {
+	manualServices := []string{"rules"}
+
+	return slices.Contains(manualServices, serviceName)
 }
 
 func (gen *Generator) cleanupGeneratedFiles() {
