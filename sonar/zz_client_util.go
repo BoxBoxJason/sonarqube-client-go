@@ -87,7 +87,7 @@ func NewRequest(method, path string, baseURL *url.URL, username, password string
 // error if an API error has occurred. If v implements the io.Writer
 // interface, the raw response body will be written to v, without attempting to
 // first decode it.
-func Do(c *http.Client, req *http.Request, v interface{}) (*http.Response,error) {
+func Do(c *http.Client, req *http.Request, v interface{}) (*http.Response, error) {
 	isText := false
 	if _, ok := v.(*string); ok {
 		req.Header.Set("Accept", "text/plain")
@@ -95,12 +95,12 @@ func Do(c *http.Client, req *http.Request, v interface{}) (*http.Response,error)
 	}
 	resp, err := c.Do(req)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	err = CheckResponse(resp)
 	if err != nil {
-		return resp,err
+		return resp, err
 	}
 	if v != nil {
 		if w, ok := v.(io.Writer); ok {
@@ -109,7 +109,7 @@ func Do(c *http.Client, req *http.Request, v interface{}) (*http.Response,error)
 			if isText {
 				byts, err := ioutil.ReadAll(resp.Body)
 				if err != nil {
-					return resp,err
+					return resp, err
 				}
 				w := v.(*string)
 				*w = string(byts)
@@ -118,7 +118,7 @@ func Do(c *http.Client, req *http.Request, v interface{}) (*http.Response,error)
 			}
 		}
 	}
-	return resp,err
+	return resp, err
 }
 
 type ErrorResponse struct {

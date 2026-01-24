@@ -455,12 +455,6 @@ func (s *SourcesService) ValidateScmOpt(opt *SourcesScmOption) error {
 func (s *SourcesService) ValidateShowOpt(opt *SourcesShowOption) error {
 	return nil
 }
-func (s *SystemService) ValidateChangeLogLevelOpt(opt *SystemChangeLogLevelOption) error {
-	return nil
-}
-func (s *SystemService) ValidateLogsOpt(opt *SystemLogsOption) error {
-	return nil
-}
 func (s *UserGroupsService) ValidateAddUserOpt(opt *UserGroupsAddUserOption) error {
 	return nil
 }
