@@ -44,18 +44,18 @@ type AlmIntegrationsService struct {
 // Response Types
 // -----------------------------------------------------------------------------
 
-// AlmIntegrationsCheckPatResponse represents the response from checking a Personal Access Token.
+// AlmIntegrationsCheckPat represents the response from checking a Personal Access Token.
 // Note: The API does not return a response body, validation is indicated by HTTP status.
-type AlmIntegrationsCheckPatResponse struct{}
+type AlmIntegrationsCheckPat struct{}
 
-// AlmIntegrationsGetGithubClientIdResponse represents the response from getting a GitHub client ID.
-type AlmIntegrationsGetGithubClientIdResponse struct {
+// AlmIntegrationsGetGithubClientId represents the response from getting a GitHub client ID.
+type AlmIntegrationsGetGithubClientId struct {
 	// ClientID is the GitHub OAuth client ID for the integration.
 	ClientID string `json:"clientId,omitempty"`
 }
 
-// AlmIntegrationsListAzureProjectsResponse represents the response from listing Azure projects.
-type AlmIntegrationsListAzureProjectsResponse struct {
+// AlmIntegrationsListAzureProjects represents the response from listing Azure projects.
+type AlmIntegrationsListAzureProjects struct {
 	// Projects is the list of Azure projects.
 	Projects []AzureProject `json:"projects,omitempty"`
 }
@@ -68,8 +68,8 @@ type AzureProject struct {
 	Name string `json:"name,omitempty"`
 }
 
-// AlmIntegrationsListBitbucketServerProjectsResponse represents the response from listing Bitbucket Server projects.
-type AlmIntegrationsListBitbucketServerProjectsResponse struct {
+// AlmIntegrationsListBitbucketServerProjects represents the response from listing Bitbucket Server projects.
+type AlmIntegrationsListBitbucketServerProjects struct {
 	// Projects is the list of Bitbucket Server projects.
 	Projects []BitbucketServerProject `json:"projects,omitempty"`
 }
@@ -82,8 +82,8 @@ type BitbucketServerProject struct {
 	Name string `json:"name,omitempty"`
 }
 
-// AlmIntegrationsListGithubOrganizationsResponse represents the response from listing GitHub organizations.
-type AlmIntegrationsListGithubOrganizationsResponse struct {
+// AlmIntegrationsListGithubOrganizations represents the response from listing GitHub organizations.
+type AlmIntegrationsListGithubOrganizations struct {
 	// Organizations is the list of GitHub organizations.
 	Organizations []GithubOrganization `json:"organizations,omitempty"`
 	// Paging contains pagination information.
@@ -98,10 +98,10 @@ type GithubOrganization struct {
 	Name string `json:"name,omitempty"`
 }
 
-// AlmIntegrationsListGithubRepositoriesResponse represents the response from listing GitHub repositories.
+// AlmIntegrationsListGithubRepositories represents the response from listing GitHub repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsListGithubRepositoriesResponse struct {
+type AlmIntegrationsListGithubRepositories struct {
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 	// Repositories is the list of GitHub repositories.
@@ -122,8 +122,8 @@ type GithubRepository struct {
 	URL string `json:"url,omitempty"`
 }
 
-// AlmIntegrationsSearchAzureReposResponse represents the response from searching Azure repositories.
-type AlmIntegrationsSearchAzureReposResponse struct {
+// AlmIntegrationsSearchAzureRepos represents the response from searching Azure repositories.
+type AlmIntegrationsSearchAzureRepos struct {
 	// Repositories is the list of Azure repositories.
 	Repositories []AzureRepository `json:"repositories,omitempty"`
 }
@@ -136,10 +136,10 @@ type AzureRepository struct {
 	ProjectName string `json:"projectName,omitempty"`
 }
 
-// AlmIntegrationsSearchBitbucketCloudReposResponse represents the response from searching Bitbucket Cloud repositories.
+// AlmIntegrationsSearchBitbucketCloudRepos represents the response from searching Bitbucket Cloud repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsSearchBitbucketCloudReposResponse struct {
+type AlmIntegrationsSearchBitbucketCloudRepos struct {
 	// IsLastPage indicates if this is the last page of results.
 	IsLastPage bool `json:"isLastPage,omitempty"`
 	// Paging contains pagination information.
@@ -172,10 +172,10 @@ type BitbucketCloudRepository struct {
 	Workspace string `json:"workspace,omitempty"`
 }
 
-// AlmIntegrationsSearchBitbucketServerReposResponse represents the response from searching Bitbucket Server repositories.
+// AlmIntegrationsSearchBitbucketServerRepos represents the response from searching Bitbucket Server repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsSearchBitbucketServerReposResponse struct {
+type AlmIntegrationsSearchBitbucketServerRepos struct {
 	// IsLastPage indicates if this is the last page of results.
 	IsLastPage bool `json:"isLastPage,omitempty"`
 	// Repositories is the list of Bitbucket Server repositories.
@@ -198,10 +198,10 @@ type BitbucketServerRepository struct {
 	Workspace string `json:"workspace,omitempty"`
 }
 
-// AlmIntegrationsSearchGitlabReposResponse represents the response from searching GitLab repositories.
+// AlmIntegrationsSearchGitlabRepos represents the response from searching GitLab repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsSearchGitlabReposResponse struct {
+type AlmIntegrationsSearchGitlabRepos struct {
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 	// Repositories is the list of GitLab repositories.
@@ -481,7 +481,7 @@ type AlmIntegrationsSetPatOption struct {
 
 // CheckPat checks the validity of a Personal Access Token for the given DevOps Platform setting.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v *AlmIntegrationsCheckPatResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v *AlmIntegrationsCheckPat, resp *http.Response, err error) {
 	err = s.ValidateCheckPatOpt(opt)
 	if err != nil {
 		return
@@ -492,7 +492,7 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v
 		return
 	}
 
-	v = new(AlmIntegrationsCheckPatResponse)
+	v = new(AlmIntegrationsCheckPat)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -504,7 +504,7 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v
 
 // GetGithubClientId gets the client ID of a GitHub Integration.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithubClientIdOption) (v *AlmIntegrationsGetGithubClientIdResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithubClientIdOption) (v *AlmIntegrationsGetGithubClientId, resp *http.Response, err error) {
 	err = s.ValidateGetGithubClientIdOpt(opt)
 	if err != nil {
 		return
@@ -515,7 +515,7 @@ func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithub
 		return
 	}
 
-	v = new(AlmIntegrationsGetGithubClientIdResponse)
+	v = new(AlmIntegrationsGetGithubClientId)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -647,7 +647,7 @@ func (s *AlmIntegrationsService) ImportGitlabProject(opt *AlmIntegrationsImportG
 
 // ListAzureProjects lists Azure projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzureProjectsOption) (v *AlmIntegrationsListAzureProjectsResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzureProjectsOption) (v *AlmIntegrationsListAzureProjects, resp *http.Response, err error) {
 	err = s.ValidateListAzureProjectsOpt(opt)
 	if err != nil {
 		return
@@ -658,7 +658,7 @@ func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzure
 		return
 	}
 
-	v = new(AlmIntegrationsListAzureProjectsResponse)
+	v = new(AlmIntegrationsListAzureProjects)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -670,7 +670,7 @@ func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzure
 
 // ListBitbucketServerProjects lists the Bitbucket Server projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegrationsListBitbucketServerProjectsOption) (v *AlmIntegrationsListBitbucketServerProjectsResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegrationsListBitbucketServerProjectsOption) (v *AlmIntegrationsListBitbucketServerProjects, resp *http.Response, err error) {
 	err = s.ValidateListBitbucketServerProjectsOpt(opt)
 	if err != nil {
 		return
@@ -681,7 +681,7 @@ func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegration
 		return
 	}
 
-	v = new(AlmIntegrationsListBitbucketServerProjectsResponse)
+	v = new(AlmIntegrationsListBitbucketServerProjects)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -693,7 +693,7 @@ func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegration
 
 // ListGithubOrganizations lists GitHub organizations.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsListGithubOrganizationsOption) (v *AlmIntegrationsListGithubOrganizationsResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsListGithubOrganizationsOption) (v *AlmIntegrationsListGithubOrganizations, resp *http.Response, err error) {
 	err = s.ValidateListGithubOrganizationsOpt(opt)
 	if err != nil {
 		return
@@ -704,7 +704,7 @@ func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsLis
 		return
 	}
 
-	v = new(AlmIntegrationsListGithubOrganizationsResponse)
+	v = new(AlmIntegrationsListGithubOrganizations)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -716,7 +716,7 @@ func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsLis
 
 // ListGithubRepositories lists the GitHub repositories for an organization.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsListGithubRepositoriesOption) (v *AlmIntegrationsListGithubRepositoriesResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsListGithubRepositoriesOption) (v *AlmIntegrationsListGithubRepositories, resp *http.Response, err error) {
 	err = s.ValidateListGithubRepositoriesOpt(opt)
 	if err != nil {
 		return
@@ -727,7 +727,7 @@ func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsList
 		return
 	}
 
-	v = new(AlmIntegrationsListGithubRepositoriesResponse)
+	v = new(AlmIntegrationsListGithubRepositories)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -739,7 +739,7 @@ func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsList
 
 // SearchAzureRepos searches the Azure repositories.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzureReposOption) (v *AlmIntegrationsSearchAzureReposResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzureReposOption) (v *AlmIntegrationsSearchAzureRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchAzureReposOpt(opt)
 	if err != nil {
 		return
@@ -750,7 +750,7 @@ func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzur
 		return
 	}
 
-	v = new(AlmIntegrationsSearchAzureReposResponse)
+	v = new(AlmIntegrationsSearchAzureRepos)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -762,7 +762,7 @@ func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzur
 
 // SearchBitbucketCloudRepos searches the Bitbucket Cloud repositories.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsSearchBitbucketCloudReposOption) (v *AlmIntegrationsSearchBitbucketCloudReposResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsSearchBitbucketCloudReposOption) (v *AlmIntegrationsSearchBitbucketCloudRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchBitbucketCloudReposOpt(opt)
 	if err != nil {
 		return
@@ -773,7 +773,7 @@ func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsS
 		return
 	}
 
-	v = new(AlmIntegrationsSearchBitbucketCloudReposResponse)
+	v = new(AlmIntegrationsSearchBitbucketCloudRepos)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -785,7 +785,7 @@ func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsS
 
 // SearchBitbucketServerRepos searches the Bitbucket Server repositories with REPO_ADMIN access.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrationsSearchBitbucketServerReposOption) (v *AlmIntegrationsSearchBitbucketServerReposResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrationsSearchBitbucketServerReposOption) (v *AlmIntegrationsSearchBitbucketServerRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchBitbucketServerReposOpt(opt)
 	if err != nil {
 		return
@@ -796,7 +796,7 @@ func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrations
 		return
 	}
 
-	v = new(AlmIntegrationsSearchBitbucketServerReposResponse)
+	v = new(AlmIntegrationsSearchBitbucketServerRepos)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -808,7 +808,7 @@ func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrations
 
 // SearchGitlabRepos searches the GitLab projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGitlabReposOption) (v *AlmIntegrationsSearchGitlabReposResponse, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGitlabReposOption) (v *AlmIntegrationsSearchGitlabRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchGitlabReposOpt(opt)
 	if err != nil {
 		return
@@ -819,7 +819,7 @@ func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGit
 		return
 	}
 
-	v = new(AlmIntegrationsSearchGitlabReposResponse)
+	v = new(AlmIntegrationsSearchGitlabRepos)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
