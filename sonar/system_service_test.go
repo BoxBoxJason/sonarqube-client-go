@@ -222,8 +222,9 @@ func TestSystem_Liveness(t *testing.T) {
 		if r.Method != http.MethodGet {
 			t.Errorf("expected GET, got %s", r.Method)
 		}
-		// Return 200 OK with empty JSON response (liveness success)
-		w.Header().Set("Content-Type", "application/json")
+		// Return 204 No Content (liveness success)
+		w.WriteHeader(http.StatusNoContent)
+
 		_, _ = w.Write([]byte("{}"))
 	}))
 	defer ts.Close()
@@ -240,8 +241,8 @@ func TestSystem_Liveness(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("expected status %d, got %d", http.StatusNoContent, resp.StatusCode)
 	}
 }
 

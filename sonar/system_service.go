@@ -590,7 +590,7 @@ func (s *SystemService) ChangeLogLevel(opt *SystemChangeLogLevelOption) (*http.R
 // State values are:
 //   - NO_MIGRATION: DB is up to date with current version of SonarQube.
 //   - NOT_SUPPORTED: Migration is not supported on embedded databases.
-//   - MIGRATION_RUNNING: DB migration is under go.
+//   - MIGRATION_RUNNING: DB migration is underway.
 //   - MIGRATION_SUCCEEDED: DB migration has run and has been successful.
 //   - MIGRATION_FAILED: DB migration has run and failed.
 //   - MIGRATION_REQUIRED: DB migration is required.
@@ -682,9 +682,13 @@ func (s *SystemService) Liveness() (*SystemLiveness, *http.Response, error) {
 		return nil, nil, err
 	}
 
+	// The API indicates liveness via the HTTP status (204 No Content) and
+	// does not return a response body. Avoid attempting to decode an empty
+	// body which would result in EOF. We still return an empty result object
+	// for API compatibility.
 	result := new(SystemLiveness)
 
-	resp, err := s.client.Do(req, result)
+	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -723,7 +727,7 @@ func (s *SystemService) Logs(opt *SystemLogsOption) (*string, *http.Response, er
 // State values are:
 //   - NO_MIGRATION: DB is up to date with current version of SonarQube.
 //   - NOT_SUPPORTED: Migration is not supported on embedded databases.
-//   - MIGRATION_RUNNING: DB migration is under go.
+//   - MIGRATION_RUNNING: DB migration is underway.
 //   - MIGRATION_SUCCEEDED: DB migration has run and has been successful.
 //   - MIGRATION_FAILED: DB migration has run and failed.
 //   - MIGRATION_REQUIRED: DB migration is required.
