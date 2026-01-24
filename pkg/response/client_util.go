@@ -67,7 +67,7 @@ func NewRequest(method, path string, baseURL *url.URL, username, password string
 		Host:       parsedURL.Host,
 	}
 
-	if method == "POST" || method == "PUT" {
+	if method == http.MethodPost || method == http.MethodPut {
 		// SonarQube use RawQuery even when method is POST
 		bodyBytes, err := json.Marshal(opt)
 		if err != nil {

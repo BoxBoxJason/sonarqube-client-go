@@ -8,6 +8,7 @@ package generate
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -28,7 +29,7 @@ const (
 	pkgNetHTTP              = "net/http"
 	respNoContent           = "no-content"
 	headerFmt               = "// %s\n\npackage %s\n\n%s"
-	methodGet               = "GET"
+	methodGet               = http.MethodGet
 	formatJSON              = "json"
 	formatProto             = "proto"
 	formatLog               = "log"
@@ -279,7 +280,7 @@ func (gen *Generator) prepare() error {
 
 // isManualService checks if a service should be manually maintained instead of auto-generated.
 func (gen *Generator) isManualService(serviceName string) bool {
-	manualServices := []string{"rules", "qualitygates"}
+	manualServices := []string{"rules", "qualitygates", "qualityprofiles"}
 
 	return slices.Contains(manualServices, serviceName)
 }

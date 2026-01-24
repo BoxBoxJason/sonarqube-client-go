@@ -3,6 +3,7 @@ package generate
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/boxboxjason/sonarqube-client-go/pkg/api"
@@ -202,7 +203,7 @@ func (gen *Generator) generateServiceMethod(code *jen.Statement, serviceName str
 	noResp := false
 
 	if action.Post {
-		method = "POST"
+		method = http.MethodPost
 	}
 
 	code.Commentf("%s %s", strcase.ToCamel(action.Key), action.Description).Line()

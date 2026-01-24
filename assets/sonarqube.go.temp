@@ -67,7 +67,7 @@ func (c *Client) NewRequest(method, path string, opt any) (*http.Request, error)
 		Host:       parsedURL.Host,
 	}
 
-	if method == "POST" || method == "PUT" {
+	if method == http.MethodPost || method == http.MethodPut {
 		req.Header.Set("Content-Type", "application/json")
 	}
 

@@ -10,7 +10,7 @@ import (
 
 func TestQualityGates_AddGroup(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -82,7 +82,7 @@ func TestQualityGates_AddGroup_ValidationError(t *testing.T) {
 
 func TestQualityGates_AddUser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -112,7 +112,7 @@ func TestQualityGates_AddUser(t *testing.T) {
 
 func TestQualityGates_Copy(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -142,7 +142,7 @@ func TestQualityGates_Copy(t *testing.T) {
 
 func TestQualityGates_Create(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -177,7 +177,7 @@ func TestQualityGates_Create(t *testing.T) {
 
 func TestQualityGates_CreateCondition(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -242,7 +242,7 @@ func TestQualityGates_CreateCondition_ValidationError(t *testing.T) {
 
 func TestQualityGates_DeleteCondition(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -271,7 +271,7 @@ func TestQualityGates_DeleteCondition(t *testing.T) {
 
 func TestQualityGates_Deselect(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -300,7 +300,7 @@ func TestQualityGates_Deselect(t *testing.T) {
 
 func TestQualityGates_Destroy(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -329,7 +329,7 @@ func TestQualityGates_Destroy(t *testing.T) {
 
 func TestQualityGates_GetByProject(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -368,7 +368,7 @@ func TestQualityGates_GetByProject(t *testing.T) {
 
 func TestQualityGates_List(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -413,7 +413,7 @@ func TestQualityGates_List(t *testing.T) {
 
 func TestQualityGates_ProjectStatus(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -484,7 +484,7 @@ func TestQualityGates_ProjectStatus_ValidationError(t *testing.T) {
 
 func TestQualityGates_RemoveGroup(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -514,7 +514,7 @@ func TestQualityGates_RemoveGroup(t *testing.T) {
 
 func TestQualityGates_RemoveUser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -544,7 +544,7 @@ func TestQualityGates_RemoveUser(t *testing.T) {
 
 func TestQualityGates_Rename(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -574,7 +574,7 @@ func TestQualityGates_Rename(t *testing.T) {
 
 func TestQualityGates_Search(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -635,7 +635,7 @@ func TestQualityGates_Search_ValidationError(t *testing.T) {
 
 func TestQualityGates_SearchGroups(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -679,7 +679,7 @@ func TestQualityGates_SearchGroups(t *testing.T) {
 
 func TestQualityGates_SearchUsers(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -723,7 +723,7 @@ func TestQualityGates_SearchUsers(t *testing.T) {
 
 func TestQualityGates_Select(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -753,7 +753,7 @@ func TestQualityGates_Select(t *testing.T) {
 
 func TestQualityGates_SetAsDefault(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 
@@ -782,7 +782,7 @@ func TestQualityGates_SetAsDefault(t *testing.T) {
 
 func TestQualityGates_Show(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
 		}
 
@@ -850,7 +850,7 @@ func TestQualityGates_Show(t *testing.T) {
 
 func TestQualityGates_UpdateCondition(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
+		if r.Method != http.MethodPost {
 			t.Errorf("expected method POST, got %s", r.Method)
 		}
 

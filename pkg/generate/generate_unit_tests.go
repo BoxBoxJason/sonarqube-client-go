@@ -2,6 +2,7 @@ package generate
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/boxboxjason/sonarqube-client-go/pkg/api"
 	"github.com/boxboxjason/sonarqube-client-go/pkg/util/strcase"
@@ -45,7 +46,7 @@ func (gen *Generator) generateActionTest(file *jen.File, serviceNameCamel string
 	// This must match the logic in GenerateGoContent
 	method := methodGet
 	if action.Post {
-		method = "POST"
+		method = http.MethodPost
 	}
 
 	noResp := false

@@ -77,14 +77,14 @@ func TestNewRequestFunction(t *testing.T) {
 	}{
 		{
 			name:     "GET request without options",
-			method:   "GET",
+			method:   http.MethodGet,
 			path:     "projects/search",
 			opt:      nil,
 			wantPath: "/api/projects/search",
 		},
 		{
 			name:   "GET request with options",
-			method: "GET",
+			method: http.MethodGet,
 			path:   "projects/search",
 			opt: struct {
 				Query string `url:"q"`
@@ -93,7 +93,7 @@ func TestNewRequestFunction(t *testing.T) {
 		},
 		{
 			name:   "POST request",
-			method: "POST",
+			method: http.MethodPost,
 			path:   "projects/create",
 			opt: struct {
 				Name string `url:"name"`
@@ -132,7 +132,7 @@ func TestNewRequestFunction(t *testing.T) {
 			}
 
 			// For POST/PUT, check Content-Type
-			if tt.method == "POST" || tt.method == "PUT" {
+			if tt.method == http.MethodPost || tt.method == http.MethodPut {
 				if req.Header.Get("Content-Type") != "application/json" {
 					t.Errorf("expected Content-Type 'application/json', got %q", req.Header.Get("Content-Type"))
 				}
@@ -150,7 +150,7 @@ func TestDoFunction(t *testing.T) {
 		}))
 		defer server.Close()
 
-		req, _ := http.NewRequest("GET", server.URL, nil)
+		req, _ := http.NewRequest(http.MethodGet, server.URL, nil)
 		var result map[string]interface{}
 		err := Do(server.Client(), req, &result)
 
@@ -170,7 +170,7 @@ func TestDoFunction(t *testing.T) {
 		}))
 		defer server.Close()
 
-		req, _ := http.NewRequest("GET", server.URL, nil)
+		req, _ := http.NewRequest(http.MethodGet, server.URL, nil)
 		var result map[string]interface{}
 		err := Do(server.Client(), req, &result)
 
@@ -186,7 +186,7 @@ func TestDoFunction(t *testing.T) {
 		}))
 		defer server.Close()
 
-		req, _ := http.NewRequest("GET", server.URL, nil)
+		req, _ := http.NewRequest(http.MethodGet, server.URL, nil)
 		var buf bytes.Buffer
 		err := Do(server.Client(), req, &buf)
 
@@ -264,7 +264,7 @@ func TestResponseErrorError(t *testing.T) {
 		Response: &http.Response{
 			StatusCode: 404,
 			Request: &http.Request{
-				Method: "GET",
+				Method: http.MethodGet,
 				URL:    &url.URL{Scheme: "http", Host: "localhost", Path: "/api/test"},
 			},
 		},

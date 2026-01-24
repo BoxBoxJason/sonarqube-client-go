@@ -339,8 +339,8 @@ type RulesRepositoriesOption struct {
 	// Language filters repositories by programming language.
 	// If provided, only repositories for the given language will be returned.
 	Language string `url:"language,omitempty"`
-	// Q is a pattern to match repository keys/names against.
-	Q string `url:"q,omitempty"`
+	// Query is a pattern to match repository keys/names against.
+	Query string `url:"q,omitempty"`
 }
 
 // RulesSearchOption contains options for searching rules.
@@ -412,9 +412,9 @@ type RulesSearchOption struct {
 	// PrioritizedRule filters rules based on whether they are prioritized in the selected quality profile.
 	// If Qprofile is not set, this parameter is ignored.
 	PrioritizedRule bool `url:"prioritizedRule,omitempty"`
-	// Q is a free text search query to filter rules (must be at least 2 characters).
+	// Query is a free text search query to filter rules (must be at least 2 characters).
 	// Searches in rule name, description, note, tags, and key.
-	Q string `url:"q,omitempty"`
+	Query string `url:"q,omitempty"`
 	// Qprofile is the key of the quality profile to filter by activation status.
 	// Only rules of the same language as this profile are returned.
 	Qprofile string `url:"qprofile,omitempty"`
@@ -462,8 +462,8 @@ type RulesShowOption struct {
 
 // RulesTagsOption contains options for listing rule tags.
 type RulesTagsOption struct {
-	// Q limits the search to tags containing the supplied string.
-	Q string `url:"q,omitempty"`
+	// Query limits the search to tags containing the supplied string.
+	Query string `url:"q,omitempty"`
 	// PageSize is the response page size (must be greater than 0 and less than or equal to 500).
 	PageSize int64 `url:"ps,omitempty"`
 }
@@ -510,7 +510,7 @@ type RulesUpdateOption struct {
 // App retrieves data required for rendering the 'Coding Rules' page.
 // WARNING: This is an internal endpoint, may change without notice.
 func (s *RulesService) App() (v *RulesApp, resp *http.Response, err error) {
-	req, err := s.client.NewRequest("GET", "rules/app", nil)
+	req, err := s.client.NewRequest(http.MethodGet, "rules/app", nil)
 	if err != nil {
 		return
 	}
@@ -536,7 +536,7 @@ func (s *RulesService) Create(opt *RulesCreateOption) (v *RulesCreate, resp *htt
 	// Convert to URL-encodable format
 	urlOpt := s.convertCreateOptForURL(opt)
 
-	req, err := s.client.NewRequest("POST", "rules/create", urlOpt)
+	req, err := s.client.NewRequest(http.MethodPost, "rules/create", urlOpt)
 	if err != nil {
 		return
 	}
@@ -559,7 +559,7 @@ func (s *RulesService) Delete(opt *RulesDeleteOption) (resp *http.Response, err 
 		return
 	}
 
-	req, err := s.client.NewRequest("POST", "rules/delete", opt)
+	req, err := s.client.NewRequest(http.MethodPost, "rules/delete", opt)
 	if err != nil {
 		return
 	}
@@ -579,7 +579,7 @@ func (s *RulesService) List(opt *RulesListOption) (v *string, resp *http.Respons
 		return
 	}
 
-	req, err := s.client.NewRequest("GET", "rules/list", opt)
+	req, err := s.client.NewRequest(http.MethodGet, "rules/list", opt)
 	if err != nil {
 		return
 	}
@@ -601,7 +601,7 @@ func (s *RulesService) Repositories(opt *RulesRepositoriesOption) (v *RulesRepos
 		return
 	}
 
-	req, err := s.client.NewRequest("GET", "rules/repositories", opt)
+	req, err := s.client.NewRequest(http.MethodGet, "rules/repositories", opt)
 	if err != nil {
 		return
 	}
@@ -626,7 +626,7 @@ func (s *RulesService) Search(opt *RulesSearchOption) (v *RulesSearch, resp *htt
 	// Convert to URL-encodable format
 	urlOpt := s.convertSearchOptForURL(opt)
 
-	req, err := s.client.NewRequest("GET", "rules/search", urlOpt)
+	req, err := s.client.NewRequest(http.MethodGet, "rules/search", urlOpt)
 	if err != nil {
 		return
 	}
@@ -648,7 +648,7 @@ func (s *RulesService) Show(opt *RulesShowOption) (v *RulesShow, resp *http.Resp
 		return
 	}
 
-	req, err := s.client.NewRequest("GET", "rules/show", opt)
+	req, err := s.client.NewRequest(http.MethodGet, "rules/show", opt)
 	if err != nil {
 		return
 	}
@@ -670,7 +670,7 @@ func (s *RulesService) Tags(opt *RulesTagsOption) (v *RulesTags, resp *http.Resp
 		return
 	}
 
-	req, err := s.client.NewRequest("GET", "rules/tags", opt)
+	req, err := s.client.NewRequest(http.MethodGet, "rules/tags", opt)
 	if err != nil {
 		return
 	}
@@ -696,7 +696,7 @@ func (s *RulesService) Update(opt *RulesUpdateOption) (v *RulesUpdate, resp *htt
 	// Convert to URL-encodable format
 	urlOpt := s.convertUpdateOptForURL(opt)
 
-	req, err := s.client.NewRequest("POST", "rules/update", urlOpt)
+	req, err := s.client.NewRequest(http.MethodPost, "rules/update", urlOpt)
 	if err != nil {
 		return
 	}
@@ -753,36 +753,28 @@ func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOption) error {
 
 	// Value validations
 	if opt.CleanCodeAttribute != "" {
-		allowed := []string{"CONVENTIONAL", "FORMATTED", "IDENTIFIABLE", "CLEAR", "COMPLETE", "EFFICIENT", "LOGICAL", "DISTINCT", "FOCUSED", "MODULAR", "TESTED", "LAWFUL", "RESPECTFUL", "TRUSTWORTHY"}
-
-		err := ValidateInSlice(opt.CleanCodeAttribute, allowed, "CleanCodeAttribute")
+		err := IsValueAuthorized(opt.CleanCodeAttribute, allowedCleanCodeAttributes, "CleanCodeAttribute")
 		if err != nil {
 			return err
 		}
 	}
 
 	if opt.Severity != "" {
-		allowed := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
-
-		err := ValidateInSlice(opt.Severity, allowed, "Severity")
+		err := IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
 		if err != nil {
 			return err
 		}
 	}
 
 	if opt.Status != "" {
-		allowed := []string{"READY", "DEPRECATED", "BETA"}
-
-		err := ValidateInSlice(opt.Status, allowed, "Status")
+		err := IsValueAuthorized(opt.Status, allowedRulesExistingStatuses, "Status")
 		if err != nil {
 			return err
 		}
 	}
 
 	if opt.Type != "" {
-		allowed := []string{"CODE_SMELL", "BUG", "VULNERABILITY", "SECURITY_HOTSPOT"}
-
-		err := ValidateInSlice(opt.Type, allowed, "Type")
+		err := IsValueAuthorized(opt.Type, allowedRulesTypes, "Type")
 		if err != nil {
 			return err
 		}
@@ -790,16 +782,12 @@ func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOption) error {
 
 	// Validate Impacts map
 	if len(opt.Impacts) > 0 {
-		allowedKeys := []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}
-
-		err := ValidateMapKeys(opt.Impacts, allowedKeys, "Impacts")
+		err := ValidateMapKeys(opt.Impacts, allowedImpactSoftwareQualities, "Impacts")
 		if err != nil {
 			return err
 		}
 
-		allowedValues := []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}
-
-		err = ValidateMapValues(opt.Impacts, allowedValues, "Impacts")
+		err = ValidateMapValues(opt.Impacts, allowedImpactSeverities, "Impacts")
 		if err != nil {
 			return err
 		}
@@ -829,9 +817,9 @@ func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
 	}
 
 	if opt.Sort != "" {
-		allowed := []string{"createdAt"}
+		allowed := map[string]struct{}{"createdAt": {}}
 
-		err := ValidateInSlice(opt.Sort, allowed, "Sort")
+		err := IsValueAuthorized(opt.Sort, allowed, "Sort")
 		if err != nil {
 			return err
 		}
@@ -860,97 +848,91 @@ func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOption) error {
 		return err
 	}
 
-	// Validate Q minimum length
-	err = ValidateMinLength(opt.Q, MinSearchQueryLength, "Q")
+	// Validate Query minimum length
+	err = ValidateMinLength(opt.Query, MinSearchQueryLength, "Query")
 	if err != nil {
 		return err
 	}
 
 	// Validate severity values
-	severityValues := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
-
-	err = ValidateSliceValues(opt.ActiveImpactSeverities, []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}, "ActiveImpactSeverities")
+	err = AreValuesAuthorized(opt.ActiveImpactSeverities, allowedImpactSeverities, "ActiveImpactSeverities")
 	if err != nil {
 		return err
 	}
 
-	err = ValidateSliceValues(opt.ActiveSeverities, severityValues, "ActiveSeverities")
+	err = AreValuesAuthorized(opt.ActiveSeverities, allowedSeverities, "ActiveSeverities")
 	if err != nil {
 		return err
 	}
 
-	err = ValidateSliceValues(opt.Severities, severityValues, "Severities")
+	err = AreValuesAuthorized(opt.Severities, allowedSeverities, "Severities")
 	if err != nil {
 		return err
 	}
 
-	err = ValidateSliceValues(opt.ImpactSeverities, []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}, "ImpactSeverities")
+	err = AreValuesAuthorized(opt.ImpactSeverities, allowedImpactSeverities, "ImpactSeverities")
 	if err != nil {
 		return err
 	}
 
 	// Validate clean code attribute categories
-	err = ValidateSliceValues(opt.CleanCodeAttributeCategories, []string{"ADAPTABLE", "CONSISTENT", "INTENTIONAL", "RESPONSIBLE"}, "CleanCodeAttributeCategories")
+	err = AreValuesAuthorized(opt.CleanCodeAttributeCategories, allowedCleanCodeAttributesCategories, "CleanCodeAttributeCategories")
 	if err != nil {
 		return err
 	}
 
 	// Validate impact software qualities
-	err = ValidateSliceValues(opt.ImpactSoftwareQualities, []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}, "ImpactSoftwareQualities")
+	err = AreValuesAuthorized(opt.ImpactSoftwareQualities, allowedImpactSoftwareQualities, "ImpactSoftwareQualities")
 	if err != nil {
 		return err
 	}
 
 	// Validate inheritance
-	err = ValidateSliceValues(opt.Inheritance, []string{"NONE", "INHERITED", "OVERRIDES"}, "Inheritance")
+	err = AreValuesAuthorized(opt.Inheritance, allowedInheritanceTypes, "Inheritance")
 	if err != nil {
 		return err
 	}
 
 	// Validate OWASP categories
-	owaspCategories := []string{"a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10"}
-
-	err = ValidateSliceValues(opt.OwaspTop10, owaspCategories, "OwaspTop10")
+	err = AreValuesAuthorized(opt.OwaspTop10, allowedOwaspCategories, "OwaspTop10")
 	if err != nil {
 		return err
 	}
 
-	err = ValidateSliceValues(opt.OwaspTop102021, owaspCategories, "OwaspTop102021")
+	err = AreValuesAuthorized(opt.OwaspTop102021, allowedOwaspCategories, "OwaspTop102021")
 	if err != nil {
 		return err
 	}
 
 	// Validate OWASP Mobile Top 10
-	owaspMobileCategories := []string{"m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10"}
-
-	err = ValidateSliceValues(opt.OwaspMobileTop102024, owaspMobileCategories, "OwaspMobileTop102024")
+	err = AreValuesAuthorized(opt.OwaspMobileTop102024, allowedOwaspMobileCategories, "OwaspMobileTop102024")
 	if err != nil {
 		return err
 	}
 
 	// Validate SANS Top 25
-	err = ValidateSliceValues(opt.SansTop25, []string{"insecure-interaction", "risky-resource", "porous-defenses"}, "SansTop25")
+	err = AreValuesAuthorized(opt.SansTop25, allowedSansTop25Categories, "SansTop25")
 	if err != nil {
 		return err
 	}
 
 	// Validate statuses
-	err = ValidateSliceValues(opt.Statuses, []string{"READY", "DEPRECATED", "REMOVED", "BETA"}, "Statuses")
+	err = AreValuesAuthorized(opt.Statuses, allowedRulesStatuses, "Statuses")
 	if err != nil {
 		return err
 	}
 
 	// Validate types
-	err = ValidateSliceValues(opt.Types, []string{"CODE_SMELL", "BUG", "VULNERABILITY", "SECURITY_HOTSPOT"}, "Types")
+	err = AreValuesAuthorized(opt.Types, allowedRulesTypes, "Types")
 	if err != nil {
 		return err
 	}
 
 	// Validate sort field
 	if opt.Sort != "" {
-		allowed := []string{"key", "name", "createdAt", "updatedAt"}
+		allowed := map[string]struct{}{"key": {}, "name": {}, "createdAt": {}, "updatedAt": {}}
 
-		err = ValidateInSlice(opt.Sort, allowed, "Sort")
+		err = IsValueAuthorized(opt.Sort, allowed, "Sort")
 		if err != nil {
 			return err
 		}
@@ -989,7 +971,7 @@ func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOption) error {
 
 // ValidateUpdateOpt validates the options for updating a rule.
 //
-//nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
+//nolint:cyclop // Validation functions are naturally complex due to multiple checks
 func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
 	if opt == nil {
 		return NewValidationError("RulesUpdateOption", "cannot be nil", ErrMissingRequired)
@@ -1013,28 +995,22 @@ func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
 	}
 
 	// Value validations
-	if opt.Severity != "" {
-		allowed := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
-
-		err = ValidateInSlice(opt.Severity, allowed, "Severity")
-		if err != nil {
-			return err
-		}
+	err = IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
+	if err != nil {
+		return err
 	}
 
 	if opt.Status != "" {
-		allowed := []string{"READY", "DEPRECATED", "REMOVED", "BETA"}
-
-		err = ValidateInSlice(opt.Status, allowed, "Status")
+		err = IsValueAuthorized(opt.Status, allowedRulesStatuses, "Status")
 		if err != nil {
 			return err
 		}
 	}
 
 	if opt.RemediationFnType != "" {
-		allowed := []string{"LINEAR", "CONSTANT", "LINEAR_OFFSET"}
+		allowed := map[string]struct{}{"LINEAR": {}, "CONSTANT": {}, "LINEAR_OFFSET": {}}
 
-		err = ValidateInSlice(opt.RemediationFnType, allowed, "RemediationFnType")
+		err = IsValueAuthorized(opt.RemediationFnType, allowed, "RemediationFnType")
 		if err != nil {
 			return err
 		}
@@ -1042,16 +1018,12 @@ func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
 
 	// Validate Impacts map
 	if len(opt.Impacts) > 0 {
-		allowedKeys := []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}
-
-		err = ValidateMapKeys(opt.Impacts, allowedKeys, "Impacts")
+		err = ValidateMapKeys(opt.Impacts, allowedImpactSoftwareQualities, "Impacts")
 		if err != nil {
 			return err
 		}
 
-		allowedValues := []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}
-
-		err = ValidateMapValues(opt.Impacts, allowedValues, "Impacts")
+		err = ValidateMapValues(opt.Impacts, allowedImpactSeverities, "Impacts")
 		if err != nil {
 			return err
 		}
@@ -1169,7 +1141,7 @@ func (s *RulesService) convertSearchOptForURL(opt *RulesSearchOption) *rulesSear
 		IncludeExternal:  opt.IncludeExternal,
 		IsTemplate:       opt.IsTemplate,
 		PrioritizedRule:  opt.PrioritizedRule,
-		Q:                opt.Q,
+		Query:            opt.Query,
 		Qprofile:         opt.Qprofile,
 		RuleKey:          opt.RuleKey,
 		Sort:             opt.Sort,
@@ -1291,7 +1263,7 @@ type rulesSearchURLOption struct {
 	OwaspTop10                   string `url:"owaspTop10,omitempty"`
 	OwaspTop102021               string `url:"owaspTop10-2021,omitempty"`
 	PrioritizedRule              bool   `url:"prioritizedRule,omitempty"`
-	Q                            string `url:"q,omitempty"`
+	Query                        string `url:"q,omitempty"`
 	Qprofile                     string `url:"qprofile,omitempty"`
 	Repositories                 string `url:"repositories,omitempty"`
 	RuleKey                      string `url:"rule_key,omitempty"`

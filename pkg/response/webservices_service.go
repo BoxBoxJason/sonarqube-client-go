@@ -1,6 +1,9 @@
 package response
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 // WebservicesService handles web services related operations.
 type WebservicesService struct {
@@ -54,7 +57,7 @@ type WebservicesListOption struct {
 
 // List lists web services.
 func (s *WebservicesService) List(opt *WebservicesListOption) (*WebservicesListResp, error) {
-	req, err := s.client.NewRequest("GET", "webservices/list", opt)
+	req, err := s.client.NewRequest(http.MethodGet, "webservices/list", opt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -86,7 +89,7 @@ type WebservicesResponseExampleOption struct {
 
 // ResponseExample displays web service response example.
 func (s *WebservicesService) ResponseExample(opt *WebservicesResponseExampleOption) (*WebservicesResponseExampleResp, error) {
-	req, err := s.client.NewRequest("GET", "webservices/response_example", opt)
+	req, err := s.client.NewRequest(http.MethodGet, "webservices/response_example", opt)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

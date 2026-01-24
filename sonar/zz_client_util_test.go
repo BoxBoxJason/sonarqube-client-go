@@ -17,7 +17,7 @@ func TestDoJSON(t *testing.T) {
 	}))
 	defer ts.Close()
 	baseURL, _ := url.Parse(ts.URL + "/")
-	req, err := NewRequest("GET", "test", baseURL, "u", "p", nil)
+	req, err := NewRequest(http.MethodGet, "test", baseURL, "u", "p", nil)
 	if err != nil {
 		t.Fatalf("NewRequest failed: %v", err)
 	}
@@ -42,7 +42,7 @@ func TestCheckResponse_Error(t *testing.T) {
 	}))
 	defer ts.Close()
 	baseURL, _ := url.Parse(ts.URL + "/")
-	req, err := NewRequest("GET", "test", baseURL, "u", "p", nil)
+	req, err := NewRequest(http.MethodGet, "test", baseURL, "u", "p", nil)
 	if err != nil {
 		t.Fatalf("NewRequest failed: %v", err)
 	}
