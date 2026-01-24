@@ -2,7 +2,9 @@ package sonargo
 
 import "net/http"
 
+// ServerService handles communication with the Server related methods of the SonarQube API.
 type ServerService struct {
+	// client is used to communicate with the SonarQube API.
 	client *Client
 }
 
