@@ -218,7 +218,7 @@ func TestAlmIntegrations_ImportAzureProject_ValidationError(t *testing.T) {
 		ProjectName:            "project",
 		RepositoryName:         "repo",
 		NewCodeDefinitionType:  "PREVIOUS_VERSION",
-		NewCodeDefinitionValue: "30",
+		NewCodeDefinitionValue: 30,
 	})
 	if err == nil {
 		t.Error("expected error for PREVIOUS_VERSION with value")
@@ -257,7 +257,7 @@ func TestAlmIntegrations_ImportAzureProject_WithNewCodeDefinition(t *testing.T) 
 		ProjectName:            "project",
 		RepositoryName:         "repo",
 		NewCodeDefinitionType:  "NUMBER_OF_DAYS",
-		NewCodeDefinitionValue: "30",
+		NewCodeDefinitionValue: 30,
 	}
 
 	resp, err = client.AlmIntegrations.ImportAzureProject(opt)
@@ -896,13 +896,15 @@ func TestAlmIntegrations_SearchBitbucketCloudRepos_ValidationError(t *testing.T)
 		t.Error("expected error for missing AlmSetting")
 	}
 
-	// Test Ps out of range
+	// Test PageSize out of range
 	_, _, err = client.AlmIntegrations.SearchBitbucketCloudRepos(&AlmIntegrationsSearchBitbucketCloudReposOption{
 		AlmSetting: "setting",
-		Ps:         MaxPageSizeAlmIntegrations + 1,
+		PaginationArgs: PaginationArgs{
+			PageSize: MaxPageSizeAlmIntegrations + 1,
+		},
 	})
 	if err == nil {
-		t.Error("expected error for Ps out of range")
+		t.Error("expected error for PageSize out of range")
 	}
 
 	// Test RepositoryName too long
@@ -1057,13 +1059,15 @@ func TestAlmIntegrations_SearchGitlabRepos_ValidationError(t *testing.T) {
 		t.Error("expected error for missing AlmSetting")
 	}
 
-	// Test Ps out of range
+	// Test PageSize out of range
 	_, _, err = client.AlmIntegrations.SearchGitlabRepos(&AlmIntegrationsSearchGitlabReposOption{
 		AlmSetting: "setting",
-		Ps:         MaxPageSizeAlmIntegrations + 1,
+		PaginationArgs: PaginationArgs{
+			PageSize: MaxPageSizeAlmIntegrations + 1,
+		},
 	})
 	if err == nil {
-		t.Error("expected error for Ps out of range")
+		t.Error("expected error for PageSize out of range")
 	}
 
 	// Test ProjectName too long
@@ -1184,55 +1188,55 @@ func TestValidateNewCodeDefinition(t *testing.T) {
 	tests := []struct {
 		name            string
 		definitionType  string
-		definitionValue string
+		definitionValue int64
 		wantErr         bool
 	}{
 		{
 			name:            "empty type is valid",
 			definitionType:  "",
-			definitionValue: "",
+			definitionValue: 0,
 			wantErr:         false,
 		},
 		{
 			name:            "PREVIOUS_VERSION without value",
 			definitionType:  "PREVIOUS_VERSION",
-			definitionValue: "",
+			definitionValue: 0,
 			wantErr:         false,
 		},
 		{
 			name:            "PREVIOUS_VERSION with value is invalid",
 			definitionType:  "PREVIOUS_VERSION",
-			definitionValue: "30",
+			definitionValue: 30,
 			wantErr:         true,
 		},
 		{
 			name:            "REFERENCE_BRANCH without value",
 			definitionType:  "REFERENCE_BRANCH",
-			definitionValue: "",
+			definitionValue: 0,
 			wantErr:         false,
 		},
 		{
 			name:            "REFERENCE_BRANCH with value is invalid",
 			definitionType:  "REFERENCE_BRANCH",
-			definitionValue: "main",
+			definitionValue: 30,
 			wantErr:         true,
 		},
 		{
 			name:            "NUMBER_OF_DAYS with value",
 			definitionType:  "NUMBER_OF_DAYS",
-			definitionValue: "30",
+			definitionValue: 30,
 			wantErr:         false,
 		},
 		{
 			name:            "NUMBER_OF_DAYS without value is invalid",
 			definitionType:  "NUMBER_OF_DAYS",
-			definitionValue: "",
+			definitionValue: 0,
 			wantErr:         true,
 		},
 		{
 			name:            "invalid type",
 			definitionType:  "INVALID_TYPE",
-			definitionValue: "",
+			definitionValue: 0,
 			wantErr:         true,
 		},
 	}

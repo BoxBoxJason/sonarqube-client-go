@@ -1,6 +1,7 @@
 package sonargo
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -254,16 +255,16 @@ type AlmIntegrationsImportAzureProjectOption struct {
 	// NewCodeDefinitionType is the project new code definition type.
 	// Allowed values: PREVIOUS_VERSION, NUMBER_OF_DAYS, REFERENCE_BRANCH
 	NewCodeDefinitionType string `url:"newCodeDefinitionType,omitempty"`
-	// NewCodeDefinitionValue is the project new code definition value.
-	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
-	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
-	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"`
 	// ProjectName is the Azure project name (required).
 	// Maximum length: 200 characters
 	ProjectName string `url:"projectName,omitempty"`
 	// RepositoryName is the Azure repository name (required).
 	// Maximum length: 200 characters
 	RepositoryName string `url:"repositoryName,omitempty"`
+	// NewCodeDefinitionValue is the project new code definition value.
+	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
+	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
+	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
 // AlmIntegrationsImportBitbucketCloudRepoOption contains options for importing a Bitbucket Cloud repository.
@@ -277,13 +278,13 @@ type AlmIntegrationsImportBitbucketCloudRepoOption struct {
 	// NewCodeDefinitionType is the project new code definition type.
 	// Allowed values: PREVIOUS_VERSION, NUMBER_OF_DAYS, REFERENCE_BRANCH
 	NewCodeDefinitionType string `url:"newCodeDefinitionType,omitempty"`
-	// NewCodeDefinitionValue is the project new code definition value.
-	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
-	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
-	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"`
 	// RepositorySlug is the Bitbucket Cloud repository slug (required).
 	// Maximum length: 200 characters
 	RepositorySlug string `url:"repositorySlug,omitempty"`
+	// NewCodeDefinitionValue is the project new code definition value.
+	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
+	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
+	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
 // AlmIntegrationsImportBitbucketServerProjectOption contains options for importing a Bitbucket Server project.
@@ -297,16 +298,16 @@ type AlmIntegrationsImportBitbucketServerProjectOption struct {
 	// NewCodeDefinitionType is the project new code definition type.
 	// Allowed values: PREVIOUS_VERSION, NUMBER_OF_DAYS, REFERENCE_BRANCH
 	NewCodeDefinitionType string `url:"newCodeDefinitionType,omitempty"`
-	// NewCodeDefinitionValue is the project new code definition value.
-	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
-	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
-	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"`
 	// ProjectKey is the Bitbucket Server project key (required).
 	// Maximum length: 200 characters
 	ProjectKey string `url:"projectKey,omitempty"`
 	// RepositorySlug is the Bitbucket Server repository slug (required).
 	// Maximum length: 200 characters
 	RepositorySlug string `url:"repositorySlug,omitempty"`
+	// NewCodeDefinitionValue is the project new code definition value.
+	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
+	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
+	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
 // AlmIntegrationsImportGithubProjectOption contains options for importing a GitHub project.
@@ -320,13 +321,13 @@ type AlmIntegrationsImportGithubProjectOption struct {
 	// NewCodeDefinitionType is the project new code definition type.
 	// Allowed values: PREVIOUS_VERSION, NUMBER_OF_DAYS, REFERENCE_BRANCH
 	NewCodeDefinitionType string `url:"newCodeDefinitionType,omitempty"`
-	// NewCodeDefinitionValue is the project new code definition value.
-	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
-	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
-	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"`
 	// RepositoryKey is the GitHub repository key (organization/repoSlug) (required).
 	// Maximum length: 256 characters
 	RepositoryKey string `url:"repositoryKey,omitempty"`
+	// NewCodeDefinitionValue is the project new code definition value.
+	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
+	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
+	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
 // AlmIntegrationsImportGitlabProjectOption contains options for importing a GitLab project.
@@ -344,7 +345,7 @@ type AlmIntegrationsImportGitlabProjectOption struct {
 	// NewCodeDefinitionValue is the project new code definition value.
 	// Required when NewCodeDefinitionType is NUMBER_OF_DAYS (value between 1 and 90).
 	// No value expected for PREVIOUS_VERSION and REFERENCE_BRANCH.
-	NewCodeDefinitionValue string `url:"newCodeDefinitionValue,omitempty"`
+	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
 // AlmIntegrationsListAzureProjectsOption contains options for listing Azure projects.
@@ -370,13 +371,12 @@ type AlmIntegrationsListBitbucketServerProjectsOption struct {
 //
 //nolint:govet // Field alignment is less important than logical grouping
 type AlmIntegrationsListGithubOrganizationsOption struct {
+	// PaginationArgs contains pagination parameters.
+	PaginationArgs `url:",inline"`
+
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
-	// P is the index of the page to display (optional, default: 1).
-	P int64 `url:"p,omitempty"`
-	// Ps is the size for the paging to apply (optional, default: 100).
-	Ps int64 `url:"ps,omitempty"`
 	// Token is the GitHub authorization code (optional).
 	// Maximum length: 200 characters
 	Token string `url:"token,omitempty"`
@@ -386,18 +386,17 @@ type AlmIntegrationsListGithubOrganizationsOption struct {
 //
 //nolint:govet // Field alignment is less important than logical grouping
 type AlmIntegrationsListGithubRepositoriesOption struct {
+	// PaginationArgs contains pagination parameters.
+	PaginationArgs `url:",inline"`
+
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
 	// Organization is the GitHub organization (required).
 	// Maximum length: 200 characters
 	Organization string `url:"organization,omitempty"`
-	// P is the index of the page to display (optional, default: 1).
-	P int64 `url:"p,omitempty"`
-	// Ps is the size for the paging to apply (optional, default: 100).
-	Ps int64 `url:"ps,omitempty"`
-	// Q is a filter to limit search to repositories that contain the supplied string (optional).
-	Q string `url:"q,omitempty"`
+	// Query is a filter to limit search to repositories that contain the supplied string (optional).
+	Query string `url:"q,omitempty"`
 }
 
 // AlmIntegrationsSearchAzureReposOption contains options for searching Azure repositories.
@@ -417,13 +416,12 @@ type AlmIntegrationsSearchAzureReposOption struct {
 //
 //nolint:govet // Field alignment is less important than logical grouping
 type AlmIntegrationsSearchBitbucketCloudReposOption struct {
+	// PaginationArgs contains pagination parameters.
+	PaginationArgs `url:",inline"`
+
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
-	// P is the 1-based page number (optional, default: 1).
-	P int64 `url:"p,omitempty"`
-	// Ps is the page size (optional, default: 20, max: 100).
-	Ps int64 `url:"ps,omitempty"`
 	// RepositoryName is the repository name filter (optional).
 	// Maximum length: 200 characters
 	RepositoryName string `url:"repositoryName,omitempty"`
@@ -453,16 +451,15 @@ type AlmIntegrationsSearchBitbucketServerReposOption struct {
 //
 //nolint:govet // Field alignment is less important than logical grouping
 type AlmIntegrationsSearchGitlabReposOption struct {
+	// PaginationArgs contains pagination parameters.
+	PaginationArgs `url:",inline"`
+
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
-	// P is the 1-based page number (optional, default: 1).
-	P int64 `url:"p,omitempty"`
 	// ProjectName is the project name filter (optional).
 	// Maximum length: 200 characters
 	ProjectName string `url:"projectName,omitempty"`
-	// Ps is the page size (optional, default: 20, max: 100).
-	Ps int64 `url:"ps,omitempty"`
 }
 
 // AlmIntegrationsSetPatOption contains options for setting a Personal Access Token.
@@ -1054,6 +1051,12 @@ func (s *AlmIntegrationsService) ValidateImportGitlabProjectOpt(opt *AlmIntegrat
 	}
 
 	// AlmSetting is optional if only one GitLab integration exists
+	if opt.AlmSetting != "" {
+		err := ValidateMaxLength(opt.AlmSetting, MaxAlmSettingKeyLength, "AlmSetting")
+		if err != nil {
+			return err
+		}
+	}
 
 	// Validate new code definition if provided
 	err := validateNewCodeDefinition(opt.NewCodeDefinitionType, opt.NewCodeDefinitionValue)
@@ -1218,8 +1221,8 @@ func (s *AlmIntegrationsService) ValidateSearchBitbucketCloudReposOpt(opt *AlmIn
 		return err
 	}
 
-	if opt.Ps != 0 {
-		err = ValidateRange(opt.Ps, MinPageSize, MaxPageSizeAlmIntegrations, "Ps")
+	if opt.PageSize != 0 {
+		err = ValidateRange(opt.PageSize, MinPageSize, MaxPageSizeAlmIntegrations, "PageSize")
 		if err != nil {
 			return err
 		}
@@ -1291,8 +1294,8 @@ func (s *AlmIntegrationsService) ValidateSearchGitlabReposOpt(opt *AlmIntegratio
 		return err
 	}
 
-	if opt.Ps != 0 {
-		err = ValidateRange(opt.Ps, MinPageSize, MaxPageSizeAlmIntegrations, "Ps")
+	if opt.PageSize != 0 {
+		err = ValidateRange(opt.PageSize, MinPageSize, MaxPageSizeAlmIntegrations, "PageSize")
 		if err != nil {
 			return err
 		}
@@ -1315,6 +1318,12 @@ func (s *AlmIntegrationsService) ValidateSetPatOpt(opt *AlmIntegrationsSetPatOpt
 	}
 
 	// AlmSetting is optional if only one DevOps Platform integration exists
+	if opt.AlmSetting != "" {
+		err := ValidateMaxLength(opt.AlmSetting, MaxAlmSettingKeyLength, "AlmSetting")
+		if err != nil {
+			return err
+		}
+	}
 
 	err := ValidateRequired(opt.Pat, "Pat")
 	if err != nil {
@@ -1341,7 +1350,7 @@ func (s *AlmIntegrationsService) ValidateSetPatOpt(opt *AlmIntegrationsSetPatOpt
 // -----------------------------------------------------------------------------
 
 // validateNewCodeDefinition validates the new code definition type and value.
-func validateNewCodeDefinition(definitionType, definitionValue string) error {
+func validateNewCodeDefinition(definitionType string, definitionValue int64) error {
 	if definitionType == "" {
 		return nil
 	}
@@ -1351,26 +1360,28 @@ func validateNewCodeDefinition(definitionType, definitionValue string) error {
 		return err
 	}
 
-	// NUMBER_OF_DAYS requires a value between 1 and 90
-	if definitionType == "NUMBER_OF_DAYS" {
-		if definitionValue == "" {
+	return validateNewCodeDefinitionByType(definitionType, definitionValue)
+}
+
+// validateNewCodeDefinitionByType performs type-specific validation for new code definitions.
+func validateNewCodeDefinitionByType(definitionType string, definitionValue int64) error {
+	switch definitionType {
+	case "NUMBER_OF_DAYS":
+		if definitionValue < MinNewCodeDefinitionDays || definitionValue > MaxNewCodeDefinitionDays {
 			return NewValidationError(
 				"NewCodeDefinitionValue",
-				"is required when NewCodeDefinitionType is NUMBER_OF_DAYS",
-				ErrMissingRequired,
+				fmt.Sprintf("must be between %d and %d when NewCodeDefinitionType is NUMBER_OF_DAYS", MinNewCodeDefinitionDays, MaxNewCodeDefinitionDays),
+				ErrInvalidValue,
 			)
 		}
-		// The value is passed as string, so we just validate it's not empty
-		// The API will validate the numeric range
-	}
-
-	// PREVIOUS_VERSION and REFERENCE_BRANCH should not have a value
-	if (definitionType == "PREVIOUS_VERSION" || definitionType == "REFERENCE_BRANCH") && definitionValue != "" {
-		return NewValidationError(
-			"NewCodeDefinitionValue",
-			"should not be provided when NewCodeDefinitionType is "+definitionType,
-			ErrInvalidValue,
-		)
+	default:
+		if definitionValue != 0 {
+			return NewValidationError(
+				"NewCodeDefinitionValue",
+				"must not be set when NewCodeDefinitionType is PREVIOUS_VERSION or REFERENCE_BRANCH",
+				ErrInvalidValue,
+			)
+		}
 	}
 
 	return nil
