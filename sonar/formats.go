@@ -5,16 +5,28 @@ import (
 	"strings"
 )
 
+const (
+	// KeyValuePairParts is the expected number of parts when splitting a key=value pair.
+	KeyValuePairParts = 2
+)
+
 // ListToSeparatedString converts a list of strings into a single string separated by the given separator.
 func ListToSeparatedString(list []string, separator string) string {
-	result := ""
-	for i, item := range list {
-		if i > 0 {
-			result += separator
-		}
-		result += item
+	if len(list) == 0 {
+		return ""
 	}
-	return result
+
+	var builder strings.Builder
+
+	for index, item := range list {
+		if index > 0 {
+			builder.WriteString(separator)
+		}
+
+		builder.WriteString(item)
+	}
+
+	return builder.String()
 }
 
 // SeparatedStringToList converts a separated string into a list of strings using the given separator.
@@ -22,37 +34,50 @@ func SeparatedStringToList(s string, separator string) []string {
 	if s == "" {
 		return []string{}
 	}
+
 	return strings.Split(s, separator)
 }
 
 // MapToSeparatedString converts a map of strings into a single string with entries separated by entrySeparator
 // and key-value pairs separated by keyValueSeparator.
-func MapToSeparatedString(m map[string]string, entrySeparator string, keyValueSeparator string) string {
-	result := ""
-	i := 0
-	for k, v := range m {
-		if i > 0 {
-			result += entrySeparator
-		}
-		result += k + keyValueSeparator + v
-		i++
+func MapToSeparatedString(stringMap map[string]string, entrySeparator string, keyValueSeparator string) string {
+	if len(stringMap) == 0 {
+		return ""
 	}
-	return result
+
+	var builder strings.Builder
+
+	first := true
+
+	for key, value := range stringMap {
+		if !first {
+			builder.WriteString(entrySeparator)
+		}
+
+		first = false
+
+		builder.WriteString(key)
+		builder.WriteString(keyValueSeparator)
+		builder.WriteString(value)
+	}
+
+	return builder.String()
 }
 
 // SeparatedStringToMap converts a separated string into a map of strings using the given entrySeparator and keyValueSeparator.
-func SeparatedStringToMap(s string, entrySeparator string, keyValueSeparator string) map[string]string {
+func SeparatedStringToMap(inputStr string, entrySeparator string, keyValueSeparator string) map[string]string {
 	result := make(map[string]string)
-	if s == "" {
+	if inputStr == "" {
 		return result
 	}
-	entries := strings.Split(s, entrySeparator)
-	for _, entry := range entries {
-		parts := strings.SplitN(entry, keyValueSeparator, 2)
-		if len(parts) == 2 {
+
+	for entry := range strings.SplitSeq(inputStr, entrySeparator) {
+		parts := strings.SplitN(entry, keyValueSeparator, KeyValuePairParts)
+		if len(parts) == KeyValuePairParts {
 			result[parts[0]] = parts[1]
 		}
 	}
+
 	return result
 }
 
@@ -64,6 +89,7 @@ func (s CommaSeparatedSlice) EncodeValues(key string, v *url.Values) error {
 	if len(s) > 0 {
 		v.Set(key, ListToSeparatedString(s, ","))
 	}
+
 	return nil
 }
 
@@ -75,6 +101,7 @@ func (m SemicolonSeparatedMap) EncodeValues(key string, v *url.Values) error {
 	if len(m) > 0 {
 		v.Set(key, MapToSeparatedString(m, ";", "="))
 	}
+
 	return nil
 }
 
@@ -95,5 +122,6 @@ func EncodeMapToSeparated(key string, m map[string]string, entrySep, kvSep strin
 	if len(m) == 0 {
 		return ""
 	}
+
 	return key + "=" + url.QueryEscape(MapToSeparatedString(m, entrySep, kvSep))
 }

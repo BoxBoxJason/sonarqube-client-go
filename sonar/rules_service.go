@@ -4,6 +4,13 @@ import (
 	"net/http"
 )
 
+const (
+	// MaxRuleKeyLength is the maximum allowed length for rule keys and names.
+	MaxRuleKeyLength = 200
+	// MinSearchQueryLength is the minimum required length for search queries.
+	MinSearchQueryLength = 2
+)
+
 // RulesService handles communication with the Rules related methods of the SonarQube API.
 type RulesService struct {
 	// client is used to communicate with the SonarQube API.
@@ -310,8 +317,6 @@ type RulesDeleteOption struct {
 // RulesListOption contains options for listing rules.
 // WARNING: Internal endpoint, may change without notice.
 type RulesListOption struct {
-	// Asc indicates whether to sort results in ascending order.
-	Asc bool `url:"asc,omitempty"`
 	// AvailableSince filters rules added since the specified date (format: yyyy-MM-dd).
 	// If not set, all rules are returned.
 	AvailableSince string `url:"available_since,omitempty"`
@@ -324,6 +329,8 @@ type RulesListOption struct {
 	// Sort is the sort field.
 	// Allowed values: createdAt
 	Sort string `url:"s,omitempty"`
+	// Asc indicates whether to sort results in ascending order.
+	Asc bool `url:"asc,omitempty"`
 }
 
 // RulesRepositoriesOption contains options for listing rule repositories.
@@ -336,6 +343,8 @@ type RulesRepositoriesOption struct {
 }
 
 // RulesSearchOption contains options for searching rules.
+//
+//nolint:govet // Field alignment is less important than logical grouping and readability
 type RulesSearchOption struct {
 	PaginationArgs `url:",inline"`
 
@@ -444,18 +453,18 @@ type RulesSearchOption struct {
 
 // RulesShowOption contains options for showing a specific rule.
 type RulesShowOption struct {
-	// Actives determines whether to include the list of quality profiles where the rule is active.
-	Actives bool `url:"actives,omitempty"`
 	// Key is the unique identifier of the rule to be retrieved (required).
 	Key string `url:"key,omitempty"`
+	// Actives determines whether to include the list of quality profiles where the rule is active.
+	Actives bool `url:"actives,omitempty"`
 }
 
 // RulesTagsOption contains options for listing rule tags.
 type RulesTagsOption struct {
-	// PageSize is the response page size (must be greater than 0 and less than or equal to 500).
-	PageSize int64 `url:"ps,omitempty"`
 	// Q limits the search to tags containing the supplied string.
 	Q string `url:"q,omitempty"`
+	// PageSize is the response page size (must be greater than 0 and less than or equal to 500).
+	PageSize int64 `url:"ps,omitempty"`
 }
 
 // RulesUpdateOption contains options for updating a rule.
@@ -539,46 +548,6 @@ func (s *RulesService) Create(opt *RulesCreateOption) (v *RulesCreateResponse, r
 	}
 
 	return
-}
-
-// convertCreateOptForURL converts RulesCreateOption to a URL-encodable format.
-func (s *RulesService) convertCreateOptForURL(opt *RulesCreateOption) *rulesCreateURLOption {
-	urlOpt := &rulesCreateURLOption{
-		CleanCodeAttribute:  opt.CleanCodeAttribute,
-		CustomKey:           opt.CustomKey,
-		MarkdownDescription: opt.MarkdownDescription,
-		Name:                opt.Name,
-		PreventReactivation: opt.PreventReactivation,
-		Severity:            opt.Severity,
-		Status:              opt.Status,
-		TemplateKey:         opt.TemplateKey,
-		Type:                opt.Type,
-	}
-
-	// Convert maps to semicolon-separated strings
-	if len(opt.Impacts) > 0 {
-		urlOpt.Impacts = MapToSeparatedString(opt.Impacts, ";", "=")
-	}
-	if len(opt.Params) > 0 {
-		urlOpt.Params = MapToSeparatedString(opt.Params, ";", "=")
-	}
-
-	return urlOpt
-}
-
-// rulesCreateURLOption is the URL-encodable version of RulesCreateOption.
-type rulesCreateURLOption struct {
-	CleanCodeAttribute  string `url:"cleanCodeAttribute,omitempty"`
-	CustomKey           string `url:"customKey,omitempty"`
-	Impacts             string `url:"impacts,omitempty"`
-	MarkdownDescription string `url:"markdownDescription,omitempty"`
-	Name                string `url:"name,omitempty"`
-	Params              string `url:"params,omitempty"`
-	PreventReactivation string `url:"preventReactivation,omitempty"`
-	Severity            string `url:"severity,omitempty"`
-	Status              string `url:"status,omitempty"`
-	TemplateKey         string `url:"templateKey,omitempty"`
-	Type                string `url:"type,omitempty"`
 }
 
 // Delete deletes a custom rule.
@@ -671,136 +640,6 @@ func (s *RulesService) Search(opt *RulesSearchOption) (v *RulesSearchResponse, r
 	return
 }
 
-// convertSearchOptForURL converts RulesSearchOption to a URL-encodable format.
-func (s *RulesService) convertSearchOptForURL(opt *RulesSearchOption) *rulesSearchURLOption {
-	if opt == nil {
-		return nil
-	}
-
-	urlOpt := &rulesSearchURLOption{
-		Page:             opt.Page,
-		PageSize:         opt.PageSize,
-		Activation:       opt.Activation,
-		Asc:              opt.Asc,
-		AvailableSince:   opt.AvailableSince,
-		CompareToProfile: opt.CompareToProfile,
-		IncludeExternal:  opt.IncludeExternal,
-		IsTemplate:       opt.IsTemplate,
-		PrioritizedRule:  opt.PrioritizedRule,
-		Q:                opt.Q,
-		Qprofile:         opt.Qprofile,
-		RuleKey:          opt.RuleKey,
-		Sort:             opt.Sort,
-		TemplateKey:      opt.TemplateKey,
-	}
-
-	// Convert all slices to comma-separated strings
-	if len(opt.ActiveImpactSeverities) > 0 {
-		urlOpt.ActiveImpactSeverities = ListToSeparatedString(opt.ActiveImpactSeverities, ",")
-	}
-	if len(opt.ActiveSeverities) > 0 {
-		urlOpt.ActiveSeverities = ListToSeparatedString(opt.ActiveSeverities, ",")
-	}
-	if len(opt.CleanCodeAttributeCategories) > 0 {
-		urlOpt.CleanCodeAttributeCategories = ListToSeparatedString(opt.CleanCodeAttributeCategories, ",")
-	}
-	if len(opt.ComplianceStandards) > 0 {
-		urlOpt.ComplianceStandards = ListToSeparatedString(opt.ComplianceStandards, ",")
-	}
-	if len(opt.Cwe) > 0 {
-		urlOpt.Cwe = ListToSeparatedString(opt.Cwe, ",")
-	}
-	if len(opt.Fields) > 0 {
-		urlOpt.Fields = ListToSeparatedString(opt.Fields, ",")
-	}
-	if len(opt.Facets) > 0 {
-		urlOpt.Facets = ListToSeparatedString(opt.Facets, ",")
-	}
-	if len(opt.ImpactSeverities) > 0 {
-		urlOpt.ImpactSeverities = ListToSeparatedString(opt.ImpactSeverities, ",")
-	}
-	if len(opt.ImpactSoftwareQualities) > 0 {
-		urlOpt.ImpactSoftwareQualities = ListToSeparatedString(opt.ImpactSoftwareQualities, ",")
-	}
-	if len(opt.Inheritance) > 0 {
-		urlOpt.Inheritance = ListToSeparatedString(opt.Inheritance, ",")
-	}
-	if len(opt.Languages) > 0 {
-		urlOpt.Languages = ListToSeparatedString(opt.Languages, ",")
-	}
-	if len(opt.OwaspMobileTop102024) > 0 {
-		urlOpt.OwaspMobileTop102024 = ListToSeparatedString(opt.OwaspMobileTop102024, ",")
-	}
-	if len(opt.OwaspTop10) > 0 {
-		urlOpt.OwaspTop10 = ListToSeparatedString(opt.OwaspTop10, ",")
-	}
-	if len(opt.OwaspTop102021) > 0 {
-		urlOpt.OwaspTop102021 = ListToSeparatedString(opt.OwaspTop102021, ",")
-	}
-	if len(opt.Repositories) > 0 {
-		urlOpt.Repositories = ListToSeparatedString(opt.Repositories, ",")
-	}
-	if len(opt.SansTop25) > 0 {
-		urlOpt.SansTop25 = ListToSeparatedString(opt.SansTop25, ",")
-	}
-	if len(opt.Severities) > 0 {
-		urlOpt.Severities = ListToSeparatedString(opt.Severities, ",")
-	}
-	if len(opt.SonarsourceSecurity) > 0 {
-		urlOpt.SonarsourceSecurity = ListToSeparatedString(opt.SonarsourceSecurity, ",")
-	}
-	if len(opt.Statuses) > 0 {
-		urlOpt.Statuses = ListToSeparatedString(opt.Statuses, ",")
-	}
-	if len(opt.Tags) > 0 {
-		urlOpt.Tags = ListToSeparatedString(opt.Tags, ",")
-	}
-	if len(opt.Types) > 0 {
-		urlOpt.Types = ListToSeparatedString(opt.Types, ",")
-	}
-
-	return urlOpt
-}
-
-// rulesSearchURLOption is the URL-encodable version of RulesSearchOption.
-type rulesSearchURLOption struct {
-	Page                         int64  `url:"p,omitempty"`
-	PageSize                     int64  `url:"ps,omitempty"`
-	Activation                   bool   `url:"activation,omitempty"`
-	ActiveImpactSeverities       string `url:"active_impactSeverities,omitempty"`
-	ActiveSeverities             string `url:"active_severities,omitempty"`
-	Asc                          bool   `url:"asc,omitempty"`
-	AvailableSince               string `url:"available_since,omitempty"`
-	CleanCodeAttributeCategories string `url:"cleanCodeAttributeCategories,omitempty"`
-	CompareToProfile             string `url:"compareToProfile,omitempty"`
-	ComplianceStandards          string `url:"complianceStandards,omitempty"`
-	Cwe                          string `url:"cwe,omitempty"`
-	Fields                       string `url:"f,omitempty"`
-	Facets                       string `url:"facets,omitempty"`
-	ImpactSeverities             string `url:"impactSeverities,omitempty"`
-	ImpactSoftwareQualities      string `url:"impactSoftwareQualities,omitempty"`
-	IncludeExternal              bool   `url:"include_external,omitempty"`
-	Inheritance                  string `url:"inheritance,omitempty"`
-	IsTemplate                   bool   `url:"is_template,omitempty"`
-	Languages                    string `url:"languages,omitempty"`
-	OwaspMobileTop102024         string `url:"owaspMobileTop10-2024,omitempty"`
-	OwaspTop10                   string `url:"owaspTop10,omitempty"`
-	OwaspTop102021               string `url:"owaspTop10-2021,omitempty"`
-	PrioritizedRule              bool   `url:"prioritizedRule,omitempty"`
-	Q                            string `url:"q,omitempty"`
-	Qprofile                     string `url:"qprofile,omitempty"`
-	Repositories                 string `url:"repositories,omitempty"`
-	RuleKey                      string `url:"rule_key,omitempty"`
-	Sort                         string `url:"s,omitempty"`
-	SansTop25                    string `url:"sansTop25,omitempty"`
-	Severities                   string `url:"severities,omitempty"`
-	SonarsourceSecurity          string `url:"sonarsourceSecurity,omitempty"`
-	Statuses                     string `url:"statuses,omitempty"`
-	Tags                         string `url:"tags,omitempty"`
-	TemplateKey                  string `url:"template_key,omitempty"`
-	Types                        string `url:"types,omitempty"`
-}
-
 // Show retrieves detailed information about a specific rule.
 func (s *RulesService) Show(opt *RulesShowOption) (v *RulesShowResponse, resp *http.Response, err error) {
 	err = s.ValidateShowOpt(opt)
@@ -871,8 +710,400 @@ func (s *RulesService) Update(opt *RulesUpdateOption) (v *RulesUpdateResponse, r
 	return
 }
 
+// ValidateCreateOpt validates the options for creating a custom rule.
+//
+//nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
+func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOption) error {
+	if opt == nil {
+		return NewValidationError("RulesCreateOption", "cannot be nil", ErrMissingRequired)
+	}
+
+	// Required fields
+	err := ValidateRequired(opt.CustomKey, "CustomKey")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.MarkdownDescription, "MarkdownDescription")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Name, "Name")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.TemplateKey, "TemplateKey")
+	if err != nil {
+		return err
+	}
+
+	// Length validations
+	err = ValidateMaxLength(opt.CustomKey, MaxRuleKeyLength, "CustomKey")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.Name, MaxRuleKeyLength, "Name")
+	if err != nil {
+		return err
+	}
+
+	// Value validations
+	if opt.CleanCodeAttribute != "" {
+		allowed := []string{"CONVENTIONAL", "FORMATTED", "IDENTIFIABLE", "CLEAR", "COMPLETE", "EFFICIENT", "LOGICAL", "DISTINCT", "FOCUSED", "MODULAR", "TESTED", "LAWFUL", "RESPECTFUL", "TRUSTWORTHY"}
+
+		err := ValidateInSlice(opt.CleanCodeAttribute, allowed, "CleanCodeAttribute")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.Severity != "" {
+		allowed := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
+
+		err := ValidateInSlice(opt.Severity, allowed, "Severity")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.Status != "" {
+		allowed := []string{"READY", "DEPRECATED", "BETA"}
+
+		err := ValidateInSlice(opt.Status, allowed, "Status")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.Type != "" {
+		allowed := []string{"CODE_SMELL", "BUG", "VULNERABILITY", "SECURITY_HOTSPOT"}
+
+		err := ValidateInSlice(opt.Type, allowed, "Type")
+		if err != nil {
+			return err
+		}
+	}
+
+	// Validate Impacts map
+	if len(opt.Impacts) > 0 {
+		allowedKeys := []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}
+
+		err := ValidateMapKeys(opt.Impacts, allowedKeys, "Impacts")
+		if err != nil {
+			return err
+		}
+
+		allowedValues := []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}
+
+		err = ValidateMapValues(opt.Impacts, allowedValues, "Impacts")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ValidateDeleteOpt validates the options for deleting a custom rule.
+func (s *RulesService) ValidateDeleteOpt(opt *RulesDeleteOption) error {
+	if opt == nil {
+		return NewValidationError("RulesDeleteOption", "cannot be nil", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.Key, "Key")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateListOpt validates the options for listing rules.
+func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
+	if opt == nil {
+		return nil
+	}
+
+	if opt.Sort != "" {
+		allowed := []string{"createdAt"}
+
+		err := ValidateInSlice(opt.Sort, allowed, "Sort")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ValidateRepositoriesOpt validates the options for listing rule repositories.
+func (s *RulesService) ValidateRepositoriesOpt(opt *RulesRepositoriesOption) error {
+	// No specific validations needed for this endpoint
+	return nil
+}
+
+// ValidateSearchOpt validates the options for searching rules.
+//
+//nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
+func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOption) error {
+	if opt == nil {
+		return nil
+	}
+
+	// Validate pagination
+	err := opt.Validate()
+	if err != nil {
+		return err
+	}
+
+	// Validate Q minimum length
+	err = ValidateMinLength(opt.Q, MinSearchQueryLength, "Q")
+	if err != nil {
+		return err
+	}
+
+	// Validate severity values
+	severityValues := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
+
+	err = ValidateSliceValues(opt.ActiveImpactSeverities, []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}, "ActiveImpactSeverities")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateSliceValues(opt.ActiveSeverities, severityValues, "ActiveSeverities")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateSliceValues(opt.Severities, severityValues, "Severities")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateSliceValues(opt.ImpactSeverities, []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}, "ImpactSeverities")
+	if err != nil {
+		return err
+	}
+
+	// Validate clean code attribute categories
+	err = ValidateSliceValues(opt.CleanCodeAttributeCategories, []string{"ADAPTABLE", "CONSISTENT", "INTENTIONAL", "RESPONSIBLE"}, "CleanCodeAttributeCategories")
+	if err != nil {
+		return err
+	}
+
+	// Validate impact software qualities
+	err = ValidateSliceValues(opt.ImpactSoftwareQualities, []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}, "ImpactSoftwareQualities")
+	if err != nil {
+		return err
+	}
+
+	// Validate inheritance
+	err = ValidateSliceValues(opt.Inheritance, []string{"NONE", "INHERITED", "OVERRIDES"}, "Inheritance")
+	if err != nil {
+		return err
+	}
+
+	// Validate OWASP categories
+	owaspCategories := []string{"a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10"}
+
+	err = ValidateSliceValues(opt.OwaspTop10, owaspCategories, "OwaspTop10")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateSliceValues(opt.OwaspTop102021, owaspCategories, "OwaspTop102021")
+	if err != nil {
+		return err
+	}
+
+	// Validate OWASP Mobile Top 10
+	owaspMobileCategories := []string{"m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10"}
+
+	err = ValidateSliceValues(opt.OwaspMobileTop102024, owaspMobileCategories, "OwaspMobileTop102024")
+	if err != nil {
+		return err
+	}
+
+	// Validate SANS Top 25
+	err = ValidateSliceValues(opt.SansTop25, []string{"insecure-interaction", "risky-resource", "porous-defenses"}, "SansTop25")
+	if err != nil {
+		return err
+	}
+
+	// Validate statuses
+	err = ValidateSliceValues(opt.Statuses, []string{"READY", "DEPRECATED", "REMOVED", "BETA"}, "Statuses")
+	if err != nil {
+		return err
+	}
+
+	// Validate types
+	err = ValidateSliceValues(opt.Types, []string{"CODE_SMELL", "BUG", "VULNERABILITY", "SECURITY_HOTSPOT"}, "Types")
+	if err != nil {
+		return err
+	}
+
+	// Validate sort field
+	if opt.Sort != "" {
+		allowed := []string{"key", "name", "createdAt", "updatedAt"}
+
+		err = ValidateInSlice(opt.Sort, allowed, "Sort")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ValidateShowOpt validates the options for showing a specific rule.
+func (s *RulesService) ValidateShowOpt(opt *RulesShowOption) error {
+	if opt == nil {
+		return NewValidationError("RulesShowOption", "cannot be nil", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.Key, "Key")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateTagsOpt validates the options for listing rule tags.
+func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOption) error {
+	if opt == nil {
+		return nil
+	}
+
+	// Validate page size
+	if opt.PageSize != 0 && (opt.PageSize < 1 || opt.PageSize > 500) {
+		return NewValidationError("PageSize", "must be between 1 and 500", ErrOutOfRange)
+	}
+
+	return nil
+}
+
+// ValidateUpdateOpt validates the options for updating a rule.
+//
+//nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
+func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
+	if opt == nil {
+		return NewValidationError("RulesUpdateOption", "cannot be nil", ErrMissingRequired)
+	}
+
+	// Required field
+	err := ValidateRequired(opt.Key, "Key")
+	if err != nil {
+		return err
+	}
+
+	// Length validations
+	err = ValidateMaxLength(opt.Key, MaxRuleKeyLength, "Key")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.Name, MaxRuleKeyLength, "Name")
+	if err != nil {
+		return err
+	}
+
+	// Value validations
+	if opt.Severity != "" {
+		allowed := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
+
+		err = ValidateInSlice(opt.Severity, allowed, "Severity")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.Status != "" {
+		allowed := []string{"READY", "DEPRECATED", "REMOVED", "BETA"}
+
+		err = ValidateInSlice(opt.Status, allowed, "Status")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.RemediationFnType != "" {
+		allowed := []string{"LINEAR", "CONSTANT", "LINEAR_OFFSET"}
+
+		err = ValidateInSlice(opt.RemediationFnType, allowed, "RemediationFnType")
+		if err != nil {
+			return err
+		}
+	}
+
+	// Validate Impacts map
+	if len(opt.Impacts) > 0 {
+		allowedKeys := []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}
+
+		err = ValidateMapKeys(opt.Impacts, allowedKeys, "Impacts")
+		if err != nil {
+			return err
+		}
+
+		allowedValues := []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}
+
+		err = ValidateMapValues(opt.Impacts, allowedValues, "Impacts")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// convertCreateOptForURL converts RulesCreateOption to a URL-encodable format.
+func (s *RulesService) convertCreateOptForURL(opt *RulesCreateOption) *rulesCreateURLOption {
+	//nolint:exhaustruct // Only populate fields that have values
+	urlOpt := &rulesCreateURLOption{
+		CleanCodeAttribute:  opt.CleanCodeAttribute,
+		CustomKey:           opt.CustomKey,
+		MarkdownDescription: opt.MarkdownDescription,
+		Name:                opt.Name,
+		PreventReactivation: opt.PreventReactivation,
+		Severity:            opt.Severity,
+		Status:              opt.Status,
+		TemplateKey:         opt.TemplateKey,
+		Type:                opt.Type,
+	}
+
+	// Convert maps to semicolon-separated strings
+	if len(opt.Impacts) > 0 {
+		urlOpt.Impacts = MapToSeparatedString(opt.Impacts, ";", "=")
+	}
+
+	if len(opt.Params) > 0 {
+		urlOpt.Params = MapToSeparatedString(opt.Params, ";", "=")
+	}
+
+	return urlOpt
+}
+
+// rulesCreateURLOption is the URL-encodable version of RulesCreateOption.
+type rulesCreateURLOption struct {
+	CleanCodeAttribute  string `url:"cleanCodeAttribute,omitempty"`
+	CustomKey           string `url:"customKey,omitempty"`
+	Impacts             string `url:"impacts,omitempty"`
+	MarkdownDescription string `url:"markdownDescription,omitempty"`
+	Name                string `url:"name,omitempty"`
+	Params              string `url:"params,omitempty"`
+	PreventReactivation string `url:"preventReactivation,omitempty"`
+	Severity            string `url:"severity,omitempty"`
+	Status              string `url:"status,omitempty"`
+	TemplateKey         string `url:"templateKey,omitempty"`
+	Type                string `url:"type,omitempty"`
+}
+
 // convertUpdateOptForURL converts RulesUpdateOption to a URL-encodable format.
 func (s *RulesService) convertUpdateOptForURL(opt *RulesUpdateOption) *rulesUpdateURLOption {
+	//nolint:exhaustruct // Only populate fields that have values
 	urlOpt := &rulesUpdateURLOption{
 		Key:                        opt.Key,
 		MarkdownDescription:        opt.MarkdownDescription,
@@ -889,6 +1120,7 @@ func (s *RulesService) convertUpdateOptForURL(opt *RulesUpdateOption) *rulesUpda
 	if len(opt.Impacts) > 0 {
 		urlOpt.Impacts = MapToSeparatedString(opt.Impacts, ";", "=")
 	}
+
 	if len(opt.Params) > 0 {
 		urlOpt.Params = MapToSeparatedString(opt.Params, ";", "=")
 	}
@@ -917,276 +1149,157 @@ type rulesUpdateURLOption struct {
 	Tags                       string `url:"tags,omitempty"`
 }
 
-// ValidateCreateOpt validates the options for creating a custom rule.
-func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOption) error {
-	if opt == nil {
-		return NewValidationError("RulesCreateOption", "cannot be nil", ErrMissingRequired)
-	}
-
-	// Required fields
-	if err := ValidateRequired(opt.CustomKey, "CustomKey"); err != nil {
-		return err
-	}
-	if err := ValidateRequired(opt.MarkdownDescription, "MarkdownDescription"); err != nil {
-		return err
-	}
-	if err := ValidateRequired(opt.Name, "Name"); err != nil {
-		return err
-	}
-	if err := ValidateRequired(opt.TemplateKey, "TemplateKey"); err != nil {
-		return err
-	}
-
-	// Length validations
-	if err := ValidateMaxLength(opt.CustomKey, 200, "CustomKey"); err != nil {
-		return err
-	}
-	if err := ValidateMaxLength(opt.Name, 200, "Name"); err != nil {
-		return err
-	}
-
-	// Value validations
-	if opt.CleanCodeAttribute != "" {
-		allowed := []string{"CONVENTIONAL", "FORMATTED", "IDENTIFIABLE", "CLEAR", "COMPLETE", "EFFICIENT",
-			"LOGICAL", "DISTINCT", "FOCUSED", "MODULAR", "TESTED", "LAWFUL", "RESPECTFUL", "TRUSTWORTHY"}
-		if err := ValidateInSlice(opt.CleanCodeAttribute, allowed, "CleanCodeAttribute"); err != nil {
-			return err
-		}
-	}
-
-	if opt.Severity != "" {
-		allowed := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
-		if err := ValidateInSlice(opt.Severity, allowed, "Severity"); err != nil {
-			return err
-		}
-	}
-
-	if opt.Status != "" {
-		allowed := []string{"READY", "DEPRECATED", "BETA"}
-		if err := ValidateInSlice(opt.Status, allowed, "Status"); err != nil {
-			return err
-		}
-	}
-
-	if opt.Type != "" {
-		allowed := []string{"CODE_SMELL", "BUG", "VULNERABILITY", "SECURITY_HOTSPOT"}
-		if err := ValidateInSlice(opt.Type, allowed, "Type"); err != nil {
-			return err
-		}
-	}
-
-	// Validate Impacts map
-	if len(opt.Impacts) > 0 {
-		allowedKeys := []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}
-		if err := ValidateMapKeys(opt.Impacts, allowedKeys, "Impacts"); err != nil {
-			return err
-		}
-		allowedValues := []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}
-		if err := ValidateMapValues(opt.Impacts, allowedValues, "Impacts"); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ValidateDeleteOpt validates the options for deleting a custom rule.
-func (s *RulesService) ValidateDeleteOpt(opt *RulesDeleteOption) error {
-	if opt == nil {
-		return NewValidationError("RulesDeleteOption", "cannot be nil", ErrMissingRequired)
-	}
-	if err := ValidateRequired(opt.Key, "Key"); err != nil {
-		return err
-	}
-	return nil
-}
-
-// ValidateListOpt validates the options for listing rules.
-func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
+// convertSearchOptForURL converts RulesSearchOption to a URL-encodable format.
+//
+//nolint:cyclop,funlen // Conversion functions need to handle many optional fields
+func (s *RulesService) convertSearchOptForURL(opt *RulesSearchOption) *rulesSearchURLOption {
 	if opt == nil {
 		return nil
 	}
 
-	if opt.Sort != "" {
-		allowed := []string{"createdAt"}
-		if err := ValidateInSlice(opt.Sort, allowed, "Sort"); err != nil {
-			return err
-		}
+	//nolint:exhaustruct // Only populate fields that have values
+	urlOpt := &rulesSearchURLOption{
+		Page:             opt.Page,
+		PageSize:         opt.PageSize,
+		Activation:       opt.Activation,
+		Asc:              opt.Asc,
+		AvailableSince:   opt.AvailableSince,
+		CompareToProfile: opt.CompareToProfile,
+		IncludeExternal:  opt.IncludeExternal,
+		IsTemplate:       opt.IsTemplate,
+		PrioritizedRule:  opt.PrioritizedRule,
+		Q:                opt.Q,
+		Qprofile:         opt.Qprofile,
+		RuleKey:          opt.RuleKey,
+		Sort:             opt.Sort,
+		TemplateKey:      opt.TemplateKey,
 	}
 
-	return nil
+	// Convert all slices to comma-separated strings
+	if len(opt.ActiveImpactSeverities) > 0 {
+		urlOpt.ActiveImpactSeverities = ListToSeparatedString(opt.ActiveImpactSeverities, ",")
+	}
+
+	if len(opt.ActiveSeverities) > 0 {
+		urlOpt.ActiveSeverities = ListToSeparatedString(opt.ActiveSeverities, ",")
+	}
+
+	if len(opt.CleanCodeAttributeCategories) > 0 {
+		urlOpt.CleanCodeAttributeCategories = ListToSeparatedString(opt.CleanCodeAttributeCategories, ",")
+	}
+
+	if len(opt.ComplianceStandards) > 0 {
+		urlOpt.ComplianceStandards = ListToSeparatedString(opt.ComplianceStandards, ",")
+	}
+
+	if len(opt.Cwe) > 0 {
+		urlOpt.Cwe = ListToSeparatedString(opt.Cwe, ",")
+	}
+
+	if len(opt.Fields) > 0 {
+		urlOpt.Fields = ListToSeparatedString(opt.Fields, ",")
+	}
+
+	if len(opt.Facets) > 0 {
+		urlOpt.Facets = ListToSeparatedString(opt.Facets, ",")
+	}
+
+	if len(opt.ImpactSeverities) > 0 {
+		urlOpt.ImpactSeverities = ListToSeparatedString(opt.ImpactSeverities, ",")
+	}
+
+	if len(opt.ImpactSoftwareQualities) > 0 {
+		urlOpt.ImpactSoftwareQualities = ListToSeparatedString(opt.ImpactSoftwareQualities, ",")
+	}
+
+	if len(opt.Inheritance) > 0 {
+		urlOpt.Inheritance = ListToSeparatedString(opt.Inheritance, ",")
+	}
+
+	if len(opt.Languages) > 0 {
+		urlOpt.Languages = ListToSeparatedString(opt.Languages, ",")
+	}
+
+	if len(opt.OwaspMobileTop102024) > 0 {
+		urlOpt.OwaspMobileTop102024 = ListToSeparatedString(opt.OwaspMobileTop102024, ",")
+	}
+
+	if len(opt.OwaspTop10) > 0 {
+		urlOpt.OwaspTop10 = ListToSeparatedString(opt.OwaspTop10, ",")
+	}
+
+	if len(opt.OwaspTop102021) > 0 {
+		urlOpt.OwaspTop102021 = ListToSeparatedString(opt.OwaspTop102021, ",")
+	}
+
+	if len(opt.Repositories) > 0 {
+		urlOpt.Repositories = ListToSeparatedString(opt.Repositories, ",")
+	}
+
+	if len(opt.SansTop25) > 0 {
+		urlOpt.SansTop25 = ListToSeparatedString(opt.SansTop25, ",")
+	}
+
+	if len(opt.Severities) > 0 {
+		urlOpt.Severities = ListToSeparatedString(opt.Severities, ",")
+	}
+
+	if len(opt.SonarsourceSecurity) > 0 {
+		urlOpt.SonarsourceSecurity = ListToSeparatedString(opt.SonarsourceSecurity, ",")
+	}
+
+	if len(opt.Statuses) > 0 {
+		urlOpt.Statuses = ListToSeparatedString(opt.Statuses, ",")
+	}
+
+	if len(opt.Tags) > 0 {
+		urlOpt.Tags = ListToSeparatedString(opt.Tags, ",")
+	}
+
+	if len(opt.Types) > 0 {
+		urlOpt.Types = ListToSeparatedString(opt.Types, ",")
+	}
+
+	return urlOpt
 }
 
-// ValidateRepositoriesOpt validates the options for listing rule repositories.
-func (s *RulesService) ValidateRepositoriesOpt(opt *RulesRepositoriesOption) error {
-	// No specific validations needed for this endpoint
-	return nil
-}
-
-// ValidateSearchOpt validates the options for searching rules.
-func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOption) error {
-	if opt == nil {
-		return nil
-	}
-
-	// Validate pagination
-	if err := opt.PaginationArgs.Validate(); err != nil {
-		return err
-	}
-
-	// Validate Q minimum length
-	if err := ValidateMinLength(opt.Q, 2, "Q"); err != nil {
-		return err
-	}
-
-	// Validate severity values
-	severityValues := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
-	if err := ValidateSliceValues(opt.ActiveImpactSeverities, []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}, "ActiveImpactSeverities"); err != nil {
-		return err
-	}
-	if err := ValidateSliceValues(opt.ActiveSeverities, severityValues, "ActiveSeverities"); err != nil {
-		return err
-	}
-	if err := ValidateSliceValues(opt.Severities, severityValues, "Severities"); err != nil {
-		return err
-	}
-	if err := ValidateSliceValues(opt.ImpactSeverities, []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}, "ImpactSeverities"); err != nil {
-		return err
-	}
-
-	// Validate clean code attribute categories
-	if err := ValidateSliceValues(opt.CleanCodeAttributeCategories, []string{"ADAPTABLE", "CONSISTENT", "INTENTIONAL", "RESPONSIBLE"}, "CleanCodeAttributeCategories"); err != nil {
-		return err
-	}
-
-	// Validate impact software qualities
-	if err := ValidateSliceValues(opt.ImpactSoftwareQualities, []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}, "ImpactSoftwareQualities"); err != nil {
-		return err
-	}
-
-	// Validate inheritance
-	if err := ValidateSliceValues(opt.Inheritance, []string{"NONE", "INHERITED", "OVERRIDES"}, "Inheritance"); err != nil {
-		return err
-	}
-
-	// Validate OWASP categories
-	owaspCategories := []string{"a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10"}
-	if err := ValidateSliceValues(opt.OwaspTop10, owaspCategories, "OwaspTop10"); err != nil {
-		return err
-	}
-	if err := ValidateSliceValues(opt.OwaspTop102021, owaspCategories, "OwaspTop102021"); err != nil {
-		return err
-	}
-
-	// Validate OWASP Mobile Top 10
-	owaspMobileCategories := []string{"m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10"}
-	if err := ValidateSliceValues(opt.OwaspMobileTop102024, owaspMobileCategories, "OwaspMobileTop102024"); err != nil {
-		return err
-	}
-
-	// Validate SANS Top 25
-	if err := ValidateSliceValues(opt.SansTop25, []string{"insecure-interaction", "risky-resource", "porous-defenses"}, "SansTop25"); err != nil {
-		return err
-	}
-
-	// Validate statuses
-	if err := ValidateSliceValues(opt.Statuses, []string{"READY", "DEPRECATED", "REMOVED", "BETA"}, "Statuses"); err != nil {
-		return err
-	}
-
-	// Validate types
-	if err := ValidateSliceValues(opt.Types, []string{"CODE_SMELL", "BUG", "VULNERABILITY", "SECURITY_HOTSPOT"}, "Types"); err != nil {
-		return err
-	}
-
-	// Validate sort field
-	if opt.Sort != "" {
-		allowed := []string{"key", "name", "createdAt", "updatedAt"}
-		if err := ValidateInSlice(opt.Sort, allowed, "Sort"); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ValidateShowOpt validates the options for showing a specific rule.
-func (s *RulesService) ValidateShowOpt(opt *RulesShowOption) error {
-	if opt == nil {
-		return NewValidationError("RulesShowOption", "cannot be nil", ErrMissingRequired)
-	}
-	if err := ValidateRequired(opt.Key, "Key"); err != nil {
-		return err
-	}
-	return nil
-}
-
-// ValidateTagsOpt validates the options for listing rule tags.
-func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOption) error {
-	if opt == nil {
-		return nil
-	}
-
-	// Validate page size
-	if opt.PageSize != 0 && (opt.PageSize < 1 || opt.PageSize > 500) {
-		return NewValidationError("PageSize", "must be between 1 and 500", ErrOutOfRange)
-	}
-
-	return nil
-}
-
-// ValidateUpdateOpt validates the options for updating a rule.
-func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
-	if opt == nil {
-		return NewValidationError("RulesUpdateOption", "cannot be nil", ErrMissingRequired)
-	}
-
-	// Required field
-	if err := ValidateRequired(opt.Key, "Key"); err != nil {
-		return err
-	}
-
-	// Length validations
-	if err := ValidateMaxLength(opt.Key, 200, "Key"); err != nil {
-		return err
-	}
-	if err := ValidateMaxLength(opt.Name, 200, "Name"); err != nil {
-		return err
-	}
-
-	// Value validations
-	if opt.Severity != "" {
-		allowed := []string{"INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"}
-		if err := ValidateInSlice(opt.Severity, allowed, "Severity"); err != nil {
-			return err
-		}
-	}
-
-	if opt.Status != "" {
-		allowed := []string{"READY", "DEPRECATED", "REMOVED", "BETA"}
-		if err := ValidateInSlice(opt.Status, allowed, "Status"); err != nil {
-			return err
-		}
-	}
-
-	if opt.RemediationFnType != "" {
-		allowed := []string{"LINEAR", "CONSTANT", "LINEAR_OFFSET"}
-		if err := ValidateInSlice(opt.RemediationFnType, allowed, "RemediationFnType"); err != nil {
-			return err
-		}
-	}
-
-	// Validate Impacts map
-	if len(opt.Impacts) > 0 {
-		allowedKeys := []string{"MAINTAINABILITY", "RELIABILITY", "SECURITY"}
-		if err := ValidateMapKeys(opt.Impacts, allowedKeys, "Impacts"); err != nil {
-			return err
-		}
-		allowedValues := []string{"INFO", "LOW", "MEDIUM", "HIGH", "BLOCKER"}
-		if err := ValidateMapValues(opt.Impacts, allowedValues, "Impacts"); err != nil {
-			return err
-		}
-	}
-
-	return nil
+// rulesSearchURLOption is the URL-encodable version of RulesSearchOption.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order
+type rulesSearchURLOption struct {
+	Page                         int64  `url:"p,omitempty"`
+	PageSize                     int64  `url:"ps,omitempty"`
+	Activation                   bool   `url:"activation,omitempty"`
+	ActiveImpactSeverities       string `url:"active_impactSeverities,omitempty"`
+	ActiveSeverities             string `url:"active_severities,omitempty"`
+	Asc                          bool   `url:"asc,omitempty"`
+	AvailableSince               string `url:"available_since,omitempty"`
+	CleanCodeAttributeCategories string `url:"cleanCodeAttributeCategories,omitempty"`
+	CompareToProfile             string `url:"compareToProfile,omitempty"`
+	ComplianceStandards          string `url:"complianceStandards,omitempty"`
+	Cwe                          string `url:"cwe,omitempty"`
+	Fields                       string `url:"f,omitempty"`
+	Facets                       string `url:"facets,omitempty"`
+	ImpactSeverities             string `url:"impactSeverities,omitempty"`
+	ImpactSoftwareQualities      string `url:"impactSoftwareQualities,omitempty"`
+	IncludeExternal              bool   `url:"include_external,omitempty"`
+	Inheritance                  string `url:"inheritance,omitempty"`
+	IsTemplate                   bool   `url:"is_template,omitempty"`
+	Languages                    string `url:"languages,omitempty"`
+	OwaspMobileTop102024         string `url:"owaspMobileTop10-2024,omitempty"`
+	OwaspTop10                   string `url:"owaspTop10,omitempty"`
+	OwaspTop102021               string `url:"owaspTop10-2021,omitempty"`
+	PrioritizedRule              bool   `url:"prioritizedRule,omitempty"`
+	Q                            string `url:"q,omitempty"`
+	Qprofile                     string `url:"qprofile,omitempty"`
+	Repositories                 string `url:"repositories,omitempty"`
+	RuleKey                      string `url:"rule_key,omitempty"`
+	Sort                         string `url:"s,omitempty"`
+	SansTop25                    string `url:"sansTop25,omitempty"`
+	Severities                   string `url:"severities,omitempty"`
+	SonarsourceSecurity          string `url:"sonarsourceSecurity,omitempty"`
+	Statuses                     string `url:"statuses,omitempty"`
+	Tags                         string `url:"tags,omitempty"`
+	TemplateKey                  string `url:"template_key,omitempty"`
+	Types                        string `url:"types,omitempty"`
 }
