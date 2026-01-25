@@ -295,6 +295,15 @@ func (gen *Generator) isManualService(serviceName string) bool {
 		"languages",
 		"developers",
 		"github_provisioning",
+		"analysis_cache",
+		"dismiss_message",
+		"project_tags",
+		"duplications",
+		"authentication",
+		"project_dump",
+		"metrics",
+		"favorites",
+		"notifications",
 	}
 
 	return slices.Contains(manualServices, serviceName)

@@ -332,7 +332,11 @@ func TestRules_List(t *testing.T) {
 		t.Fatalf("failed to create client: %v", err)
 	}
 
-	opt := &RulesListOption{PageSize: "50"}
+	opt := &RulesListOption{
+		PaginationArgs: PaginationArgs{
+			PageSize: 50,
+		},
+	}
 	_, resp, err := client.Rules.List(opt)
 	if err != nil {
 		t.Fatalf("List failed: %v", err)
