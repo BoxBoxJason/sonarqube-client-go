@@ -11,14 +11,6 @@ type MonitoringService struct {
 }
 
 // -----------------------------------------------------------------------------
-// Response Types
-// -----------------------------------------------------------------------------
-
-// MonitoringMetrics represents the response from the monitoring metrics endpoint.
-// The content is a string containing metrics in Prometheus format.
-type MonitoringMetrics string
-
-// -----------------------------------------------------------------------------
 // Service Methods
 // -----------------------------------------------------------------------------
 
@@ -29,18 +21,18 @@ type MonitoringMetrics string
 //
 // API endpoint: GET /api/monitoring/metrics.
 // Since: 9.3.
-func (s *MonitoringService) Metrics() (*MonitoringMetrics, *http.Response, error) {
+func (s *MonitoringService) Metrics() (*string, *http.Response, error) {
 	req, err := s.client.NewRequest(http.MethodGet, "monitoring/metrics", nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	result := new(MonitoringMetrics)
+	var metrics string
 
-	resp, err := s.client.Do(req, result)
+	resp, err := s.client.Do(req, &metrics)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return result, resp, nil
+	return &metrics, resp, nil
 }

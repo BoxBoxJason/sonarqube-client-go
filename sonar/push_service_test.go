@@ -33,17 +33,13 @@ func TestPush_SonarlintEvents(t *testing.T) {
 		ProjectKeys: []string{"my-project"},
 	}
 
-	result, resp, err := client.Push.SonarlintEvents(opt)
+	resp, err := client.Push.SonarlintEvents(opt)
 	if err != nil {
 		t.Fatalf("SonarlintEvents failed: %v", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
 	}
 }
 
@@ -53,7 +49,7 @@ func TestPush_SonarlintEvents_ValidationError_NilOption(t *testing.T) {
 		t.Fatalf("failed to create client: %v", err)
 	}
 
-	_, _, err = client.Push.SonarlintEvents(nil)
+	_, err = client.Push.SonarlintEvents(nil)
 	if err == nil {
 		t.Fatal("expected error for nil option")
 	}
@@ -74,7 +70,7 @@ func TestPush_SonarlintEvents_ValidationError_MissingLanguages(t *testing.T) {
 		ProjectKeys: []string{"my-project"},
 	}
 
-	_, _, err = client.Push.SonarlintEvents(opt)
+	_, err = client.Push.SonarlintEvents(opt)
 	if err == nil {
 		t.Fatal("expected error for missing Languages")
 	}
@@ -99,7 +95,7 @@ func TestPush_SonarlintEvents_ValidationError_MissingProjectKeys(t *testing.T) {
 		Languages: []string{"java"},
 	}
 
-	_, _, err = client.Push.SonarlintEvents(opt)
+	_, err = client.Push.SonarlintEvents(opt)
 	if err == nil {
 		t.Fatal("expected error for missing ProjectKeys")
 	}

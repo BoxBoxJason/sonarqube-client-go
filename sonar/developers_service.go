@@ -38,11 +38,11 @@ type DeveloperEvent struct {
 
 // DevelopersSearchEventsOption contains parameters for the SearchEvents method.
 type DevelopersSearchEventsOption struct {
-	// From is a comma-separated list of datetimes.
+	// From is a list of datetimes.
 	// Filter events created after the given date (exclusive).
 	// This field is required.
 	From []string `url:"from,comma"`
-	// Projects is a comma-separated list of project keys to search notifications for.
+	// Projects is a list of project keys to search notifications for.
 	// This field is required.
 	Projects []string `url:"projects,comma"`
 }

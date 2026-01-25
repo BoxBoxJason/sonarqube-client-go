@@ -7,8 +7,10 @@ import (
 )
 
 func TestMonitoring_Metrics(t *testing.T) {
-	// Prometheus-format metrics with escaped newlines for JSON encoding
-	metricsContent := `"# HELP sonarqube_health Health check status\\n# TYPE sonarqube_health gauge\\nsonarqube_health 1"`
+	// Prometheus-format metrics
+	metricsContent := `# HELP sonarqube_health Health check status
+# TYPE sonarqube_health gauge
+sonarqube_health 1`
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
@@ -19,8 +21,8 @@ func TestMonitoring_Metrics(t *testing.T) {
 			t.Errorf("expected path /api/monitoring/metrics, got %s", r.URL.Path)
 		}
 
-		// Return as JSON-encoded string since the client decodes the response
-		w.Header().Set("Content-Type", "application/json")
+		// Return as plain text since the endpoint returns Prometheus metrics
+		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(metricsContent))
 	}))

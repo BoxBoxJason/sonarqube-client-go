@@ -1,6 +1,9 @@
 package sonargo
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 // PushService handles communication with the server-side events related methods
 // of the SonarQube API.
@@ -25,10 +28,10 @@ type SonarlintEvents struct{}
 
 // PushSonarlintEventsOption contains parameters for the SonarlintEvents method.
 type PushSonarlintEventsOption struct {
-	// Languages is a comma-separated list of languages for which events will be delivered.
+	// Languages is a list of languages for which events will be delivered.
 	// This field is required.
 	Languages []string `url:"languages,comma"`
-	// ProjectKeys is a comma-separated list of project keys for which events will be delivered.
+	// ProjectKeys is a list of project keys for which events will be delivered.
 	// This field is required.
 	ProjectKeys []string `url:"projectKeys,comma"`
 }
@@ -60,26 +63,32 @@ func (s *PushService) ValidateSonarlintEventsOpt(opt *PushSonarlintEventsOption)
 
 // SonarlintEvents provides an endpoint for listening to server-side events.
 // Currently, it notifies listeners about changes to the activation of a rule.
+// The response body is left open for streaming events. The caller is responsible
+// for reading from resp.Body (e.g., using an event stream parser) and closing
+// the response body when finished.
 //
 // API endpoint: GET /api/push/sonarlint_events.
-// Since: 9.4 (internal).
-func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (*SonarlintEvents, *http.Response, error) {
+// WARNING: This is an internal API and may change without notice.
+func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (*http.Response, error) {
 	err := s.ValidateSonarlintEventsOpt(opt)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	req, err := s.client.NewRequest(http.MethodGet, "push/sonarlint_events", opt)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	result := new(SonarlintEvents)
-
-	resp, err := s.client.Do(req, result)
+	resp, err := s.client.httpClient.Do(req)
 	if err != nil {
-		return nil, resp, err
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
 	}
 
-	return result, resp, nil
+	err = CheckResponse(resp)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
