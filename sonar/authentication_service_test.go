@@ -26,7 +26,7 @@ func TestAuthentication_Login(t *testing.T) {
 			t.Errorf("expected password 'secret', got %s", password)
 		}
 
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusNoContent)
 	}))
 	defer ts.Close()
 
@@ -45,8 +45,8 @@ func TestAuthentication_Login(t *testing.T) {
 		t.Fatalf("Login failed: %v", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
 	}
 }
 

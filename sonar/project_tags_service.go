@@ -49,7 +49,16 @@ type ProjectTagsSetOption struct {
 
 // ValidateSearchOpt validates the options for the Search method.
 func (s *ProjectTagsService) ValidateSearchOpt(opt *ProjectTagsSearchOption) error {
-	// No required fields
+	if opt == nil {
+		// Options are optional; nothing to validate.
+		return nil
+	}
+	// Validate pagination arguments (embedded via PaginationArgs).
+	err := opt.Validate()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

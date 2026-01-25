@@ -1,6 +1,9 @@
 package sonargo
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 // AnalysisCacheService handles communication with the analysis cache related methods
 // of the SonarQube API.
@@ -9,14 +12,6 @@ type AnalysisCacheService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
 }
-
-// -----------------------------------------------------------------------------
-// Response Types
-// -----------------------------------------------------------------------------
-
-// AnalysisCacheData represents the cached data returned by the Get method.
-// The actual content is binary/gzipped data that should be handled accordingly.
-type AnalysisCacheData struct{}
 
 // -----------------------------------------------------------------------------
 // Option Types
@@ -28,7 +23,7 @@ type AnalysisCacheClearOption struct {
 	// The 'Project' parameter must be set when using this.
 	Branch string `url:"branch,omitempty"`
 	// Project filters which project's cached data will be cleared.
-	Project string `url:"project,omitempty"`
+	Project string `url:"project"`
 }
 
 // AnalysisCacheGetOption contains parameters for the Get method.
@@ -47,7 +42,11 @@ type AnalysisCacheGetOption struct {
 // ValidateClearOpt validates the options for the Clear method.
 // Currently, there are no required fields.
 func (s *AnalysisCacheService) ValidateClearOpt(opt *AnalysisCacheClearOption) error {
-	// No required fields
+	// When filtering by branch, Project must be set as documented.
+	if opt != nil && opt.Branch != "" && opt.Project == "" {
+		return NewValidationError("Project", "Project must be set when Branch is specified", ErrMissingRequired)
+	}
+
 	return nil
 }
 
@@ -98,25 +97,29 @@ func (s *AnalysisCacheService) Clear(opt *AnalysisCacheClearOption) (*http.Respo
 // Get returns the scanner's cached data for a branch.
 // Requires scan permission on the project.
 // Data is returned gzipped if the corresponding 'Accept-Encoding' header is set in the request.
+// The response body contains the raw binary data; the caller is responsible for reading and closing it.
 //
 // API endpoint: GET /api/analysis_cache/get.
-func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (*AnalysisCacheData, *http.Response, error) {
+func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (*http.Response, error) {
 	err := s.ValidateGetOpt(opt)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	req, err := s.client.NewRequest(http.MethodGet, "analysis_cache/get", opt)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	result := new(AnalysisCacheData)
-
-	resp, err := s.client.Do(req, result)
+	resp, err := s.client.httpClient.Do(req)
 	if err != nil {
-		return nil, resp, err
+		return nil, fmt.Errorf("failed to perform HTTP request: %w", err)
 	}
 
-	return result, resp, nil
+	err = CheckResponse(resp)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }

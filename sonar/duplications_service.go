@@ -59,13 +59,13 @@ type DuplicatedFile struct {
 // DuplicationsShowOption contains parameters for the Show method.
 type DuplicationsShowOption struct {
 	// Branch key.
-	// WARNING: This parameters is internal and may change without notice.
+	// WARNING: This parameter is internal and may change without notice.
 	Branch string `url:"branch,omitempty"`
 	// Key is the file key.
 	// This field is required.
 	Key string `url:"key"`
 	// PullRequest is the pull request id.
-	// WARNING: This parameters is internal and may change without notice.
+	// WARNING: This parameter is internal and may change without notice.
 	PullRequest string `url:"pullRequest,omitempty"`
 }
 

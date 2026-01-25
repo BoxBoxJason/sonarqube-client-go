@@ -1,6 +1,8 @@
 package sonargo
 
 import (
+	"bytes"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -72,6 +74,9 @@ func TestAnalysisCache_Clear_WithOptions(t *testing.T) {
 }
 
 func TestAnalysisCache_Get(t *testing.T) {
+	// Mock binary data
+	mockData := []byte("mock cached data")
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			t.Errorf("expected method GET, got %s", r.Method)
@@ -81,9 +86,9 @@ func TestAnalysisCache_Get(t *testing.T) {
 			t.Errorf("expected path /api/analysis_cache/get, got %s", r.URL.Path)
 		}
 
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{}`))
+		_, _ = w.Write(mockData)
 	}))
 	defer ts.Close()
 
@@ -96,7 +101,7 @@ func TestAnalysisCache_Get(t *testing.T) {
 		Project: "my-project",
 	}
 
-	result, resp, err := client.AnalysisCache.Get(opt)
+	resp, err := client.AnalysisCache.Get(opt)
 	if err != nil {
 		t.Fatalf("Get failed: %v", err)
 	}
@@ -105,12 +110,22 @@ func TestAnalysisCache_Get(t *testing.T) {
 		t.Errorf("expected status 200, got %d", resp.StatusCode)
 	}
 
-	if result == nil {
-		t.Fatal("expected non-nil result")
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("failed to read response body: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if !bytes.Equal(body, mockData) {
+		t.Errorf("expected body %q, got %q", mockData, body)
 	}
 }
 
 func TestAnalysisCache_Get_WithOptions(t *testing.T) {
+	// Mock binary data
+	mockData := []byte("mock cached data with options")
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		project := r.URL.Query().Get("project")
 		if project != "my-project" {
@@ -122,9 +137,9 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 			t.Errorf("expected branch 'main', got %s", branch)
 		}
 
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{}`))
+		_, _ = w.Write(mockData)
 	}))
 	defer ts.Close()
 
@@ -138,7 +153,7 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 		Branch:  "main",
 	}
 
-	result, resp, err := client.AnalysisCache.Get(opt)
+	resp, err := client.AnalysisCache.Get(opt)
 	if err != nil {
 		t.Fatalf("Get failed: %v", err)
 	}
@@ -147,8 +162,15 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 		t.Errorf("expected status 200, got %d", resp.StatusCode)
 	}
 
-	if result == nil {
-		t.Fatal("expected non-nil result")
+	// Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("failed to read response body: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if !bytes.Equal(body, mockData) {
+		t.Errorf("expected body %q, got %q", mockData, body)
 	}
 }
 
