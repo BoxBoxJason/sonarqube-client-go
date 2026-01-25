@@ -5,6 +5,15 @@ const (
 	MaxPageSize = 500
 	// MinPageSize is the minimum allowed page size for pagination.
 	MinPageSize = 1
+
+	// MaxLinkNameLength is the maximum length for a project link name.
+	MaxLinkNameLength = 128
+	// MaxLinkURLLength is the maximum length for a project link URL.
+	MaxLinkURLLength = 2048
+	// MaxTokenNameLength is the maximum length for a user token name.
+	MaxTokenNameLength = 100
+	// MaxBranchNameLength is the maximum length for a branch name.
+	MaxBranchNameLength = 255
 )
 
 //nolint:gochecknoglobals // these are constant sets of allowed values

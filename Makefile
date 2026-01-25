@@ -4,7 +4,7 @@ endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
 container_engine := docker
-sonarqube_version := 25.12.0.117093-community
+sonarqube_version := 26.1.0.118079-community
 
 .PHONY: setup.sonar clean generate test lint no-diff coverage
 
