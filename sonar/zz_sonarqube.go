@@ -69,7 +69,7 @@ func (c *Client) NewRequest(method, path string, opt interface{}) (*http.Request
 		return nil, err
 	}
 
-	if method == "POST" || method == "PUT" {
+	if method == http.MethodPost || method == http.MethodPut {
 		// SonarQube use RawQuery even method is POST
 		// bodyBytes, err := json.Marshal(opt)
 		// if err != nil {

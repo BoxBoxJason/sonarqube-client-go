@@ -354,61 +354,61 @@ type RulesSearchOption struct {
 	Activation bool `url:"activation,omitempty"`
 	// ActiveImpactSeverities filters by impact severity of rules in quality profiles.
 	// Allowed values: INFO, LOW, MEDIUM, HIGH, BLOCKER
-	ActiveImpactSeverities []string `url:"active_impactSeverities,omitempty"`
+	ActiveImpactSeverities []string `url:"active_impactSeverities,omitempty,comma"`
 	// ActiveSeverities filters by severity of rules in quality profiles.
 	// Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER
-	ActiveSeverities []string `url:"active_severities,omitempty"`
+	ActiveSeverities []string `url:"active_severities,omitempty,comma"`
 	// Asc indicates whether to sort results in ascending order.
 	Asc bool `url:"asc,omitempty"`
 	// AvailableSince filters rules added since the specified date (format: yyyy-MM-dd).
 	AvailableSince string `url:"available_since,omitempty"`
 	// CleanCodeAttributeCategories filters by clean code attribute categories.
 	// Allowed values: ADAPTABLE, CONSISTENT, INTENTIONAL, RESPONSIBLE
-	CleanCodeAttributeCategories []string `url:"cleanCodeAttributeCategories,omitempty"`
+	CleanCodeAttributeCategories []string `url:"cleanCodeAttributeCategories,omitempty,comma"`
 	// CompareToProfile is the key of the quality profile to compare against (internal parameter).
 	CompareToProfile string `url:"compareToProfile,omitempty"`
 	// ComplianceStandards filters by compliance standards.
-	ComplianceStandards []string `url:"complianceStandards,omitempty"`
+	ComplianceStandards []string `url:"complianceStandards,omitempty,comma"`
 	// Cwe filters by CWE identifiers. Use 'unknown' to select rules not associated with any CWE.
-	Cwe []string `url:"cwe,omitempty"`
+	Cwe []string `url:"cwe,omitempty,comma"`
 	// Fields specifies which fields to return in the response.
 	// Allowed values: actives, cleanCodeAttributeCategory, cleanCodeAttribute, createdAt, debtRemFn,
 	// defaultDebtRemFn, defaultRemFn, deprecatedKeys, descriptionSections, educationPrinciples,
 	// gapDescription, htmlDesc, htmlNote, internalKey, isExternal, isTemplate, lang, langName,
 	// mdDesc, mdNote, name, noteLogin, params, remFn, remFnOverloaded, repo, scope, severity,
 	// status, sysTags, tags, templateKey, updatedAt
-	Fields []string `url:"f,omitempty"`
+	Fields []string `url:"f,omitempty,comma"`
 	// Facets specifies which facets to compute and return.
 	// Allowed values: languages, repositories, tags, severities, active_severities, statuses, types,
 	// true, cwe, owaspTop10, owaspTop10-2021, owaspMobileTop10-2024, sansTop25, sonarsourceSecurity,
 	// cleanCodeAttributeCategories, impactSeverities, impactSoftwareQualities, active_impactSeverities,
 	// complianceStandards
-	Facets []string `url:"facets,omitempty"`
+	Facets []string `url:"facets,omitempty,comma"`
 	// ImpactSeverities filters by impact severity of rules.
 	// Allowed values: INFO, LOW, MEDIUM, HIGH, BLOCKER
-	ImpactSeverities []string `url:"impactSeverities,omitempty"`
+	ImpactSeverities []string `url:"impactSeverities,omitempty,comma"`
 	// ImpactSoftwareQualities filters by impact software quality of rules.
 	// Allowed values: MAINTAINABILITY, RELIABILITY, SECURITY
-	ImpactSoftwareQualities []string `url:"impactSoftwareQualities,omitempty"`
+	ImpactSoftwareQualities []string `url:"impactSoftwareQualities,omitempty,comma"`
 	// IncludeExternal determines whether to include external rules in the results.
 	IncludeExternal bool `url:"include_external,omitempty"`
 	// Inheritance filters by inheritance status within a quality profile.
 	// Used only if Activation parameter is set.
 	// Allowed values: NONE, INHERITED, OVERRIDES
-	Inheritance []string `url:"inheritance,omitempty"`
+	Inheritance []string `url:"inheritance,omitempty,comma"`
 	// IsTemplate filters rules based on whether they are templates.
 	IsTemplate bool `url:"is_template,omitempty"`
 	// Languages filters by programming languages.
-	Languages []string `url:"languages,omitempty"`
+	Languages []string `url:"languages,omitempty,comma"`
 	// OwaspMobileTop102024 filters by OWASP Mobile Top 10 - 2024 categories.
 	// Allowed values: m1, m2, m3, m4, m5, m6, m7, m8, m9, m10
-	OwaspMobileTop102024 []string `url:"owaspMobileTop10-2024,omitempty"`
+	OwaspMobileTop102024 []string `url:"owaspMobileTop10-2024,omitempty,comma"`
 	// OwaspTop10 filters by OWASP Top 10 2017 categories.
 	// Allowed values: a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
-	OwaspTop10 []string `url:"owaspTop10,omitempty"`
+	OwaspTop10 []string `url:"owaspTop10,omitempty,comma"`
 	// OwaspTop102021 filters by OWASP Top 10 2021 categories.
 	// Allowed values: a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
-	OwaspTop102021 []string `url:"owaspTop10-2021,omitempty"`
+	OwaspTop102021 []string `url:"owaspTop10-2021,omitempty,comma"`
 	// PrioritizedRule filters rules based on whether they are prioritized in the selected quality profile.
 	// If Qprofile is not set, this parameter is ignored.
 	PrioritizedRule bool `url:"prioritizedRule,omitempty"`
@@ -419,7 +419,7 @@ type RulesSearchOption struct {
 	// Only rules of the same language as this profile are returned.
 	Qprofile string `url:"qprofile,omitempty"`
 	// Repositories filters by rule repositories.
-	Repositories []string `url:"repositories,omitempty"`
+	Repositories []string `url:"repositories,omitempty,comma"`
 	// RuleKey is the unique identifier of a specific rule to search for.
 	RuleKey string `url:"rule_key,omitempty"`
 	// Sort specifies the sort field.
@@ -429,27 +429,27 @@ type RulesSearchOption struct {
 	// Allowed values: insecure-interaction, risky-resource, porous-defenses
 	//
 	// Deprecated: Since SonarQube 10.0
-	SansTop25 []string `url:"sansTop25,omitempty"`
+	SansTop25 []string `url:"sansTop25,omitempty,comma"`
 	// Severities filters by rule severities.
 	// Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER
-	Severities []string `url:"severities,omitempty"`
+	Severities []string `url:"severities,omitempty,comma"`
 	// SonarsourceSecurity filters by SonarSource security categories.
 	// Use 'others' to select rules not associated with any category.
 	// Allowed values: buffer-overflow, sql-injection, rce, object-injection, command-injection,
 	// path-traversal-injection, ldap-injection, xpath-injection, log-injection, xxe, xss, dos,
 	// ssrf, csrf, http-response-splitting, open-redirect, weak-cryptography, auth, insecure-conf,
 	// file-manipulation, encrypt-data, traceability, permission, others
-	SonarsourceSecurity []string `url:"sonarsourceSecurity,omitempty"`
+	SonarsourceSecurity []string `url:"sonarsourceSecurity,omitempty,comma"`
 	// Statuses filters by rule statuses.
 	// Allowed values: READY, DEPRECATED, REMOVED, BETA
-	Statuses []string `url:"statuses,omitempty"`
+	Statuses []string `url:"statuses,omitempty,comma"`
 	// Tags filters by rule tags (OR filter - rules having at least one of the tags will be returned).
-	Tags []string `url:"tags,omitempty"`
+	Tags []string `url:"tags,omitempty,comma"`
 	// TemplateKey filters custom rules based on the specified template key.
 	TemplateKey string `url:"template_key,omitempty"`
 	// Types filters by rule types (OR filter - rules matching at least one type will be returned).
 	// Allowed values: CODE_SMELL, BUG, VULNERABILITY, SECURITY_HOTSPOT
-	Types []string `url:"types,omitempty"`
+	Types []string `url:"types,omitempty,comma"`
 }
 
 // RulesShowOption contains options for showing a specific rule.
@@ -504,7 +504,7 @@ type RulesUpdateOption struct {
 	Status string `url:"status,omitempty"`
 	// Tags is a list of tags to associate with the rule.
 	// Use empty slice to remove current tags. Tags are not changed if parameter is not set.
-	Tags []string `url:"tags,omitempty"`
+	Tags []string `url:"tags,omitempty,comma"`
 }
 
 // App retrieves data required for rendering the 'Coding Rules' page.

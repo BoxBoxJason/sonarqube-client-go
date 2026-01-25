@@ -98,9 +98,6 @@ func (s *ComponentsService) ValidateSuggestionsOpt(opt *ComponentsSuggestionsOpt
 func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOption) error {
 	return nil
 }
-func (s *DevelopersService) ValidateSearchEventsOpt(opt *DevelopersSearchEventsOption) error {
-	return nil
-}
 func (s *DismissMessageService) ValidateCheckOpt(opt *DismissMessageCheckOption) error {
 	return nil
 }
@@ -108,9 +105,6 @@ func (s *DismissMessageService) ValidateDismissOpt(opt *DismissMessageDismissOpt
 	return nil
 }
 func (s *DuplicationsService) ValidateShowOpt(opt *DuplicationsShowOption) error {
-	return nil
-}
-func (s *EmailsService) ValidateSendOpt(opt *EmailsSendOption) error {
 	return nil
 }
 func (s *FavoritesService) ValidateAddOpt(opt *FavoritesAddOption) error {
@@ -207,9 +201,6 @@ func (s *IssuesService) ValidateTagsOpt(opt *IssuesTagsOption) error {
 	return nil
 }
 func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOption) error {
-	return nil
-}
-func (s *LanguagesService) ValidateListOpt(opt *LanguagesListOption) error {
 	return nil
 }
 func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOption) error {
@@ -417,9 +408,6 @@ func (s *ProjectsService) ValidateUpdateKeyOpt(opt *ProjectsUpdateKeyOption) err
 	return nil
 }
 func (s *ProjectsService) ValidateUpdateVisibilityOpt(opt *ProjectsUpdateVisibilityOption) error {
-	return nil
-}
-func (s *PushService) ValidateSonarlintEventsOpt(opt *PushSonarlintEventsOption) error {
 	return nil
 }
 func (s *SettingsService) ValidateEncryptOpt(opt *SettingsEncryptOption) error {
