@@ -326,7 +326,7 @@ func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
 	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
 	// All valid types without special requirements should pass.
-	validTypes := []string{"PREVIOUS_VERSION", "NUMBER_OF_DAYS"}
+	validTypes := []string{"PREVIOUS_VERSION"}
 	for _, periodType := range validTypes {
 		err := client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOption{
 			Type: periodType,
@@ -336,8 +336,17 @@ func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
 		}
 	}
 
-	// SPECIFIC_ANALYSIS with Branch should pass.
+	// NUMBER_OF_DAYS with valid Value should pass.
 	err := client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOption{
+		Type:  "NUMBER_OF_DAYS",
+		Value: "30",
+	})
+	if err != nil {
+		t.Errorf("expected nil error for NUMBER_OF_DAYS with Value, got %v", err)
+	}
+
+	// SPECIFIC_ANALYSIS with Branch should pass.
+	err = client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOption{
 		Type:   "SPECIFIC_ANALYSIS",
 		Branch: "main",
 	})

@@ -130,7 +130,7 @@ func TestL10N_Index_WithTimestamp(t *testing.T) {
 	}
 
 	opt := &L10NIndexOption{
-		Ts: "2024-01-01T00:00:00+0000",
+		Timestamp: "2024-01-01T00:00:00+0000",
 	}
 
 	_, _, err = client.L10N.Index(opt)
@@ -189,20 +189,20 @@ func TestL10N_ValidateIndexOpt(t *testing.T) {
 		t.Errorf("expected nil error for option with Locale, got %v", err)
 	}
 
-	// Option with Ts should be valid.
+	// Option with Timestamp should be valid.
 	err = client.L10N.ValidateIndexOpt(&L10NIndexOption{
-		Ts: "2024-01-01T00:00:00+0000",
+		Timestamp: "2024-01-01T00:00:00+0000",
 	})
 	if err != nil {
-		t.Errorf("expected nil error for option with Ts, got %v", err)
+		t.Errorf("expected nil error for option with Timestamp, got %v", err)
 	}
 
-	// Option with both Locale and Ts should be valid.
+	// Option with both Locale and Timestamp should be valid.
 	err = client.L10N.ValidateIndexOpt(&L10NIndexOption{
-		Locale: "fr",
-		Ts:     "2024-01-01T00:00:00+0000",
+		Locale:    "fr",
+		Timestamp: "2024-01-01T00:00:00+0000",
 	})
 	if err != nil {
-		t.Errorf("expected nil error for option with both Locale and Ts, got %v", err)
+		t.Errorf("expected nil error for option with both Locale and Timestamp, got %v", err)
 	}
 }

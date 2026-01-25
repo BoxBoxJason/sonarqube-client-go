@@ -1,6 +1,9 @@
 package sonargo
 
-import "net/http"
+import (
+	"net/http"
+	"strconv"
+)
 
 // NewCodePeriodsService handles communication with the new code periods related methods
 // of the SonarQube API.
@@ -19,6 +22,11 @@ var (
 		"NUMBER_OF_DAYS":    {},
 		"REFERENCE_BRANCH":  {},
 	}
+)
+
+const (
+	// maxNumberOfDays is the maximum allowed number of days for NUMBER_OF_DAYS type.
+	maxNumberOfDays = 90
 )
 
 // -----------------------------------------------------------------------------
@@ -150,17 +158,18 @@ func (s *NewCodePeriodsService) ValidateSetOpt(opt *NewCodePeriodsSetOption) err
 		return err
 	}
 
-	// SPECIFIC_ANALYSIS can only be set at branch level
-	if opt.Type == "SPECIFIC_ANALYSIS" && opt.Branch == "" {
-		return NewValidationError("Branch", "is required for SPECIFIC_ANALYSIS type", ErrMissingRequired)
+	switch opt.Type {
+	case "NUMBER_OF_DAYS":
+		return s.validateNumberOfDays(opt)
+	case "SPECIFIC_ANALYSIS":
+		return s.validateSpecificAnalysis(opt)
+	case "REFERENCE_BRANCH":
+		return s.validateReferenceBranch(opt)
+	case "PREVIOUS_VERSION":
+		return s.validatePreviousVersion(opt)
+	default:
+		return NewValidationError("Type", "unsupported type", ErrInvalidValue)
 	}
-
-	// REFERENCE_BRANCH can only be set for projects and branches
-	if opt.Type == "REFERENCE_BRANCH" && opt.Project == "" {
-		return NewValidationError("Project", "is required for REFERENCE_BRANCH type", ErrMissingRequired)
-	}
-
-	return nil
 }
 
 // ValidateShowOpt validates the options for the Show method.
@@ -292,4 +301,33 @@ func (s *NewCodePeriodsService) Unset(opt *NewCodePeriodsUnsetOption) (*http.Res
 	}
 
 	return resp, nil
+}
+
+// validateNumberOfDays validates the NUMBER_OF_DAYS type.
+func (s *NewCodePeriodsService) validateNumberOfDays(opt *NewCodePeriodsSetOption) error {
+	// Convert Value to int64 and validate range
+	intValue, parseErr := strconv.ParseInt(opt.Value, 10, 64)
+	if parseErr != nil {
+		return NewValidationError("Value", "must be a valid number", ErrInvalidValue)
+	}
+	// Value must be a number between 1 and 90
+	return ValidateRange(intValue, 1, maxNumberOfDays, "Value")
+}
+
+// validateSpecificAnalysis validates the SPECIFIC_ANALYSIS type.
+func (s *NewCodePeriodsService) validateSpecificAnalysis(opt *NewCodePeriodsSetOption) error {
+	// Branch is required
+	return ValidateRequired(opt.Branch, "Branch")
+}
+
+// validateReferenceBranch validates the REFERENCE_BRANCH type.
+func (s *NewCodePeriodsService) validateReferenceBranch(opt *NewCodePeriodsSetOption) error {
+	// Project is required
+	return ValidateRequired(opt.Project, "Project")
+}
+
+// validatePreviousVersion validates the PREVIOUS_VERSION type.
+func (s *NewCodePeriodsService) validatePreviousVersion(opt *NewCodePeriodsSetOption) error {
+	// No special requirements
+	return nil
 }

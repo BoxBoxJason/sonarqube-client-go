@@ -32,8 +32,8 @@ type L10NIndex struct {
 type L10NIndexOption struct {
 	// Locale is the BCP47 language tag, used to override the browser Accept-Language header.
 	Locale string `url:"locale,omitempty"`
-	// Ts is the date of the last cache update.
-	Ts string `url:"ts,omitempty"`
+	// Timestamp is the date of the last cache update.
+	Timestamp string `url:"ts,omitempty"`
 }
 
 // -----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOption) error {
 // Index gets all localization messages for a given locale.
 //
 // API endpoint: GET /api/l10n/index.
-// Since: 4.4.
+// Warning: This API is internal and may change without notice.
 func (s *L10NService) Index(opt *L10NIndexOption) (*L10NIndex, *http.Response, error) {
 	err := s.ValidateIndexOpt(opt)
 	if err != nil {
