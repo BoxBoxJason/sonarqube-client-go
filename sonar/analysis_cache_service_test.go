@@ -106,6 +106,8 @@ func TestAnalysisCache_Get(t *testing.T) {
 		t.Fatalf("Get failed: %v", err)
 	}
 
+	defer resp.Body.Close()
+
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("expected status 200, got %d", resp.StatusCode)
 	}
@@ -115,7 +117,6 @@ func TestAnalysisCache_Get(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to read response body: %v", err)
 	}
-	defer resp.Body.Close()
 
 	if !bytes.Equal(body, mockData) {
 		t.Errorf("expected body %q, got %q", mockData, body)
@@ -158,6 +159,8 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 		t.Fatalf("Get failed: %v", err)
 	}
 
+	defer resp.Body.Close()
+
 	if resp.StatusCode != http.StatusOK {
 		t.Errorf("expected status 200, got %d", resp.StatusCode)
 	}
@@ -167,7 +170,6 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to read response body: %v", err)
 	}
-	defer resp.Body.Close()
 
 	if !bytes.Equal(body, mockData) {
 		t.Errorf("expected body %q, got %q", mockData, body)

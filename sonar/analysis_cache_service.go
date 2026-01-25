@@ -23,7 +23,7 @@ type AnalysisCacheClearOption struct {
 	// The 'Project' parameter must be set when using this.
 	Branch string `url:"branch,omitempty"`
 	// Project filters which project's cached data will be cleared.
-	Project string `url:"project"`
+	Project string `url:"project,omitempty"`
 }
 
 // AnalysisCacheGetOption contains parameters for the Get method.
@@ -32,7 +32,7 @@ type AnalysisCacheGetOption struct {
 	Branch string `url:"branch,omitempty"`
 	// Project key.
 	// This field is required.
-	Project string `url:"project,omitempty"`
+	Project string `url:"project"`
 }
 
 // -----------------------------------------------------------------------------
@@ -51,7 +51,6 @@ func (s *AnalysisCacheService) ValidateClearOpt(opt *AnalysisCacheClearOption) e
 }
 
 // ValidateGetOpt validates the options for the Get method.
-// Currently, there are no required fields.
 func (s *AnalysisCacheService) ValidateGetOpt(opt *AnalysisCacheGetOption) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
