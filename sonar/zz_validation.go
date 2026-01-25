@@ -116,63 +116,6 @@ func (s *HotspotsService) ValidateSearchOpt(opt *HotspotsSearchOption) error {
 func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOption) error {
 	return nil
 }
-func (s *IssuesService) ValidateAddCommentOpt(opt *IssuesAddCommentOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateAnticipatedTransitionsOpt(opt *IssuesAnticipatedTransitionsOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateAssignOpt(opt *IssuesAssignOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateAuthorsOpt(opt *IssuesAuthorsOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateBulkChangeOpt(opt *IssuesBulkChangeOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateChangelogOpt(opt *IssuesChangelogOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateComponentTagsOpt(opt *IssuesComponentTagsOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateDeleteCommentOpt(opt *IssuesDeleteCommentOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateDoTransitionOpt(opt *IssuesDoTransitionOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateEditCommentOpt(opt *IssuesEditCommentOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateListOpt(opt *IssuesListOption) error {
-	return nil
-}
-func (s *IssuesService) ValidatePullOpt(opt *IssuesPullOption) error {
-	return nil
-}
-func (s *IssuesService) ValidatePullTaintOpt(opt *IssuesPullTaintOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateReindexOpt(opt *IssuesReindexOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateSearchOpt(opt *IssuesSearchOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateSetSeverityOpt(opt *IssuesSetSeverityOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateSetTagsOpt(opt *IssuesSetTagsOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateSetTypeOpt(opt *IssuesSetTypeOption) error {
-	return nil
-}
-func (s *IssuesService) ValidateTagsOpt(opt *IssuesTagsOption) error {
-	return nil
-}
 func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOption) error {
 	return nil
 }

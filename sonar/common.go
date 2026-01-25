@@ -162,6 +162,52 @@ var (
 		"selected":   {},
 		"deselected": {},
 	}
+
+	// allowedIssueTypes is the set of supported issue types.
+	allowedIssueTypes = map[string]struct{}{
+		"CODE_SMELL":       {},
+		"BUG":              {},
+		"VULNERABILITY":    {},
+		"SECURITY_HOTSPOT": {},
+	}
+
+	// allowedIssueTransitions is the set of supported issue transitions.
+	allowedIssueTransitions = map[string]struct{}{
+		"confirm":           {},
+		"unconfirm":         {},
+		"reopen":            {},
+		"resolve":           {},
+		"falsepositive":     {},
+		"wontfix":           {},
+		"accept":            {},
+		"close":             {},
+		"resolveasreviewed": {},
+		"resetastoreview":   {},
+	}
+
+	// allowedIssueStatuses is the set of supported issue statuses.
+	allowedIssueStatuses = map[string]struct{}{
+		"OPEN":           {},
+		"CONFIRMED":      {},
+		"FALSE_POSITIVE": {},
+		"ACCEPTED":       {},
+		"FIXED":          {},
+		"IN_SANDBOX":     {},
+	}
+
+	// allowedIssueResolutions is the set of supported issue resolutions.
+	allowedIssueResolutions = map[string]struct{}{
+		"FIXED":          {},
+		"REMOVED":        {},
+		"FALSE-POSITIVE": {},
+		"WONTFIX":        {},
+	}
+
+	// allowedIssueScopes is the set of supported issue scopes.
+	allowedIssueScopes = map[string]struct{}{
+		"MAIN": {},
+		"TEST": {},
+	}
 )
 
 // PaginationArgs contains common pagination parameters for API requests.
