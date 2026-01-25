@@ -917,3 +917,219 @@ func TestIssues_AnticipatedTransitions_Validation(t *testing.T) {
 		t.Error("expected error for missing project key")
 	}
 }
+
+func TestIssues_ValidateAssignOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidateAssignOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing Issue
+	err = client.Issues.ValidateAssignOpt(&IssuesAssignOption{})
+	if err == nil {
+		t.Error("expected error for missing Issue")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateAssignOpt(&IssuesAssignOption{Issue: "issue-key"})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidateChangelogOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidateChangelogOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing Issue
+	err = client.Issues.ValidateChangelogOpt(&IssuesChangelogOption{})
+	if err == nil {
+		t.Error("expected error for missing Issue")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateChangelogOpt(&IssuesChangelogOption{Issue: "issue-key"})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidateComponentTagsOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidateComponentTagsOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing ComponentUuid
+	err = client.Issues.ValidateComponentTagsOpt(&IssuesComponentTagsOption{})
+	if err == nil {
+		t.Error("expected error for missing ComponentUuid")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateComponentTagsOpt(&IssuesComponentTagsOption{ComponentUuid: "uuid"})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidateDeleteCommentOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidateDeleteCommentOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing Comment
+	err = client.Issues.ValidateDeleteCommentOpt(&IssuesDeleteCommentOption{})
+	if err == nil {
+		t.Error("expected error for missing Comment")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateDeleteCommentOpt(&IssuesDeleteCommentOption{Comment: "comment-key"})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidateEditCommentOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidateEditCommentOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing Comment
+	err = client.Issues.ValidateEditCommentOpt(&IssuesEditCommentOption{Text: "new text"})
+	if err == nil {
+		t.Error("expected error for missing Comment")
+	}
+
+	// Test missing Text
+	err = client.Issues.ValidateEditCommentOpt(&IssuesEditCommentOption{Comment: "comment-key"})
+	if err == nil {
+		t.Error("expected error for missing Text")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateEditCommentOpt(&IssuesEditCommentOption{Comment: "comment-key", Text: "new text"})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidateReindexOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidateReindexOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing Project
+	err = client.Issues.ValidateReindexOpt(&IssuesReindexOption{})
+	if err == nil {
+		t.Error("expected error for missing Project")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateReindexOpt(&IssuesReindexOption{Project: "project-key"})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidateSetTagsOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidateSetTagsOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing Issue
+	err = client.Issues.ValidateSetTagsOpt(&IssuesSetTagsOption{})
+	if err == nil {
+		t.Error("expected error for missing Issue")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateSetTagsOpt(&IssuesSetTagsOption{Issue: "issue-key"})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidatePullTaintOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option
+	err := client.Issues.ValidatePullTaintOpt(nil)
+	if err == nil {
+		t.Error("expected error for nil option")
+	}
+
+	// Test missing ProjectKey
+	err = client.Issues.ValidatePullTaintOpt(&IssuesPullTaintOption{})
+	if err == nil {
+		t.Error("expected error for missing ProjectKey")
+	}
+
+	// Test invalid language
+	err = client.Issues.ValidatePullTaintOpt(&IssuesPullTaintOption{ProjectKey: "project", Languages: []string{"invalid"}})
+	if err == nil {
+		t.Error("expected error for invalid language")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidatePullTaintOpt(&IssuesPullTaintOption{ProjectKey: "project", Languages: []string{"java"}})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}
+
+func TestIssues_ValidateTagsOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	// Test nil option (should be valid)
+	err := client.Issues.ValidateTagsOpt(nil)
+	if err != nil {
+		t.Errorf("expected no error for nil option, got %v", err)
+	}
+
+	// Test PageSize 0 (should be valid, no validation)
+	err = client.Issues.ValidateTagsOpt(&IssuesTagsOption{PageSize: 0})
+	if err != nil {
+		t.Errorf("expected no error for PageSize 0, got %v", err)
+	}
+
+	// Test invalid PageSize (too high)
+	err = client.Issues.ValidateTagsOpt(&IssuesTagsOption{PageSize: 501})
+	if err == nil {
+		t.Error("expected error for PageSize 501")
+	}
+
+	// Test valid option
+	err = client.Issues.ValidateTagsOpt(&IssuesTagsOption{PageSize: 100})
+	if err != nil {
+		t.Errorf("expected no error for valid option, got %v", err)
+	}
+}

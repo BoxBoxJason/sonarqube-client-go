@@ -446,10 +446,13 @@ type IssuesBulkChangeOption struct {
 	// Comment is the comment to add (only added if type or severity changes).
 	Comment string `url:"comment,omitempty"`
 	// DoTransition is the transition to perform.
+	// Allowed values: confirm, unconfirm, reopen, resolve, falsepositive, wontfix, resolveasreviewed, resetastoreview, accept
 	DoTransition string `url:"do_transition,omitempty"`
 	// SetSeverity is the new severity to set.
+	// Allowed values: BLOCKER, CRITICAL, MAJOR, MINOR, INFO
 	SetSeverity string `url:"set_severity,omitempty"`
 	// SetType is the new type to set.
+	// Allowed values: BUG, VULNERABILITY, CODE_SMELL, SECURITY_HOTSPOT
 	SetType string `url:"set_type,omitempty"`
 	// SendNotifications indicates whether to send notifications.
 	SendNotifications bool `url:"sendNotifications,omitempty"`
@@ -482,6 +485,7 @@ type IssuesDoTransitionOption struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 	// Transition is the transition to perform (required).
+	// Allowed values: confirm, unconfirm, reopen, resolve, falsepositive, wontfix, resolveasreviewed, resetastoreview, accept, close
 	Transition string `url:"transition,omitempty"`
 }
 
@@ -509,6 +513,7 @@ type IssuesListOption struct {
 	// PullRequest is the pull request ID (not available in Community Edition).
 	PullRequest string `url:"pullRequest,omitempty"`
 	// Types is the list of issue types to filter by.
+	// Allowed values: BUG, VULNERABILITY, CODE_SMELL, SECURITY_HOTSPOT
 	Types []string `url:"types,omitempty,comma"`
 	// Resolved filters by resolved status. If nil, returns all issues.
 	Resolved *bool `url:"resolved,omitempty"`
@@ -562,6 +567,7 @@ type IssuesSearchOption struct {
 	PaginationArgs `url:",inline"`
 
 	// AdditionalFields is the list of optional fields to return.
+	// Allowed values: _all, comments, languages, rules, ruleDescriptionContextKey, transitions, actions, users
 	AdditionalFields []string `url:"additionalFields,omitempty,comma"`
 	// Assignees is the list of assignee logins. Use '__me__' for current user.
 	Assignees []string `url:"assignees,omitempty,comma"`
@@ -572,6 +578,7 @@ type IssuesSearchOption struct {
 	// Casa is the list of CASA categories.
 	Casa []string `url:"casa,omitempty,comma"`
 	// CleanCodeAttributeCategories is the list of clean code attribute categories.
+	// Allowed values: ADAPTABLE, CONSISTENT, INTENTIONAL, RESPONSIBLE
 	CleanCodeAttributeCategories []string `url:"cleanCodeAttributeCategories,omitempty,comma"`
 	// CodeVariants is the list of code variants.
 	CodeVariants []string `url:"codeVariants,omitempty,comma"`
@@ -592,18 +599,22 @@ type IssuesSearchOption struct {
 	// Directories is the list of directories to filter by.
 	Directories []string `url:"directories,omitempty,comma"`
 	// Facets is the list of facets to compute.
+	// Allowed values: projects, files, assigned_to_me, severities, statuses, resolutions, rules, assignees, author, directories, scopes, languages, tags, types, pciDss-3.2, pciDss-4.0, owaspAsvs-4.0, owaspMobileTop10-2024, owaspTop10, owaspTop10-2021, stig-ASD_V5R3, casa, sansTop25, cwe, createdAt, sonarsourceSecurity, codeVariants, cleanCodeAttributeCategories, impactSoftwareQualities, impactSeverities, issueStatuses, prioritizedRule, complianceStandards
 	Facets []string `url:"facets,omitempty,comma"`
 	// Files is the list of files to filter by.
 	Files []string `url:"files,omitempty,comma"`
 	// FixedInPullRequest filters issues fixed in the specified pull request.
 	FixedInPullRequest string `url:"fixedInPullRequest,omitempty"`
 	// ImpactSeverities is the list of impact severities to filter by.
+	// Allowed values: BLOCKER, HIGH, MEDIUM, LOW, INFO
 	ImpactSeverities []string `url:"impactSeverities,omitempty,comma"`
 	// ImpactSoftwareQualities is the list of software qualities to filter by.
+	// Allowed values: MAINTAINABILITY, RELIABILITY, SECURITY
 	ImpactSoftwareQualities []string `url:"impactSoftwareQualities,omitempty,comma"`
 	// InNewCodePeriod filters issues created in the new code period.
 	InNewCodePeriod bool `url:"inNewCodePeriod,omitempty"`
 	// IssueStatuses is the list of issue statuses to filter by.
+	// Allowed values: OPEN, CONFIRMED, FALSE_POSITIVE, ACCEPTED, FIXED, IN_SANDBOX
 	IssueStatuses []string `url:"issueStatuses,omitempty,comma"`
 	// Issues is the list of issue keys to retrieve.
 	Issues []string `url:"issues,omitempty,comma"`
@@ -614,12 +625,16 @@ type IssuesSearchOption struct {
 	// OwaspAsvs40 is the list of OWASP ASVS v4.0 categories.
 	OwaspAsvs40 []string `url:"owaspAsvs-4.0,omitempty,comma"`
 	// OwaspAsvsLevel is the OWASP ASVS level.
+	// Allowed values: 1, 2, 3
 	OwaspAsvsLevel int64 `url:"owaspAsvsLevel,omitempty"`
 	// OwaspMobileTop102024 is the list of OWASP Mobile Top 10 2024 categories.
+	// Allowed values: m1, m2, m3, m4, m5, m6, m7, m8, m9, m10
 	OwaspMobileTop102024 []string `url:"owaspMobileTop10-2024,omitempty,comma"`
 	// OwaspTop10 is the list of OWASP Top 10 2017 categories.
+	// Allowed values: a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
 	OwaspTop10 []string `url:"owaspTop10,omitempty,comma"`
 	// OwaspTop102021 is the list of OWASP Top 10 2021 categories.
+	// Allowed values: a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
 	OwaspTop102021 []string `url:"owaspTop10-2021,omitempty,comma"`
 	// PciDss32 is the list of PCI DSS v3.2 categories.
 	PciDss32 []string `url:"pciDss-3.2,omitempty,comma"`
@@ -632,20 +647,28 @@ type IssuesSearchOption struct {
 	// PullRequest is the pull request ID (not available in Community Edition).
 	PullRequest string `url:"pullRequest,omitempty"`
 	// Resolutions is the list of resolutions to filter by.
+	// Allowed values: FALSE-POSITIVE, WONTFIX, FIXED, REMOVED
 	Resolutions []string `url:"resolutions,omitempty,comma"`
 	// Resolved filters by resolved status. If nil, returns all issues.
 	Resolved *bool `url:"resolved,omitempty"`
 	// Rules is the list of rule keys to filter by.
 	Rules []string `url:"rules,omitempty,comma"`
 	// Sort is the sort field.
+	// Allowed values: CREATION_DATE, CLOSE_DATE, SEVERITY, STATUS, FILE_LINE, HOTSPOTS, UPDATE_DATE
 	Sort string `url:"s,omitempty"`
 	// SansTop25 is the list of SANS Top 25 categories.
+	// Allowed values: insecure-interaction, risky-resource, porous-defenses
+	//
+	// Deprecated: This filter is deprecated since 10.0
 	SansTop25 []string `url:"sansTop25,omitempty,comma"`
 	// Scopes is the list of scopes to filter by.
+	// Allowed values: MAIN, TEST
 	Scopes []string `url:"scopes,omitempty,comma"`
 	// Severities is the list of severities to filter by.
+	// Allowed values: BLOCKER, CRITICAL, MAJOR, MINOR, INFO
 	Severities []string `url:"severities,omitempty,comma"`
 	// SonarsourceSecurity is the list of SonarSource security categories.
+	// Allowed values: buffer-overflow, sql-injection, rce, object-injection, command-injection, path-traversal-injection, ldap-injection, xpath-injection, log-injection, xxe, xss, dos, ssrf, csrf, http-response-splitting, open-redirect, weak-cryptography, auth, insecure-conf, file-manipulation, encrypt-data, traceability, permission, others
 	SonarsourceSecurity []string `url:"sonarsourceSecurity,omitempty,comma"`
 	// Statuses is the list of statuses to filter by.
 	Statuses []string `url:"statuses,omitempty,comma"`
@@ -656,6 +679,7 @@ type IssuesSearchOption struct {
 	// TimeZone is the timezone for date resolution.
 	TimeZone string `url:"timeZone,omitempty"`
 	// Types is the list of issue types to filter by.
+	// Allowed values: BUG, VULNERABILITY, CODE_SMELL
 	Types []string `url:"types,omitempty,comma"`
 	// Assigned filters by assigned status.
 	Assigned *bool `url:"assigned,omitempty"`
@@ -668,6 +692,7 @@ type IssuesSetSeverityOption struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 	// Severity is the new severity level.
+	// Allowed values: BLOCKER, CRITICAL, MAJOR, MINOR, INFO
 	Severity string `url:"severity,omitempty"`
 	// Impact is the override of impact severity (cannot be used with Severity).
 	Impact string `url:"impact,omitempty"`
@@ -686,6 +711,7 @@ type IssuesSetTypeOption struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 	// Type is the new issue type (required).
+	// Allowed values: BUG, VULNERABILITY, CODE_SMELL
 	Type string `url:"type,omitempty"`
 }
 
