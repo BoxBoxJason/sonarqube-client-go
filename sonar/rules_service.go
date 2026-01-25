@@ -317,14 +317,15 @@ type RulesDeleteOption struct {
 
 // RulesListOption contains options for listing rules.
 // WARNING: Internal endpoint, may change without notice.
+//
+//nolint:govet // Field alignment is less important than logical grouping and readability
 type RulesListOption struct {
+	// PaginationArgs contains pagination parameters.
+	PaginationArgs `url:",inline"`
+
 	// AvailableSince filters rules added since the specified date (format: yyyy-MM-dd).
 	// If not set, all rules are returned.
 	AvailableSince string `url:"available_since,omitempty"`
-	// Page is the response page number (must be greater than 0).
-	Page string `url:"p,omitempty"`
-	// PageSize is the response page size (must be greater than 0 and less than or equal to 500).
-	PageSize string `url:"ps,omitempty"`
 	// Qprofile is the key of the quality profile to filter by activated rules.
 	Qprofile string `url:"qprofile,omitempty"`
 	// Sort is the sort field.
@@ -347,6 +348,7 @@ type RulesRepositoriesOption struct {
 //
 //nolint:govet // Field alignment is less important than logical grouping and readability
 type RulesSearchOption struct {
+	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
 	// Activation filters rules by their activation status on the selected quality profile.
@@ -814,6 +816,11 @@ func (s *RulesService) ValidateDeleteOpt(opt *RulesDeleteOption) error {
 func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
 	if opt == nil {
 		return nil
+	}
+
+	err := opt.Validate()
+	if err != nil {
+		return err
 	}
 
 	if opt.Sort != "" {

@@ -47,15 +47,6 @@ func (s *AlmSettingsService) ValidateUpdateGitlabOpt(opt *AlmSettingsUpdateGitla
 func (s *AlmSettingsService) ValidateValidateOpt(opt *AlmSettingsValidateOption) error {
 	return nil
 }
-func (s *AnalysisCacheService) ValidateClearOpt(opt *AnalysisCacheClearOption) error {
-	return nil
-}
-func (s *AnalysisCacheService) ValidateGetOpt(opt *AnalysisCacheGetOption) error {
-	return nil
-}
-func (s *AuthenticationService) ValidateLoginOpt(opt *AuthenticationLoginOption) error {
-	return nil
-}
 func (s *CeService) ValidateActivityOpt(opt *CeActivityOption) error {
 	return nil
 }
@@ -96,24 +87,6 @@ func (s *ComponentsService) ValidateSuggestionsOpt(opt *ComponentsSuggestionsOpt
 	return nil
 }
 func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOption) error {
-	return nil
-}
-func (s *DismissMessageService) ValidateCheckOpt(opt *DismissMessageCheckOption) error {
-	return nil
-}
-func (s *DismissMessageService) ValidateDismissOpt(opt *DismissMessageDismissOption) error {
-	return nil
-}
-func (s *DuplicationsService) ValidateShowOpt(opt *DuplicationsShowOption) error {
-	return nil
-}
-func (s *FavoritesService) ValidateAddOpt(opt *FavoritesAddOption) error {
-	return nil
-}
-func (s *FavoritesService) ValidateRemoveOpt(opt *FavoritesRemoveOption) error {
-	return nil
-}
-func (s *FavoritesService) ValidateSearchOpt(opt *FavoritesSearchOption) error {
 	return nil
 }
 func (s *HotspotsService) ValidateAddCommentOpt(opt *HotspotsAddCommentOption) error {
@@ -215,9 +188,6 @@ func (s *MeasuresService) ValidateSearchOpt(opt *MeasuresSearchOption) error {
 func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOption) error {
 	return nil
 }
-func (s *MetricsService) ValidateSearchOpt(opt *MetricsSearchOption) error {
-	return nil
-}
 func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOption) error {
 	return nil
 }
@@ -231,15 +201,6 @@ func (s *NewCodePeriodsService) ValidateShowOpt(opt *NewCodePeriodsShowOption) e
 	return nil
 }
 func (s *NewCodePeriodsService) ValidateUnsetOpt(opt *NewCodePeriodsUnsetOption) error {
-	return nil
-}
-func (s *NotificationsService) ValidateAddOpt(opt *NotificationsAddOption) error {
-	return nil
-}
-func (s *NotificationsService) ValidateListOpt(opt *NotificationsListOption) error {
-	return nil
-}
-func (s *NotificationsService) ValidateRemoveOpt(opt *NotificationsRemoveOption) error {
 	return nil
 }
 func (s *PermissionsService) ValidateAddGroupOpt(opt *PermissionsAddGroupOption) error {
@@ -362,12 +323,6 @@ func (s *ProjectBranchesService) ValidateSetAutomaticDeletionProtectionOpt(opt *
 func (s *ProjectBranchesService) ValidateSetMainOpt(opt *ProjectBranchesSetMainOption) error {
 	return nil
 }
-func (s *ProjectDumpService) ValidateExportOpt(opt *ProjectDumpExportOption) error {
-	return nil
-}
-func (s *ProjectDumpService) ValidateStatusOpt(opt *ProjectDumpStatusOption) error {
-	return nil
-}
 func (s *ProjectLinksService) ValidateCreateOpt(opt *ProjectLinksCreateOption) error {
 	return nil
 }
@@ -375,12 +330,6 @@ func (s *ProjectLinksService) ValidateDeleteOpt(opt *ProjectLinksDeleteOption) e
 	return nil
 }
 func (s *ProjectLinksService) ValidateSearchOpt(opt *ProjectLinksSearchOption) error {
-	return nil
-}
-func (s *ProjectTagsService) ValidateSearchOpt(opt *ProjectTagsSearchOption) error {
-	return nil
-}
-func (s *ProjectTagsService) ValidateSetOpt(opt *ProjectTagsSetOption) error {
 	return nil
 }
 func (s *ProjectsService) ValidateBulkDeleteOpt(opt *ProjectsBulkDeleteOption) error {
