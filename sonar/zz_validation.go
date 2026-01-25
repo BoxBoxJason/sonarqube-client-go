@@ -116,9 +116,6 @@ func (s *HotspotsService) ValidateSearchOpt(opt *HotspotsSearchOption) error {
 func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOption) error {
 	return nil
 }
-func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOption) error {
-	return nil
-}
 func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOption) error {
 	return nil
 }
@@ -132,18 +129,6 @@ func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOpt
 	return nil
 }
 func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOption) error {
-	return nil
-}
-func (s *NewCodePeriodsService) ValidateListOpt(opt *NewCodePeriodsListOption) error {
-	return nil
-}
-func (s *NewCodePeriodsService) ValidateSetOpt(opt *NewCodePeriodsSetOption) error {
-	return nil
-}
-func (s *NewCodePeriodsService) ValidateShowOpt(opt *NewCodePeriodsShowOption) error {
-	return nil
-}
-func (s *NewCodePeriodsService) ValidateUnsetOpt(opt *NewCodePeriodsUnsetOption) error {
 	return nil
 }
 func (s *PermissionsService) ValidateAddGroupOpt(opt *PermissionsAddGroupOption) error {
@@ -239,42 +224,6 @@ func (s *ProjectAnalysesService) ValidateSearchOpt(opt *ProjectAnalysesSearchOpt
 func (s *ProjectAnalysesService) ValidateUpdateEventOpt(opt *ProjectAnalysesUpdateEventOption) error {
 	return nil
 }
-func (s *ProjectBadgesService) ValidateMeasureOpt(opt *ProjectBadgesMeasureOption) error {
-	return nil
-}
-func (s *ProjectBadgesService) ValidateQualityGateOpt(opt *ProjectBadgesQualityGateOption) error {
-	return nil
-}
-func (s *ProjectBadgesService) ValidateRenewTokenOpt(opt *ProjectBadgesRenewTokenOption) error {
-	return nil
-}
-func (s *ProjectBadgesService) ValidateTokenOpt(opt *ProjectBadgesTokenOption) error {
-	return nil
-}
-func (s *ProjectBranchesService) ValidateDeleteOpt(opt *ProjectBranchesDeleteOption) error {
-	return nil
-}
-func (s *ProjectBranchesService) ValidateListOpt(opt *ProjectBranchesListOption) error {
-	return nil
-}
-func (s *ProjectBranchesService) ValidateRenameOpt(opt *ProjectBranchesRenameOption) error {
-	return nil
-}
-func (s *ProjectBranchesService) ValidateSetAutomaticDeletionProtectionOpt(opt *ProjectBranchesSetAutomaticDeletionProtectionOption) error {
-	return nil
-}
-func (s *ProjectBranchesService) ValidateSetMainOpt(opt *ProjectBranchesSetMainOption) error {
-	return nil
-}
-func (s *ProjectLinksService) ValidateCreateOpt(opt *ProjectLinksCreateOption) error {
-	return nil
-}
-func (s *ProjectLinksService) ValidateDeleteOpt(opt *ProjectLinksDeleteOption) error {
-	return nil
-}
-func (s *ProjectLinksService) ValidateSearchOpt(opt *ProjectLinksSearchOption) error {
-	return nil
-}
 func (s *ProjectsService) ValidateBulkDeleteOpt(opt *ProjectsBulkDeleteOption) error {
 	return nil
 }
@@ -354,15 +303,6 @@ func (s *UserGroupsService) ValidateUpdateOpt(opt *UserGroupsUpdateOption) error
 	return nil
 }
 func (s *UserGroupsService) ValidateUsersOpt(opt *UserGroupsUsersOption) error {
-	return nil
-}
-func (s *UserTokensService) ValidateGenerateOpt(opt *UserTokensGenerateOption) error {
-	return nil
-}
-func (s *UserTokensService) ValidateRevokeOpt(opt *UserTokensRevokeOption) error {
-	return nil
-}
-func (s *UserTokensService) ValidateSearchOpt(opt *UserTokensSearchOption) error {
 	return nil
 }
 func (s *UsersService) ValidateAnonymizeOpt(opt *UsersAnonymizeOption) error {
