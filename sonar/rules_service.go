@@ -818,6 +818,11 @@ func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
 		return nil
 	}
 
+	err := opt.Validate()
+	if err != nil {
+		return err
+	}
+
 	if opt.Sort != "" {
 		allowed := map[string]struct{}{"createdAt": {}}
 
