@@ -173,27 +173,26 @@ var (
 
 	// allowedIssueTransitions is the set of supported issue transitions.
 	allowedIssueTransitions = map[string]struct{}{
-		"confirm":       {},
-		"unconfirm":     {},
-		"reopen":        {},
-		"resolve":       {},
-		"falsepositive": {},
-		"wontfix":       {},
-		"accept":        {},
-		"close":         {},
+		"confirm":           {},
+		"unconfirm":         {},
+		"reopen":            {},
+		"resolve":           {},
+		"falsepositive":     {},
+		"wontfix":           {},
+		"accept":            {},
+		"close":             {},
+		"resolveasreviewed": {},
+		"resetastoreview":   {},
 	}
 
 	// allowedIssueStatuses is the set of supported issue statuses.
 	allowedIssueStatuses = map[string]struct{}{
-		"OPEN":      {},
-		"CONFIRMED": {},
-		"REOPENED":  {},
-		"RESOLVED":  {},
-		"CLOSED":    {},
-		"ACCEPTED":  {},
-		"TO_REVIEW": {},
-		"REVIEWED":  {},
-		"FIXED":     {},
+		"OPEN":           {},
+		"CONFIRMED":      {},
+		"FALSE_POSITIVE": {},
+		"ACCEPTED":       {},
+		"FIXED":          {},
+		"IN_SANDBOX":     {},
 	}
 
 	// allowedIssueResolutions is the set of supported issue resolutions.
