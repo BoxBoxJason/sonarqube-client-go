@@ -131,69 +131,6 @@ func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOpt
 func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOption) error {
 	return nil
 }
-func (s *PermissionsService) ValidateAddGroupOpt(opt *PermissionsAddGroupOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateAddGroupToTemplateOpt(opt *PermissionsAddGroupToTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateAddProjectCreatorToTemplateOpt(opt *PermissionsAddProjectCreatorToTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateAddUserOpt(opt *PermissionsAddUserOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateAddUserToTemplateOpt(opt *PermissionsAddUserToTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateApplyTemplateOpt(opt *PermissionsApplyTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateBulkApplyTemplateOpt(opt *PermissionsBulkApplyTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateCreateTemplateOpt(opt *PermissionsCreateTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateDeleteTemplateOpt(opt *PermissionsDeleteTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateGroupsOpt(opt *PermissionsGroupsOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateRemoveGroupOpt(opt *PermissionsRemoveGroupOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateRemoveGroupFromTemplateOpt(opt *PermissionsRemoveGroupFromTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateRemoveProjectCreatorFromTemplateOpt(opt *PermissionsRemoveProjectCreatorFromTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateRemoveUserOpt(opt *PermissionsRemoveUserOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateRemoveUserFromTemplateOpt(opt *PermissionsRemoveUserFromTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateSearchTemplatesOpt(opt *PermissionsSearchTemplatesOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateSetDefaultTemplateOpt(opt *PermissionsSetDefaultTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateTemplateGroupsOpt(opt *PermissionsTemplateGroupsOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateTemplateUsersOpt(opt *PermissionsTemplateUsersOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateUpdateTemplateOpt(opt *PermissionsUpdateTemplateOption) error {
-	return nil
-}
-func (s *PermissionsService) ValidateUsersOpt(opt *PermissionsUsersOption) error {
-	return nil
-}
 func (s *PluginsService) ValidateDownloadOpt(opt *PluginsDownloadOption) error {
 	return nil
 }
