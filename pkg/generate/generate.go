@@ -312,6 +312,7 @@ func (gen *Generator) isManualService(serviceName string) bool {
 		"project_branches",
 		"l10n",
 		"permissions",
+		"users",
 	}
 
 	return slices.Contains(manualServices, serviceName)
