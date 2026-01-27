@@ -242,39 +242,6 @@ func (s *UserGroupsService) ValidateUpdateOpt(opt *UserGroupsUpdateOption) error
 func (s *UserGroupsService) ValidateUsersOpt(opt *UserGroupsUsersOption) error {
 	return nil
 }
-func (s *UsersService) ValidateAnonymizeOpt(opt *UsersAnonymizeOption) error {
-	return nil
-}
-func (s *UsersService) ValidateChangePasswordOpt(opt *UsersChangePasswordOption) error {
-	return nil
-}
-func (s *UsersService) ValidateCreateOpt(opt *UsersCreateOption) error {
-	return nil
-}
-func (s *UsersService) ValidateDeactivateOpt(opt *UsersDeactivateOption) error {
-	return nil
-}
-func (s *UsersService) ValidateDismissNoticeOpt(opt *UsersDismissNoticeOption) error {
-	return nil
-}
-func (s *UsersService) ValidateGroupsOpt(opt *UsersGroupsOption) error {
-	return nil
-}
-func (s *UsersService) ValidateSearchOpt(opt *UsersSearchOption) error {
-	return nil
-}
-func (s *UsersService) ValidateSetHomepageOpt(opt *UsersSetHomepageOption) error {
-	return nil
-}
-func (s *UsersService) ValidateUpdateOpt(opt *UsersUpdateOption) error {
-	return nil
-}
-func (s *UsersService) ValidateUpdateIdentityProviderOpt(opt *UsersUpdateIdentityProviderOption) error {
-	return nil
-}
-func (s *UsersService) ValidateUpdateLoginOpt(opt *UsersUpdateLoginOption) error {
-	return nil
-}
 func (s *WebhooksService) ValidateCreateOpt(opt *WebhooksCreateOption) error {
 	return nil
 }
