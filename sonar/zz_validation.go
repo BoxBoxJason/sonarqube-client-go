@@ -2,51 +2,6 @@
 
 package sonargo
 
-func (s *AlmSettingsService) ValidateCountBindingOpt(opt *AlmSettingsCountBindingOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateCreateAzureOpt(opt *AlmSettingsCreateAzureOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateCreateBitbucketOpt(opt *AlmSettingsCreateBitbucketOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateCreateBitbucketcloudOpt(opt *AlmSettingsCreateBitbucketcloudOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateCreateGithubOpt(opt *AlmSettingsCreateGithubOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateCreateGitlabOpt(opt *AlmSettingsCreateGitlabOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateDeleteOpt(opt *AlmSettingsDeleteOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateGetBindingOpt(opt *AlmSettingsGetBindingOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateListOpt(opt *AlmSettingsListOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateUpdateAzureOpt(opt *AlmSettingsUpdateAzureOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateUpdateBitbucketOpt(opt *AlmSettingsUpdateBitbucketOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateUpdateBitbucketcloudOpt(opt *AlmSettingsUpdateBitbucketcloudOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateUpdateGithubOpt(opt *AlmSettingsUpdateGithubOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateUpdateGitlabOpt(opt *AlmSettingsUpdateGitlabOption) error {
-	return nil
-}
-func (s *AlmSettingsService) ValidateValidateOpt(opt *AlmSettingsValidateOption) error {
-	return nil
-}
 func (s *ComponentsService) ValidateAppOpt(opt *ComponentsAppOption) error {
 	return nil
 }
