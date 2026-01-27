@@ -285,6 +285,7 @@ func (gen *Generator) isManualService(serviceName string) bool {
 		"qualitygates",
 		"qualityprofiles",
 		"alm_integrations",
+		"alm_settings",
 		"system",
 		"server",
 		"analysis_reports",
