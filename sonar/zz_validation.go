@@ -47,30 +47,6 @@ func (s *AlmSettingsService) ValidateUpdateGitlabOpt(opt *AlmSettingsUpdateGitla
 func (s *AlmSettingsService) ValidateValidateOpt(opt *AlmSettingsValidateOption) error {
 	return nil
 }
-func (s *CeService) ValidateActivityOpt(opt *CeActivityOption) error {
-	return nil
-}
-func (s *CeService) ValidateActivityStatusOpt(opt *CeActivityStatusOption) error {
-	return nil
-}
-func (s *CeService) ValidateAnalysisStatusOpt(opt *CeAnalysisStatusOption) error {
-	return nil
-}
-func (s *CeService) ValidateCancelOpt(opt *CeCancelOption) error {
-	return nil
-}
-func (s *CeService) ValidateComponentOpt(opt *CeComponentOption) error {
-	return nil
-}
-func (s *CeService) ValidateDismissAnalysisWarningOpt(opt *CeDismissAnalysisWarningOption) error {
-	return nil
-}
-func (s *CeService) ValidateSubmitOpt(opt *CeSubmitOption) error {
-	return nil
-}
-func (s *CeService) ValidateTaskOpt(opt *CeTaskOption) error {
-	return nil
-}
 func (s *ComponentsService) ValidateAppOpt(opt *ComponentsAppOption) error {
 	return nil
 }
