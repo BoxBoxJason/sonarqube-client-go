@@ -1023,6 +1023,15 @@ func TestPermissions_RemoveGroupFromTemplate_ValidationError(t *testing.T) {
 		t.Error("expected error for missing GroupName")
 	}
 
+	// Missing Permission should fail validation.
+	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
+		GroupName:    "developers",
+		TemplateName: "my-template",
+	})
+	if err == nil {
+		t.Error("expected error for missing Permission")
+	}
+
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
 		GroupName:  "developers",
@@ -1568,11 +1577,16 @@ func TestPermissions_TemplateUsers_ValidationError(t *testing.T) {
 	if err == nil {
 		t.Error("expected error for invalid Permission (non-project permission)")
 	}
-}
 
-// -----------------------------------------------------------------------------
-// UpdateTemplate Tests
-// -----------------------------------------------------------------------------
+	// Query too short should fail validation.
+	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOption{
+		TemplateName: "my-template",
+		Query:        "ab",
+	})
+	if err == nil {
+		t.Error("expected error for Query too short")
+	}
+}
 
 func TestPermissions_UpdateTemplate(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
