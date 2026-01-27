@@ -276,7 +276,7 @@ type CeActivityOption struct {
 	Q string `url:"q,omitempty"`
 	// Statuses filters by task statuses.
 	// Allowed values: SUCCESS, FAILED, CANCELED, PENDING, IN_PROGRESS.
-	Statuses []string `url:"status,omitempty"`
+	Statuses []string `url:"status,omitempty,comma"`
 	// Type filters by task type.
 	// Allowed values: REPORT, ISSUE_SYNC, AUDIT_PURGE, PROJECT_EXPORT.
 	Type string `url:"type,omitempty"`
@@ -350,7 +350,7 @@ type CeDismissAnalysisWarningOption struct {
 type CeSubmitOption struct {
 	// Characteristics contains optional characteristics of the analysis.
 	// Can contain multiple key=value pairs.
-	Characteristics []string `url:"characteristic,omitempty"`
+	Characteristics []string `url:"characteristic,omitempty,comma"`
 	// ProjectKey is the key of the project.
 	// This field is required. Maximum length is 400 characters.
 	ProjectKey string `url:"projectKey"`
@@ -368,7 +368,7 @@ type CeSubmitOption struct {
 type CeTaskOption struct {
 	// AdditionalFields is a list of optional fields to be returned in response.
 	// Allowed values: stacktrace, scannerContext, warnings.
-	AdditionalFields []string `url:"additionalFields,omitempty"`
+	AdditionalFields []string `url:"additionalFields,omitempty,comma"`
 	// ID is the ID of the task.
 	// This field is required.
 	ID string `url:"id"`
