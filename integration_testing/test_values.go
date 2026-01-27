@@ -29,7 +29,7 @@ func SetupTestResources(c *sonar.Client) {
 		Login:    "test-user",
 		Name:     "Test User",
 		Password: "test-password",
-		Local:    "true",
+		Local:    true,
 	})
 	if err != nil {
 		fmt.Printf("Setup: User creation failed (might exist): %v\n", err)
