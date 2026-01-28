@@ -20,33 +20,6 @@ func (s *ComponentsService) ValidateSuggestionsOpt(opt *ComponentsSuggestionsOpt
 func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOption) error {
 	return nil
 }
-func (s *HotspotsService) ValidateAddCommentOpt(opt *HotspotsAddCommentOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidateAssignOpt(opt *HotspotsAssignOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidateChangeStatusOpt(opt *HotspotsChangeStatusOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidateDeleteCommentOpt(opt *HotspotsDeleteCommentOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidateEditCommentOpt(opt *HotspotsEditCommentOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidateListOpt(opt *HotspotsListOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidatePullOpt(opt *HotspotsPullOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidateSearchOpt(opt *HotspotsSearchOption) error {
-	return nil
-}
-func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOption) error {
-	return nil
-}
 func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOption) error {
 	return nil
 }
