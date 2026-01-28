@@ -2,24 +2,6 @@
 
 package sonargo
 
-func (s *ComponentsService) ValidateAppOpt(opt *ComponentsAppOption) error {
-	return nil
-}
-func (s *ComponentsService) ValidateSearchOpt(opt *ComponentsSearchOption) error {
-	return nil
-}
-func (s *ComponentsService) ValidateSearchProjectsOpt(opt *ComponentsSearchProjectsOption) error {
-	return nil
-}
-func (s *ComponentsService) ValidateShowOpt(opt *ComponentsShowOption) error {
-	return nil
-}
-func (s *ComponentsService) ValidateSuggestionsOpt(opt *ComponentsSuggestionsOption) error {
-	return nil
-}
-func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOption) error {
-	return nil
-}
 func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOption) error {
 	return nil
 }
