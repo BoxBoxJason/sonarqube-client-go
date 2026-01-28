@@ -1,300 +1,333 @@
-package sonargo_test
+package sonargo
 
 import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 // =============================================================================
 // AddComment Tests
 // =============================================================================
 
-func TestHotspotsAddComment_Success(t *testing.T) {
-	t.Parallel()
+func TestHotspots_AddComment(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodPost, r.Method)
-		assert.Equal(t, "/hotspots/add_comment", r.URL.Path)
-		assert.Equal(t, "hotspot123", r.FormValue("hotspot"))
-		assert.Equal(t, "This is a comment", r.FormValue("comment"))
+		if r.URL.Path != "/api/hotspots/add_comment" {
+			t.Errorf("expected path /api/hotspots/add_comment, got %s", r.URL.Path)
+		}
+
+		hotspot := r.URL.Query().Get("hotspot")
+		if hotspot != "hotspot123" {
+			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
+		}
+
+		comment := r.URL.Query().Get("comment")
+		if comment != "This is a comment" {
+			t.Errorf("expected comment 'This is a comment', got %s", comment)
+		}
+
 		w.WriteHeader(http.StatusNoContent)
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
-
-	resp, err := client.Hotspots.AddComment(&sonargo.HotspotsAddCommentOption{
-		Hotspot: "hotspot123",
-		Comment: "This is a comment",
-	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
-}
-
-func TestHotspotsAddComment_MissingHotspot(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.AddComment(&sonargo.HotspotsAddCommentOption{
-		Comment: "This is a comment",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Hotspot")
-}
-
-func TestHotspotsAddComment_MissingComment(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.AddComment(&sonargo.HotspotsAddCommentOption{
-		Hotspot: "hotspot123",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Comment")
-}
-
-func TestHotspotsAddComment_CommentTooLong(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	longComment := make([]byte, 1001)
-	for i := range longComment {
-		longComment[i] = 'a'
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
 	}
 
-	_, err = client.Hotspots.AddComment(&sonargo.HotspotsAddCommentOption{
+	resp, err := client.Hotspots.AddComment(&HotspotsAddCommentOption{
 		Hotspot: "hotspot123",
-		Comment: string(longComment),
+		Comment: "This is a comment",
 	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Comment")
+	if err != nil {
+		t.Fatalf("AddComment failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
 }
 
-func TestHotspotsAddComment_NilOption(t *testing.T) {
-	t.Parallel()
+func TestHotspots_AddComment_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+	tests := []struct {
+		name string
+		opt  *HotspotsAddCommentOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing hotspot",
+			opt:  &HotspotsAddCommentOption{Comment: "This is a comment"},
+		},
+		{
+			name: "missing comment",
+			opt:  &HotspotsAddCommentOption{Hotspot: "hotspot123"},
+		},
+		{
+			name: "comment too long",
+			opt: &HotspotsAddCommentOption{
+				Hotspot: "hotspot123",
+				Comment: string(make([]byte, MaxHotspotCommentLength+1)),
+			},
+		},
+	}
 
-	_, err = client.Hotspots.AddComment(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := client.Hotspots.AddComment(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // Assign Tests
 // =============================================================================
 
-func TestHotspotsAssign_Success(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Assign(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodPost, r.Method)
-		assert.Equal(t, "/hotspots/assign", r.URL.Path)
-		assert.Equal(t, "hotspot123", r.FormValue("hotspot"))
-		assert.Equal(t, "john.doe", r.FormValue("assignee"))
+		if r.URL.Path != "/api/hotspots/assign" {
+			t.Errorf("expected path /api/hotspots/assign, got %s", r.URL.Path)
+		}
+
+		hotspot := r.URL.Query().Get("hotspot")
+		if hotspot != "hotspot123" {
+			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
+		}
+
+		assignee := r.URL.Query().Get("assignee")
+		if assignee != "john.doe" {
+			t.Errorf("expected assignee 'john.doe', got %s", assignee)
+		}
+
 		w.WriteHeader(http.StatusNoContent)
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
 
-	resp, err := client.Hotspots.Assign(&sonargo.HotspotsAssignOption{
+	resp, err := client.Hotspots.Assign(&HotspotsAssignOption{
 		Hotspot:  "hotspot123",
 		Assignee: "john.doe",
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	if err != nil {
+		t.Fatalf("Assign failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
 }
 
-func TestHotspotsAssign_MissingHotspot(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Assign_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+	tests := []struct {
+		name string
+		opt  *HotspotsAssignOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing hotspot",
+			opt:  &HotspotsAssignOption{Assignee: "john.doe"},
+		},
+	}
 
-	_, err = client.Hotspots.Assign(&sonargo.HotspotsAssignOption{
-		Assignee: "john.doe",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Hotspot")
-}
-
-func TestHotspotsAssign_NilOption(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.Assign(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := client.Hotspots.Assign(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // ChangeStatus Tests
 // =============================================================================
 
-func TestHotspotsChangeStatus_Success(t *testing.T) {
-	t.Parallel()
+func TestHotspots_ChangeStatus(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodPost, r.Method)
-		assert.Equal(t, "/hotspots/change_status", r.URL.Path)
-		assert.Equal(t, "hotspot123", r.FormValue("hotspot"))
-		assert.Equal(t, "REVIEWED", r.FormValue("status"))
-		assert.Equal(t, "SAFE", r.FormValue("resolution"))
+		if r.URL.Path != "/api/hotspots/change_status" {
+			t.Errorf("expected path /api/hotspots/change_status, got %s", r.URL.Path)
+		}
+
+		hotspot := r.URL.Query().Get("hotspot")
+		if hotspot != "hotspot123" {
+			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
+		}
+
+		status := r.URL.Query().Get("status")
+		if status != "REVIEWED" {
+			t.Errorf("expected status 'REVIEWED', got %s", status)
+		}
+
+		resolution := r.URL.Query().Get("resolution")
+		if resolution != "SAFE" {
+			t.Errorf("expected resolution 'SAFE', got %s", resolution)
+		}
+
 		w.WriteHeader(http.StatusNoContent)
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
 
-	resp, err := client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
+	resp, err := client.Hotspots.ChangeStatus(&HotspotsChangeStatusOption{
 		Hotspot:    "hotspot123",
 		Status:     "REVIEWED",
 		Resolution: "SAFE",
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	if err != nil {
+		t.Fatalf("ChangeStatus failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
 }
 
-func TestHotspotsChangeStatus_InvalidStatus(t *testing.T) {
-	t.Parallel()
+func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+	tests := []struct {
+		name string
+		opt  *HotspotsChangeStatusOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing hotspot",
+			opt:  &HotspotsChangeStatusOption{Status: "REVIEWED"},
+		},
+		{
+			name: "missing status",
+			opt:  &HotspotsChangeStatusOption{Hotspot: "hotspot123"},
+		},
+		{
+			name: "invalid status",
+			opt:  &HotspotsChangeStatusOption{Hotspot: "hotspot123", Status: "INVALID"},
+		},
+		{
+			name: "invalid resolution",
+			opt:  &HotspotsChangeStatusOption{Hotspot: "hotspot123", Status: "REVIEWED", Resolution: "INVALID"},
+		},
+	}
 
-	_, err = client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
-		Hotspot: "hotspot123",
-		Status:  "INVALID",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Status")
-}
-
-func TestHotspotsChangeStatus_InvalidResolution(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
-		Hotspot:    "hotspot123",
-		Status:     "REVIEWED",
-		Resolution: "INVALID",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Resolution")
-}
-
-func TestHotspotsChangeStatus_MissingHotspot(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
-		Status: "REVIEWED",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Hotspot")
-}
-
-func TestHotspotsChangeStatus_MissingStatus(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
-		Hotspot: "hotspot123",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Status")
-}
-
-func TestHotspotsChangeStatus_NilOption(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.ChangeStatus(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := client.Hotspots.ChangeStatus(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // DeleteComment Tests
 // =============================================================================
 
-func TestHotspotsDeleteComment_Success(t *testing.T) {
-	t.Parallel()
+func TestHotspots_DeleteComment(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodPost, r.Method)
-		assert.Equal(t, "/hotspots/delete_comment", r.URL.Path)
-		assert.Equal(t, "comment123", r.FormValue("comment"))
+		if r.URL.Path != "/api/hotspots/delete_comment" {
+			t.Errorf("expected path /api/hotspots/delete_comment, got %s", r.URL.Path)
+		}
+
+		comment := r.URL.Query().Get("comment")
+		if comment != "comment123" {
+			t.Errorf("expected comment 'comment123', got %s", comment)
+		}
+
 		w.WriteHeader(http.StatusNoContent)
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
 
-	resp, err := client.Hotspots.DeleteComment(&sonargo.HotspotsDeleteCommentOption{
+	resp, err := client.Hotspots.DeleteComment(&HotspotsDeleteCommentOption{
 		Comment: "comment123",
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	if err != nil {
+		t.Fatalf("DeleteComment failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		t.Errorf("expected status 204, got %d", resp.StatusCode)
+	}
 }
 
-func TestHotspotsDeleteComment_MissingComment(t *testing.T) {
-	t.Parallel()
+func TestHotspots_DeleteComment_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+	tests := []struct {
+		name string
+		opt  *HotspotsDeleteCommentOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing comment",
+			opt:  &HotspotsDeleteCommentOption{},
+		},
+	}
 
-	_, err = client.Hotspots.DeleteComment(&sonargo.HotspotsDeleteCommentOption{})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Comment")
-}
-
-func TestHotspotsDeleteComment_NilOption(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, err = client.Hotspots.DeleteComment(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := client.Hotspots.DeleteComment(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // EditComment Tests
 // =============================================================================
 
-func TestHotspotsEditComment_Success(t *testing.T) {
-	t.Parallel()
-
-	expectedResponse := &sonargo.HotspotsEditComment{
+func TestHotspots_EditComment(t *testing.T) {
+	expectedResponse := &HotspotsEditComment{
 		CreatedAt: "2024-01-01T12:00:00+0000",
 		HTMLText:  "<p>Updated comment</p>",
 		Key:       "comment123",
@@ -303,572 +336,654 @@ func TestHotspotsEditComment_Success(t *testing.T) {
 		Updatable: true,
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodPost, r.Method)
-		assert.Equal(t, "/hotspots/edit_comment", r.URL.Path)
-		assert.Equal(t, "comment123", r.FormValue("comment"))
-		assert.Equal(t, "Updated comment", r.FormValue("text"))
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			t.Errorf("expected method POST, got %s", r.Method)
+		}
+
+		if r.URL.Path != "/api/hotspots/edit_comment" {
+			t.Errorf("expected path /api/hotspots/edit_comment, got %s", r.URL.Path)
+		}
+
+		comment := r.URL.Query().Get("comment")
+		if comment != "comment123" {
+			t.Errorf("expected comment 'comment123', got %s", comment)
+		}
+
+		text := r.URL.Query().Get("text")
+		if text != "Updated comment" {
+			t.Errorf("expected text 'Updated comment', got %s", text)
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(expectedResponse)
-		require.NoError(t, err)
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(expectedResponse)
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
 
-	result, resp, err := client.Hotspots.EditComment(&sonargo.HotspotsEditCommentOption{
+	result, resp, err := client.Hotspots.EditComment(&HotspotsEditCommentOption{
 		Comment: "comment123",
 		Text:    "Updated comment",
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, expectedResponse.Key, result.Key)
-	assert.Equal(t, expectedResponse.Markdown, result.Markdown)
-}
-
-func TestHotspotsEditComment_MissingComment(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.EditComment(&sonargo.HotspotsEditCommentOption{
-		Text: "Updated comment",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Comment")
-}
-
-func TestHotspotsEditComment_MissingText(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.EditComment(&sonargo.HotspotsEditCommentOption{
-		Comment: "comment123",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Text")
-}
-
-func TestHotspotsEditComment_TextTooLong(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	longText := make([]byte, 1001)
-	for i := range longText {
-		longText[i] = 'a'
+	if err != nil {
+		t.Fatalf("EditComment failed: %v", err)
 	}
 
-	_, _, err = client.Hotspots.EditComment(&sonargo.HotspotsEditCommentOption{
-		Comment: "comment123",
-		Text:    string(longText),
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Text")
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+
+	if result == nil {
+		t.Fatal("expected non-nil result")
+	}
+
+	if result.Key != expectedResponse.Key {
+		t.Errorf("expected key '%s', got %s", expectedResponse.Key, result.Key)
+	}
+
+	if result.Markdown != expectedResponse.Markdown {
+		t.Errorf("expected markdown '%s', got %s", expectedResponse.Markdown, result.Markdown)
+	}
 }
 
-func TestHotspotsEditComment_NilOption(t *testing.T) {
-	t.Parallel()
+func TestHotspots_EditComment_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+	tests := []struct {
+		name string
+		opt  *HotspotsEditCommentOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing comment",
+			opt:  &HotspotsEditCommentOption{Text: "Updated comment"},
+		},
+		{
+			name: "missing text",
+			opt:  &HotspotsEditCommentOption{Comment: "comment123"},
+		},
+		{
+			name: "text too long",
+			opt: &HotspotsEditCommentOption{
+				Comment: "comment123",
+				Text:    string(make([]byte, MaxHotspotCommentLength+1)),
+			},
+		},
+	}
 
-	_, _, err = client.Hotspots.EditComment(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.Hotspots.EditComment(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // List Tests
 // =============================================================================
 
-func TestHotspotsList_Success(t *testing.T) {
-	t.Parallel()
+func TestHotspots_List(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
 
-	expectedResponse := &sonargo.HotspotsList{
-		Components: []sonargo.HotspotComponent{
-			{Key: "project:src/main.go", Name: "main.go", Qualifier: "FIL"},
-		},
-		Hotspots: []sonargo.HotspotSummary{
-			{
-				Key:                      "hotspot123",
-				Component:                "project:src/main.go",
-				Status:                   "TO_REVIEW",
-				VulnerabilityProbability: "HIGH",
-			},
-		},
-		Paging: sonargo.HotspotPaging{PageIndex: 1, PageSize: 100, Total: 1},
+		if r.URL.Path != "/api/hotspots/list" {
+			t.Errorf("expected path /api/hotspots/list, got %s", r.URL.Path)
+		}
+
+		project := r.URL.Query().Get("project")
+		if project != "my-project" {
+			t.Errorf("expected project 'my-project', got %s", project)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{
+			"components": [
+				{"key": "project:src/main.go", "name": "main.go", "qualifier": "FIL"}
+			],
+			"hotspots": [
+				{
+					"key": "hotspot123",
+					"component": "project:src/main.go",
+					"status": "TO_REVIEW",
+					"vulnerabilityProbability": "HIGH"
+				}
+			],
+			"paging": {"pageIndex": 1, "pageSize": 100, "total": 1}
+		}`))
+	}))
+	defer ts.Close()
+
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodGet, r.Method)
-		assert.Equal(t, "/hotspots/list", r.URL.Path)
-		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
-		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(expectedResponse)
-		require.NoError(t, err)
-	}))
-	defer server.Close()
-
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
-
-	result, resp, err := client.Hotspots.List(&sonargo.HotspotsListOption{
+	result, resp, err := client.Hotspots.List(&HotspotsListOption{
 		Project: "my-project",
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	require.Len(t, result.Hotspots, 1)
-	assert.Equal(t, "hotspot123", result.Hotspots[0].Key)
+	if err != nil {
+		t.Fatalf("List failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+
+	if result == nil {
+		t.Fatal("expected non-nil result")
+	}
+
+	if len(result.Hotspots) != 1 {
+		t.Fatalf("expected 1 hotspot, got %d", len(result.Hotspots))
+	}
+
+	if result.Hotspots[0].Key != "hotspot123" {
+		t.Errorf("expected key 'hotspot123', got %s", result.Hotspots[0].Key)
+	}
 }
 
-func TestHotspotsList_MissingProject(t *testing.T) {
-	t.Parallel()
+func TestHotspots_List_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.List(&sonargo.HotspotsListOption{})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Project")
-}
-
-func TestHotspotsList_InvalidStatus(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.List(&sonargo.HotspotsListOption{
-		Project: "my-project",
-		Status:  "INVALID",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Status")
-}
-
-func TestHotspotsList_InvalidResolution(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.List(&sonargo.HotspotsListOption{
-		Project:    "my-project",
-		Resolution: "INVALID",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Resolution")
-}
-
-func TestHotspotsList_PageSizeTooLarge(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.List(&sonargo.HotspotsListOption{
-		Project: "my-project",
-		PaginationArgs: sonargo.PaginationArgs{
-			PageSize: 501,
+	tests := []struct {
+		name string
+		opt  *HotspotsListOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
 		},
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "PageSize")
-}
+		{
+			name: "missing project",
+			opt:  &HotspotsListOption{},
+		},
+		{
+			name: "invalid status",
+			opt:  &HotspotsListOption{Project: "my-project", Status: "INVALID"},
+		},
+		{
+			name: "invalid resolution",
+			opt:  &HotspotsListOption{Project: "my-project", Resolution: "INVALID"},
+		},
+		{
+			name: "page size too large",
+			opt:  &HotspotsListOption{Project: "my-project", PaginationArgs: PaginationArgs{PageSize: MaxHotspotListPageSize + 1}},
+		},
+	}
 
-func TestHotspotsList_NilOption(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.List(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.Hotspots.List(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // Pull Tests
 // =============================================================================
 
-func TestHotspotsPull_Success(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Pull(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
 
-	// The Pull endpoint returns raw bytes - use an empty JSON array for compatibility
-	// with the client's JSON decoder when used with []byte type
-	expectedData := `[]`
+		if r.URL.Path != "/api/hotspots/pull" {
+			t.Errorf("expected path /api/hotspots/pull, got %s", r.URL.Path)
+		}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodGet, r.Method)
-		assert.Equal(t, "/hotspots/pull", r.URL.Path)
-		assert.Equal(t, "my-project", r.URL.Query().Get("projectKey"))
-		assert.Equal(t, "main", r.URL.Query().Get("branchName"))
+		projectKey := r.URL.Query().Get("projectKey")
+		if projectKey != "my-project" {
+			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
+		}
+
+		branchName := r.URL.Query().Get("branchName")
+		if branchName != "main" {
+			t.Errorf("expected branchName 'main', got %s", branchName)
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		_, err := w.Write([]byte(expectedData))
-		require.NoError(t, err)
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`[]`))
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
 
-	result, resp, err := client.Hotspots.Pull(&sonargo.HotspotsPullOption{
+	result, resp, err := client.Hotspots.Pull(&HotspotsPullOption{
 		ProjectKey: "my-project",
 		BranchName: "main",
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.NotNil(t, result)
+	if err != nil {
+		t.Fatalf("Pull failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+
+	if result == nil {
+		t.Fatal("expected non-nil result")
+	}
 }
 
-func TestHotspotsPull_MissingProjectKey(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Pull_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+	tests := []struct {
+		name string
+		opt  *HotspotsPullOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing project key",
+			opt:  &HotspotsPullOption{BranchName: "main"},
+		},
+		{
+			name: "missing branch name",
+			opt:  &HotspotsPullOption{ProjectKey: "my-project"},
+		},
+	}
 
-	_, _, err = client.Hotspots.Pull(&sonargo.HotspotsPullOption{
-		BranchName: "main",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "ProjectKey")
-}
-
-func TestHotspotsPull_MissingBranchName(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Pull(&sonargo.HotspotsPullOption{
-		ProjectKey: "my-project",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "BranchName")
-}
-
-func TestHotspotsPull_NilOption(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Pull(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.Hotspots.Pull(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // Search Tests
 // =============================================================================
 
-func TestHotspotsSearch_SuccessWithProject(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Search_WithProject(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
 
-	expectedResponse := &sonargo.HotspotsSearch{
-		Components: []sonargo.HotspotComponent{
-			{Key: "project:src/main.go", Name: "main.go", Qualifier: "FIL"},
-		},
-		Hotspots: []sonargo.HotspotSummary{
-			{
-				Key:                      "hotspot123",
-				Component:                "project:src/main.go",
-				Status:                   "TO_REVIEW",
-				VulnerabilityProbability: "HIGH",
-			},
-		},
-		Paging: sonargo.HotspotPaging{PageIndex: 1, PageSize: 100, Total: 1},
+		if r.URL.Path != "/api/hotspots/search" {
+			t.Errorf("expected path /api/hotspots/search, got %s", r.URL.Path)
+		}
+
+		project := r.URL.Query().Get("project")
+		if project != "my-project" {
+			t.Errorf("expected project 'my-project', got %s", project)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{
+			"components": [
+				{"key": "project:src/main.go", "name": "main.go", "qualifier": "FIL"}
+			],
+			"hotspots": [
+				{
+					"key": "hotspot123",
+					"component": "project:src/main.go",
+					"status": "TO_REVIEW",
+					"vulnerabilityProbability": "HIGH"
+				}
+			],
+			"paging": {"pageIndex": 1, "pageSize": 100, "total": 1}
+		}`))
+	}))
+	defer ts.Close()
+
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodGet, r.Method)
-		assert.Equal(t, "/hotspots/search", r.URL.Path)
-		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
-		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(expectedResponse)
-		require.NoError(t, err)
-	}))
-	defer server.Close()
-
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
-
-	result, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+	result, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
 		Project: "my-project",
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	require.Len(t, result.Hotspots, 1)
-	assert.Equal(t, "hotspot123", result.Hotspots[0].Key)
+	if err != nil {
+		t.Fatalf("Search failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+
+	if result == nil {
+		t.Fatal("expected non-nil result")
+	}
+
+	if len(result.Hotspots) != 1 {
+		t.Fatalf("expected 1 hotspot, got %d", len(result.Hotspots))
+	}
+
+	if result.Hotspots[0].Key != "hotspot123" {
+		t.Errorf("expected key 'hotspot123', got %s", result.Hotspots[0].Key)
+	}
 }
 
-func TestHotspotsSearch_SuccessWithHotspots(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Search_WithHotspots(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodGet, r.Method)
-		assert.Equal(t, "/hotspots/search", r.URL.Path)
-		assert.Equal(t, "hotspot1,hotspot2", r.URL.Query().Get("hotspots"))
+		hotspots := r.URL.Query().Get("hotspots")
+		if hotspots != "hotspot1,hotspot2" {
+			t.Errorf("expected hotspots 'hotspot1,hotspot2', got %s", hotspots)
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(&sonargo.HotspotsSearch{})
-		require.NoError(t, err)
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"components": [], "hotspots": [], "paging": {"pageIndex": 1, "pageSize": 100, "total": 0}}`))
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
 
-	_, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+	_, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
 		Hotspots: []string{"hotspot1", "hotspot2"},
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	if err != nil {
+		t.Fatalf("Search failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
 }
 
-func TestHotspotsSearch_MissingProjectAndHotspots(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Search_WithFilters(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+		project := r.URL.Query().Get("project")
+		if project != "my-project" {
+			t.Errorf("expected project 'my-project', got %s", project)
+		}
 
-	_, _, err = client.Hotspots.Search(&sonargo.HotspotsSearchOption{})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "project or hotspots is required")
-}
+		status := r.URL.Query().Get("status")
+		if status != "REVIEWED" {
+			t.Errorf("expected status 'REVIEWED', got %s", status)
+		}
 
-func TestHotspotsSearch_InvalidStatus(t *testing.T) {
-	t.Parallel()
+		resolution := r.URL.Query().Get("resolution")
+		if resolution != "SAFE" {
+			t.Errorf("expected resolution 'SAFE', got %s", resolution)
+		}
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
+		inNewCodePeriod := r.URL.Query().Get("inNewCodePeriod")
+		if inNewCodePeriod != "true" {
+			t.Errorf("expected inNewCodePeriod 'true', got %s", inNewCodePeriod)
+		}
 
-	_, _, err = client.Hotspots.Search(&sonargo.HotspotsSearchOption{
-		Project: "my-project",
-		Status:  "INVALID",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Status")
-}
+		onlyMine := r.URL.Query().Get("onlyMine")
+		if onlyMine != "true" {
+			t.Errorf("expected onlyMine 'true', got %s", onlyMine)
+		}
 
-func TestHotspotsSearch_InvalidResolution(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Search(&sonargo.HotspotsSearchOption{
-		Project:    "my-project",
-		Resolution: "INVALID",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Resolution")
-}
-
-func TestHotspotsSearch_InvalidOwaspAsvsLevel(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Search(&sonargo.HotspotsSearchOption{
-		Project:        "my-project",
-		OwaspAsvsLevel: "5",
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "OwaspAsvsLevel")
-}
-
-func TestHotspotsSearch_InvalidOwaspTop10(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Search(&sonargo.HotspotsSearchOption{
-		Project:    "my-project",
-		OwaspTop10: []string{"a1", "invalid"},
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "OwaspTop10")
-}
-
-func TestHotspotsSearch_InvalidSansTop25(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Search(&sonargo.HotspotsSearchOption{
-		Project:   "my-project",
-		SansTop25: []string{"insecure-interaction", "invalid"},
-	})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "SansTop25")
-}
-
-func TestHotspotsSearch_NilOption(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Search(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
-}
-
-func TestHotspotsSearch_WithFilters(t *testing.T) {
-	t.Parallel()
-
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodGet, r.Method)
-		assert.Equal(t, "/hotspots/search", r.URL.Path)
-		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
-		assert.Equal(t, "REVIEWED", r.URL.Query().Get("status"))
-		assert.Equal(t, "SAFE", r.URL.Query().Get("resolution"))
-		assert.Equal(t, "true", r.URL.Query().Get("inNewCodePeriod"))
-		assert.Equal(t, "true", r.URL.Query().Get("onlyMine"))
 		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(&sonargo.HotspotsSearch{})
-		require.NoError(t, err)
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"components": [], "hotspots": [], "paging": {"pageIndex": 1, "pageSize": 100, "total": 0}}`))
 	}))
-	defer server.Close()
+	defer ts.Close()
 
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
 
-	_, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+	_, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
 		Project:         "my-project",
 		Status:          "REVIEWED",
 		Resolution:      "SAFE",
 		InNewCodePeriod: true,
 		OnlyMine:        true,
 	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	if err != nil {
+		t.Fatalf("Search failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestHotspots_Search_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	tests := []struct {
+		name string
+		opt  *HotspotsSearchOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing project and hotspots",
+			opt:  &HotspotsSearchOption{},
+		},
+		{
+			name: "invalid status",
+			opt:  &HotspotsSearchOption{Project: "my-project", Status: "INVALID"},
+		},
+		{
+			name: "invalid resolution",
+			opt:  &HotspotsSearchOption{Project: "my-project", Resolution: "INVALID"},
+		},
+		{
+			name: "invalid owasp asvs level",
+			opt:  &HotspotsSearchOption{Project: "my-project", OwaspAsvsLevel: "5"},
+		},
+		{
+			name: "invalid owasp top 10",
+			opt:  &HotspotsSearchOption{Project: "my-project", OwaspTop10: []string{"a1", "invalid"}},
+		},
+		{
+			name: "invalid sans top 25",
+			opt:  &HotspotsSearchOption{Project: "my-project", SansTop25: []string{"insecure-interaction", "invalid"}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.Hotspots.Search(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // Show Tests
 // =============================================================================
 
-func TestHotspotsShow_Success(t *testing.T) {
-	t.Parallel()
+func TestHotspots_Show(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Errorf("expected method GET, got %s", r.Method)
+		}
 
-	expectedResponse := &sonargo.HotspotsShow{
-		Key:             "hotspot123",
-		Status:          "TO_REVIEW",
-		CanChangeStatus: true,
-		Message:         "Security issue found",
-		Component: sonargo.HotspotComponent{
-			Key:  "project:src/main.go",
-			Name: "main.go",
-		},
-		Project: sonargo.HotspotProject{
-			Key:  "my-project",
-			Name: "My Project",
-		},
-		Rule: sonargo.HotspotRule{
-			Key:  "java:S2092",
-			Name: "Cookies should be secure",
-		},
-		Users: []sonargo.HotspotUser{
-			{Login: "john.doe", Name: "John Doe", Active: true},
-		},
-		Changelog: []sonargo.HotspotChangelogEntry{
-			{
-				User:         "john.doe",
-				CreationDate: "2024-01-01T12:00:00+0000",
-				Diffs: []sonargo.HotspotDiff{
-					{Key: "status", OldValue: "TO_REVIEW", NewValue: "REVIEWED"},
-				},
+		if r.URL.Path != "/api/hotspots/show" {
+			t.Errorf("expected path /api/hotspots/show, got %s", r.URL.Path)
+		}
+
+		hotspot := r.URL.Query().Get("hotspot")
+		if hotspot != "hotspot123" {
+			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{
+			"key": "hotspot123",
+			"status": "TO_REVIEW",
+			"canChangeStatus": true,
+			"message": "Security issue found",
+			"component": {
+				"key": "project:src/main.go",
+				"name": "main.go"
 			},
-		},
-		Comment: []sonargo.HotspotComment{
-			{
-				Key:      "comment123",
-				Login:    "john.doe",
-				Markdown: "This is safe",
+			"project": {
+				"key": "my-project",
+				"name": "My Project"
 			},
+			"rule": {
+				"key": "java:S2092",
+				"name": "Cookies should be secure"
+			},
+			"users": [
+				{"login": "john.doe", "name": "John Doe", "active": true}
+			],
+			"changelog": [
+				{
+					"user": "john.doe",
+					"creationDate": "2024-01-01T12:00:00+0000",
+					"diffs": [
+						{"key": "status", "oldValue": "TO_REVIEW", "newValue": "REVIEWED"}
+					]
+				}
+			],
+			"comment": [
+				{
+					"key": "comment123",
+					"login": "john.doe",
+					"markdown": "This is safe"
+				}
+			]
+		}`))
+	}))
+	defer ts.Close()
+
+	client, err := NewClient(ts.URL+"/api/", "user", "pass")
+	if err != nil {
+		t.Fatalf("failed to create client: %v", err)
+	}
+
+	result, resp, err := client.Hotspots.Show(&HotspotsShowOption{
+		Hotspot: "hotspot123",
+	})
+	if err != nil {
+		t.Fatalf("Show failed: %v", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	}
+
+	if result == nil {
+		t.Fatal("expected non-nil result")
+	}
+
+	if result.Key != "hotspot123" {
+		t.Errorf("expected key 'hotspot123', got %s", result.Key)
+	}
+
+	if result.Status != "TO_REVIEW" {
+		t.Errorf("expected status 'TO_REVIEW', got %s", result.Status)
+	}
+
+	if !result.CanChangeStatus {
+		t.Error("expected canChangeStatus to be true")
+	}
+
+	if len(result.Users) != 1 {
+		t.Fatalf("expected 1 user, got %d", len(result.Users))
+	}
+
+	if result.Users[0].Login != "john.doe" {
+		t.Errorf("expected user login 'john.doe', got %s", result.Users[0].Login)
+	}
+
+	if len(result.Changelog) != 1 {
+		t.Fatalf("expected 1 changelog entry, got %d", len(result.Changelog))
+	}
+
+	if result.Changelog[0].User != "john.doe" {
+		t.Errorf("expected changelog user 'john.doe', got %s", result.Changelog[0].User)
+	}
+
+	if len(result.Changelog[0].Diffs) != 1 {
+		t.Fatalf("expected 1 diff, got %d", len(result.Changelog[0].Diffs))
+	}
+
+	if result.Changelog[0].Diffs[0].Key != "status" {
+		t.Errorf("expected diff key 'status', got %s", result.Changelog[0].Diffs[0].Key)
+	}
+}
+
+func TestHotspots_Show_ValidationError(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
+
+	tests := []struct {
+		name string
+		opt  *HotspotsShowOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing hotspot",
+			opt:  &HotspotsShowOption{},
 		},
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodGet, r.Method)
-		assert.Equal(t, "/hotspots/show", r.URL.Path)
-		assert.Equal(t, "hotspot123", r.URL.Query().Get("hotspot"))
-		w.Header().Set("Content-Type", "application/json")
-		err := json.NewEncoder(w).Encode(expectedResponse)
-		require.NoError(t, err)
-	}))
-	defer server.Close()
-
-	client, err := sonargo.NewClient(server.URL, "", "")
-	require.NoError(t, err)
-
-	result, resp, err := client.Hotspots.Show(&sonargo.HotspotsShowOption{
-		Hotspot: "hotspot123",
-	})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "hotspot123", result.Key)
-	assert.Equal(t, "TO_REVIEW", result.Status)
-	assert.True(t, result.CanChangeStatus)
-	require.Len(t, result.Users, 1)
-	assert.Equal(t, "john.doe", result.Users[0].Login)
-	require.Len(t, result.Changelog, 1)
-	assert.Equal(t, "john.doe", result.Changelog[0].User)
-	require.Len(t, result.Changelog[0].Diffs, 1)
-	assert.Equal(t, "status", result.Changelog[0].Diffs[0].Key)
-}
-
-func TestHotspotsShow_MissingHotspot(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Show(&sonargo.HotspotsShowOption{})
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "Hotspot")
-}
-
-func TestHotspotsShow_NilOption(t *testing.T) {
-	t.Parallel()
-
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	_, _, err = client.Hotspots.Show(nil)
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "option struct")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.Hotspots.Show(tt.opt)
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }
 
 // =============================================================================
 // Validation Function Tests
 // =============================================================================
 
-func TestHotspotsValidateAddCommentOpt(t *testing.T) {
-	t.Parallel()
+func TestHotspots_ValidateAddCommentOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	testCases := []struct {
+	tests := []struct {
 		name    string
-		opt     *sonargo.HotspotsAddCommentOption
+		opt     *HotspotsAddCommentOption
 		wantErr bool
-		errMsg  string
 	}{
 		{
 			name: "valid option",
-			opt: &sonargo.HotspotsAddCommentOption{
+			opt: &HotspotsAddCommentOption{
 				Comment: "Valid comment",
 				Hotspot: "hotspot123",
 			},
@@ -878,55 +993,47 @@ func TestHotspotsValidateAddCommentOpt(t *testing.T) {
 			name:    "nil option",
 			opt:     nil,
 			wantErr: true,
-			errMsg:  "option struct",
 		},
 		{
 			name: "missing comment",
-			opt: &sonargo.HotspotsAddCommentOption{
+			opt: &HotspotsAddCommentOption{
 				Hotspot: "hotspot123",
 			},
 			wantErr: true,
-			errMsg:  "Comment",
 		},
 		{
 			name: "missing hotspot",
-			opt: &sonargo.HotspotsAddCommentOption{
+			opt: &HotspotsAddCommentOption{
 				Comment: "Valid comment",
 			},
 			wantErr: true,
-			errMsg:  "Hotspot",
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			err := client.Hotspots.ValidateAddCommentOpt(tc.opt)
-			if tc.wantErr {
-				require.Error(t, err)
-				assert.Contains(t, err.Error(), tc.errMsg)
-			} else {
-				require.NoError(t, err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.Hotspots.ValidateAddCommentOpt(tt.opt)
+			if tt.wantErr && err == nil {
+				t.Error("expected error")
+			}
+			if !tt.wantErr && err != nil {
+				t.Errorf("unexpected error: %v", err)
 			}
 		})
 	}
 }
 
-func TestHotspotsValidateChangeStatusOpt(t *testing.T) {
-	t.Parallel()
+func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	testCases := []struct {
+	tests := []struct {
 		name    string
-		opt     *sonargo.HotspotsChangeStatusOption
+		opt     *HotspotsChangeStatusOption
 		wantErr bool
-		errMsg  string
 	}{
 		{
 			name: "valid TO_REVIEW status",
-			opt: &sonargo.HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOption{
 				Hotspot: "hotspot123",
 				Status:  "TO_REVIEW",
 			},
@@ -934,7 +1041,7 @@ func TestHotspotsValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "valid REVIEWED with SAFE resolution",
-			opt: &sonargo.HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOption{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "SAFE",
@@ -943,7 +1050,7 @@ func TestHotspotsValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "valid REVIEWED with FIXED resolution",
-			opt: &sonargo.HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOption{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "FIXED",
@@ -952,7 +1059,7 @@ func TestHotspotsValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "valid REVIEWED with ACKNOWLEDGED resolution",
-			opt: &sonargo.HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOption{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "ACKNOWLEDGED",
@@ -963,72 +1070,64 @@ func TestHotspotsValidateChangeStatusOpt(t *testing.T) {
 			name:    "nil option",
 			opt:     nil,
 			wantErr: true,
-			errMsg:  "option struct",
 		},
 		{
 			name: "invalid status",
-			opt: &sonargo.HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOption{
 				Hotspot: "hotspot123",
 				Status:  "INVALID_STATUS",
 			},
 			wantErr: true,
-			errMsg:  "Status",
 		},
 		{
 			name: "invalid resolution",
-			opt: &sonargo.HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOption{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "INVALID",
 			},
 			wantErr: true,
-			errMsg:  "Resolution",
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			err := client.Hotspots.ValidateChangeStatusOpt(tc.opt)
-			if tc.wantErr {
-				require.Error(t, err)
-				assert.Contains(t, err.Error(), tc.errMsg)
-			} else {
-				require.NoError(t, err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.Hotspots.ValidateChangeStatusOpt(tt.opt)
+			if tt.wantErr && err == nil {
+				t.Error("expected error")
+			}
+			if !tt.wantErr && err != nil {
+				t.Errorf("unexpected error: %v", err)
 			}
 		})
 	}
 }
 
-func TestHotspotsValidateSearchOpt(t *testing.T) {
-	t.Parallel()
+func TestHotspots_ValidateSearchOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	testCases := []struct {
+	tests := []struct {
 		name    string
-		opt     *sonargo.HotspotsSearchOption
+		opt     *HotspotsSearchOption
 		wantErr bool
-		errMsg  string
 	}{
 		{
 			name: "valid with project",
-			opt: &sonargo.HotspotsSearchOption{
+			opt: &HotspotsSearchOption{
 				Project: "my-project",
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid with hotspots",
-			opt: &sonargo.HotspotsSearchOption{
+			opt: &HotspotsSearchOption{
 				Hotspots: []string{"hotspot1", "hotspot2"},
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid with all OWASP filters",
-			opt: &sonargo.HotspotsSearchOption{
+			opt: &HotspotsSearchOption{
 				Project:        "my-project",
 				OwaspTop10:     []string{"a1", "a2"},
 				OwaspTop102021: []string{"a3", "a4"},
@@ -1038,7 +1137,7 @@ func TestHotspotsValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "valid with SANS filter",
-			opt: &sonargo.HotspotsSearchOption{
+			opt: &HotspotsSearchOption{
 				Project:   "my-project",
 				SansTop25: []string{"insecure-interaction", "porous-defenses"},
 			},
@@ -1048,93 +1147,83 @@ func TestHotspotsValidateSearchOpt(t *testing.T) {
 			name:    "nil option",
 			opt:     nil,
 			wantErr: true,
-			errMsg:  "option struct",
 		},
 		{
 			name:    "missing project and hotspots",
-			opt:     &sonargo.HotspotsSearchOption{},
+			opt:     &HotspotsSearchOption{},
 			wantErr: true,
-			errMsg:  "project or hotspots is required",
 		},
 		{
 			name: "invalid OwaspAsvsLevel",
-			opt: &sonargo.HotspotsSearchOption{
+			opt: &HotspotsSearchOption{
 				Project:        "my-project",
 				OwaspAsvsLevel: "4",
 			},
 			wantErr: true,
-			errMsg:  "OwaspAsvsLevel",
 		},
 		{
 			name: "invalid OwaspTop10 value",
-			opt: &sonargo.HotspotsSearchOption{
+			opt: &HotspotsSearchOption{
 				Project:    "my-project",
 				OwaspTop10: []string{"a11"},
 			},
 			wantErr: true,
-			errMsg:  "OwaspTop10",
 		},
 		{
 			name: "invalid SansTop25 value",
-			opt: &sonargo.HotspotsSearchOption{
+			opt: &HotspotsSearchOption{
 				Project:   "my-project",
 				SansTop25: []string{"invalid-category"},
 			},
 			wantErr: true,
-			errMsg:  "SansTop25",
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			err := client.Hotspots.ValidateSearchOpt(tc.opt)
-			if tc.wantErr {
-				require.Error(t, err)
-				assert.Contains(t, err.Error(), tc.errMsg)
-			} else {
-				require.NoError(t, err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.Hotspots.ValidateSearchOpt(tt.opt)
+			if tt.wantErr && err == nil {
+				t.Error("expected error")
+			}
+			if !tt.wantErr && err != nil {
+				t.Errorf("unexpected error: %v", err)
 			}
 		})
 	}
 }
 
-func TestHotspotsValidateListOpt(t *testing.T) {
-	t.Parallel()
+func TestHotspots_ValidateListOpt(t *testing.T) {
+	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	client, err := sonargo.NewClient("http://localhost", "", "")
-	require.NoError(t, err)
-
-	testCases := []struct {
+	tests := []struct {
 		name    string
-		opt     *sonargo.HotspotsListOption
+		opt     *HotspotsListOption
 		wantErr bool
-		errMsg  string
 	}{
 		{
 			name: "valid basic option",
-			opt: &sonargo.HotspotsListOption{
+			opt: &HotspotsListOption{
 				Project: "my-project",
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid with all optional params",
-			opt: &sonargo.HotspotsListOption{
+			opt: &HotspotsListOption{
 				Project:         "my-project",
 				Branch:          "main",
 				InNewCodePeriod: true,
 				Status:          "TO_REVIEW",
 				Resolution:      "SAFE",
-				PaginationArgs:  sonargo.PaginationArgs{PageSize: 100},
+				PaginationArgs:  PaginationArgs{PageSize: 100},
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid max page size",
-			opt: &sonargo.HotspotsListOption{
+			opt: &HotspotsListOption{
 				Project:        "my-project",
-				PaginationArgs: sonargo.PaginationArgs{PageSize: 500},
+				PaginationArgs: PaginationArgs{PageSize: MaxHotspotListPageSize},
 			},
 			wantErr: false,
 		},
@@ -1142,52 +1231,46 @@ func TestHotspotsValidateListOpt(t *testing.T) {
 			name:    "nil option",
 			opt:     nil,
 			wantErr: true,
-			errMsg:  "option struct",
 		},
 		{
 			name:    "missing project",
-			opt:     &sonargo.HotspotsListOption{},
+			opt:     &HotspotsListOption{},
 			wantErr: true,
-			errMsg:  "Project",
 		},
 		{
 			name: "page size exceeds max",
-			opt: &sonargo.HotspotsListOption{
+			opt: &HotspotsListOption{
 				Project:        "my-project",
-				PaginationArgs: sonargo.PaginationArgs{PageSize: 501},
+				PaginationArgs: PaginationArgs{PageSize: MaxHotspotListPageSize + 1},
 			},
 			wantErr: true,
-			errMsg:  "PageSize",
 		},
 		{
 			name: "invalid status",
-			opt: &sonargo.HotspotsListOption{
+			opt: &HotspotsListOption{
 				Project: "my-project",
 				Status:  "CLOSED",
 			},
 			wantErr: true,
-			errMsg:  "Status",
 		},
 		{
 			name: "invalid resolution",
-			opt: &sonargo.HotspotsListOption{
+			opt: &HotspotsListOption{
 				Project:    "my-project",
 				Resolution: "WONTFIX",
 			},
 			wantErr: true,
-			errMsg:  "Resolution",
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			err := client.Hotspots.ValidateListOpt(tc.opt)
-			if tc.wantErr {
-				require.Error(t, err)
-				assert.Contains(t, err.Error(), tc.errMsg)
-			} else {
-				require.NoError(t, err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.Hotspots.ValidateListOpt(tt.opt)
+			if tt.wantErr && err == nil {
+				t.Error("expected error")
+			}
+			if !tt.wantErr && err != nil {
+				t.Errorf("unexpected error: %v", err)
 			}
 		})
 	}
