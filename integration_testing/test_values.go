@@ -74,7 +74,7 @@ func SetupTestResources(c *sonar.Client) {
 	// Create Webhook
 	wh, _, err := c.Webhooks.Create(&sonar.WebhooksCreateOption{
 		Name:    "test-webhook",
-		Url:     "https://example.com/webhook",
+		URL:     "https://example.com/webhook",
 		Project: "test-project",
 	})
 	if err != nil {

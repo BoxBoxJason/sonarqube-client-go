@@ -2,18 +2,6 @@
 
 package sonargo
 
-func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOption) error {
-	return nil
-}
-func (s *MeasuresService) ValidateComponentTreeOpt(opt *MeasuresComponentTreeOption) error {
-	return nil
-}
-func (s *MeasuresService) ValidateSearchOpt(opt *MeasuresSearchOption) error {
-	return nil
-}
-func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOption) error {
-	return nil
-}
 func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOption) error {
 	return nil
 }
@@ -45,105 +33,6 @@ func (s *ProjectAnalysesService) ValidateSearchOpt(opt *ProjectAnalysesSearchOpt
 	return nil
 }
 func (s *ProjectAnalysesService) ValidateUpdateEventOpt(opt *ProjectAnalysesUpdateEventOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateBulkDeleteOpt(opt *ProjectsBulkDeleteOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateCreateOpt(opt *ProjectsCreateOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateDeleteOpt(opt *ProjectsDeleteOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateSearchOpt(opt *ProjectsSearchOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateSearchMyProjectsOpt(opt *ProjectsSearchMyProjectsOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateSearchMyScannableProjectsOpt(opt *ProjectsSearchMyScannableProjectsOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateUpdateDefaultVisibilityOpt(opt *ProjectsUpdateDefaultVisibilityOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateUpdateKeyOpt(opt *ProjectsUpdateKeyOption) error {
-	return nil
-}
-func (s *ProjectsService) ValidateUpdateVisibilityOpt(opt *ProjectsUpdateVisibilityOption) error {
-	return nil
-}
-func (s *SettingsService) ValidateEncryptOpt(opt *SettingsEncryptOption) error {
-	return nil
-}
-func (s *SettingsService) ValidateListDefinitionsOpt(opt *SettingsListDefinitionsOption) error {
-	return nil
-}
-func (s *SettingsService) ValidateResetOpt(opt *SettingsResetOption) error {
-	return nil
-}
-func (s *SettingsService) ValidateSetOpt(opt *SettingsSetOption) error {
-	return nil
-}
-func (s *SettingsService) ValidateValuesOpt(opt *SettingsValuesOption) error {
-	return nil
-}
-func (s *SourcesService) ValidateIndexOpt(opt *SourcesIndexOption) error {
-	return nil
-}
-func (s *SourcesService) ValidateIssueSnippetsOpt(opt *SourcesIssueSnippetsOption) error {
-	return nil
-}
-func (s *SourcesService) ValidateLinesOpt(opt *SourcesLinesOption) error {
-	return nil
-}
-func (s *SourcesService) ValidateRawOpt(opt *SourcesRawOption) error {
-	return nil
-}
-func (s *SourcesService) ValidateScmOpt(opt *SourcesScmOption) error {
-	return nil
-}
-func (s *SourcesService) ValidateShowOpt(opt *SourcesShowOption) error {
-	return nil
-}
-func (s *UserGroupsService) ValidateAddUserOpt(opt *UserGroupsAddUserOption) error {
-	return nil
-}
-func (s *UserGroupsService) ValidateCreateOpt(opt *UserGroupsCreateOption) error {
-	return nil
-}
-func (s *UserGroupsService) ValidateDeleteOpt(opt *UserGroupsDeleteOption) error {
-	return nil
-}
-func (s *UserGroupsService) ValidateRemoveUserOpt(opt *UserGroupsRemoveUserOption) error {
-	return nil
-}
-func (s *UserGroupsService) ValidateSearchOpt(opt *UserGroupsSearchOption) error {
-	return nil
-}
-func (s *UserGroupsService) ValidateUpdateOpt(opt *UserGroupsUpdateOption) error {
-	return nil
-}
-func (s *UserGroupsService) ValidateUsersOpt(opt *UserGroupsUsersOption) error {
-	return nil
-}
-func (s *WebhooksService) ValidateCreateOpt(opt *WebhooksCreateOption) error {
-	return nil
-}
-func (s *WebhooksService) ValidateDeleteOpt(opt *WebhooksDeleteOption) error {
-	return nil
-}
-func (s *WebhooksService) ValidateDeliveriesOpt(opt *WebhooksDeliveriesOption) error {
-	return nil
-}
-func (s *WebhooksService) ValidateDeliveryOpt(opt *WebhooksDeliveryOption) error {
-	return nil
-}
-func (s *WebhooksService) ValidateListOpt(opt *WebhooksListOption) error {
-	return nil
-}
-func (s *WebhooksService) ValidateUpdateOpt(opt *WebhooksUpdateOption) error {
 	return nil
 }
 func (s *WebservicesService) ValidateListOpt(opt *WebservicesListOption) error {
