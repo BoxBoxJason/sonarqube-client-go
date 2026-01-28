@@ -613,6 +613,10 @@ func (s *ComponentsService) ValidateShowOpt(opt *ComponentsShowOption) error {
 		return err
 	}
 
+	if opt.Branch != "" && opt.PullRequest != "" {
+		return NewValidationError("Branch", "branch and pullRequest are mutually exclusive", ErrInvalidValue)
+	}
+
 	return nil
 }
 
@@ -673,6 +677,10 @@ func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOption) error {
 	err = IsValueAuthorized(opt.Strategy, allowedComponentTreeStrategies, "Strategy")
 	if err != nil {
 		return err
+	}
+
+	if opt.Branch != "" && opt.PullRequest != "" {
+		return NewValidationError("Branch", "branch and pullRequest are mutually exclusive", ErrInvalidValue)
 	}
 
 	return nil
