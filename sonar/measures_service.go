@@ -296,7 +296,12 @@ func (s *MeasuresService) ValidateComponentTreeOpt(opt *MeasuresComponentTreeOpt
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
 
-	err := ValidateRequired(opt.Component, "Component")
+	err := opt.Validate()
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Component, "Component")
 	if err != nil {
 		return err
 	}
@@ -345,7 +350,12 @@ func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOpt
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
 
-	err := ValidateRequired(opt.Component, "Component")
+	err := opt.Validate()
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Component, "Component")
 	if err != nil {
 		return err
 	}

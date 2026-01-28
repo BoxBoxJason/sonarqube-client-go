@@ -129,19 +129,24 @@ type ScannableProject struct {
 // -----------------------------------------------------------------------------
 
 // ProjectsBulkDeleteOption represents options for bulk deleting projects.
+//
+//nolint:govet // Field ordering prioritizes API clarity over memory alignment
 type ProjectsBulkDeleteOption struct {
+	// OnProvisionedOnly filters only provisioned projects (optional).
+	OnProvisionedOnly bool `url:"onProvisionedOnly,omitempty"`
 	// AnalyzedBefore filters projects analyzed before the given date (optional).
 	// Format: YYYY-MM-DD.
 	AnalyzedBefore string `url:"analyzedBefore,omitempty"`
-	// Projects is the list of project keys to delete (optional).
-	Projects []string `url:"projects,omitempty,comma"`
 	// Query is used to filter projects by name (optional).
 	Query string `url:"q,omitempty"`
+	// Visibility filters by project visibility (optional).
+	// Possible values: private, public.
+	Visibility string `url:"visibility,omitempty"`
+	// Projects is the list of project keys to delete (optional).
+	Projects []string `url:"projects,omitempty,comma"`
 	// Qualifiers filters by project qualifiers (optional).
 	// Possible values: TRK, VW, APP.
 	Qualifiers []string `url:"qualifiers,omitempty,comma"`
-	// OnProvisionedOnly filters only provisioned projects (optional).
-	OnProvisionedOnly bool `url:"onProvisionedOnly,omitempty"`
 }
 
 // ProjectsCreateOption represents options for creating a project.
@@ -191,11 +196,20 @@ type ProjectsSearchOption struct {
 	// Qualifiers filters by project qualifiers (optional).
 	// Possible values: TRK, VW, APP.
 	Qualifiers []string `url:"qualifiers,omitempty,comma"`
+	// Visibility filters by project visibility (optional).
+	// Possible values: private, public.
+	Visibility string `url:"visibility,omitempty"`
 }
 
 // ProjectsSearchMyProjectsOption represents options for searching my projects.
 type ProjectsSearchMyProjectsOption struct {
 	PaginationArgs
+}
+
+// ProjectsSearchMyScannableProjectsOption contains optional parameters for SearchMyScannableProjects.
+type ProjectsSearchMyScannableProjectsOption struct {
+	// Query is used to filter projects by name.
+	Query string `url:"q,omitempty"`
 }
 
 // ProjectsUpdateDefaultVisibilityOption represents options for updating default visibility.
@@ -239,6 +253,13 @@ func (s *ProjectsService) ValidateBulkDeleteOpt(opt *ProjectsBulkDeleteOption) e
 
 	if len(opt.Qualifiers) > 0 {
 		err := AreValuesAuthorized(opt.Qualifiers, allowedProjectQualifiers, "Qualifiers")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.Visibility != "" {
+		err := IsValueAuthorized(opt.Visibility, allowedProjectVisibility, "Visibility")
 		if err != nil {
 			return err
 		}
@@ -305,7 +326,15 @@ func (s *ProjectsService) ValidateSearchOpt(opt *ProjectsSearchOption) error {
 		}
 	}
 
-	return nil
+	// Visibility is optional
+	if opt.Visibility != "" {
+		err := IsValueAuthorized(opt.Visibility, allowedProjectVisibility, "Visibility")
+		if err != nil {
+			return err
+		}
+	}
+
+	return opt.Validate()
 }
 
 // ValidateSearchMyProjectsOpt validates the options for SearchMyProjects.
@@ -314,7 +343,7 @@ func (s *ProjectsService) ValidateSearchMyProjectsOpt(opt *ProjectsSearchMyProje
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
 
-	return nil
+	return opt.Validate()
 }
 
 // ValidateUpdateDefaultVisibilityOpt validates the options for UpdateDefaultVisibility.
@@ -509,8 +538,8 @@ func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOption) 
 // Requires authentication.
 //
 // Since: 9.5.
-func (s *ProjectsService) SearchMyScannableProjects() (*ProjectsSearchMyScannableProjects, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "projects/search_my_scannable_projects", nil)
+func (s *ProjectsService) SearchMyScannableProjects(opt *ProjectsSearchMyScannableProjectsOption) (*ProjectsSearchMyScannableProjects, *http.Response, error) {
+	req, err := s.client.NewRequest(http.MethodGet, "projects/search_my_scannable_projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}

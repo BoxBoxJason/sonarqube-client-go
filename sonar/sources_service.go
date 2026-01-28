@@ -101,7 +101,7 @@ type SourcesShow struct {
 // SourcesIndexOption represents options for getting source file lines.
 type SourcesIndexOption struct {
 	// Key is the file key (required).
-	Key string `url:"key,omitempty"`
+	Resource string `url:"resource,omitempty"`
 	// From is the starting line number (optional, default: 1).
 	From int64 `url:"from,omitempty"`
 	// To is the ending line number (optional, default: end of file).
@@ -170,7 +170,7 @@ func (s *SourcesService) ValidateIndexOpt(opt *SourcesIndexOption) error {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
 
-	return ValidateRequired(opt.Key, "Key")
+	return ValidateRequired(opt.Resource, "Resource")
 }
 
 // ValidateIssueSnippetsOpt validates the options for IssueSnippets.

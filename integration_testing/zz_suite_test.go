@@ -6,24 +6,24 @@ import (
 	"testing"
 	"os"
 
-	. "github.com/boxboxjason/sonarqube-client-go/sonar"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/onsi/ginkgo"
+	"github.com/onsi/gomega"
 )
 
-var client *Client
-var _ = BeforeSuite(func() {
+var client *sonargo.Client
+var _ = ginkgo.BeforeSuite(func() {
 	sonarURL := os.Getenv("SONAR_URL")
 	if sonarURL == "" {
 		sonarURL = "http://127.0.0.1:9000"
 	}
-	c, err := NewClient(sonarURL+"/api", "admin", "admin")
-	Expect(err).ShouldNot(HaveOccurred())
+	c, err := sonargo.NewClient(sonarURL+"/api", "admin", "admin")
+	gomega.Expect(err).ShouldNot(gomega.HaveOccurred())
 	client = c
 	SetupTestResources(client)
 })
 
 func TestSonar(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Sonar Suite")
+	gomega.RegisterFailHandler(ginkgo.Fail)
+	ginkgo.RunSpecs(t, "Sonar Suite")
 }

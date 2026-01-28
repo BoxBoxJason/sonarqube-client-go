@@ -166,8 +166,8 @@ func (gen *Generator) AddIntegrationSuiteFile() error {
 	suiteBody := strings.ReplaceAll(TestSuiteConst, "\r\n", "\n")
 	suiteBody = strings.ReplaceAll(suiteBody, "\r", "\n")
 
-	// Replace package name
-	importStmt := fmt.Sprintf(". \"%s\"", gen.CurrentRepo)
+	// Replace package name with aliased import
+	importStmt := fmt.Sprintf("sonargo \"%s\"", gen.CurrentRepo)
 	suiteBody = strings.ReplaceAll(suiteBody, "{REPLACE_PACKAGENAME}", importStmt)
 
 	content := fmt.Sprintf(headerFmt, generatedHeader, "sonargo_test", suiteBody)

@@ -308,7 +308,7 @@ func (s *WebhooksService) ValidateUpdateOpt(opt *WebhooksUpdateOption) error {
 	}
 
 	if opt.Secret != "" {
-		err = ValidateMaxLength(opt.Secret, MaxWebhookSecretLength, "Secret")
+		err = validateWebhookSecret(opt.Secret)
 		if err != nil {
 			return err
 		}

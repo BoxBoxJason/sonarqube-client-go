@@ -1,7 +1,9 @@
 package sonargo
 
 import (
+	"encoding/json"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -136,7 +138,29 @@ type SettingsResetOption struct {
 	Keys []string `url:"keys,omitempty,comma"`
 }
 
+// JSONEncodedMap is a wrapper type for map[string]any that encodes as JSON when used in URL parameters.
+type JSONEncodedMap map[string]any
+
+// EncodeValues implements query.Encoder for JSONEncodedMap.
+// This ensures the map is JSON-encoded when used as a URL parameter.
+func (m JSONEncodedMap) EncodeValues(key string, values *url.Values) error {
+	if len(m) == 0 {
+		return nil
+	}
+
+	jsonBytes, err := json.Marshal(m)
+	if err != nil {
+		return NewValidationError("FieldValues", "failed to marshal field values", err)
+	}
+
+	values.Set(key, string(jsonBytes))
+
+	return nil
+}
+
 // SettingsSetOption represents options for setting a value.
+//
+//nolint:govet // Field ordering prioritizes API clarity over memory alignment
 type SettingsSetOption struct {
 	// Component is the component key (optional).
 	// Only keys for projects, applications, portfolios or subportfolios are accepted.
@@ -151,7 +175,8 @@ type SettingsSetOption struct {
 	// To set several values, the parameter must be called once for each value.
 	Values []string `url:"values,omitempty"`
 	// FieldValues is the setting field values for property set types (optional).
-	FieldValues []string `url:"fieldValues,omitempty"`
+	// This input is stringified and passed as a single parameter.
+	FieldValues JSONEncodedMap `url:"fieldValues,omitempty"`
 }
 
 // SettingsValuesOption represents options for listing setting values.
@@ -206,6 +231,11 @@ func (s *SettingsService) ValidateSetOpt(opt *SettingsSetOption) error {
 	err := ValidateRequired(opt.Key, "Key")
 	if err != nil {
 		return err
+	}
+
+	// At least one of Value, Values, or FieldValues must be provided
+	if opt.Value == "" && len(opt.Values) == 0 && len(opt.FieldValues) == 0 {
+		return NewValidationError("Value/Values/FieldValues", "at least one of Value, Values, or FieldValues must be provided", ErrMissingRequired)
 	}
 
 	if opt.Value != "" {
@@ -385,6 +415,8 @@ func (s *SettingsService) Set(opt *SettingsSetOption) (*http.Response, error) {
 		return nil, err
 	}
 
+	// For SettingsSetOption, we need custom encoding due to FieldValues
+	// being a map[string]any that needs to be JSON-encoded
 	req, err := s.client.NewRequest(http.MethodPost, "settings/set", opt)
 	if err != nil {
 		return nil, err

@@ -351,7 +351,7 @@ func TestProjectsService_SearchMyScannableProjects(t *testing.T) {
 
 	client, _ := NewClient(server.URL+"/api/", "user", "pass")
 
-	result, resp, err := client.Projects.SearchMyScannableProjects()
+	result, resp, err := client.Projects.SearchMyScannableProjects(&ProjectsSearchMyScannableProjectsOption{})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

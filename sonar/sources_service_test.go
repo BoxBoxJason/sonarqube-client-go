@@ -20,8 +20,8 @@ func TestSourcesService_Index(t *testing.T) {
 		if !strings.HasSuffix(r.URL.Path, "/sources/index") {
 			t.Errorf("unexpected path: %s", r.URL.Path)
 		}
-		if r.URL.Query().Get("key") != "my-project:src/main.go" {
-			t.Errorf("unexpected key: %s", r.URL.Query().Get("key"))
+		if r.URL.Query().Get("resource") != "my-project:src/main.go" {
+			t.Errorf("unexpected resource: %s", r.URL.Query().Get("resource"))
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -32,9 +32,9 @@ func TestSourcesService_Index(t *testing.T) {
 	client, _ := NewClient(server.URL+"/api/", "user", "pass")
 
 	opt := &SourcesIndexOption{
-		Key:  "my-project:src/main.go",
-		From: 1,
-		To:   10,
+		Resource: "my-project:src/main.go",
+		From:     1,
+		To:       10,
 	}
 
 	result, resp, err := client.Sources.Index(opt)
