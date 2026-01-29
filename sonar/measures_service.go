@@ -40,7 +40,7 @@ type MeasuresComponent struct {
 	Component MeasureComponent `json:"component,omitzero"`
 	// Metrics is the list of metrics definitions.
 	Metrics []MeasureMetric `json:"metrics,omitempty"`
-	// Period is the period definition (deprecated, use periods).
+	// Period is the period definition.
 	Period *MeasurePeriod `json:"period,omitempty"`
 }
 
@@ -56,7 +56,7 @@ type MeasuresComponentTree struct {
 	Components []MeasureComponent `json:"components,omitempty"`
 	// Metrics is the list of metrics definitions.
 	Metrics []MeasureMetric `json:"metrics,omitempty"`
-	// Period is the period definition (deprecated, use periods).
+	// Period is the period definition.
 	Period *MeasurePeriod `json:"period,omitempty"`
 }
 

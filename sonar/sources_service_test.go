@@ -53,11 +53,11 @@ func TestSourcesService_Index(t *testing.T) {
 func TestSourcesService_Index_ValidationError(t *testing.T) {
 	client, _ := NewClient("http://localhost/api/", "user", "pass")
 
-	// Test missing Key
+	// Test missing Resource
 	opt := &SourcesIndexOption{}
 	_, _, err := client.Sources.Index(opt)
 	if err == nil {
-		t.Error("expected validation error for missing Key")
+		t.Error("expected validation error for missing Resource")
 	}
 }
 

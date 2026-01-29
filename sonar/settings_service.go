@@ -402,7 +402,7 @@ func (s *SettingsService) Reset(opt *SettingsResetOption) (*http.Response, error
 }
 
 // Set updates a setting value.
-// Either 'value' or 'values' must be provided.
+// Either 'value', 'values' or 'fieldValues' must be provided.
 // The settings defined in conf/sonar.properties are read-only and can't be changed.
 // Requires one of the following permissions:
 //   - 'Administer System'

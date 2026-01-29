@@ -100,7 +100,7 @@ type SourcesShow struct {
 
 // SourcesIndexOption represents options for getting source file lines.
 type SourcesIndexOption struct {
-	// Key is the file key (required).
+	// Resource is the file key (API parameter: "resource", required).
 	Resource string `url:"resource,omitempty"`
 	// From is the starting line number (optional, default: 1).
 	From int64 `url:"from,omitempty"`
