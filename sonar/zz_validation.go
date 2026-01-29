@@ -2,45 +2,6 @@
 
 package sonargo
 
-func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOption) error {
-	return nil
-}
-func (s *PluginsService) ValidateDownloadOpt(opt *PluginsDownloadOption) error {
-	return nil
-}
-func (s *PluginsService) ValidateInstallOpt(opt *PluginsInstallOption) error {
-	return nil
-}
-func (s *PluginsService) ValidateInstalledOpt(opt *PluginsInstalledOption) error {
-	return nil
-}
-func (s *PluginsService) ValidateUninstallOpt(opt *PluginsUninstallOption) error {
-	return nil
-}
-func (s *PluginsService) ValidateUpdateOpt(opt *PluginsUpdateOption) error {
-	return nil
-}
-func (s *ProjectAnalysesService) ValidateCreateEventOpt(opt *ProjectAnalysesCreateEventOption) error {
-	return nil
-}
-func (s *ProjectAnalysesService) ValidateDeleteOpt(opt *ProjectAnalysesDeleteOption) error {
-	return nil
-}
-func (s *ProjectAnalysesService) ValidateDeleteEventOpt(opt *ProjectAnalysesDeleteEventOption) error {
-	return nil
-}
-func (s *ProjectAnalysesService) ValidateSearchOpt(opt *ProjectAnalysesSearchOption) error {
-	return nil
-}
-func (s *ProjectAnalysesService) ValidateUpdateEventOpt(opt *ProjectAnalysesUpdateEventOption) error {
-	return nil
-}
-func (s *WebservicesService) ValidateListOpt(opt *WebservicesListOption) error {
-	return nil
-}
-func (s *WebservicesService) ValidateResponseExampleOpt(opt *WebservicesResponseExampleOption) error {
-	return nil
-}
 func (s *HService) ValidateFileOpt(opt *HFileOption) error {
 	return nil
 }
