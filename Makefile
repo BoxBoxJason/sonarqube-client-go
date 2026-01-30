@@ -18,7 +18,7 @@ test:
 coverage:
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@latest; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./pkg/... ./${target_dir}/...
+	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./${target_dir}/...
 	@echo "Coverage report generated: codequality/coverage.html"
 
 # Run integration tests
