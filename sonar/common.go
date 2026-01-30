@@ -1,6 +1,11 @@
 package sonargo
 
 const (
+	// defaultBaseURL is the default base URL for the SonarQube API.
+	defaultBaseURL = "http://localhost:9000/api/"
+	// defaultUserAgent is the default User-Agent header value.
+	defaultUserAgent = "sonarqube-client-go"
+
 	// MaxPageSize is the maximum allowed page size for pagination.
 	MaxPageSize = 500
 	// MinPageSize is the minimum allowed page size for pagination.
@@ -14,6 +19,14 @@ const (
 	MaxTokenNameLength = 100
 	// MaxBranchNameLength is the maximum length for a branch name.
 	MaxBranchNameLength = 255
+)
+
+type authType int
+
+const (
+	basicAuth authType = iota
+	oAuthToken
+	privateToken
 )
 
 //nolint:gochecknoglobals // these are constant sets of allowed values
@@ -218,6 +231,13 @@ var (
 		"TEST": {},
 	}
 )
+
+// Paging is used in many APIs.
+type Paging struct {
+	PageIndex int64 `json:"pageIndex,omitempty"`
+	PageSize  int64 `json:"pageSize,omitempty"`
+	Total     int64 `json:"total,omitempty"`
+}
 
 // PaginationArgs contains common pagination parameters for API requests.
 type PaginationArgs struct {

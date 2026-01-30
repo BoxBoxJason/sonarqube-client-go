@@ -25,6 +25,7 @@ func TestAlmSettings_CountBinding(t *testing.T) {
 		w.WriteHeader(200)
 		w.Write([]byte(`{"key":"my-alm-setting","projects":5}`))
 	}))
+
 	defer ts.Close()
 
 	client, err := NewClient(ts.URL+"/api/", "user", "pass")

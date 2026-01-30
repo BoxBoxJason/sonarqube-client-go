@@ -6,25 +6,19 @@ password := admin
 container_engine := docker
 sonarqube_version := 26.1.0.118079-community
 
-.PHONY: setup.sonar clean generate test lint no-diff coverage
-
-clean:
-	rm -f ${target_dir}/*.go
-
-generate: setup.sonar
-	go generate ./...
+.PHONY: setup.sonar test lint coverage
 
 # Run all unit tests
 test:
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@2.8.0; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ./pkg/... ./${target_dir}/...
+	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ./${target_dir}/...
 
 # Run tests with coverage report
 coverage:
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@latest; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./pkg/... ./${target_dir}/...
+	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./${target_dir}/...
 	@echo "Coverage report generated: codequality/coverage.html"
 
 # Run integration tests
@@ -59,21 +53,9 @@ changelog-check:
 lint:
 	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; }
 	@mkdir -p codequality
-	golangci-lint run ./pkg/... ./${target_dir}/...
+	golangci-lint run ./${target_dir}/...
 
-# Check for uncommitted changes after generation (useful for CI)
-no-diff: generate
-	@if [ -n "$$(git status --porcelain)" ]; then \
-		echo "Error: There are uncommitted changes after running 'make generate'"; \
-		echo "Please run 'make generate' locally and commit the changes."; \
-		git status --porcelain; \
-		git diff --stat; \
-		exit 1; \
-	else \
-		echo "Success: No uncommitted changes detected."; \
-	fi
-
-# Setup SonarQube instance for generation / integration testing
+# Setup SonarQube instance for integration testing
 # If SonarQube API is already reachable, skip setup
 # Else use container engine to start a SonarQube instance with a port mapping
 setup.sonar:
