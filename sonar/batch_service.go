@@ -1,6 +1,9 @@
 package sonargo
 
-import "net/http"
+import (
+	"bytes"
+	"net/http"
+)
 
 // BatchService provides access to the /batch API endpoints for scanner JAR files and referentials.
 type BatchService struct {
@@ -48,12 +51,12 @@ func (s *BatchService) ValidateProjectOpt(opt *BatchProjectOption) error {
 		return nil
 	}
 
-	return nil
+	return ValidateRequired(opt.Key, "Key")
 }
 
 // File downloads a JAR file listed in the index (see batch/index).
 // This endpoint returns binary data for the requested JAR file.
-func (s *BatchService) File(opt *BatchFileOption) (v *string, resp *http.Response, err error) {
+func (s *BatchService) File(opt *BatchFileOption) (v []byte, resp *http.Response, err error) {
 	err = s.ValidateFileOpt(opt)
 	if err != nil {
 		return
@@ -64,12 +67,13 @@ func (s *BatchService) File(opt *BatchFileOption) (v *string, resp *http.Respons
 		return
 	}
 
-	v = new(string)
-
-	resp, err = s.client.Do(req, v)
+	var buf bytes.Buffer
+	resp, err = s.client.Do(req, &buf)
 	if err != nil {
 		return nil, resp, err
 	}
+
+	v = buf.Bytes()
 
 	return
 }
