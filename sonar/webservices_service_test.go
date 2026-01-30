@@ -2,193 +2,135 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestWebservicesService_List(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodGet {
-				t.Errorf("expected GET, got %s", r.Method)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			_, err := w.Write([]byte(`{
-				"webServices": [
+	listJSON := `{
+		"webServices": [
+			{
+				"path": "api/issues",
+				"description": "Issues management",
+				"since": "3.6",
+				"actions": [
 					{
-						"path": "api/issues",
-						"description": "Issues management",
+						"key": "search",
+						"description": "Search for issues",
 						"since": "3.6",
-						"actions": [
+						"post": false,
+						"internal": false,
+						"hasResponseExample": true,
+						"params": [
 							{
-								"key": "search",
-								"description": "Search for issues",
-								"since": "3.6",
-								"post": false,
-								"internal": false,
-								"hasResponseExample": true,
-								"params": [
-									{
-										"key": "severities",
-										"description": "Comma-separated list of severities",
-										"required": false,
-										"possibleValues": ["INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"]
-									}
-								]
+								"key": "severities",
+								"description": "Comma-separated list of severities",
+								"required": false,
+								"possibleValues": ["INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"]
 							}
 						]
 					}
 				]
-			}`))
-			if err != nil {
-				t.Errorf("failed to write response: %v", err)
 			}
-		}))
-		defer server.Close()
+		]
+	}`
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	t.Run("success", func(t *testing.T) {
+		handler := mockHandler(t, http.MethodGet, "/webservices/list", http.StatusOK, listJSON)
+		server := newTestServer(t, handler)
+		client := newTestClient(t, server.URL)
 
 		result, resp, err := client.Webservices.List(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("expected status 200, got %d", resp.StatusCode)
-		}
-		if result == nil {
-			t.Fatal("expected result, got nil")
-		}
-		if len(result.Webservices) != 1 {
-			t.Errorf("expected 1 webservice, got %d", len(result.Webservices))
-		}
-		if result.Webservices[0].Path != "api/issues" {
-			t.Errorf("expected path 'api/issues', got '%s'", result.Webservices[0].Path)
-		}
-		if len(result.Webservices[0].Actions) != 1 {
-			t.Errorf("expected 1 action, got %d", len(result.Webservices[0].Actions))
-		}
-		if result.Webservices[0].Actions[0].Key != "search" {
-			t.Errorf("expected key 'search', got '%s'", result.Webservices[0].Actions[0].Key)
-		}
-		if len(result.Webservices[0].Actions[0].Params) != 1 {
-			t.Errorf("expected 1 param, got %d", len(result.Webservices[0].Actions[0].Params))
-		}
+
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		require.NotNil(t, result)
+		require.Len(t, result.Webservices, 1)
+		assert.Equal(t, "api/issues", result.Webservices[0].Path)
+		require.Len(t, result.Webservices[0].Actions, 1)
+		assert.Equal(t, "search", result.Webservices[0].Actions[0].Key)
+		assert.Len(t, result.Webservices[0].Actions[0].Params, 1)
 	})
 
 	t.Run("with include_internals", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Query().Get("include_internals") != "true" {
-				t.Errorf("expected include_internals 'true', got '%s'", r.URL.Query().Get("include_internals"))
-			}
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write([]byte(`{"webServices": []}`))
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		handler := mockHandler(t, http.MethodGet, "/webservices/list", http.StatusOK, `{"webServices": []}`)
+		server := newTestServer(t, handler)
+		client := newTestClient(t, server.URL)
 
 		_, _, err := client.Webservices.List(&WebservicesListOption{
 			IncludeInternals: true,
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+
+		require.NoError(t, err)
 	})
 
 	t.Run("empty option", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			_, _ = w.Write([]byte(`{"webServices": []}`))
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		handler := mockHandler(t, http.MethodGet, "/webservices/list", http.StatusOK, `{"webServices": []}`)
+		server := newTestServer(t, handler)
+		client := newTestClient(t, server.URL)
 
 		_, _, err := client.Webservices.List(&WebservicesListOption{})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+
+		require.NoError(t, err)
 	})
 }
 
 func TestWebservicesService_ResponseExample(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodGet {
-				t.Errorf("expected GET, got %s", r.Method)
-			}
-			if r.URL.Query().Get("action") != "search" {
-				t.Errorf("expected action 'search', got '%s'", r.URL.Query().Get("action"))
-			}
-			if r.URL.Query().Get("controller") != "api/issues" {
-				t.Errorf("expected controller 'api/issues', got '%s'", r.URL.Query().Get("controller"))
-			}
-			w.Header().Set("Content-Type", "application/json")
-			_, err := w.Write([]byte(`{
-				"issues": [
-					{
-						"key": "AVfN9MxQTN6qjVMfZpW-",
-						"rule": "squid:S2259"
-					}
-				]
-			}`))
-			if err != nil {
-				t.Errorf("failed to write response: %v", err)
-			}
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		handler := mockHandler(t, http.MethodGet, "/webservices/response_example", http.StatusOK, `{
+			"issues": [
+				{
+					"key": "AVfN9MxQTN6qjVMfZpW-",
+					"rule": "squid:S2259"
+				}
+			]
+		}`)
+		server := newTestServer(t, handler)
+		client := newTestClient(t, server.URL)
 
 		result, resp, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOption{
 			Action:     "search",
 			Controller: "api/issues",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("expected status 200, got %d", resp.StatusCode)
-		}
-		if result == nil {
-			t.Fatal("expected result, got nil")
-		}
+
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		assert.NotNil(t, result)
 	})
 
-	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+	t.Run("nil option fails validation", func(t *testing.T) {
+		client := newLocalhostClient(t)
 
 		_, _, err := client.Webservices.ResponseExample(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+
+		assert.Error(t, err)
 	})
 
-	t.Run("missing action", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+	t.Run("missing action fails validation", func(t *testing.T) {
+		client := newLocalhostClient(t)
 
 		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOption{
 			Controller: "api/issues",
 		})
-		if err == nil {
-			t.Error("expected error for missing action")
-		}
+
+		assert.Error(t, err)
 	})
 
-	t.Run("missing controller", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+	t.Run("missing controller fails validation", func(t *testing.T) {
+		client := newLocalhostClient(t)
 
 		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOption{
 			Action: "search",
 		})
-		if err == nil {
-			t.Error("expected error for missing controller")
-		}
+
+		assert.Error(t, err)
 	})
 }
 
 func TestWebservicesService_ValidateListOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -203,15 +145,17 @@ func TestWebservicesService_ValidateListOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Webservices.ValidateListOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateListOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestWebservicesService_ValidateResponseExampleOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -228,8 +172,10 @@ func TestWebservicesService_ValidateResponseExampleOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Webservices.ValidateResponseExampleOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateResponseExampleOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}

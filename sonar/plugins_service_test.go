@@ -2,504 +2,327 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestPluginsService_Available(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, err := w.Write([]byte(`{
-			"plugins": [
-				{
-					"key": "sonar-java",
-					"name": "SonarJava",
-					"category": "Languages",
-					"description": "Java static code analyzer",
-					"license": "LGPL-3.0",
-					"organizationName": "SonarSource",
-					"organizationUrl": "https://www.sonarsource.com",
-					"editionBundled": false,
-					"release": {
-						"version": "7.16",
-						"date": "2022-01-15",
-						"changeLogUrl": "https://example.com/changelog"
-					},
-					"update": {
-						"status": "COMPATIBLE",
-						"requires": []
-					}
+	response := `{
+		"plugins": [
+			{
+				"key": "sonar-java",
+				"name": "SonarJava",
+				"category": "Languages",
+				"description": "Java static code analyzer",
+				"license": "LGPL-3.0",
+				"organizationName": "SonarSource",
+				"organizationUrl": "https://www.sonarsource.com",
+				"editionBundled": false,
+				"release": {
+					"version": "7.16",
+					"date": "2022-01-15",
+					"changeLogUrl": "https://example.com/changelog"
+				},
+				"update": {
+					"status": "COMPATIBLE",
+					"requires": []
 				}
-			],
-			"updateCenterRefresh": "2022-01-20T10:00:00+0000"
-		}`))
-		if err != nil {
-			t.Errorf("failed to write response: %v", err)
-		}
-	}))
-	defer server.Close()
-
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+			}
+		],
+		"updateCenterRefresh": "2022-01-20T10:00:00+0000"
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/available", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Plugins.Available()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-	if result == nil {
-		t.Fatal("expected result, got nil")
-	}
-	if len(result.Plugins) != 1 {
-		t.Errorf("expected 1 plugin, got %d", len(result.Plugins))
-	}
-	if result.Plugins[0].Key != "sonar-java" {
-		t.Errorf("expected key 'sonar-java', got '%s'", result.Plugins[0].Key)
-	}
-	if result.Plugins[0].Release.Version != "7.16" {
-		t.Errorf("expected version '7.16', got '%s'", result.Plugins[0].Release.Version)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Plugins, 1)
+	assert.Equal(t, "sonar-java", result.Plugins[0].Key)
+	assert.Equal(t, "7.16", result.Plugins[0].Release.Version)
 }
 
 func TestPluginsService_CancelAll(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST, got %s", r.Method)
-		}
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer server.Close()
-
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/plugins/cancel_all", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Plugins.CancelAll()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPluginsService_Download(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodGet {
-				t.Errorf("expected GET, got %s", r.Method)
-			}
-			if r.URL.Query().Get("plugin") != "sonar-java" {
-				t.Errorf("expected plugin 'sonar-java', got '%s'", r.URL.Query().Get("plugin"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodGet, r.Method)
+			assert.Equal(t, "sonar-java", r.URL.Query().Get("plugin"))
 			w.Header().Set("Content-Type", "application/java-archive")
 			_, _ = w.Write([]byte("plugin-jar-binary-data"))
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		})
+		client := newTestClient(t, server.URL)
 
 		result, resp, err := client.Plugins.Download(&PluginsDownloadOption{
 			Plugin: "sonar-java",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("expected status 200, got %d", resp.StatusCode)
-		}
-		if result == nil {
-			t.Fatal("expected result, got nil")
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		require.NotNil(t, result)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.Plugins.Download(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing plugin", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.Plugins.Download(&PluginsDownloadOption{})
-		if err == nil {
-			t.Error("expected error for missing plugin")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestPluginsService_Install(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost {
-				t.Errorf("expected POST, got %s", r.Method)
-			}
-			if err := r.ParseForm(); err != nil {
-				t.Errorf("failed to parse form: %v", err)
-			}
-			if r.Form.Get("key") != "sonar-java" {
-				t.Errorf("expected key 'sonar-java', got '%s'", r.Form.Get("key"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			require.NoError(t, r.ParseForm())
+			assert.Equal(t, "sonar-java", r.Form.Get("key"))
 			w.WriteHeader(http.StatusNoContent)
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		})
+		client := newTestClient(t, server.URL)
 
 		resp, err := client.Plugins.Install(&PluginsInstallOption{
 			Key: "sonar-java",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusNoContent {
-			t.Errorf("expected status 204, got %d", resp.StatusCode)
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.Plugins.Install(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing key", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.Plugins.Install(&PluginsInstallOption{})
-		if err == nil {
-			t.Error("expected error for missing key")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestPluginsService_Installed(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodGet {
-				t.Errorf("expected GET, got %s", r.Method)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			_, err := w.Write([]byte(`{
-				"plugins": [
-					{
-						"key": "sonar-java",
-						"name": "SonarJava",
-						"description": "Java static code analyzer",
-						"version": "7.16",
-						"license": "LGPL-3.0",
-						"organizationName": "SonarSource",
-						"organizationUrl": "https://www.sonarsource.com",
-						"editionBundled": true,
-						"filename": "sonar-java-plugin-7.16.jar",
-						"hash": "abc123",
-						"sonarLintSupported": true
-					}
-				]
-			}`))
-			if err != nil {
-				t.Errorf("failed to write response: %v", err)
-			}
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		response := `{
+			"plugins": [
+				{
+					"key": "sonar-java",
+					"name": "SonarJava",
+					"description": "Java static code analyzer",
+					"version": "7.16",
+					"license": "LGPL-3.0",
+					"organizationName": "SonarSource",
+					"organizationUrl": "https://www.sonarsource.com",
+					"editionBundled": true,
+					"filename": "sonar-java-plugin-7.16.jar",
+					"hash": "abc123",
+					"sonarLintSupported": true
+				}
+			]
+		}`
+		server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/installed", http.StatusOK, response))
+		client := newTestClient(t, server.URL)
 
 		result, resp, err := client.Plugins.Installed(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("expected status 200, got %d", resp.StatusCode)
-		}
-		if result == nil {
-			t.Fatal("expected result, got nil")
-		}
-		if len(result.Plugins) != 1 {
-			t.Errorf("expected 1 plugin, got %d", len(result.Plugins))
-		}
-		if result.Plugins[0].Key != "sonar-java" {
-			t.Errorf("expected key 'sonar-java', got '%s'", result.Plugins[0].Key)
-		}
-		if !result.Plugins[0].EditionBundled {
-			t.Error("expected EditionBundled to be true")
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		require.NotNil(t, result)
+		assert.Len(t, result.Plugins, 1)
+		assert.Equal(t, "sonar-java", result.Plugins[0].Key)
+		assert.True(t, result.Plugins[0].EditionBundled)
 	})
 
 	t.Run("with fields", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Query().Get("f") != "category" {
-				t.Errorf("expected f 'category', got '%s'", r.URL.Query().Get("f"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "category", r.URL.Query().Get("f"))
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write([]byte(`{"plugins": []}`))
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		})
+		client := newTestClient(t, server.URL)
 
 		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
 			Fields: []string{"category"},
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+		require.NoError(t, err)
 	})
 
 	t.Run("with type", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Query().Get("type") != "BUNDLED" {
-				t.Errorf("expected type 'BUNDLED', got '%s'", r.URL.Query().Get("type"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "BUNDLED", r.URL.Query().Get("type"))
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write([]byte(`{"plugins": []}`))
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		})
+		client := newTestClient(t, server.URL)
 
 		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
 			Type: "BUNDLED",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+		require.NoError(t, err)
 	})
 
 	t.Run("invalid field", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
 			Fields: []string{"invalid"},
 		})
-		if err == nil {
-			t.Error("expected error for invalid field")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
 			Type: "INVALID",
 		})
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestPluginsService_Pending(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, err := w.Write([]byte(`{
-			"installing": [
-				{
-					"key": "sonar-java",
-					"name": "SonarJava",
-					"version": "7.16"
-				}
-			],
-			"removing": [],
-			"updating": []
-		}`))
-		if err != nil {
-			t.Errorf("failed to write response: %v", err)
-		}
-	}))
-	defer server.Close()
-
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	response := `{
+		"installing": [
+			{
+				"key": "sonar-java",
+				"name": "SonarJava",
+				"version": "7.16"
+			}
+		],
+		"removing": [],
+		"updating": []
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/pending", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Plugins.Pending()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-	if result == nil {
-		t.Fatal("expected result, got nil")
-	}
-	if len(result.Installing) != 1 {
-		t.Errorf("expected 1 installing, got %d", len(result.Installing))
-	}
-	if result.Installing[0].Key != "sonar-java" {
-		t.Errorf("expected key 'sonar-java', got '%s'", result.Installing[0].Key)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Installing, 1)
+	assert.Equal(t, "sonar-java", result.Installing[0].Key)
 }
 
 func TestPluginsService_Uninstall(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost {
-				t.Errorf("expected POST, got %s", r.Method)
-			}
-			if err := r.ParseForm(); err != nil {
-				t.Errorf("failed to parse form: %v", err)
-			}
-			if r.Form.Get("key") != "sonar-java" {
-				t.Errorf("expected key 'sonar-java', got '%s'", r.Form.Get("key"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			require.NoError(t, r.ParseForm())
+			assert.Equal(t, "sonar-java", r.Form.Get("key"))
 			w.WriteHeader(http.StatusNoContent)
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		})
+		client := newTestClient(t, server.URL)
 
 		resp, err := client.Plugins.Uninstall(&PluginsUninstallOption{
 			Key: "sonar-java",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusNoContent {
-			t.Errorf("expected status 204, got %d", resp.StatusCode)
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.Plugins.Uninstall(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing key", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.Plugins.Uninstall(&PluginsUninstallOption{})
-		if err == nil {
-			t.Error("expected error for missing key")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestPluginsService_Update(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost {
-				t.Errorf("expected POST, got %s", r.Method)
-			}
-			if err := r.ParseForm(); err != nil {
-				t.Errorf("failed to parse form: %v", err)
-			}
-			if r.Form.Get("key") != "sonar-java" {
-				t.Errorf("expected key 'sonar-java', got '%s'", r.Form.Get("key"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			require.NoError(t, r.ParseForm())
+			assert.Equal(t, "sonar-java", r.Form.Get("key"))
 			w.WriteHeader(http.StatusNoContent)
-		}))
-		defer server.Close()
-
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		})
+		client := newTestClient(t, server.URL)
 
 		resp, err := client.Plugins.Update(&PluginsUpdateOption{
 			Key: "sonar-java",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusNoContent {
-			t.Errorf("expected status 204, got %d", resp.StatusCode)
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.Plugins.Update(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing key", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.Plugins.Update(&PluginsUpdateOption{})
-		if err == nil {
-			t.Error("expected error for missing key")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestPluginsService_Updates(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		_, err := w.Write([]byte(`{
-			"plugins": [
-				{
-					"key": "sonar-java",
-					"name": "SonarJava",
-					"category": "Languages",
-					"description": "Java static code analyzer",
-					"license": "LGPL-3.0",
-					"organizationName": "SonarSource",
-					"editionBundled": false,
-					"updates": [
-						{
-							"release": {
-								"version": "7.17",
-								"date": "2022-02-01"
-							},
-							"status": "COMPATIBLE",
-							"requires": []
-						}
-					]
-				}
-			]
-		}`))
-		if err != nil {
-			t.Errorf("failed to write response: %v", err)
-		}
-	}))
-	defer server.Close()
-
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	response := `{
+		"plugins": [
+			{
+				"key": "sonar-java",
+				"name": "SonarJava",
+				"category": "Languages",
+				"description": "Java static code analyzer",
+				"license": "LGPL-3.0",
+				"organizationName": "SonarSource",
+				"editionBundled": false,
+				"updates": [
+					{
+						"release": {
+							"version": "7.17",
+							"date": "2022-02-01"
+						},
+						"status": "COMPATIBLE",
+						"requires": []
+					}
+				]
+			}
+		]
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/updates", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Plugins.Updates()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-	if result == nil {
-		t.Fatal("expected result, got nil")
-	}
-	if len(result.Plugins) != 1 {
-		t.Errorf("expected 1 plugin, got %d", len(result.Plugins))
-	}
-	if result.Plugins[0].Key != "sonar-java" {
-		t.Errorf("expected key 'sonar-java', got '%s'", result.Plugins[0].Key)
-	}
-	if len(result.Plugins[0].Updates) != 1 {
-		t.Errorf("expected 1 update, got %d", len(result.Plugins[0].Updates))
-	}
-	if result.Plugins[0].Updates[0].Release.Version != "7.17" {
-		t.Errorf("expected version '7.17', got '%s'", result.Plugins[0].Updates[0].Release.Version)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Plugins, 1)
+	assert.Equal(t, "sonar-java", result.Plugins[0].Key)
+	assert.Len(t, result.Plugins[0].Updates, 1)
+	assert.Equal(t, "7.17", result.Plugins[0].Updates[0].Release.Version)
 }
 
 func TestPluginsService_ValidateDownloadOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -514,15 +337,17 @@ func TestPluginsService_ValidateDownloadOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Plugins.ValidateDownloadOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateDownloadOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestPluginsService_ValidateInstallOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -537,15 +362,17 @@ func TestPluginsService_ValidateInstallOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Plugins.ValidateInstallOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateInstallOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestPluginsService_ValidateInstalledOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -564,15 +391,17 @@ func TestPluginsService_ValidateInstalledOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Plugins.ValidateInstalledOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateInstalledOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestPluginsService_ValidateUninstallOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -587,15 +416,17 @@ func TestPluginsService_ValidateUninstallOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Plugins.ValidateUninstallOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateUninstallOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestPluginsService_ValidateUpdateOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -610,8 +441,10 @@ func TestPluginsService_ValidateUpdateOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Plugins.ValidateUpdateOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateUpdateOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}

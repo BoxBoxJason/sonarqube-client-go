@@ -2,100 +2,50 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestUserTokens_Generate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
+	response := `{
+		"login": "admin",
+		"name": "my-token",
+		"token": "secret-token-value",
+		"createdAt": "2024-01-01T00:00:00+0000",
+		"type": "USER_TOKEN"
+	}`
 
-		if r.URL.Path != "/api/user_tokens/generate" {
-			t.Errorf("expected path /api/user_tokens/generate, got %s", r.URL.Path)
-		}
-
-		name := r.URL.Query().Get("name")
-		if name != "my-token" {
-			t.Errorf("expected name 'my-token', got %s", name)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"login": "admin",
-			"name": "my-token",
-			"token": "secret-token-value",
-			"createdAt": "2024-01-01T00:00:00+0000",
-			"type": "USER_TOKEN"
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockHandler(t, http.MethodPost, "/user_tokens/generate", http.StatusOK, response)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	opt := &UserTokensGenerateOption{
 		Name: "my-token",
 	}
 
 	result, resp, err := client.UserTokens.Generate(opt)
-	if err != nil {
-		t.Fatalf("Generate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Name != "my-token" {
-		t.Errorf("expected name 'my-token', got %s", result.Name)
-	}
-
-	if result.Token != "secret-token-value" {
-		t.Errorf("expected token 'secret-token-value', got %s", result.Token)
-	}
-
-	if result.Type != "USER_TOKEN" {
-		t.Errorf("expected type 'USER_TOKEN', got %s", result.Type)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "my-token", result.Name)
+	assert.Equal(t, "secret-token-value", result.Token)
+	assert.Equal(t, "USER_TOKEN", result.Type)
 }
 
 func TestUserTokens_Generate_WithType(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tokenType := r.URL.Query().Get("type")
-		if tokenType != "PROJECT_ANALYSIS_TOKEN" {
-			t.Errorf("expected type 'PROJECT_ANALYSIS_TOKEN', got %s", tokenType)
-		}
+	response := `{
+		"login": "admin",
+		"name": "project-token",
+		"token": "project-token-value",
+		"createdAt": "2024-01-01T00:00:00+0000",
+		"type": "PROJECT_ANALYSIS_TOKEN"
+	}`
 
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"login": "admin",
-			"name": "project-token",
-			"token": "project-token-value",
-			"createdAt": "2024-01-01T00:00:00+0000",
-			"type": "PROJECT_ANALYSIS_TOKEN"
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockHandler(t, http.MethodPost, "/user_tokens/generate", http.StatusOK, response)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	opt := &UserTokensGenerateOption{
 		Name:       "project-token",
@@ -104,216 +54,120 @@ func TestUserTokens_Generate_WithType(t *testing.T) {
 	}
 
 	result, resp, err := client.UserTokens.Generate(opt)
-	if err != nil {
-		t.Fatalf("Generate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result.Type != "PROJECT_ANALYSIS_TOKEN" {
-		t.Errorf("expected type 'PROJECT_ANALYSIS_TOKEN', got %s", result.Type)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "PROJECT_ANALYSIS_TOKEN", result.Type)
 }
 
 func TestUserTokens_Generate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.UserTokens.Generate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Name should fail validation.
 	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOption{})
-	if err == nil {
-		t.Error("expected error for missing Name")
-	}
+	assert.Error(t, err)
 
 	// Invalid Type should fail validation.
 	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOption{
 		Name: "my-token",
 		Type: "INVALID_TYPE",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Type")
-	}
+	assert.Error(t, err)
 
 	// PROJECT_ANALYSIS_TOKEN without ProjectKey should fail validation.
 	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOption{
 		Name: "my-token",
 		Type: "PROJECT_ANALYSIS_TOKEN",
 	})
-	if err == nil {
-		t.Error("expected error for PROJECT_ANALYSIS_TOKEN without ProjectKey")
-	}
+	assert.Error(t, err)
 }
 
 func TestUserTokens_Revoke(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/user_tokens/revoke" {
-			t.Errorf("expected path /api/user_tokens/revoke, got %s", r.URL.Path)
-		}
-
-		name := r.URL.Query().Get("name")
-		if name != "my-token" {
-			t.Errorf("expected name 'my-token', got %s", name)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockEmptyHandler(t, http.MethodPost, "/user_tokens/revoke", http.StatusNoContent)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	opt := &UserTokensRevokeOption{
 		Name: "my-token",
 	}
 
 	resp, err := client.UserTokens.Revoke(opt)
-	if err != nil {
-		t.Fatalf("Revoke failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestUserTokens_Revoke_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.UserTokens.Revoke(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Name should fail validation.
 	_, err = client.UserTokens.Revoke(&UserTokensRevokeOption{})
-	if err == nil {
-		t.Error("expected error for missing Name")
-	}
+	assert.Error(t, err)
 }
 
 func TestUserTokens_Search(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
+	response := `{
+		"login": "admin",
+		"userTokens": [
+			{
+				"name": "token1",
+				"type": "USER_TOKEN",
+				"createdAt": "2024-01-01T00:00:00+0000",
+				"isExpired": false
+			},
+			{
+				"name": "token2",
+				"type": "GLOBAL_ANALYSIS_TOKEN",
+				"createdAt": "2024-01-02T00:00:00+0000",
+				"isExpired": true
+			}
+		]
+	}`
 
-		if r.URL.Path != "/api/user_tokens/search" {
-			t.Errorf("expected path /api/user_tokens/search, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"login": "admin",
-			"userTokens": [
-				{
-					"name": "token1",
-					"type": "USER_TOKEN",
-					"createdAt": "2024-01-01T00:00:00+0000",
-					"isExpired": false
-				},
-				{
-					"name": "token2",
-					"type": "GLOBAL_ANALYSIS_TOKEN",
-					"createdAt": "2024-01-02T00:00:00+0000",
-					"isExpired": true
-				}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockHandler(t, http.MethodGet, "/user_tokens/search", http.StatusOK, response)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	result, resp, err := client.UserTokens.Search(nil)
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Login != "admin" {
-		t.Errorf("expected login 'admin', got %s", result.Login)
-	}
-
-	if len(result.UserTokens) != 2 {
-		t.Errorf("expected 2 tokens, got %d", len(result.UserTokens))
-	}
-
-	if result.UserTokens[0].Name != "token1" {
-		t.Errorf("expected first token name 'token1', got %s", result.UserTokens[0].Name)
-	}
-
-	if result.UserTokens[1].IsExpired != true {
-		t.Error("expected second token to be expired")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "admin", result.Login)
+	assert.Len(t, result.UserTokens, 2)
+	assert.Equal(t, "token1", result.UserTokens[0].Name)
+	assert.True(t, result.UserTokens[1].IsExpired)
 }
 
 func TestUserTokens_Search_WithLogin(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		login := r.URL.Query().Get("login")
-		if login != "testuser" {
-			t.Errorf("expected login 'testuser', got %s", login)
-		}
+	response := `{"login": "testuser", "userTokens": []}`
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"login": "testuser", "userTokens": []}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockHandler(t, http.MethodGet, "/user_tokens/search", http.StatusOK, response)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	opt := &UserTokensSearchOption{
 		Login: "testuser",
 	}
 
 	result, _, err := client.UserTokens.Search(opt)
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if result.Login != "testuser" {
-		t.Errorf("expected login 'testuser', got %s", result.Login)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, "testuser", result.Login)
 }
 
 func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Valid option should pass.
 	err := client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOption{
 		Name: "my-token",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// All valid token types should pass.
 	validTypes := []string{"USER_TOKEN", "GLOBAL_ANALYSIS_TOKEN"}
@@ -322,9 +176,7 @@ func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
 			Name: "my-token",
 			Type: tokenType,
 		})
-		if err != nil {
-			t.Errorf("expected nil error for type '%s', got %v", tokenType, err)
-		}
+		assert.NoError(t, err, "expected nil error for type '%s'", tokenType)
 	}
 
 	// PROJECT_ANALYSIS_TOKEN with ProjectKey should pass.
@@ -333,9 +185,7 @@ func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
 		Type:       "PROJECT_ANALYSIS_TOKEN",
 		ProjectKey: "my-project",
 	})
-	if err != nil {
-		t.Errorf("expected nil error for PROJECT_ANALYSIS_TOKEN with ProjectKey, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Name exceeding max length should fail.
 	longName := ""
@@ -345,7 +195,5 @@ func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
 	err = client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOption{
 		Name: longName,
 	})
-	if err == nil {
-		t.Error("expected error for name exceeding max length")
-	}
+	assert.Error(t, err)
 }

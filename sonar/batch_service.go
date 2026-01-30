@@ -68,6 +68,7 @@ func (s *BatchService) File(opt *BatchFileOption) (v []byte, resp *http.Response
 	}
 
 	var buf bytes.Buffer
+
 	resp, err = s.client.Do(req, &buf)
 	if err != nil {
 		return nil, resp, err

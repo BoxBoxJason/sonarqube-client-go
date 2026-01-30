@@ -2,59 +2,27 @@ package sonargo
 
 import (
 	"encoding/json"
-	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRules_App(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"canWrite":true,"languages":{"java":"Java"}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "GET", "/rules/app", 200, `{"canWrite":true,"languages":{"java":"Java"}}`))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Rules.App()
-	if err != nil {
-		t.Fatalf("App failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || !result.CanWrite {
-		t.Error("expected CanWrite to be true")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.True(t, result.CanWrite)
 }
 
 func TestRules_Create(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"rule":{"key":"java:MyRule","name":"My Rule"}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "POST", "/rules/create", 200, `{"rule":{"key":"java:MyRule","name":"My Rule"}}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesCreateOption{
 		CustomKey:           "MyRule",
@@ -63,75 +31,31 @@ func TestRules_Create(t *testing.T) {
 		TemplateKey:         "java:TemplateRule",
 	}
 	result, resp, err := client.Rules.Create(opt)
-	if err != nil {
-		t.Fatalf("Create failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.Rule.Key != "java:MyRule" {
-		t.Error("unexpected rule key")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "java:MyRule", result.Rule.Key)
 }
 
 func TestRules_Delete(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, "POST", "/rules/delete", 204))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesDeleteOption{Key: "java:MyRule"}
 	resp, err := client.Rules.Delete(opt)
-	if err != nil {
-		t.Fatalf("Delete failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 204, resp.StatusCode)
 }
 
 func TestRules_Search(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"paging":{"total":0},"rules":[],"actives":{}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "GET", "/rules/search", 200, `{"paging":{"total":0},"rules":[],"actives":{}}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesSearchOption{Languages: []string{"java"}}
 	result, resp, err := client.Rules.Search(opt)
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
 }
 
 // TestRulesSearchResponse_DynamicActives verifies that the Actives field
@@ -155,182 +79,71 @@ func TestRulesSearchResponse_DynamicActives(t *testing.T) {
 
 	var response RulesSearch
 	err := json.Unmarshal([]byte(jsonData), &response)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal: %v", err)
-	}
+	require.NoError(t, err)
 
-	if len(response.Actives) != 3 {
-		t.Errorf("expected 3 active rule keys, got %d", len(response.Actives))
-	}
+	assert.Len(t, response.Actives, 3)
 
 	// Verify dynamic keys exist
-	if _, exists := response.Actives["squid:S1067"]; !exists {
-		t.Error("expected 'squid:S1067' in actives")
-	}
-
-	if _, exists := response.Actives["squid:ClassCyclomaticComplexity"]; !exists {
-		t.Error("expected 'squid:ClassCyclomaticComplexity' in actives")
-	}
-
-	if _, exists := response.Actives["custom:MyRule"]; !exists {
-		t.Error("expected 'custom:MyRule' in actives")
-	}
+	assert.Contains(t, response.Actives, "squid:S1067")
+	assert.Contains(t, response.Actives, "squid:ClassCyclomaticComplexity")
+	assert.Contains(t, response.Actives, "custom:MyRule")
 
 	// Verify activation details
-	if len(response.Actives["squid:S1067"]) != 1 {
-		t.Error("expected 1 activation for squid:S1067")
-	}
-
-	if response.Actives["squid:S1067"][0].QProfile != "profile1" {
-		t.Errorf("expected qProfile 'profile1', got '%s'",
-			response.Actives["squid:S1067"][0].QProfile)
-	}
+	assert.Len(t, response.Actives["squid:S1067"], 1)
+	assert.Equal(t, "profile1", response.Actives["squid:S1067"][0].QProfile)
 }
 
 func TestRules_Show(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"rule":{"key":"java:S1067","name":"Test Rule"}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "GET", "/rules/show", 200, `{"rule":{"key":"java:S1067","name":"Test Rule"}}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesShowOption{Key: "java:S1067"}
 	result, resp, err := client.Rules.Show(opt)
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.Rule.Key != "java:S1067" {
-		t.Error("unexpected rule key")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "java:S1067", result.Rule.Key)
 }
 
 func TestRules_Tags(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"tags":["security","bug"]}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "GET", "/rules/tags", 200, `{"tags":["security","bug"]}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesTagsOption{PageSize: 100}
 	result, resp, err := client.Rules.Tags(opt)
-	if err != nil {
-		t.Fatalf("Tags failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || len(result.Tags) != 2 {
-		t.Error("expected 2 tags")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Tags, 2)
 }
 
 func TestRules_Update(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"rule":{"key":"java:MyRule","name":"Updated Rule"}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "POST", "/rules/update", 200, `{"rule":{"key":"java:MyRule","name":"Updated Rule"}}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesUpdateOption{Key: "java:MyRule", Name: "Updated Rule"}
 	result, resp, err := client.Rules.Update(opt)
-	if err != nil {
-		t.Fatalf("Update failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.Rule.Name != "Updated Rule" {
-		t.Error("unexpected rule name")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "Updated Rule", result.Rule.Name)
 }
 
 func TestRules_Repositories(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"repositories":[{"key":"java","language":"java","name":"SonarAnalyzer"}]}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "GET", "/rules/repositories", 200, `{"repositories":[{"key":"java","language":"java","name":"SonarAnalyzer"}]}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesRepositoriesOption{}
 	result, resp, err := client.Rules.Repositories(opt)
-	if err != nil {
-		t.Fatalf("Repositories failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || len(result.Repositories) != 1 {
-		t.Error("expected 1 repository")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Repositories, 1)
 }
 
 func TestRules_List(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"rules":[]}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, "GET", "/rules/list", 200, `{"rules":[]}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &RulesListOption{
 		PaginationArgs: PaginationArgs{
@@ -338,19 +151,14 @@ func TestRules_List(t *testing.T) {
 		},
 	}
 	_, resp, err := client.Rules.List(opt)
-	if err != nil {
-		t.Fatalf("List failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
 }
 
 // Validation Tests
 
 func TestValidateCreateOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -501,19 +309,20 @@ func TestValidateCreateOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Rules.ValidateCreateOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateCreateOpt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if err != nil && tt.errMsg != "" && !strings.Contains(err.Error(), tt.errMsg) {
-				t.Errorf("ValidateCreateOpt() error = %v, expected to contain %q", err, tt.errMsg)
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestValidateSearchOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -632,19 +441,20 @@ func TestValidateSearchOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Rules.ValidateSearchOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateSearchOpt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if err != nil && tt.errMsg != "" && !strings.Contains(err.Error(), tt.errMsg) {
-				t.Errorf("ValidateSearchOpt() error = %v, expected to contain %q", err, tt.errMsg)
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestValidateUpdateOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -729,19 +539,20 @@ func TestValidateUpdateOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Rules.ValidateUpdateOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateUpdateOpt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if err != nil && tt.errMsg != "" && !strings.Contains(err.Error(), tt.errMsg) {
-				t.Errorf("ValidateUpdateOpt() error = %v, expected to contain %q", err, tt.errMsg)
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestValidateShowOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -774,19 +585,20 @@ func TestValidateShowOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Rules.ValidateShowOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateShowOpt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if err != nil && tt.errMsg != "" && !strings.Contains(err.Error(), tt.errMsg) {
-				t.Errorf("ValidateShowOpt() error = %v, expected to contain %q", err, tt.errMsg)
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestValidateDeleteOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -818,19 +630,20 @@ func TestValidateDeleteOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Rules.ValidateDeleteOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateDeleteOpt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if err != nil && tt.errMsg != "" && !strings.Contains(err.Error(), tt.errMsg) {
-				t.Errorf("ValidateDeleteOpt() error = %v, expected to contain %q", err, tt.errMsg)
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestValidateTagsOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -872,12 +685,13 @@ func TestValidateTagsOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Rules.ValidateTagsOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateTagsOpt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if err != nil && tt.errMsg != "" && !strings.Contains(err.Error(), tt.errMsg) {
-				t.Errorf("ValidateTagsOpt() error = %v, expected to contain %q", err, tt.errMsg)
+			if tt.wantErr {
+				assert.Error(t, err)
+				if tt.errMsg != "" {
+					assert.Contains(t, err.Error(), tt.errMsg)
+				}
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
@@ -886,7 +700,7 @@ func TestValidateTagsOpt(t *testing.T) {
 // URL Conversion Tests
 
 func TestConvertCreateOptForURL(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	opt := &RulesCreateOption{
 		CustomKey:           "MyRule",
@@ -905,29 +719,20 @@ func TestConvertCreateOptForURL(t *testing.T) {
 
 	urlOpt := client.Rules.convertCreateOptForURL(opt)
 
-	if urlOpt.CustomKey != opt.CustomKey {
-		t.Errorf("CustomKey mismatch: got %q, want %q", urlOpt.CustomKey, opt.CustomKey)
-	}
+	assert.Equal(t, opt.CustomKey, urlOpt.CustomKey)
 
 	// Check that impacts are formatted correctly (semicolon-separated)
-	if urlOpt.Impacts == "" {
-		t.Error("Impacts should not be empty")
-	}
-	if !strings.Contains(urlOpt.Impacts, "=") || !strings.Contains(urlOpt.Impacts, ";") {
-		t.Errorf("Impacts not properly formatted: %q", urlOpt.Impacts)
-	}
+	assert.NotEmpty(t, urlOpt.Impacts)
+	assert.Contains(t, urlOpt.Impacts, "=")
+	assert.Contains(t, urlOpt.Impacts, ";")
 
 	// Check that params are formatted correctly
-	if urlOpt.Params == "" {
-		t.Error("Params should not be empty")
-	}
-	if !strings.Contains(urlOpt.Params, "=") {
-		t.Errorf("Params not properly formatted: %q", urlOpt.Params)
-	}
+	assert.NotEmpty(t, urlOpt.Params)
+	assert.Contains(t, urlOpt.Params, "=")
 }
 
 func TestConvertSearchOptForURL(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	opt := &RulesSearchOption{
 		PaginationArgs: PaginationArgs{Page: 1, PageSize: 50},
@@ -938,29 +743,18 @@ func TestConvertSearchOptForURL(t *testing.T) {
 
 	urlOpt := client.Rules.convertSearchOptForURL(opt)
 
-	if urlOpt.Page != 1 {
-		t.Errorf("Page mismatch: got %d, want 1", urlOpt.Page)
-	}
-
-	if urlOpt.PageSize != 50 {
-		t.Errorf("PageSize mismatch: got %d, want 50", urlOpt.PageSize)
-	}
+	assert.Equal(t, int64(1), urlOpt.Page)
+	assert.Equal(t, int64(50), urlOpt.PageSize)
 
 	// Check that slices are formatted as comma-separated
-	if urlOpt.Languages == "" {
-		t.Error("Languages should not be empty")
-	}
-	if !strings.Contains(urlOpt.Languages, ",") {
-		t.Errorf("Languages not properly formatted: %q", urlOpt.Languages)
-	}
-
-	if !strings.Contains(urlOpt.Languages, "java") || !strings.Contains(urlOpt.Languages, "go") {
-		t.Errorf("Languages missing values: %q", urlOpt.Languages)
-	}
+	assert.NotEmpty(t, urlOpt.Languages)
+	assert.Contains(t, urlOpt.Languages, ",")
+	assert.Contains(t, urlOpt.Languages, "java")
+	assert.Contains(t, urlOpt.Languages, "go")
 }
 
 func TestConvertUpdateOptForURL(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	opt := &RulesUpdateOption{
 		Key:  "java:MyRule",
@@ -976,25 +770,15 @@ func TestConvertUpdateOptForURL(t *testing.T) {
 
 	urlOpt := client.Rules.convertUpdateOptForURL(opt)
 
-	if urlOpt.Key != opt.Key {
-		t.Errorf("Key mismatch: got %q, want %q", urlOpt.Key, opt.Key)
-	}
+	assert.Equal(t, opt.Key, urlOpt.Key)
 
 	// Check that impacts are formatted correctly
-	if urlOpt.Impacts == "" {
-		t.Error("Impacts should not be empty")
-	}
-	if !strings.Contains(urlOpt.Impacts, "=") {
-		t.Errorf("Impacts not properly formatted: %q", urlOpt.Impacts)
-	}
+	assert.NotEmpty(t, urlOpt.Impacts)
+	assert.Contains(t, urlOpt.Impacts, "=")
 
 	// Check that tags are formatted as comma-separated
-	if urlOpt.Tags == "" {
-		t.Error("Tags should not be empty")
-	}
-	if !strings.Contains(urlOpt.Tags, ",") {
-		t.Errorf("Tags not properly formatted: %q", urlOpt.Tags)
-	}
+	assert.NotEmpty(t, urlOpt.Tags)
+	assert.Contains(t, urlOpt.Tags, ",")
 }
 
 // Edge Case Tests
@@ -1017,15 +801,17 @@ func TestPaginationValidation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidatePagination(tt.page, tt.pageSize)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidatePagination() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestEmptySlicesAndMaps(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test with empty slices and maps
 	opt := &RulesSearchOption{
@@ -1037,13 +823,7 @@ func TestEmptySlicesAndMaps(t *testing.T) {
 	urlOpt := client.Rules.convertSearchOptForURL(opt)
 
 	// Empty slices should result in empty strings
-	if urlOpt.Languages != "" {
-		t.Error("Empty Languages slice should result in empty string")
-	}
-	if urlOpt.Severities != "" {
-		t.Error("Empty Severities slice should result in empty string")
-	}
-	if urlOpt.Tags != "" {
-		t.Error("Empty Tags slice should result in empty string")
-	}
+	assert.Empty(t, urlOpt.Languages)
+	assert.Empty(t, urlOpt.Severities)
+	assert.Empty(t, urlOpt.Tags)
 }

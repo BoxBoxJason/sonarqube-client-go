@@ -2,78 +2,33 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func TestAnalysisReports_IsQueueEmpty_True(t *testing.T) {
-	// Create mock server that returns "true"
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/analysis_reports/is_queue_empty" {
-			t.Errorf("expected path /api/analysis_reports/is_queue_empty, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("true"))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+func TestAnalysisReports_IsQueueEmpty(t *testing.T) {
+	tests := []struct {
+		name           string
+		serverResponse string
+		expectedEmpty  bool
+	}{
+		{"queue is empty", "true", true},
+		{"queue is not empty", "false", false},
 	}
 
-	result, resp, err := client.AnalysisReports.IsQueueEmpty()
-	if err != nil {
-		t.Fatalf("IsQueueEmpty failed: %v", err)
-	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			handler := mockBinaryHandler(t, http.MethodGet, "/analysis_reports/is_queue_empty", http.StatusOK, "text/plain", []byte(tt.serverResponse))
+			server := newTestServer(t, handler)
+			client := newTestClient(t, server.url())
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if !result.IsEmpty {
-		t.Error("expected IsEmpty to be true")
-	}
-}
-
-func TestAnalysisReports_IsQueueEmpty_False(t *testing.T) {
-	// Create mock server that returns "false"
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("false"))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	result, resp, err := client.AnalysisReports.IsQueueEmpty()
-	if err != nil {
-		t.Fatalf("IsQueueEmpty failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.IsEmpty {
-		t.Error("expected IsEmpty to be false")
+			result, resp, err := client.AnalysisReports.IsQueueEmpty()
+			require.NoError(t, err)
+			assert.Equal(t, http.StatusOK, resp.StatusCode)
+			require.NotNil(t, result)
+			assert.Equal(t, tt.expectedEmpty, result.IsEmpty)
+		})
 	}
 }

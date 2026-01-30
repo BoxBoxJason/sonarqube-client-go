@@ -2,29 +2,18 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCe_Activity(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/activity" {
-			t.Errorf("expected path /api/ce/activity, got %s", r.URL.Path)
-		}
-
-		component := r.URL.Query().Get("component")
-		if component != "my-project" {
-			t.Errorf("expected component 'my-project', got %s", component)
-		}
-
-		status := r.URL.Query().Get("status")
-		if status != "SUCCESS" {
-			t.Errorf("expected status 'SUCCESS', got %s", status)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/ce/activity", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("component"))
+		assert.Equal(t, "SUCCESS", r.URL.Query().Get("status"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -56,13 +45,9 @@ func TestCe_Activity(t *testing.T) {
 				}
 			]
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeActivityOption{
 		Component: "my-project",
@@ -70,54 +55,21 @@ func TestCe_Activity(t *testing.T) {
 	}
 
 	result, resp, err := client.Ce.Activity(opt)
-	if err != nil {
-		t.Fatalf("Activity failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Paging.Total != 2 {
-		t.Errorf("expected total 2, got %d", result.Paging.Total)
-	}
-
-	if len(result.Tasks) != 2 {
-		t.Errorf("expected 2 tasks, got %d", len(result.Tasks))
-	}
-
-	if result.Tasks[0].ID != "task-1" {
-		t.Errorf("expected task id 'task-1', got %s", result.Tasks[0].ID)
-	}
-
-	if result.Tasks[0].Status != "SUCCESS" {
-		t.Errorf("expected status 'SUCCESS', got %s", result.Tasks[0].Status)
-	}
-
-	if result.Tasks[0].ExecutionTimeMs != 1234 {
-		t.Errorf("expected executionTimeMs 1234, got %d", result.Tasks[0].ExecutionTimeMs)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, int64(2), result.Paging.Total)
+	assert.Len(t, result.Tasks, 2)
+	assert.Equal(t, "task-1", result.Tasks[0].ID)
+	assert.Equal(t, "SUCCESS", result.Tasks[0].Status)
+	assert.Equal(t, int64(1234), result.Tasks[0].ExecutionTimeMs)
 }
 
 func TestCe_Activity_WithPagination(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		p := r.URL.Query().Get("p")
-		if p != "2" {
-			t.Errorf("expected p '2', got %s", p)
-		}
-
-		ps := r.URL.Query().Get("ps")
-		if ps != "50" {
-			t.Errorf("expected ps '50', got %s", ps)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "2", r.URL.Query().Get("p"))
+		assert.Equal(t, "50", r.URL.Query().Get("ps"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -129,13 +81,9 @@ func TestCe_Activity_WithPagination(t *testing.T) {
 			},
 			"tasks": []
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeActivityOption{
 		CePaginationArgs: CePaginationArgs{
@@ -145,52 +93,29 @@ func TestCe_Activity_WithPagination(t *testing.T) {
 	}
 
 	result, resp, err := client.Ce.Activity(opt)
-	if err != nil {
-		t.Fatalf("Activity failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result.Paging.PageIndex != 2 {
-		t.Errorf("expected pageIndex 2, got %d", result.Paging.PageIndex)
-	}
-
-	if result.Paging.PageSize != 50 {
-		t.Errorf("expected pageSize 50, got %d", result.Paging.PageSize)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, int64(2), result.Paging.PageIndex)
+	assert.Equal(t, int64(50), result.Paging.PageSize)
 }
 
 func TestCe_Activity_WithNilOption(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"paging": {"pageIndex": 1, "pageSize": 100, "total": 0}, "tasks": []}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Ce.Activity(nil)
-	if err != nil {
-		t.Fatalf("Activity with nil option failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
 }
 
 func TestCe_Activity_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -221,27 +146,16 @@ func TestCe_Activity_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Ce.Activity(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
 
 func TestCe_ActivityStatus(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/activity_status" {
-			t.Errorf("expected path /api/ce/activity_status, got %s", r.URL.Path)
-		}
-
-		component := r.URL.Query().Get("component")
-		if component != "my-project" {
-			t.Errorf("expected component 'my-project', got %s", component)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/ce/activity_status", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("component"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -251,94 +165,45 @@ func TestCe_ActivityStatus(t *testing.T) {
 			"pending": 5,
 			"pendingTime": 12345
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeActivityStatusOption{
 		Component: "my-project",
 	}
 
 	result, resp, err := client.Ce.ActivityStatus(opt)
-	if err != nil {
-		t.Fatalf("ActivityStatus failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Failing != 2 {
-		t.Errorf("expected failing 2, got %d", result.Failing)
-	}
-
-	if result.InProgress != 1 {
-		t.Errorf("expected inProgress 1, got %d", result.InProgress)
-	}
-
-	if result.Pending != 5 {
-		t.Errorf("expected pending 5, got %d", result.Pending)
-	}
-
-	if result.PendingTime != 12345 {
-		t.Errorf("expected pendingTime 12345, got %d", result.PendingTime)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, int64(2), result.Failing)
+	assert.Equal(t, int64(1), result.InProgress)
+	assert.Equal(t, int64(5), result.Pending)
+	assert.Equal(t, int64(12345), result.PendingTime)
 }
 
 func TestCe_ActivityStatus_WithNilOption(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"failing": 0, "inProgress": 0, "pending": 0}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Ce.ActivityStatus(nil)
-	if err != nil {
-		t.Fatalf("ActivityStatus with nil option failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
 }
 
 func TestCe_AnalysisStatus(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/analysis_status" {
-			t.Errorf("expected path /api/ce/analysis_status, got %s", r.URL.Path)
-		}
-
-		component := r.URL.Query().Get("component")
-		if component != "my-project" {
-			t.Errorf("expected component 'my-project', got %s", component)
-		}
-
-		branch := r.URL.Query().Get("branch")
-		if branch != "main" {
-			t.Errorf("expected branch 'main', got %s", branch)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/ce/analysis_status", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("component"))
+		assert.Equal(t, "main", r.URL.Query().Get("branch"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -355,13 +220,9 @@ func TestCe_AnalysisStatus(t *testing.T) {
 				]
 			}
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeAnalysisStatusOption{
 		Component: "my-project",
@@ -369,148 +230,74 @@ func TestCe_AnalysisStatus(t *testing.T) {
 	}
 
 	result, resp, err := client.Ce.AnalysisStatus(opt)
-	if err != nil {
-		t.Fatalf("AnalysisStatus failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Component.Key != "my-project" {
-		t.Errorf("expected component key 'my-project', got %s", result.Component.Key)
-	}
-
-	if len(result.Component.Warnings) != 1 {
-		t.Errorf("expected 1 warning, got %d", len(result.Component.Warnings))
-	}
-
-	if result.Component.Warnings[0].Key != "warning-1" {
-		t.Errorf("expected warning key 'warning-1', got %s", result.Component.Warnings[0].Key)
-	}
-
-	if !result.Component.Warnings[0].Dismissable {
-		t.Error("expected warning to be dismissable")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "my-project", result.Component.Key)
+	assert.Len(t, result.Component.Warnings, 1)
+	assert.Equal(t, "warning-1", result.Component.Warnings[0].Key)
+	assert.True(t, result.Component.Warnings[0].Dismissable)
 }
 
 func TestCe_AnalysisStatus_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.Ce.AnalysisStatus(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Component should fail validation.
 	_, _, err = client.Ce.AnalysisStatus(&CeAnalysisStatusOption{})
-	if err == nil {
-		t.Error("expected error for missing Component")
-	}
+	assert.Error(t, err)
 }
 
 func TestCe_Cancel(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/cancel" {
-			t.Errorf("expected path /api/ce/cancel, got %s", r.URL.Path)
-		}
-
-		id := r.URL.Query().Get("id")
-		if id != "task-123" {
-			t.Errorf("expected id 'task-123', got %s", id)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/ce/cancel", r.URL.Path)
+		assert.Equal(t, "task-123", r.URL.Query().Get("id"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeCancelOption{
 		ID: "task-123",
 	}
 
 	resp, err := client.Ce.Cancel(opt)
-	if err != nil {
-		t.Fatalf("Cancel failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestCe_Cancel_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Ce.Cancel(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing ID should fail validation.
 	_, err = client.Ce.Cancel(&CeCancelOption{})
-	if err == nil {
-		t.Error("expected error for missing ID")
-	}
+	assert.Error(t, err)
 }
 
 func TestCe_CancelAll(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/ce/cancel_all", http.StatusNoContent))
 
-		if r.URL.Path != "/api/ce/cancel_all" {
-			t.Errorf("expected path /api/ce/cancel_all, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Ce.CancelAll()
-	if err != nil {
-		t.Fatalf("CancelAll failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestCe_Component(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/component" {
-			t.Errorf("expected path /api/ce/component, got %s", r.URL.Path)
-		}
-
-		component := r.URL.Query().Get("component")
-		if component != "my-project" {
-			t.Errorf("expected component 'my-project', got %s", component)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/ce/component", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("component"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -531,96 +318,48 @@ func TestCe_Component(t *testing.T) {
 				}
 			]
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeComponentOption{
 		Component: "my-project",
 	}
 
 	result, resp, err := client.Ce.Component(opt)
-	if err != nil {
-		t.Fatalf("Component failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Current.ID != "current-task" {
-		t.Errorf("expected current task id 'current-task', got %s", result.Current.ID)
-	}
-
-	if result.Current.Status != "SUCCESS" {
-		t.Errorf("expected current status 'SUCCESS', got %s", result.Current.Status)
-	}
-
-	if len(result.Queue) != 1 {
-		t.Errorf("expected 1 queued task, got %d", len(result.Queue))
-	}
-
-	if result.Queue[0].ID != "queued-task-1" {
-		t.Errorf("expected queued task id 'queued-task-1', got %s", result.Queue[0].ID)
-	}
-
-	if result.Queue[0].Status != "PENDING" {
-		t.Errorf("expected queued status 'PENDING', got %s", result.Queue[0].Status)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "current-task", result.Current.ID)
+	assert.Equal(t, "SUCCESS", result.Current.Status)
+	assert.Len(t, result.Queue, 1)
+	assert.Equal(t, "queued-task-1", result.Queue[0].ID)
+	assert.Equal(t, "PENDING", result.Queue[0].Status)
 }
 
 func TestCe_Component_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.Ce.Component(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Component should fail validation.
 	_, _, err = client.Ce.Component(&CeComponentOption{})
-	if err == nil {
-		t.Error("expected error for missing Component")
-	}
+	assert.Error(t, err)
 }
 
 func TestCe_DismissAnalysisWarning(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/dismiss_analysis_warning" {
-			t.Errorf("expected path /api/ce/dismiss_analysis_warning, got %s", r.URL.Path)
-		}
-
-		component := r.URL.Query().Get("component")
-		if component != "my-project" {
-			t.Errorf("expected component 'my-project', got %s", component)
-		}
-
-		warning := r.URL.Query().Get("warning")
-		if warning != "warning-key-1" {
-			t.Errorf("expected warning 'warning-key-1', got %s", warning)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/ce/dismiss_analysis_warning", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("component"))
+		assert.Equal(t, "warning-key-1", r.URL.Query().Get("warning"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeDismissAnalysisWarningOption{
 		Component: "my-project",
@@ -628,17 +367,12 @@ func TestCe_DismissAnalysisWarning(t *testing.T) {
 	}
 
 	resp, err := client.Ce.DismissAnalysisWarning(opt)
-	if err != nil {
-		t.Fatalf("DismissAnalysisWarning failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestCe_DismissAnalysisWarning_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -661,192 +395,72 @@ func TestCe_DismissAnalysisWarning_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := client.Ce.DismissAnalysisWarning(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
 
 func TestCe_IndexationStatus(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/ce/indexation_status", http.StatusOK, `{
+		"completedCount": 50,
+		"hasFailures": false,
+		"isCompleted": true,
+		"total": 50
+	}`))
 
-		if r.URL.Path != "/api/ce/indexation_status" {
-			t.Errorf("expected path /api/ce/indexation_status, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"completedCount": 50,
-			"hasFailures": false,
-			"isCompleted": true,
-			"total": 50
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Ce.IndexationStatus()
-	if err != nil {
-		t.Fatalf("IndexationStatus failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.CompletedCount != 50 {
-		t.Errorf("expected completedCount 50, got %d", result.CompletedCount)
-	}
-
-	if result.HasFailures {
-		t.Error("expected hasFailures to be false")
-	}
-
-	if !result.IsCompleted {
-		t.Error("expected isCompleted to be true")
-	}
-
-	if result.Total != 50 {
-		t.Errorf("expected total 50, got %d", result.Total)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, int64(50), result.CompletedCount)
+	assert.False(t, result.HasFailures)
+	assert.True(t, result.IsCompleted)
+	assert.Equal(t, int64(50), result.Total)
 }
 
 func TestCe_Info(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/ce/info", http.StatusOK, `{
+		"workersPauseStatus": "RUNNING"
+	}`))
 
-		if r.URL.Path != "/api/ce/info" {
-			t.Errorf("expected path /api/ce/info, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"workersPauseStatus": "RUNNING"
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Ce.Info()
-	if err != nil {
-		t.Fatalf("Info failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.WorkersPauseStatus != "RUNNING" {
-		t.Errorf("expected workersPauseStatus 'RUNNING', got %s", result.WorkersPauseStatus)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "RUNNING", result.WorkersPauseStatus)
 }
 
 func TestCe_Pause(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/ce/pause", http.StatusNoContent))
 
-		if r.URL.Path != "/api/ce/pause" {
-			t.Errorf("expected path /api/ce/pause, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Ce.Pause()
-	if err != nil {
-		t.Fatalf("Pause failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestCe_Resume(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/ce/resume", http.StatusNoContent))
 
-		if r.URL.Path != "/api/ce/resume" {
-			t.Errorf("expected path /api/ce/resume, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Ce.Resume()
-	if err != nil {
-		t.Fatalf("Resume failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestCe_Submit(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/submit" {
-			t.Errorf("expected path /api/ce/submit, got %s", r.URL.Path)
-		}
-
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		projectName := r.URL.Query().Get("projectName")
-		if projectName != "My Project" {
-			t.Errorf("expected projectName 'My Project', got %s", projectName)
-		}
-
-		report := r.URL.Query().Get("report")
-		if report != "base64-encoded-report" {
-			t.Errorf("expected report 'base64-encoded-report', got %s", report)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/ce/submit", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("projectKey"))
+		assert.Equal(t, "My Project", r.URL.Query().Get("projectName"))
+		assert.Equal(t, "base64-encoded-report", r.URL.Query().Get("report"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -854,13 +468,9 @@ func TestCe_Submit(t *testing.T) {
 			"projectId": "project-uuid",
 			"taskId": "task-uuid"
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeSubmitOption{
 		ProjectKey:  "my-project",
@@ -869,29 +479,15 @@ func TestCe_Submit(t *testing.T) {
 	}
 
 	result, resp, err := client.Ce.Submit(opt)
-	if err != nil {
-		t.Fatalf("Submit failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.ProjectID != "project-uuid" {
-		t.Errorf("expected projectId 'project-uuid', got %s", result.ProjectID)
-	}
-
-	if result.TaskID != "task-uuid" {
-		t.Errorf("expected taskId 'task-uuid', got %s", result.TaskID)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "project-uuid", result.ProjectID)
+	assert.Equal(t, "task-uuid", result.TaskID)
 }
 
 func TestCe_Submit_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -921,32 +517,17 @@ func TestCe_Submit_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Ce.Submit(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
 
 func TestCe_Task(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/ce/task" {
-			t.Errorf("expected path /api/ce/task, got %s", r.URL.Path)
-		}
-
-		id := r.URL.Query().Get("id")
-		if id != "task-123" {
-			t.Errorf("expected id 'task-123', got %s", id)
-		}
-
-		additionalFields := r.URL.Query().Get("additionalFields")
-		if additionalFields != "stacktrace" {
-			t.Errorf("expected additionalFields 'stacktrace', got %s", additionalFields)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/ce/task", r.URL.Path)
+		assert.Equal(t, "task-123", r.URL.Query().Get("id"))
+		assert.Equal(t, "stacktrace", r.URL.Query().Get("additionalFields"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -965,13 +546,9 @@ func TestCe_Task(t *testing.T) {
 				"warnings": ["Warning 1", "Warning 2", "Warning 3"]
 			}
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &CeTaskOption{
 		ID:               "task-123",
@@ -979,45 +556,19 @@ func TestCe_Task(t *testing.T) {
 	}
 
 	result, resp, err := client.Ce.Task(opt)
-	if err != nil {
-		t.Fatalf("Task failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Task.ID != "task-123" {
-		t.Errorf("expected task id 'task-123', got %s", result.Task.ID)
-	}
-
-	if result.Task.Status != "FAILED" {
-		t.Errorf("expected status 'FAILED', got %s", result.Task.Status)
-	}
-
-	if result.Task.ErrorMessage != "Analysis failed" {
-		t.Errorf("expected error message 'Analysis failed', got %s", result.Task.ErrorMessage)
-	}
-
-	if !result.Task.HasErrorStacktrace {
-		t.Error("expected hasErrorStacktrace to be true")
-	}
-
-	if result.Task.WarningCount != 3 {
-		t.Errorf("expected warningCount 3, got %d", result.Task.WarningCount)
-	}
-
-	if len(result.Task.Warnings) != 3 {
-		t.Errorf("expected 3 warnings, got %d", len(result.Task.Warnings))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "task-123", result.Task.ID)
+	assert.Equal(t, "FAILED", result.Task.Status)
+	assert.Equal(t, "Analysis failed", result.Task.ErrorMessage)
+	assert.True(t, result.Task.HasErrorStacktrace)
+	assert.Equal(t, int64(3), result.Task.WarningCount)
+	assert.Len(t, result.Task.Warnings, 3)
 }
 
 func TestCe_Task_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -1040,105 +591,42 @@ func TestCe_Task_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Ce.Task(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
 
 func TestCe_TaskTypes(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/ce/task_types", http.StatusOK, `{
+		"taskTypes": ["REPORT", "ISSUE_SYNC", "AUDIT_PURGE", "PROJECT_EXPORT"]
+	}`))
 
-		if r.URL.Path != "/api/ce/task_types" {
-			t.Errorf("expected path /api/ce/task_types, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"taskTypes": ["REPORT", "ISSUE_SYNC", "AUDIT_PURGE", "PROJECT_EXPORT"]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Ce.TaskTypes()
-	if err != nil {
-		t.Fatalf("TaskTypes failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.TaskTypes) != 4 {
-		t.Errorf("expected 4 task types, got %d", len(result.TaskTypes))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.TaskTypes, 4)
 
 	expectedTypes := []string{"REPORT", "ISSUE_SYNC", "AUDIT_PURGE", "PROJECT_EXPORT"}
-	for i, expectedType := range expectedTypes {
-		if result.TaskTypes[i] != expectedType {
-			t.Errorf("expected task type '%s' at index %d, got '%s'", expectedType, i, result.TaskTypes[i])
-		}
-	}
+	assert.Equal(t, expectedTypes, result.TaskTypes)
 }
 
 func TestCe_WorkerCount(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/ce/worker_count", http.StatusOK, `{
+		"canSetWorkerCount": true,
+		"value": 4
+	}`))
 
-		if r.URL.Path != "/api/ce/worker_count" {
-			t.Errorf("expected path /api/ce/worker_count, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"canSetWorkerCount": true,
-			"value": 4
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Ce.WorkerCount()
-	if err != nil {
-		t.Fatalf("WorkerCount failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if !result.CanSetWorkerCount {
-		t.Error("expected canSetWorkerCount to be true")
-	}
-
-	if result.Value != 4 {
-		t.Errorf("expected value 4, got %d", result.Value)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.True(t, result.CanSetWorkerCount)
+	assert.Equal(t, int64(4), result.Value)
 }
 
 // Test CePaginationArgs validation
@@ -1183,8 +671,10 @@ func TestCePaginationArgs_Validate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.args.Validate()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Validate() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
@@ -1192,7 +682,7 @@ func TestCePaginationArgs_Validate(t *testing.T) {
 
 // Test validation methods
 func TestCe_ValidateActivityOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -1256,15 +746,17 @@ func TestCe_ValidateActivityOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Ce.ValidateActivityOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateActivityOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestCe_ValidateTaskOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -1309,8 +801,10 @@ func TestCe_ValidateTaskOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Ce.ValidateTaskOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateTaskOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}

@@ -2,51 +2,25 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestMonitoring_Metrics(t *testing.T) {
-	// Prometheus-format metrics
 	metricsContent := `# HELP sonarqube_health Health check status
 # TYPE sonarqube_health gauge
 sonarqube_health 1`
 
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/monitoring/metrics" {
-			t.Errorf("expected path /api/monitoring/metrics, got %s", r.URL.Path)
-		}
-
-		// Return as plain text since the endpoint returns Prometheus metrics
-		w.Header().Set("Content-Type", "text/plain")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(metricsContent))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockBinaryHandler(t, http.MethodGet, "/monitoring/metrics", http.StatusOK, "text/plain", []byte(metricsContent))
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	result, resp, err := client.Monitoring.Metrics()
-	if err != nil {
-		t.Fatalf("Metrics failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if *result == "" {
-		t.Error("expected non-empty metrics")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.NotEmpty(t, *result)
+	assert.Contains(t, *result, "sonarqube_health")
 }

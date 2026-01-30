@@ -3,29 +3,16 @@ package sonargo
 import (
 	"encoding/json"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestQualityGates_AddGroup(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if !strings.Contains(r.URL.Path, "qualitygates/add_group") {
-			t.Errorf("expected path to contain qualitygates/add_group, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/add_group", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesAddGroupOption{
 		GateName:  "SonarSource Way",
@@ -33,67 +20,40 @@ func TestQualityGates_AddGroup(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.AddGroup(opt)
-	if err != nil {
-		t.Fatalf("AddGroup failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_AddGroup_ValidationError(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err = client.Qualitygates.AddGroup(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	_, err := client.Qualitygates.AddGroup(nil)
+	assert.Error(t, err)
 
 	// Test missing GateName
 	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOption{
 		GroupName: "group",
 	})
-	if err == nil {
-		t.Error("expected error for missing GateName")
-	}
+	assert.Error(t, err)
 
 	// Test missing GroupName
 	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOption{
 		GateName: "gate",
 	})
-	if err == nil {
-		t.Error("expected error for missing GroupName")
-	}
+	assert.Error(t, err)
 
 	// Test GateName too long
 	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOption{
 		GateName:  strings.Repeat("a", MaxQualityGateNameLength+1),
 		GroupName: "group",
 	})
-	if err == nil {
-		t.Error("expected error for GateName exceeding max length")
-	}
+	assert.Error(t, err)
 }
 
 func TestQualityGates_AddUser(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/add_user", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesAddUserOption{
 		GateName: "SonarSource Way",
@@ -101,29 +61,13 @@ func TestQualityGates_AddUser(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.AddUser(opt)
-	if err != nil {
-		t.Fatalf("AddUser failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_Copy(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/copy", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesCopyOption{
 		Name:       "My New Quality Gate",
@@ -131,66 +75,28 @@ func TestQualityGates_Copy(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.Copy(opt)
-	if err != nil {
-		t.Fatalf("Copy failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_Create(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"name":"My Quality Gate"}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/qualitygates/create", http.StatusOK, `{"name":"My Quality Gate"}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesCreateOption{
 		Name: "My Quality Gate",
 	}
 
 	result, resp, err := client.Qualitygates.Create(opt)
-	if err != nil {
-		t.Fatalf("Create failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.Name != "My Quality Gate" {
-		t.Error("expected name 'My Quality Gate'")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "My Quality Gate", result.Name)
 }
 
 func TestQualityGates_CreateCondition(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"id":"1","metric":"coverage","op":"LT","error":"80"}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/qualitygates/create_condition", http.StatusOK, `{"id":"1","metric":"coverage","op":"LT","error":"80"}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesCreateConditionOption{
 		Error:    "80",
@@ -200,302 +106,149 @@ func TestQualityGates_CreateCondition(t *testing.T) {
 	}
 
 	result, resp, err := client.Qualitygates.CreateCondition(opt)
-	if err != nil {
-		t.Fatalf("CreateCondition failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.Metric != "coverage" {
-		t.Error("unexpected result")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "coverage", result.Metric)
 }
 
 func TestQualityGates_CreateCondition_ValidationError(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	// Test invalid Op value
-	_, _, err = client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOption{
+	_, _, err := client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOption{
 		Error:    "80",
 		GateName: "gate",
 		Metric:   "coverage",
 		Op:       "INVALID",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Op")
-	}
+	assert.Error(t, err)
 
 	// Test missing required fields
 	_, _, err = client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOption{
 		GateName: "gate",
 		Metric:   "coverage",
 	})
-	if err == nil {
-		t.Error("expected error for missing Error")
-	}
+	assert.Error(t, err)
 }
 
 func TestQualityGates_DeleteCondition(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/delete_condition", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesDeleteConditionOption{
 		ID: "1",
 	}
 
 	resp, err := client.Qualitygates.DeleteCondition(opt)
-	if err != nil {
-		t.Fatalf("DeleteCondition failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_Deselect(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/deselect", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesDeselectOption{
 		ProjectKey: "my_project",
 	}
 
 	resp, err := client.Qualitygates.Deselect(opt)
-	if err != nil {
-		t.Fatalf("Deselect failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_Destroy(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/destroy", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesDestroyOption{
 		Name: "My Quality Gate",
 	}
 
 	resp, err := client.Qualitygates.Destroy(opt)
-	if err != nil {
-		t.Fatalf("Destroy failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_GetByProject(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{"qualityGate":{"name":"SonarSource Way","default":true}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/get_by_project", http.StatusOK, `{"qualityGate":{"name":"SonarSource Way","default":true}}`))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesGetByProjectOption{
 		Project: "my_project",
 	}
 
 	result, resp, err := client.Qualitygates.GetByProject(opt)
-	if err != nil {
-		t.Fatalf("GetByProject failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.QualityGate.Name != "SonarSource Way" {
-		t.Error("unexpected quality gate name")
-	}
-
-	if !result.QualityGate.Default {
-		t.Error("expected quality gate to be default")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "SonarSource Way", result.QualityGate.Name)
+	assert.True(t, result.QualityGate.Default)
 }
 
 func TestQualityGates_List(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{
-			"actions":{"create":true},
-			"qualitygates":[
-				{"name":"SonarSource Way","isDefault":true,"isBuiltIn":true},
-				{"name":"Custom Gate","isDefault":false,"isBuiltIn":false}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	response := `{
+		"actions":{"create":true},
+		"qualitygates":[
+			{"name":"SonarSource Way","isDefault":true,"isBuiltIn":true},
+			{"name":"Custom Gate","isDefault":false,"isBuiltIn":false}
+		]
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/list", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Qualitygates.List()
-	if err != nil {
-		t.Fatalf("List failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || len(result.Qualitygates) != 2 {
-		t.Fatal("expected 2 quality gates")
-	}
-
-	if !result.Actions.Create {
-		t.Error("expected create action to be true")
-	}
-
-	if result.Qualitygates[0].Name != "SonarSource Way" {
-		t.Errorf("expected first gate name 'SonarSource Way', got '%s'", result.Qualitygates[0].Name)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Qualitygates, 2)
+	assert.True(t, result.Actions.Create)
+	assert.Equal(t, "SonarSource Way", result.Qualitygates[0].Name)
 }
 
 func TestQualityGates_ProjectStatus(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
+	response := `{
+		"projectStatus":{
+			"status":"OK",
+			"caycStatus":"compliant",
+			"conditions":[
+				{"status":"OK","metricKey":"coverage","comparator":"LT","errorThreshold":"80","actualValue":"85"}
+			],
+			"ignoredConditions":false
 		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{
-			"projectStatus":{
-				"status":"OK",
-				"caycStatus":"compliant",
-				"conditions":[
-					{"status":"OK","metricKey":"coverage","comparator":"LT","errorThreshold":"80","actualValue":"85"}
-				],
-				"ignoredConditions":false
-			}
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/project_status", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesProjectStatusOption{
 		ProjectKey: "my_project",
 	}
 
 	result, resp, err := client.Qualitygates.ProjectStatus(opt)
-	if err != nil {
-		t.Fatalf("ProjectStatus failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.ProjectStatus.Status != "OK" {
-		t.Error("expected status 'OK'")
-	}
-
-	if len(result.ProjectStatus.Conditions) != 1 {
-		t.Error("expected 1 condition")
-	}
-
-	if result.ProjectStatus.Conditions[0].MetricKey != "coverage" {
-		t.Error("expected metric key 'coverage'")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "OK", result.ProjectStatus.Status)
+	assert.Len(t, result.ProjectStatus.Conditions, 1)
+	assert.Equal(t, "coverage", result.ProjectStatus.Conditions[0].MetricKey)
 }
 
 func TestQualityGates_ProjectStatus_ValidationError(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err = client.Qualitygates.ProjectStatus(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	_, _, err := client.Qualitygates.ProjectStatus(nil)
+	assert.Error(t, err)
 
 	// Test missing all required fields
 	_, _, err = client.Qualitygates.ProjectStatus(&QualitygatesProjectStatusOption{})
-	if err == nil {
-		t.Error("expected error when no identifier is provided")
-	}
+	assert.Error(t, err)
 }
 
 func TestQualityGates_RemoveGroup(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/remove_group", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesRemoveGroupOption{
 		GateName:  "SonarSource Way",
@@ -503,29 +256,13 @@ func TestQualityGates_RemoveGroup(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.RemoveGroup(opt)
-	if err != nil {
-		t.Fatalf("RemoveGroup failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_RemoveUser(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/remove_user", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesRemoveUserOption{
 		GateName: "SonarSource Way",
@@ -533,29 +270,13 @@ func TestQualityGates_RemoveUser(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.RemoveUser(opt)
-	if err != nil {
-		t.Fatalf("RemoveUser failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_Rename(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/rename", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesRenameOption{
 		CurrentName: "Old Name",
@@ -563,178 +284,91 @@ func TestQualityGates_Rename(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.Rename(opt)
-	if err != nil {
-		t.Fatalf("Rename failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_Search(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{
-			"paging":{"pageIndex":1,"pageSize":100,"total":2},
-			"results":[
-				{"key":"project1","name":"Project 1","selected":true},
-				{"key":"project2","name":"Project 2","selected":false}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	response := `{
+		"paging":{"pageIndex":1,"pageSize":100,"total":2},
+		"results":[
+			{"key":"project1","name":"Project 1","selected":true},
+			{"key":"project2","name":"Project 2","selected":false}
+		]
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/search", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesSearchOption{
 		GateName: "SonarSource Way",
 	}
 
 	result, resp, err := client.Qualitygates.Search(opt)
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || len(result.Results) != 2 {
-		t.Fatal("expected 2 results")
-	}
-
-	if result.Results[0].Key != "project1" {
-		t.Errorf("expected first project key 'project1', got '%s'", result.Results[0].Key)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Results, 2)
+	assert.Equal(t, "project1", result.Results[0].Key)
 }
 
 func TestQualityGates_Search_ValidationError(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	// Test invalid Selected value
-	_, _, err = client.Qualitygates.Search(&QualitygatesSearchOption{
+	_, _, err := client.Qualitygates.Search(&QualitygatesSearchOption{
 		GateName: "gate",
 		Selected: "invalid",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Selected value")
-	}
+	assert.Error(t, err)
 }
 
 func TestQualityGates_SearchGroups(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{
-			"paging":{"pageIndex":1,"pageSize":25,"total":1},
-			"groups":[
-				{"name":"sonar-administrators","description":"Administrators","selected":true}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	response := `{
+		"paging":{"pageIndex":1,"pageSize":25,"total":1},
+		"groups":[
+			{"name":"sonar-administrators","description":"Administrators","selected":true}
+		]
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/search_groups", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesSearchGroupsOption{
 		GateName: "SonarSource Way",
 	}
 
 	result, resp, err := client.Qualitygates.SearchGroups(opt)
-	if err != nil {
-		t.Fatalf("SearchGroups failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || len(result.Groups) != 1 {
-		t.Fatal("expected 1 group")
-	}
-
-	if result.Groups[0].Name != "sonar-administrators" {
-		t.Errorf("expected group name 'sonar-administrators', got '%s'", result.Groups[0].Name)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Groups, 1)
+	assert.Equal(t, "sonar-administrators", result.Groups[0].Name)
 }
 
 func TestQualityGates_SearchUsers(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{
-			"paging":{"pageIndex":1,"pageSize":25,"total":1},
-			"users":[
-				{"login":"john.doe","name":"John Doe","selected":true}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	response := `{
+		"paging":{"pageIndex":1,"pageSize":25,"total":1},
+		"users":[
+			{"login":"john.doe","name":"John Doe","selected":true}
+		]
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/search_users", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesSearchUsersOption{
 		GateName: "SonarSource Way",
 	}
 
 	result, resp, err := client.Qualitygates.SearchUsers(opt)
-	if err != nil {
-		t.Fatalf("SearchUsers failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || len(result.Users) != 1 {
-		t.Fatal("expected 1 user")
-	}
-
-	if result.Users[0].Login != "john.doe" {
-		t.Errorf("expected login 'john.doe', got '%s'", result.Users[0].Login)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Users, 1)
+	assert.Equal(t, "john.doe", result.Users[0].Login)
 }
 
 func TestQualityGates_Select(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/select", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesSelectOption{
 		GateName:   "SonarSource Way",
@@ -742,126 +376,60 @@ func TestQualityGates_Select(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.Select(opt)
-	if err != nil {
-		t.Fatalf("Select failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_SetAsDefault(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/set_as_default", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesSetAsDefaultOption{
 		Name: "SonarSource Way",
 	}
 
 	resp, err := client.Qualitygates.SetAsDefault(opt)
-	if err != nil {
-		t.Fatalf("SetAsDefault failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_Show(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
+	response := `{
+		"name":"SonarSource Way",
+		"isDefault":true,
+		"isBuiltIn":true,
+		"caycStatus":"compliant",
+		"conditions":[
+			{"id":"1","metric":"coverage","op":"LT","error":"80"}
+		],
+		"actions":{
+			"rename":true,
+			"delete":false,
+			"manageConditions":true
 		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(200)
-		w.Write([]byte(`{
-			"name":"SonarSource Way",
-			"isDefault":true,
-			"isBuiltIn":true,
-			"caycStatus":"compliant",
-			"conditions":[
-				{"id":"1","metric":"coverage","op":"LT","error":"80"}
-			],
-			"actions":{
-				"rename":true,
-				"delete":false,
-				"manageConditions":true
-			}
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/show", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesShowOption{
 		Name: "SonarSource Way",
 	}
 
 	result, resp, err := client.Qualitygates.Show(opt)
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
-
-	if resp.StatusCode != 200 {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil || result.Name != "SonarSource Way" {
-		t.Error("expected name 'SonarSource Way'")
-	}
-
-	if !result.IsDefault {
-		t.Error("expected IsDefault to be true")
-	}
-
-	if !result.IsBuiltIn {
-		t.Error("expected IsBuiltIn to be true")
-	}
-
-	if len(result.Conditions) != 1 {
-		t.Fatal("expected 1 condition")
-	}
-
-	if result.Conditions[0].Metric != "coverage" {
-		t.Errorf("expected metric 'coverage', got '%s'", result.Conditions[0].Metric)
-	}
-
-	if !result.Actions.ManageConditions {
-		t.Error("expected ManageConditions action to be true")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "SonarSource Way", result.Name)
+	assert.True(t, result.IsDefault)
+	assert.True(t, result.IsBuiltIn)
+	assert.Len(t, result.Conditions, 1)
+	assert.Equal(t, "coverage", result.Conditions[0].Metric)
+	assert.True(t, result.Actions.ManageConditions)
 }
 
 func TestQualityGates_UpdateCondition(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		w.WriteHeader(204)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/update_condition", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &QualitygatesUpdateConditionOption{
 		Error:  "85",
@@ -871,26 +439,16 @@ func TestQualityGates_UpdateCondition(t *testing.T) {
 	}
 
 	resp, err := client.Qualitygates.UpdateCondition(opt)
-	if err != nil {
-		t.Fatalf("UpdateCondition failed: %v", err)
-	}
-
-	if resp.StatusCode != 204 {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestQualityGates_UpdateCondition_ValidationError(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err = client.Qualitygates.UpdateCondition(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	_, err := client.Qualitygates.UpdateCondition(nil)
+	assert.Error(t, err)
 
 	// Test invalid Op value
 	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOption{
@@ -899,18 +457,14 @@ func TestQualityGates_UpdateCondition_ValidationError(t *testing.T) {
 		Metric: "coverage",
 		Op:     "INVALID",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Op")
-	}
+	assert.Error(t, err)
 
 	// Test missing required fields
 	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOption{
 		ID:     "1",
 		Metric: "coverage",
 	})
-	if err == nil {
-		t.Error("expected error for missing Error")
-	}
+	assert.Error(t, err)
 }
 
 // TestQualitygatesList_JSONUnmarshal verifies the JSON unmarshal for QualitygatesList.
@@ -943,43 +497,17 @@ func TestQualitygatesList_JSONUnmarshal(t *testing.T) {
 	var response QualitygatesList
 
 	err := json.Unmarshal([]byte(jsonData), &response)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal: %v", err)
-	}
-
-	if !response.Actions.Create {
-		t.Error("expected Create action to be true")
-	}
-
-	if len(response.Qualitygates) != 1 {
-		t.Fatalf("expected 1 quality gate, got %d", len(response.Qualitygates))
-	}
+	require.NoError(t, err)
+	assert.True(t, response.Actions.Create)
+	require.Len(t, response.Qualitygates, 1)
 
 	gate := response.Qualitygates[0]
-
-	if gate.Name != "Sonar way" {
-		t.Errorf("expected name 'Sonar way', got '%s'", gate.Name)
-	}
-
-	if !gate.IsDefault {
-		t.Error("expected IsDefault to be true")
-	}
-
-	if !gate.IsBuiltIn {
-		t.Error("expected IsBuiltIn to be true")
-	}
-
-	if gate.CaycStatus != "compliant" {
-		t.Errorf("expected caycStatus 'compliant', got '%s'", gate.CaycStatus)
-	}
-
-	if gate.HasMQRConditions {
-		t.Error("expected HasMQRConditions to be false")
-	}
-
-	if !gate.HasStandardConditions {
-		t.Error("expected HasStandardConditions to be true")
-	}
+	assert.Equal(t, "Sonar way", gate.Name)
+	assert.True(t, gate.IsDefault)
+	assert.True(t, gate.IsBuiltIn)
+	assert.Equal(t, "compliant", gate.CaycStatus)
+	assert.False(t, gate.HasMQRConditions)
+	assert.True(t, gate.HasStandardConditions)
 }
 
 // TestQualitygatesProjectStatus_JSONUnmarshal verifies the JSON unmarshal for project status.
@@ -1015,35 +543,15 @@ func TestQualitygatesProjectStatus_JSONUnmarshal(t *testing.T) {
 	var response QualitygatesProjectStatus
 
 	err := json.Unmarshal([]byte(jsonData), &response)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal: %v", err)
-	}
-
-	if response.ProjectStatus.Status != "ERROR" {
-		t.Errorf("expected status 'ERROR', got '%s'", response.ProjectStatus.Status)
-	}
-
-	if response.ProjectStatus.CaycStatus != "non-compliant" {
-		t.Errorf("expected caycStatus 'non-compliant', got '%s'", response.ProjectStatus.CaycStatus)
-	}
-
-	if len(response.ProjectStatus.Conditions) != 2 {
-		t.Fatalf("expected 2 conditions, got %d", len(response.ProjectStatus.Conditions))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, "ERROR", response.ProjectStatus.Status)
+	assert.Equal(t, "non-compliant", response.ProjectStatus.CaycStatus)
+	require.Len(t, response.ProjectStatus.Conditions, 2)
 
 	cond := response.ProjectStatus.Conditions[0]
-
-	if cond.MetricKey != "new_coverage" {
-		t.Errorf("expected metricKey 'new_coverage', got '%s'", cond.MetricKey)
-	}
-
-	if cond.ActualValue != "70.5" {
-		t.Errorf("expected actualValue '70.5', got '%s'", cond.ActualValue)
-	}
-
-	if response.ProjectStatus.Period.Mode != "PREVIOUS_VERSION" {
-		t.Errorf("expected period mode 'PREVIOUS_VERSION', got '%s'", response.ProjectStatus.Period.Mode)
-	}
+	assert.Equal(t, "new_coverage", cond.MetricKey)
+	assert.Equal(t, "70.5", cond.ActualValue)
+	assert.Equal(t, "PREVIOUS_VERSION", response.ProjectStatus.Period.Mode)
 }
 
 // TestQualitygatesShow_JSONUnmarshal verifies the JSON unmarshal for show response.
@@ -1073,144 +581,87 @@ func TestQualitygatesShow_JSONUnmarshal(t *testing.T) {
 	var response QualitygatesShow
 
 	err := json.Unmarshal([]byte(jsonData), &response)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal: %v", err)
-	}
-
-	if response.Name != "My Quality Gate" {
-		t.Errorf("expected name 'My Quality Gate', got '%s'", response.Name)
-	}
-
-	if response.IsDefault {
-		t.Error("expected IsDefault to be false")
-	}
-
-	if response.CaycStatus != "over-compliant" {
-		t.Errorf("expected caycStatus 'over-compliant', got '%s'", response.CaycStatus)
-	}
-
-	if !response.IsAiCodeSupported {
-		t.Error("expected IsAiCodeSupported to be true")
-	}
-
-	if len(response.Conditions) != 2 {
-		t.Fatalf("expected 2 conditions, got %d", len(response.Conditions))
-	}
-
-	if response.Conditions[0].ID != "AWGzl6C3r_TYPqzFCFqN" {
-		t.Errorf("expected first condition id 'AWGzl6C3r_TYPqzFCFqN', got '%s'", response.Conditions[0].ID)
-	}
-
-	if !response.Actions.Rename {
-		t.Error("expected Rename action to be true")
-	}
-
-	if !response.Actions.ManageAiCodeAssurance {
-		t.Error("expected ManageAiCodeAssurance action to be true")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, "My Quality Gate", response.Name)
+	assert.False(t, response.IsDefault)
+	assert.Equal(t, "over-compliant", response.CaycStatus)
+	assert.True(t, response.IsAiCodeSupported)
+	require.Len(t, response.Conditions, 2)
+	assert.Equal(t, "AWGzl6C3r_TYPqzFCFqN", response.Conditions[0].ID)
+	assert.True(t, response.Actions.Rename)
+	assert.True(t, response.Actions.ManageAiCodeAssurance)
 }
 
 // TestValidation_EdgeCases tests edge cases for validation functions.
 func TestValidation_EdgeCases(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	// Test Copy validation - missing name
-	err = client.Qualitygates.ValidateCopyOpt(&QualitygatesCopyOption{
+	err := client.Qualitygates.ValidateCopyOpt(&QualitygatesCopyOption{
 		SourceName: "source",
 	})
-	if err == nil {
-		t.Error("expected error for missing Name in Copy")
-	}
+	assert.Error(t, err)
 
 	// Test Delete condition - nil option
 	err = client.Qualitygates.ValidateDeleteConditionOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil DeleteCondition option")
-	}
+	assert.Error(t, err)
 
 	// Test Rename - both names too long
 	err = client.Qualitygates.ValidateRenameOpt(&QualitygatesRenameOption{
 		CurrentName: strings.Repeat("a", MaxQualityGateNameLength+1),
 		Name:        "new",
 	})
-	if err == nil {
-		t.Error("expected error for CurrentName exceeding max length")
-	}
+	assert.Error(t, err)
 
 	// Test GetByProject - nil option
 	err = client.Qualitygates.ValidateGetByProjectOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil GetByProject option")
-	}
+	assert.Error(t, err)
 
 	// Test Search groups - invalid selected
 	err = client.Qualitygates.ValidateSearchGroupsOpt(&QualitygatesSearchGroupsOption{
 		GateName: "gate",
 		Selected: "invalid",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Selected in SearchGroups")
-	}
+	assert.Error(t, err)
 
 	// Test Search users - invalid selected
 	err = client.Qualitygates.ValidateSearchUsersOpt(&QualitygatesSearchUsersOption{
 		GateName: "gate",
 		Selected: "invalid",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Selected in SearchUsers")
-	}
+	assert.Error(t, err)
 
 	// Test AddUser - nil option
 	err = client.Qualitygates.ValidateAddUserOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil AddUser option")
-	}
+	assert.Error(t, err)
 
 	// Test RemoveGroup - nil option
 	err = client.Qualitygates.ValidateRemoveGroupOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil RemoveGroup option")
-	}
+	assert.Error(t, err)
 
 	// Test RemoveUser - nil option
 	err = client.Qualitygates.ValidateRemoveUserOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil RemoveUser option")
-	}
+	assert.Error(t, err)
 
 	// Test Deselect - nil option
 	err = client.Qualitygates.ValidateDeselectOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil Deselect option")
-	}
+	assert.Error(t, err)
 
 	// Test Select - nil option
 	err = client.Qualitygates.ValidateSelectOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil Select option")
-	}
+	assert.Error(t, err)
 
 	// Test SetAsDefault - nil option
 	err = client.Qualitygates.ValidateSetAsDefaultOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil SetAsDefault option")
-	}
+	assert.Error(t, err)
 
 	// Test Show - nil option
 	err = client.Qualitygates.ValidateShowOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil Show option")
-	}
+	assert.Error(t, err)
 
 	// Test Create - nil option
 	err = client.Qualitygates.ValidateCreateOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil Create option")
-	}
+	assert.Error(t, err)
 
 	// Test CreateCondition - Error too long
 	err = client.Qualitygates.ValidateCreateConditionOpt(&QualitygatesCreateConditionOption{
@@ -1218,7 +669,5 @@ func TestValidation_EdgeCases(t *testing.T) {
 		GateName: "gate",
 		Metric:   "coverage",
 	})
-	if err == nil {
-		t.Error("expected error for Error exceeding max length")
-	}
+	assert.Error(t, err)
 }

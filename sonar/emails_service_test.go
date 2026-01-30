@@ -3,28 +3,15 @@ package sonargo
 import (
 	"errors"
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestEmails_Send(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/emails/send" {
-			t.Errorf("expected path /api/emails/send, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/emails/send", http.StatusNoContent))
+	client := newTestClient(t, server.url())
 
 	opt := &EmailsSendOption{
 		Message: "Test message content",
@@ -33,79 +20,48 @@ func TestEmails_Send(t *testing.T) {
 	}
 
 	resp, err := client.Emails.Send(opt)
-	if err != nil {
-		t.Fatalf("Send failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
-func TestEmails_Send_ValidationError_NilOption(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+func TestEmails_Send_ValidationErrors(t *testing.T) {
+	tests := []struct {
+		name      string
+		opt       *EmailsSendOption
+		wantField string
+	}{
+		{
+			name:      "nil option",
+			opt:       nil,
+			wantField: "opt",
+		},
+		{
+			name: "missing message",
+			opt: &EmailsSendOption{
+				To: "test@example.com",
+			},
+			wantField: "Message",
+		},
+		{
+			name: "missing to",
+			opt: &EmailsSendOption{
+				Message: "Test message",
+			},
+			wantField: "To",
+		},
 	}
 
-	_, err = client.Emails.Send(nil)
-	if err == nil {
-		t.Fatal("expected error for nil option")
-	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := newLocalhostClient(t)
 
-	var validationErr *ValidationError
-	if !errors.As(err, &validationErr) {
-		t.Fatalf("expected ValidationError, got %T", err)
-	}
-}
+			_, err := client.Emails.Send(tt.opt)
+			require.Error(t, err)
 
-func TestEmails_Send_ValidationError_MissingMessage(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	opt := &EmailsSendOption{
-		To: "test@example.com",
-	}
-
-	_, err = client.Emails.Send(opt)
-	if err == nil {
-		t.Fatal("expected error for missing Message")
-	}
-
-	var validationErr *ValidationError
-	if !errors.As(err, &validationErr) {
-		t.Fatalf("expected ValidationError, got %T", err)
-	}
-
-	if validationErr.Field != "Message" {
-		t.Errorf("expected field 'Message', got '%s'", validationErr.Field)
-	}
-}
-
-func TestEmails_Send_ValidationError_MissingTo(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	opt := &EmailsSendOption{
-		Message: "Test message",
-	}
-
-	_, err = client.Emails.Send(opt)
-	if err == nil {
-		t.Fatal("expected error for missing To")
-	}
-
-	var validationErr *ValidationError
-	if !errors.As(err, &validationErr) {
-		t.Fatalf("expected ValidationError, got %T", err)
-	}
-
-	if validationErr.Field != "To" {
-		t.Errorf("expected field 'To', got '%s'", validationErr.Field)
+			var validationErr *ValidationError
+			require.True(t, errors.As(err, &validationErr), "expected ValidationError, got %T", err)
+			assert.Equal(t, tt.wantField, validationErr.Field)
+		})
 	}
 }
 
@@ -157,23 +113,22 @@ func TestEmails_ValidateSendOpt(t *testing.T) {
 		},
 	}
 
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Emails.ValidateSendOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateSendOpt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
 
-			if tt.wantErr && tt.wantField != "" {
-				var validationErr *ValidationError
-				if errors.As(err, &validationErr) {
-					if validationErr.Field != tt.wantField {
-						t.Errorf("expected field '%s', got '%s'", tt.wantField, validationErr.Field)
+			if tt.wantErr {
+				require.Error(t, err)
+				if tt.wantField != "" {
+					var validationErr *ValidationError
+					if errors.As(err, &validationErr) {
+						assert.Equal(t, tt.wantField, validationErr.Field)
 					}
 				}
+			} else {
+				require.NoError(t, err)
 			}
 		})
 	}

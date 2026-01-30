@@ -1,8 +1,6 @@
 package sonargo
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,59 +8,7 @@ import (
 	"net/url"
 	"sort"
 	"strings"
-
-	"github.com/google/go-querystring/query"
 )
-
-// NewRequest creates an API request. A relative URL path can be provided in
-// urlStr, in which case it is resolved relative to the base URL of the Client.
-// Relative URL paths should always be specified without a preceding slash. If
-// specified, the value pointed to by body is JSON encoded and included as the
-// request body.
-func NewRequest(method, path string, baseURL *url.URL, username, password string, opt any) (*http.Request, error) {
-	baseURLCopy := *baseURL
-
-	unescaped, err := url.PathUnescape(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unescape path: %w", err)
-	}
-
-	baseURLCopy.RawPath = baseURLCopy.Path + path
-	baseURLCopy.Path += unescaped
-
-	if opt != nil {
-		queryValues, queryErr := query.Values(opt)
-		if queryErr != nil {
-			return nil, fmt.Errorf("failed to encode query values: %w", queryErr)
-		}
-
-		baseURLCopy.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequestWithContext(context.Background(), method, baseURLCopy.String(), nil)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
-	}
-
-	if method == http.MethodPost || method == http.MethodPut {
-		// SonarQube uses RawQuery even when method is POST
-		bodyBytes, marshalErr := json.Marshal(opt)
-		if marshalErr != nil {
-			return nil, fmt.Errorf("failed to marshal request body: %w", marshalErr)
-		}
-
-		bodyReader := bytes.NewReader(bodyBytes)
-		baseURLCopy.RawQuery = ""
-		req.Body = io.NopCloser(bodyReader)
-		req.ContentLength = int64(bodyReader.Len())
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	req.Header.Set("Accept", "application/json")
-	req.SetBasicAuth(username, password)
-
-	return req, nil
-}
 
 // Do sends an API request and returns the API response. The API response is
 // JSON decoded and stored in the value pointed to by v, or returned as an

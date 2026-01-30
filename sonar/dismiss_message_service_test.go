@@ -2,40 +2,17 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDismissMessage_Check(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/dismiss_message/check" {
-			t.Errorf("expected path /api/dismiss_message/check, got %s", r.URL.Path)
-		}
-
-		messageType := r.URL.Query().Get("messageType")
-		if messageType != "INFO" {
-			t.Errorf("expected messageType 'INFO', got %s", messageType)
-		}
-
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"dismissed": true}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/dismiss_message/check", http.StatusOK, &DismissMessageCheck{
+		Dismissed: true,
 	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.url())
 
 	opt := &DismissMessageCheckOption{
 		MessageType: "INFO",
@@ -43,67 +20,48 @@ func TestDismissMessage_Check(t *testing.T) {
 	}
 
 	result, resp, err := client.DismissMessage.Check(opt)
-	if err != nil {
-		t.Fatalf("Check failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if !result.Dismissed {
-		t.Error("expected dismissed to be true")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.True(t, result.Dismissed)
 }
 
 func TestDismissMessage_Check_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Nil option should fail validation.
-	_, _, err := client.DismissMessage.Check(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
+	tests := []struct {
+		name string
+		opt  *DismissMessageCheckOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing MessageType",
+			opt: &DismissMessageCheckOption{
+				ProjectKey: "my-project",
+			},
+		},
+		{
+			name: "missing ProjectKey",
+			opt: &DismissMessageCheckOption{
+				MessageType: "INFO",
+			},
+		},
 	}
 
-	// Missing MessageType should fail validation.
-	_, _, err = client.DismissMessage.Check(&DismissMessageCheckOption{
-		ProjectKey: "my-project",
-	})
-	if err == nil {
-		t.Error("expected error for missing MessageType")
-	}
-
-	// Missing ProjectKey should fail validation.
-	_, _, err = client.DismissMessage.Check(&DismissMessageCheckOption{
-		MessageType: "INFO",
-	})
-	if err == nil {
-		t.Error("expected error for missing ProjectKey")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.DismissMessage.Check(tt.opt)
+			require.Error(t, err)
+		})
 	}
 }
 
 func TestDismissMessage_Dismiss(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/dismiss_message/dismiss" {
-			t.Errorf("expected path /api/dismiss_message/dismiss, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/dismiss_message/dismiss", http.StatusNoContent))
+	client := newTestClient(t, server.url())
 
 	opt := &DismissMessageDismissOption{
 		MessageType: "WARNING",
@@ -111,75 +69,109 @@ func TestDismissMessage_Dismiss(t *testing.T) {
 	}
 
 	resp, err := client.DismissMessage.Dismiss(opt)
-	if err != nil {
-		t.Fatalf("Dismiss failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestDismissMessage_Dismiss_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Nil option should fail validation.
-	_, err := client.DismissMessage.Dismiss(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
+	tests := []struct {
+		name string
+		opt  *DismissMessageDismissOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing MessageType",
+			opt: &DismissMessageDismissOption{
+				ProjectKey: "my-project",
+			},
+		},
+		{
+			name: "missing ProjectKey",
+			opt: &DismissMessageDismissOption{
+				MessageType: "INFO",
+			},
+		},
 	}
 
-	// Missing MessageType should fail validation.
-	_, err = client.DismissMessage.Dismiss(&DismissMessageDismissOption{
-		ProjectKey: "my-project",
-	})
-	if err == nil {
-		t.Error("expected error for missing MessageType")
-	}
-
-	// Missing ProjectKey should fail validation.
-	_, err = client.DismissMessage.Dismiss(&DismissMessageDismissOption{
-		MessageType: "INFO",
-	})
-	if err == nil {
-		t.Error("expected error for missing ProjectKey")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := client.DismissMessage.Dismiss(tt.opt)
+			require.Error(t, err)
+		})
 	}
 }
 
 func TestDismissMessage_ValidateCheckOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Valid option should pass.
-	err := client.DismissMessage.ValidateCheckOpt(&DismissMessageCheckOption{
-		MessageType: "INFO",
-		ProjectKey:  "my-project",
-	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
+	tests := []struct {
+		name    string
+		opt     *DismissMessageCheckOption
+		wantErr bool
+	}{
+		{
+			name: "valid option",
+			opt: &DismissMessageCheckOption{
+				MessageType: "INFO",
+				ProjectKey:  "my-project",
+			},
+			wantErr: false,
+		},
+		{
+			name:    "nil option",
+			opt:     nil,
+			wantErr: true,
+		},
 	}
 
-	// Nil option should fail.
-	err = client.DismissMessage.ValidateCheckOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.DismissMessage.ValidateCheckOpt(tt.opt)
+			if tt.wantErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
 	}
 }
 
 func TestDismissMessage_ValidateDismissOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Valid option should pass.
-	err := client.DismissMessage.ValidateDismissOpt(&DismissMessageDismissOption{
-		MessageType: "INFO",
-		ProjectKey:  "my-project",
-	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
+	tests := []struct {
+		name    string
+		opt     *DismissMessageDismissOption
+		wantErr bool
+	}{
+		{
+			name: "valid option",
+			opt: &DismissMessageDismissOption{
+				MessageType: "INFO",
+				ProjectKey:  "my-project",
+			},
+			wantErr: false,
+		},
+		{
+			name:    "nil option",
+			opt:     nil,
+			wantErr: true,
+		},
 	}
 
-	// Nil option should fail.
-	err = client.DismissMessage.ValidateDismissOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.DismissMessage.ValidateDismissOpt(tt.opt)
+			if tt.wantErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
 	}
 }

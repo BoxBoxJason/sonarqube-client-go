@@ -249,12 +249,16 @@ func (c *Client) SetBaseURL(urlStr *string) error {
 	if urlStr == nil {
 		return errors.New("urlStr cannot be nil")
 	}
-	// Make sure the given URL end with a slash
-	if !strings.HasSuffix(*urlStr, "/") {
-		*urlStr += "/"
+
+	// Work on a local copy to avoid mutating the caller-provided string.
+	value := *urlStr
+
+	// Make sure the given URL ends with a slash.
+	if !strings.HasSuffix(value, "/") {
+		value += "/"
 	}
 
-	baseURL, err := url.Parse(*urlStr)
+	baseURL, err := url.Parse(value)
 	if err != nil {
 		return fmt.Errorf("failed to parse URL: %w", err)
 	}
@@ -351,10 +355,10 @@ func initServices(client *Client) {
 }
 
 // NewRequest creates an API request. A relative URL path can be provided in
-// urlStr, in which case it is resolved relative to the base URL of the Client.
-// Relative URL paths should always be specified without a preceding slash. If
-// specified, the value pointed to by body is JSON encoded and included as the
-// request body.
+// path, in which case it is resolved relative to the base URL of the Client.
+// Relative URL paths should always be specified without a preceding slash.
+// If opt is non-nil, it is encoded as URL query parameters using go-querystring
+// and appended to the request URL. The request body is not populated.
 func (c *Client) NewRequest(method, path string, opt any) (*http.Request, error) {
 	baseURLCopy := *c.baseURL
 	baseURLCopy.Path = c.baseURL.Path + path

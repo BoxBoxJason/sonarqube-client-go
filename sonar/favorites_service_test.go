@@ -2,201 +2,96 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFavorites_Add(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/favorites/add" {
-			t.Errorf("expected path /api/favorites/add, got %s", r.URL.Path)
-		}
-
-		component := r.URL.Query().Get("component")
-		if component != "my-project" {
-			t.Errorf("expected component 'my-project', got %s", component)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/favorites/add", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &FavoritesAddOption{
 		Component: "my-project",
 	}
 
 	resp, err := client.Favorites.Add(opt)
-	if err != nil {
-		t.Fatalf("Add failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestFavorites_Add_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Favorites.Add(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Component should fail validation.
 	_, err = client.Favorites.Add(&FavoritesAddOption{})
-	if err == nil {
-		t.Error("expected error for missing Component")
-	}
+	assert.Error(t, err)
 }
 
 func TestFavorites_Remove(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/favorites/remove" {
-			t.Errorf("expected path /api/favorites/remove, got %s", r.URL.Path)
-		}
-
-		component := r.URL.Query().Get("component")
-		if component != "my-project" {
-			t.Errorf("expected component 'my-project', got %s", component)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/favorites/remove", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &FavoritesRemoveOption{
 		Component: "my-project",
 	}
 
 	resp, err := client.Favorites.Remove(opt)
-	if err != nil {
-		t.Fatalf("Remove failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestFavorites_Remove_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Favorites.Remove(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Component should fail validation.
 	_, err = client.Favorites.Remove(&FavoritesRemoveOption{})
-	if err == nil {
-		t.Error("expected error for missing Component")
-	}
+	assert.Error(t, err)
 }
 
 func TestFavorites_Search(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/favorites/search" {
-			t.Errorf("expected path /api/favorites/search, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"favorites": [
-				{"key": "project-1", "name": "Project One", "qualifier": "TRK"},
-				{"key": "project-2", "name": "Project Two", "qualifier": "TRK"}
-			],
-			"paging": {
-				"pageIndex": 1,
-				"pageSize": 100,
-				"total": 2
-			}
-		}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/favorites/search", http.StatusOK, &FavoritesSearch{
+		Favorites: []Favorite{
+			{Key: "project-1", Name: "Project One", Qualifier: "TRK"},
+			{Key: "project-2", Name: "Project Two", Qualifier: "TRK"},
+		},
+		Paging: Paging{
+			PageIndex: 1,
+			PageSize:  100,
+			Total:     2,
+		},
 	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Favorites.Search(nil)
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Favorites) != 2 {
-		t.Errorf("expected 2 favorites, got %d", len(result.Favorites))
-	}
-
-	if result.Favorites[0].Key != "project-1" {
-		t.Errorf("expected first favorite key 'project-1', got %s", result.Favorites[0].Key)
-	}
-
-	if result.Favorites[0].Qualifier != "TRK" {
-		t.Errorf("expected first favorite qualifier 'TRK', got %s", result.Favorites[0].Qualifier)
-	}
-
-	if result.Paging.Total != 2 {
-		t.Errorf("expected paging total 2, got %d", result.Paging.Total)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Favorites, 2)
+	assert.Equal(t, "project-1", result.Favorites[0].Key)
+	assert.Equal(t, "TRK", result.Favorites[0].Qualifier)
+	assert.Equal(t, int64(2), result.Paging.Total)
 }
 
 func TestFavorites_Search_WithPagination(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		page := r.URL.Query().Get("p")
-		if page != "2" {
-			t.Errorf("expected page '2', got %s", page)
-		}
-
-		pageSize := r.URL.Query().Get("ps")
-		if pageSize != "50" {
-			t.Errorf("expected pageSize '50', got %s", pageSize)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"favorites": [], "paging": {"pageIndex": 2, "pageSize": 50, "total": 0}}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/favorites/search", http.StatusOK, &FavoritesSearch{
+		Favorites: []Favorite{},
+		Paging: Paging{
+			PageIndex: 2,
+			PageSize:  50,
+			Total:     0,
+		},
 	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &FavoritesSearchOption{
 		PaginationArgs: PaginationArgs{
@@ -206,77 +101,56 @@ func TestFavorites_Search_WithPagination(t *testing.T) {
 	}
 
 	_, resp, err := client.Favorites.Search(opt)
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestFavorites_ValidateAddOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Valid option should pass.
 	err := client.Favorites.ValidateAddOpt(&FavoritesAddOption{
 		Component: "my-project",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Nil option should fail.
 	err = client.Favorites.ValidateAddOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Component should fail.
 	err = client.Favorites.ValidateAddOpt(&FavoritesAddOption{})
-	if err == nil {
-		t.Error("expected error for missing Component")
-	}
+	assert.Error(t, err)
 }
 
 func TestFavorites_ValidateRemoveOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Valid option should pass.
 	err := client.Favorites.ValidateRemoveOpt(&FavoritesRemoveOption{
 		Component: "my-project",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Nil option should fail.
 	err = client.Favorites.ValidateRemoveOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Component should fail.
 	err = client.Favorites.ValidateRemoveOpt(&FavoritesRemoveOption{})
-	if err == nil {
-		t.Error("expected error for missing Component")
-	}
+	assert.Error(t, err)
 }
 
 func TestFavorites_ValidateSearchOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should be valid.
 	err := client.Favorites.ValidateSearchOpt(nil)
-	if err != nil {
-		t.Errorf("expected nil error for nil option, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Empty option should be valid.
 	err = client.Favorites.ValidateSearchOpt(&FavoritesSearchOption{})
-	if err != nil {
-		t.Errorf("expected nil error for empty option, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Valid pagination should be valid.
 	err = client.Favorites.ValidateSearchOpt(&FavoritesSearchOption{
@@ -285,7 +159,5 @@ func TestFavorites_ValidateSearchOpt(t *testing.T) {
 			PageSize: 100,
 		},
 	})
-	if err != nil {
-		t.Errorf("expected nil error for valid pagination, got %v", err)
-	}
+	assert.NoError(t, err)
 }
