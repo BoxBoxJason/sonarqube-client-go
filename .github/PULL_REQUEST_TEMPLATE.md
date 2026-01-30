@@ -15,7 +15,6 @@ I have:
 
 - [ ] Followed the git conventional commit message format.
 - [ ] Made sure all changes are covered by proper tests, reaching a coverage of at least 80% when applicable.
-- [ ] Run `make generate` to ensure the generated code does not differ. (Be careful, this is a destructive operation that will overwrite your local changes!)
 
 ### How has this code been tested
 
@@ -26,3 +25,8 @@ Before reviewers can be confident in the correctness of this pull request, it
 needs to tested and shown to be correct. Briefly describe the testing that has
 already been done or which is planned for this change.
 -->
+
+- [ ] Made sure `make lint` passes to verify that the code style is correct.
+- [ ] Made sure `make test` passes to verify that the code is working as intended.
+- [ ] Added unit tests to cover the code changes.
+- [ ] Added end-to-end tests if necessary.

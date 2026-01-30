@@ -3,6 +3,7 @@
 ## Purpose
 
 Short, machine-friendly instructions for GitHub Copilot agent mode. Follow these rules strictly when making code changes or tests.
+This repository is an idiomatic SonarQube Go SDK — a Go client library generated from the SonarQube API, providing idiomatic, type-safe access to SonarQube endpoints.
 
 ## Top priorities
 
@@ -44,15 +45,10 @@ An iteration is complete only when:
 
 ## Makefile commands
 
-- `make generate`: runs code generation from source code.
 - `make lint`: runs `golangci-lint` and reports lint results.
 - `make test`: runs unit tests.
 
-These three commands should always pass before considering an iteration complete.
-
-## Generated files
-
-- NEVER edit generated files whose filenames begin with `zz_`. These files are overwritten by code generation. Instead, you must modify the generation source files.
+These commands should always pass before considering an iteration complete.
 
 ## Reference
 

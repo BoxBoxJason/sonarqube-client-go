@@ -1,6 +1,6 @@
 # SonarQube Go Client
 
-A Go client library for SonarQube API, with automatic code generation from the SonarQube API specification.
+A Go client library for SonarQube API, based on the SonarQube API specification.
 
 ## Installation
 
@@ -10,7 +10,7 @@ go get github.com/boxboxjason/sonarqube-client-go
 
 ## Usage
 
-Import the generated client in your Go code:
+Import the SonarQube client in your Go code:
 
 ```go
 package main
@@ -60,17 +60,8 @@ username := admin
 password := admin
 ```
 
-### 3. Generate the code
-
-```bash
-make generate
-```
-
-This will generate client code in the `sonar/` directory based on your SonarQube API specification.
-
 ## Features
 
-- ✅ Automatically generated from SonarQube API specification
 - ✅ Type-safe Go structs for all API responses
 - ✅ Support for all SonarQube API endpoints
 - ✅ Handle different response types (JSON, Protocol Buffers, text)
@@ -83,4 +74,4 @@ This will generate client code in the `sonar/` directory based on your SonarQube
 
 ## License
 
-See LICENSE file for details.
+See [LICENSE](LICENSE) file for details.
