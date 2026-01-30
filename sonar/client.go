@@ -58,7 +58,7 @@ type Client struct {
 	Users                     *UsersService
 	Webhooks                  *WebhooksService
 	Webservices               *WebservicesService
-	H                         *HService
+	Batch                     *BatchService
 }
 
 func NewClient(endpoint, username, password string) (*Client, error) {
@@ -116,7 +116,7 @@ func NewClient(endpoint, username, password string) (*Client, error) {
 	c.Users = &UsersService{client: c}
 	c.Webhooks = &WebhooksService{client: c}
 	c.Webservices = &WebservicesService{client: c}
-	c.H = &HService{client: c}
+	c.Batch = &BatchService{client: c}
 	return c, nil
 }
 func NewClientWithToken(endpoint, token string) (*Client, error) {
@@ -174,7 +174,7 @@ func NewClientWithToken(endpoint, token string) (*Client, error) {
 	c.Users = &UsersService{client: c}
 	c.Webhooks = &WebhooksService{client: c}
 	c.Webservices = &WebservicesService{client: c}
-	c.H = &HService{client: c}
+	c.Batch = &BatchService{client: c}
 	return c, nil
 }
 func (c *Client) SetHTTPClient(client *http.Client) {
