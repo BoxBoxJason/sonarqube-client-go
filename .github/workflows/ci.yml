@@ -23,13 +23,15 @@ jobs:
           go-version: "1.25.5"
           cache: true
 
-      - name: Cache Go binaries
+      - name: Cache Go tools
         uses: actions/cache@v4
         with:
-          path: ~/go/bin
-          key: ${{ runner.os }}-go-bin-${{ hashFiles('**/Makefile') }}
+          path: |
+            /home/runner/go/bin
+            /home/runner/go/pkg/mod
+          key: ${{ runner.os }}-go-tools-${{ hashFiles('Makefile') }}-lint
           restore-keys: |
-            ${{ runner.os }}-go-bin-
+            ${{ runner.os }}-go-tools-
 
       - name: Run lint (Makefile)
         run: make lint
@@ -47,13 +49,15 @@ jobs:
           go-version: "1.25.5"
           cache: true
 
-      - name: Cache Go binaries
+      - name: Cache Go tools
         uses: actions/cache@v4
         with:
-          path: ~/go/bin
-          key: ${{ runner.os }}-go-bin-${{ hashFiles('**/Makefile') }}
+          path: |
+            /home/runner/go/bin
+            /home/runner/go/pkg/mod
+          key: ${{ runner.os }}-go-tools-${{ hashFiles('Makefile') }}-test
           restore-keys: |
-            ${{ runner.os }}-go-bin-
+            ${{ runner.os }}-go-tools-
 
       - name: Run unit tests and coverage (Makefile)
         run: |
@@ -85,13 +89,15 @@ jobs:
           go-version: "1.25.5"
           cache: true
 
-      - name: Cache Go binaries
+      - name: Cache Go tools
         uses: actions/cache@v4
         with:
-          path: ~/go/bin
-          key: ${{ runner.os }}-go-bin-${{ hashFiles('**/Makefile') }}
+          path: |
+            /home/runner/go/bin
+            /home/runner/go/pkg/mod
+          key: ${{ runner.os }}-go-tools-${{ hashFiles('Makefile') }}-e2e
           restore-keys: |
-            ${{ runner.os }}-go-bin-
+            ${{ runner.os }}-go-tools-
 
       - name: Run E2E tests
         run: make e2e
