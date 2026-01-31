@@ -2,8 +2,10 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // -----------------------------------------------------------------------------
@@ -11,33 +13,8 @@ import (
 // -----------------------------------------------------------------------------
 
 func TestPermissions_AddGroup(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/add_group" {
-			t.Errorf("expected path /api/permissions/add_group, got %s", r.URL.Path)
-		}
-
-		groupName := r.URL.Query().Get("groupName")
-		if groupName != "developers" {
-			t.Errorf("expected groupName 'developers', got %s", groupName)
-		}
-
-		permission := r.URL.Query().Get("permission")
-		if permission != "admin" {
-			t.Errorf("expected permission 'admin', got %s", permission)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_group", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsAddGroupOption{
 		GroupName:  "developers",
@@ -45,35 +22,13 @@ func TestPermissions_AddGroup(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.AddGroup(opt)
-	if err != nil {
-		t.Fatalf("AddGroup failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_AddGroup_WithProject(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		permission := r.URL.Query().Get("permission")
-		if permission != "user" {
-			t.Errorf("expected permission 'user', got %s", permission)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_group", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsAddGroupOption{
 		GroupName:  "developers",
@@ -82,48 +37,35 @@ func TestPermissions_AddGroup_WithProject(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.AddGroup(opt)
-	if err != nil {
-		t.Fatalf("AddGroup failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_AddGroup_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.AddGroup(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
 	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOption{
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing GroupName")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOption{
 		GroupName: "developers",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
 	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOption{
 		GroupName:  "developers",
 		Permission: "invalid",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -131,38 +73,8 @@ func TestPermissions_AddGroup_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_AddGroupToTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/add_group_to_template" {
-			t.Errorf("expected path /api/permissions/add_group_to_template, got %s", r.URL.Path)
-		}
-
-		groupName := r.URL.Query().Get("groupName")
-		if groupName != "developers" {
-			t.Errorf("expected groupName 'developers', got %s", groupName)
-		}
-
-		permission := r.URL.Query().Get("permission")
-		if permission != "admin" {
-			t.Errorf("expected permission 'admin', got %s", permission)
-		}
-
-		templateName := r.URL.Query().Get("templateName")
-		if templateName != "my-template" {
-			t.Errorf("expected templateName 'my-template', got %s", templateName)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_group_to_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsAddGroupToTemplateOption{
 		GroupName:    "developers",
@@ -171,41 +83,30 @@ func TestPermissions_AddGroupToTemplate(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.AddGroupToTemplate(opt)
-	if err != nil {
-		t.Fatalf("AddGroupToTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_AddGroupToTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.AddGroupToTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
 	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing GroupName")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
 		GroupName:    "developers",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
 	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
@@ -213,18 +114,14 @@ func TestPermissions_AddGroupToTemplate_ValidationError(t *testing.T) {
 		Permission:   "gateadmin", // Not a project permission
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission (non-project permission)")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
 		GroupName:  "developers",
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -232,23 +129,8 @@ func TestPermissions_AddGroupToTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_AddProjectCreatorToTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/add_project_creator_to_template" {
-			t.Errorf("expected path /api/permissions/add_project_creator_to_template, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_project_creator_to_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsAddProjectCreatorToTemplateOption{
 		Permission:   "admin",
@@ -256,48 +138,35 @@ func TestPermissions_AddProjectCreatorToTemplate(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.AddProjectCreatorToTemplate(opt)
-	if err != nil {
-		t.Fatalf("AddProjectCreatorToTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_AddProjectCreatorToTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.AddProjectCreatorToTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOption{
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
 	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOption{
 		Permission:   "provisioning", // Not a project permission
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOption{
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -305,33 +174,8 @@ func TestPermissions_AddProjectCreatorToTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_AddUser(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/add_user" {
-			t.Errorf("expected path /api/permissions/add_user, got %s", r.URL.Path)
-		}
-
-		login := r.URL.Query().Get("login")
-		if login != "john.doe" {
-			t.Errorf("expected login 'john.doe', got %s", login)
-		}
-
-		permission := r.URL.Query().Get("permission")
-		if permission != "admin" {
-			t.Errorf("expected permission 'admin', got %s", permission)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_user", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsAddUserOption{
 		Login:      "john.doe",
@@ -339,48 +183,35 @@ func TestPermissions_AddUser(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.AddUser(opt)
-	if err != nil {
-		t.Fatalf("AddUser failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_AddUser_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.AddUser(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Login should fail validation.
 	_, err = client.Permissions.AddUser(&PermissionsAddUserOption{
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing Login")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.AddUser(&PermissionsAddUserOption{
 		Login: "john.doe",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
 	_, err = client.Permissions.AddUser(&PermissionsAddUserOption{
 		Login:      "john.doe",
 		Permission: "invalid",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -388,23 +219,8 @@ func TestPermissions_AddUser_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_AddUserToTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/add_user_to_template" {
-			t.Errorf("expected path /api/permissions/add_user_to_template, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_user_to_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsAddUserToTemplateOption{
 		Login:        "john.doe",
@@ -413,41 +229,30 @@ func TestPermissions_AddUserToTemplate(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.AddUserToTemplate(opt)
-	if err != nil {
-		t.Fatalf("AddUserToTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_AddUserToTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.AddUserToTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Login should fail validation.
 	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Login")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
 		Login:        "john.doe",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
 	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
@@ -455,18 +260,14 @@ func TestPermissions_AddUserToTemplate_ValidationError(t *testing.T) {
 		Permission:   "profileadmin", // Not a project permission
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
 		Login:      "john.doe",
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -474,33 +275,8 @@ func TestPermissions_AddUserToTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_ApplyTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/apply_template" {
-			t.Errorf("expected path /api/permissions/apply_template, got %s", r.URL.Path)
-		}
-
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		templateName := r.URL.Query().Get("templateName")
-		if templateName != "my-template" {
-			t.Errorf("expected templateName 'my-template', got %s", templateName)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/apply_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsApplyTemplateOption{
 		ProjectKey:   "my-project",
@@ -508,39 +284,28 @@ func TestPermissions_ApplyTemplate(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.ApplyTemplate(opt)
-	if err != nil {
-		t.Fatalf("ApplyTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_ApplyTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.ApplyTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing ProjectID and ProjectKey should fail validation.
 	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOption{
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing ProjectID and ProjectKey")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOption{
 		ProjectKey: "my-project",
 	})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -548,58 +313,21 @@ func TestPermissions_ApplyTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_BulkApplyTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/bulk_apply_template" {
-			t.Errorf("expected path /api/permissions/bulk_apply_template, got %s", r.URL.Path)
-		}
-
-		templateName := r.URL.Query().Get("templateName")
-		if templateName != "my-template" {
-			t.Errorf("expected templateName 'my-template', got %s", templateName)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/bulk_apply_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsBulkApplyTemplateOption{
 		TemplateName: "my-template",
 	}
 
 	resp, err := client.Permissions.BulkApplyTemplate(opt)
-	if err != nil {
-		t.Fatalf("BulkApplyTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_BulkApplyTemplate_WithProjects(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		projects := r.URL.Query()["projects"]
-		if len(projects) != 2 {
-			t.Errorf("expected 2 projects, got %d", len(projects))
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/bulk_apply_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsBulkApplyTemplateOption{
 		TemplateName: "my-template",
@@ -607,38 +335,27 @@ func TestPermissions_BulkApplyTemplate_WithProjects(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.BulkApplyTemplate(opt)
-	if err != nil {
-		t.Fatalf("BulkApplyTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_BulkApplyTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.BulkApplyTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOption{})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 
 	// Invalid qualifier should fail validation.
 	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOption{
 		TemplateName: "my-template",
 		Qualifiers:   "INVALID",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Qualifiers")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -646,36 +363,15 @@ func TestPermissions_BulkApplyTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_CreateTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/create_template" {
-			t.Errorf("expected path /api/permissions/create_template, got %s", r.URL.Path)
-		}
-
-		name := r.URL.Query().Get("name")
-		if name != "my-template" {
-			t.Errorf("expected name 'my-template', got %s", name)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"permissionTemplate": {
-				"name": "my-template",
-				"description": "Template for my projects",
-				"projectKeyPattern": "my-.*"
-			}
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := PermissionsCreateTemplate{
+		PermissionTemplate: PermissionTemplateBasic{
+			Name:              "my-template",
+			Description:       "Template for my projects",
+			ProjectKeyPattern: "my-.*",
+		},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/permissions/create_template", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsCreateTemplateOption{
 		Name:              "my-template",
@@ -684,37 +380,22 @@ func TestPermissions_CreateTemplate(t *testing.T) {
 	}
 
 	result, resp, err := client.Permissions.CreateTemplate(opt)
-	if err != nil {
-		t.Fatalf("CreateTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.PermissionTemplate.Name != "my-template" {
-		t.Errorf("expected template name 'my-template', got %s", result.PermissionTemplate.Name)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "my-template", result.PermissionTemplate.Name)
 }
 
 func TestPermissions_CreateTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.Permissions.CreateTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Name should fail validation.
 	_, _, err = client.Permissions.CreateTemplate(&PermissionsCreateTemplateOption{})
-	if err == nil {
-		t.Error("expected error for missing Name")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -722,57 +403,28 @@ func TestPermissions_CreateTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_DeleteTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/delete_template" {
-			t.Errorf("expected path /api/permissions/delete_template, got %s", r.URL.Path)
-		}
-
-		templateName := r.URL.Query().Get("templateName")
-		if templateName != "my-template" {
-			t.Errorf("expected templateName 'my-template', got %s", templateName)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/delete_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsDeleteTemplateOption{
 		TemplateName: "my-template",
 	}
 
 	resp, err := client.Permissions.DeleteTemplate(opt)
-	if err != nil {
-		t.Fatalf("DeleteTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_DeleteTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.DeleteTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.DeleteTemplate(&PermissionsDeleteTemplateOption{})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -780,92 +432,48 @@ func TestPermissions_DeleteTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_Groups(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/groups" {
-			t.Errorf("expected path /api/permissions/groups, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"paging": {
-				"pageIndex": 1,
-				"pageSize": 25,
-				"total": 2
+	response := PermissionsGroups{
+		Paging: PermissionsPaging{
+			PageIndex: 1,
+			PageSize:  25,
+			Total:     2,
+		},
+		Groups: []PermissionGroup{
+			{
+				Name:        "developers",
+				Description: "Developers group",
+				Permissions: []string{"user", "codeviewer"},
 			},
-			"groups": [
-				{
-					"name": "developers",
-					"description": "Developers group",
-					"permissions": ["user", "codeviewer"]
-				},
-				{
-					"name": "admins",
-					"description": "Admins group",
-					"permissions": ["admin", "user", "codeviewer"]
-				}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+			{
+				Name:        "admins",
+				Description: "Admins group",
+				Permissions: []string{"admin", "user", "codeviewer"},
+			},
+		},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/groups", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Permissions.Groups(nil)
-	if err != nil {
-		t.Fatalf("Groups failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Groups) != 2 {
-		t.Errorf("expected 2 groups, got %d", len(result.Groups))
-	}
-
-	if result.Groups[0].Name != "developers" {
-		t.Errorf("expected group name 'developers', got %s", result.Groups[0].Name)
-	}
-
-	if result.Paging.Total != 2 {
-		t.Errorf("expected total 2, got %d", result.Paging.Total)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Groups, 2)
+	assert.Equal(t, "developers", result.Groups[0].Name)
+	assert.Equal(t, int64(2), result.Paging.Total)
 }
 
 func TestPermissions_Groups_WithOptions(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		permission := r.URL.Query().Get("permission")
-		if permission != "admin" {
-			t.Errorf("expected permission 'admin', got %s", permission)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"paging": {"pageIndex": 1, "pageSize": 25, "total": 0}, "groups": []}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := PermissionsGroups{
+		Paging: PermissionsPaging{
+			PageIndex: 1,
+			PageSize:  25,
+			Total:     0,
+		},
+		Groups: []PermissionGroup{},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/groups", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsGroupsOption{
 		ProjectKey: "my-project",
@@ -873,33 +481,24 @@ func TestPermissions_Groups_WithOptions(t *testing.T) {
 	}
 
 	_, resp, err := client.Permissions.Groups(opt)
-	if err != nil {
-		t.Fatalf("Groups failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestPermissions_Groups_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Invalid permission should fail validation.
 	_, _, err := client.Permissions.Groups(&PermissionsGroupsOption{
 		Permission: "invalid",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission")
-	}
+	assert.Error(t, err)
 
 	// Query too short should fail validation.
 	_, _, err = client.Permissions.Groups(&PermissionsGroupsOption{
 		Query: "ab",
 	})
-	if err == nil {
-		t.Error("expected error for Query too short")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -907,23 +506,8 @@ func TestPermissions_Groups_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_RemoveGroup(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/remove_group" {
-			t.Errorf("expected path /api/permissions/remove_group, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_group", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsRemoveGroupOption{
 		GroupName:  "developers",
@@ -931,39 +515,28 @@ func TestPermissions_RemoveGroup(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.RemoveGroup(opt)
-	if err != nil {
-		t.Fatalf("RemoveGroup failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_RemoveGroup_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.RemoveGroup(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
 	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOption{
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing GroupName")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOption{
 		GroupName: "developers",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -971,23 +544,8 @@ func TestPermissions_RemoveGroup_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_RemoveGroupFromTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/remove_group_from_template" {
-			t.Errorf("expected path /api/permissions/remove_group_from_template, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_group_from_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsRemoveGroupFromTemplateOption{
 		GroupName:    "developers",
@@ -996,50 +554,37 @@ func TestPermissions_RemoveGroupFromTemplate(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.RemoveGroupFromTemplate(opt)
-	if err != nil {
-		t.Fatalf("RemoveGroupFromTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_RemoveGroupFromTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.RemoveGroupFromTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
 	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing GroupName")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
 		GroupName:    "developers",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
 		GroupName:  "developers",
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1047,23 +592,8 @@ func TestPermissions_RemoveGroupFromTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_RemoveProjectCreatorFromTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/remove_project_creator_from_template" {
-			t.Errorf("expected path /api/permissions/remove_project_creator_from_template, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_project_creator_from_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsRemoveProjectCreatorFromTemplateOption{
 		Permission:   "admin",
@@ -1071,39 +601,28 @@ func TestPermissions_RemoveProjectCreatorFromTemplate(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(opt)
-	if err != nil {
-		t.Fatalf("RemoveProjectCreatorFromTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_RemoveProjectCreatorFromTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.RemoveProjectCreatorFromTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOption{
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOption{
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1111,23 +630,8 @@ func TestPermissions_RemoveProjectCreatorFromTemplate_ValidationError(t *testing
 // -----------------------------------------------------------------------------
 
 func TestPermissions_RemoveUser(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/remove_user" {
-			t.Errorf("expected path /api/permissions/remove_user, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_user", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsRemoveUserOption{
 		Login:      "john.doe",
@@ -1135,39 +639,28 @@ func TestPermissions_RemoveUser(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.RemoveUser(opt)
-	if err != nil {
-		t.Fatalf("RemoveUser failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_RemoveUser_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.RemoveUser(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Login should fail validation.
 	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOption{
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing Login")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOption{
 		Login: "john.doe",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1175,23 +668,8 @@ func TestPermissions_RemoveUser_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_RemoveUserFromTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/remove_user_from_template" {
-			t.Errorf("expected path /api/permissions/remove_user_from_template, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_user_from_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsRemoveUserFromTemplateOption{
 		Login:        "john.doe",
@@ -1200,50 +678,37 @@ func TestPermissions_RemoveUserFromTemplate(t *testing.T) {
 	}
 
 	resp, err := client.Permissions.RemoveUserFromTemplate(opt)
-	if err != nil {
-		t.Fatalf("RemoveUserFromTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_RemoveUserFromTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.RemoveUserFromTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Login should fail validation.
 	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOption{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Login")
-	}
+	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
 	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOption{
 		Login:        "john.doe",
 		TemplateName: "my-template",
 	})
-	if err == nil {
-		t.Error("expected error for missing Permission")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOption{
 		Login:      "john.doe",
 		Permission: "admin",
 	})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1251,67 +716,34 @@ func TestPermissions_RemoveUserFromTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_SearchTemplates(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/search_templates" {
-			t.Errorf("expected path /api/permissions/search_templates, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"permissionTemplates": [
-				{
-					"id": "template-1",
-					"name": "my-template",
-					"description": "My template",
-					"projectKeyPattern": "my-.*",
-					"createdAt": "2024-01-01T00:00:00+0000",
-					"updatedAt": "2024-01-02T00:00:00+0000",
-					"permissions": [
-						{"key": "admin", "usersCount": 1, "groupsCount": 2, "withProjectCreator": true}
-					]
-				}
-			],
-			"defaultTemplates": [
-				{"qualifier": "TRK", "templateId": "template-1"}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := PermissionsSearchTemplates{
+		PermissionTemplates: []PermissionTemplate{
+			{
+				ID:                "template-1",
+				Name:              "my-template",
+				Description:       "My template",
+				ProjectKeyPattern: "my-.*",
+				CreatedAt:         "2024-01-01T00:00:00+0000",
+				UpdatedAt:         "2024-01-02T00:00:00+0000",
+				Permissions: []TemplatePermission{
+					{Key: "admin", UsersCount: 1, GroupsCount: 2, WithProjectCreator: true},
+				},
+			},
+		},
+		DefaultTemplates: []DefaultTemplate{
+			{Qualifier: "TRK", TemplateID: "template-1"},
+		},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/search_templates", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Permissions.SearchTemplates(nil)
-	if err != nil {
-		t.Fatalf("SearchTemplates failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.PermissionTemplates) != 1 {
-		t.Errorf("expected 1 template, got %d", len(result.PermissionTemplates))
-	}
-
-	if result.PermissionTemplates[0].Name != "my-template" {
-		t.Errorf("expected template name 'my-template', got %s", result.PermissionTemplates[0].Name)
-	}
-
-	if len(result.DefaultTemplates) != 1 {
-		t.Errorf("expected 1 default template, got %d", len(result.DefaultTemplates))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.PermissionTemplates, 1)
+	assert.Equal(t, "my-template", result.PermissionTemplates[0].Name)
+	assert.Len(t, result.DefaultTemplates, 1)
 }
 
 // -----------------------------------------------------------------------------
@@ -1319,66 +751,35 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_SetDefaultTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/set_default_template" {
-			t.Errorf("expected path /api/permissions/set_default_template, got %s", r.URL.Path)
-		}
-
-		templateName := r.URL.Query().Get("templateName")
-		if templateName != "my-template" {
-			t.Errorf("expected templateName 'my-template', got %s", templateName)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/set_default_template", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsSetDefaultTemplateOption{
 		TemplateName: "my-template",
 	}
 
 	resp, err := client.Permissions.SetDefaultTemplate(opt)
-	if err != nil {
-		t.Fatalf("SetDefaultTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestPermissions_SetDefaultTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Permissions.SetDefaultTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOption{})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 
 	// Invalid qualifier should fail validation.
 	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOption{
 		TemplateName: "my-template",
 		Qualifier:    "INVALID",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Qualifier")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1386,102 +787,59 @@ func TestPermissions_SetDefaultTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_TemplateGroups(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/template_groups" {
-			t.Errorf("expected path /api/permissions/template_groups, got %s", r.URL.Path)
-		}
-
-		templateName := r.URL.Query().Get("templateName")
-		if templateName != "my-template" {
-			t.Errorf("expected templateName 'my-template', got %s", templateName)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"paging": {
-				"pageIndex": 1,
-				"pageSize": 25,
-				"total": 1
+	response := PermissionsTemplateGroups{
+		Paging: PermissionsPaging{
+			PageIndex: 1,
+			PageSize:  25,
+			Total:     1,
+		},
+		Groups: []TemplateGroup{
+			{
+				Name:        "developers",
+				Description: "Developers group",
+				Permissions: []string{"user", "codeviewer"},
 			},
-			"groups": [
-				{
-					"name": "developers",
-					"description": "Developers group",
-					"permissions": ["user", "codeviewer"]
-				}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+		},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/template_groups", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsTemplateGroupsOption{
 		TemplateName: "my-template",
 	}
 
 	result, resp, err := client.Permissions.TemplateGroups(opt)
-	if err != nil {
-		t.Fatalf("TemplateGroups failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Groups) != 1 {
-		t.Errorf("expected 1 group, got %d", len(result.Groups))
-	}
-
-	if result.Groups[0].Name != "developers" {
-		t.Errorf("expected group name 'developers', got %s", result.Groups[0].Name)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Groups, 1)
+	assert.Equal(t, "developers", result.Groups[0].Name)
 }
 
 func TestPermissions_TemplateGroups_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.Permissions.TemplateGroups(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOption{})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
 	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOption{
 		TemplateName: "my-template",
 		Permission:   "gateadmin", // Not a project permission
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission (non-project permission)")
-	}
+	assert.Error(t, err)
 
 	// Query too short should fail validation.
 	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOption{
 		TemplateName: "my-template",
 		Query:        "ab",
 	})
-	if err == nil {
-		t.Error("expected error for Query too short")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1489,144 +847,75 @@ func TestPermissions_TemplateGroups_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_TemplateUsers(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/template_users" {
-			t.Errorf("expected path /api/permissions/template_users, got %s", r.URL.Path)
-		}
-
-		templateName := r.URL.Query().Get("templateName")
-		if templateName != "my-template" {
-			t.Errorf("expected templateName 'my-template', got %s", templateName)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"paging": {
-				"pageIndex": 1,
-				"pageSize": 25,
-				"total": 1
+	response := PermissionsTemplateUsers{
+		Paging: PermissionsPaging{
+			PageIndex: 1,
+			PageSize:  25,
+			Total:     1,
+		},
+		Users: []TemplateUser{
+			{
+				Login:       "john.doe",
+				Name:        "John Doe",
+				Email:       "john.doe@example.com",
+				Permissions: []string{"admin", "user"},
 			},
-			"users": [
-				{
-					"login": "john.doe",
-					"name": "John Doe",
-					"email": "john.doe@example.com",
-					"permissions": ["admin", "user"]
-				}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+		},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/template_users", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsTemplateUsersOption{
 		TemplateName: "my-template",
 	}
 
 	result, resp, err := client.Permissions.TemplateUsers(opt)
-	if err != nil {
-		t.Fatalf("TemplateUsers failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Users) != 1 {
-		t.Errorf("expected 1 user, got %d", len(result.Users))
-	}
-
-	if result.Users[0].Login != "john.doe" {
-		t.Errorf("expected user login 'john.doe', got %s", result.Users[0].Login)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Users, 1)
+	assert.Equal(t, "john.doe", result.Users[0].Login)
 }
 
 func TestPermissions_TemplateUsers_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.Permissions.TemplateUsers(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
 	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOption{})
-	if err == nil {
-		t.Error("expected error for missing TemplateID and TemplateName")
-	}
+	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
 	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOption{
 		TemplateName: "my-template",
 		Permission:   "provisioning", // Not a project permission
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission (non-project permission)")
-	}
+	assert.Error(t, err)
 
 	// Query too short should fail validation.
 	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOption{
 		TemplateName: "my-template",
 		Query:        "ab",
 	})
-	if err == nil {
-		t.Error("expected error for Query too short")
-	}
+	assert.Error(t, err)
 }
 
 func TestPermissions_UpdateTemplate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/update_template" {
-			t.Errorf("expected path /api/permissions/update_template, got %s", r.URL.Path)
-		}
-
-		id := r.URL.Query().Get("id")
-		if id != "template-1" {
-			t.Errorf("expected id 'template-1', got %s", id)
-		}
-
-		name := r.URL.Query().Get("name")
-		if name != "new-template-name" {
-			t.Errorf("expected name 'new-template-name', got %s", name)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"permissionTemplate": {
-				"id": "template-1",
-				"name": "new-template-name",
-				"description": "Updated description",
-				"projectKeyPattern": "new-.*",
-				"createdAt": "2024-01-01T00:00:00+0000",
-				"updatedAt": "2024-01-03T00:00:00+0000"
-			}
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := PermissionsUpdateTemplate{
+		PermissionTemplate: PermissionTemplateUpdated{
+			ID:                "template-1",
+			Name:              "new-template-name",
+			Description:       "Updated description",
+			ProjectKeyPattern: "new-.*",
+			CreatedAt:         "2024-01-01T00:00:00+0000",
+			UpdatedAt:         "2024-01-03T00:00:00+0000",
+		},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/permissions/update_template", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsUpdateTemplateOption{
 		ID:                "template-1",
@@ -1636,39 +925,24 @@ func TestPermissions_UpdateTemplate(t *testing.T) {
 	}
 
 	result, resp, err := client.Permissions.UpdateTemplate(opt)
-	if err != nil {
-		t.Fatalf("UpdateTemplate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.PermissionTemplate.Name != "new-template-name" {
-		t.Errorf("expected template name 'new-template-name', got %s", result.PermissionTemplate.Name)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "new-template-name", result.PermissionTemplate.Name)
 }
 
 func TestPermissions_UpdateTemplate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.Permissions.UpdateTemplate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing ID should fail validation.
 	_, _, err = client.Permissions.UpdateTemplate(&PermissionsUpdateTemplateOption{
 		Name: "new-name",
 	})
-	if err == nil {
-		t.Error("expected error for missing ID")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1676,100 +950,53 @@ func TestPermissions_UpdateTemplate_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestPermissions_Users(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/permissions/users" {
-			t.Errorf("expected path /api/permissions/users, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"paging": {
-				"pageIndex": 1,
-				"pageSize": 25,
-				"total": 2
+	response := PermissionsUsers{
+		Paging: PermissionsPaging{
+			PageIndex: 1,
+			PageSize:  25,
+			Total:     2,
+		},
+		Users: []PermissionUser{
+			{
+				Login:       "john.doe",
+				Name:        "John Doe",
+				Email:       "john.doe@example.com",
+				Permissions: []string{"admin", "user"},
+				Managed:     false,
 			},
-			"users": [
-				{
-					"login": "john.doe",
-					"name": "John Doe",
-					"email": "john.doe@example.com",
-					"permissions": ["admin", "user"],
-					"managed": false
-				},
-				{
-					"login": "jane.doe",
-					"name": "Jane Doe",
-					"email": "jane.doe@example.com",
-					"permissions": ["user", "codeviewer"],
-					"managed": true
-				}
-			]
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+			{
+				Login:       "jane.doe",
+				Name:        "Jane Doe",
+				Email:       "jane.doe@example.com",
+				Permissions: []string{"user", "codeviewer"},
+				Managed:     true,
+			},
+		},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/users", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Permissions.Users(nil)
-	if err != nil {
-		t.Fatalf("Users failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Users) != 2 {
-		t.Errorf("expected 2 users, got %d", len(result.Users))
-	}
-
-	if result.Users[0].Login != "john.doe" {
-		t.Errorf("expected user login 'john.doe', got %s", result.Users[0].Login)
-	}
-
-	if result.Users[1].Managed != true {
-		t.Error("expected jane.doe to be managed")
-	}
-
-	if result.Paging.Total != 2 {
-		t.Errorf("expected total 2, got %d", result.Paging.Total)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Users, 2)
+	assert.Equal(t, "john.doe", result.Users[0].Login)
+	assert.True(t, result.Users[1].Managed)
+	assert.Equal(t, int64(2), result.Paging.Total)
 }
 
 func TestPermissions_Users_WithOptions(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		permission := r.URL.Query().Get("permission")
-		if permission != "admin" {
-			t.Errorf("expected permission 'admin', got %s", permission)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"paging": {"pageIndex": 1, "pageSize": 25, "total": 0}, "users": []}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := PermissionsUsers{
+		Paging: PermissionsPaging{
+			PageIndex: 1,
+			PageSize:  25,
+			Total:     0,
+		},
+		Users: []PermissionUser{},
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/users", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	opt := &PermissionsUsersOption{
 		ProjectKey: "my-project",
@@ -1777,33 +1004,24 @@ func TestPermissions_Users_WithOptions(t *testing.T) {
 	}
 
 	_, resp, err := client.Permissions.Users(opt)
-	if err != nil {
-		t.Fatalf("Users failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestPermissions_Users_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Invalid permission should fail validation.
 	_, _, err := client.Permissions.Users(&PermissionsUsersOption{
 		Permission: "invalid",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Permission")
-	}
+	assert.Error(t, err)
 
 	// Query too short should fail validation.
 	_, _, err = client.Permissions.Users(&PermissionsUsersOption{
 		Query: "ab",
 	})
-	if err == nil {
-		t.Error("expected error for Query too short")
-	}
+	assert.Error(t, err)
 }
 
 // -----------------------------------------------------------------------------
@@ -1840,9 +1058,7 @@ func TestPermissions_isValidPermission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := isValidPermission(tt.permission)
-			if result != tt.expected {
-				t.Errorf("isValidPermission(%q) = %v, want %v", tt.permission, result, tt.expected)
-			}
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }

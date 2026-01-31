@@ -6,57 +6,29 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAnalysisCache_Clear(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/analysis_cache/clear" {
-			t.Errorf("expected path /api/analysis_cache/clear, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockEmptyHandler(t, http.MethodPost, "/analysis_cache/clear", http.StatusNoContent)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	resp, err := client.AnalysisCache.Clear(nil)
-	if err != nil {
-		t.Fatalf("Clear failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestAnalysisCache_Clear_WithOptions(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		branch := r.URL.Query().Get("branch")
-		if branch != "feature" {
-			t.Errorf("expected branch 'feature', got %s", branch)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	expectedParams := map[string]string{
+		"project": "my-project",
+		"branch":  "feature",
 	}
+	handler := mockEmptyHandlerWithParams(t, http.MethodPost, "/analysis_cache/clear", http.StatusNoContent, expectedParams)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	opt := &AnalysisCacheClearOption{
 		Project: "my-project",
@@ -64,90 +36,57 @@ func TestAnalysisCache_Clear_WithOptions(t *testing.T) {
 	}
 
 	resp, err := client.AnalysisCache.Clear(opt)
-	if err != nil {
-		t.Fatalf("Clear failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestAnalysisCache_Get(t *testing.T) {
-	// Mock binary data
 	mockData := []byte("mock cached data")
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/analysis_cache/get" {
-			t.Errorf("expected path /api/analysis_cache/get, got %s", r.URL.Path)
-		}
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/analysis_cache/get", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"), "expected project query param")
 
 		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(mockData)
 	}))
-	defer ts.Close()
+	t.Cleanup(ts.Close)
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, ts.URL+"/")
 
 	opt := &AnalysisCacheGetOption{
 		Project: "my-project",
 	}
 
 	resp, err := client.AnalysisCache.Get(opt)
-	if err != nil {
-		t.Fatalf("Get failed: %v", err)
-	}
-
+	require.NoError(t, err)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
-	// Read the response body
 	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatalf("failed to read response body: %v", err)
-	}
-
-	if !bytes.Equal(body, mockData) {
-		t.Errorf("expected body %q, got %q", mockData, body)
-	}
+	require.NoError(t, err)
+	assert.True(t, bytes.Equal(body, mockData))
 }
 
 func TestAnalysisCache_Get_WithOptions(t *testing.T) {
-	// Mock binary data
 	mockData := []byte("mock cached data with options")
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		branch := r.URL.Query().Get("branch")
-		if branch != "main" {
-			t.Errorf("expected branch 'main', got %s", branch)
-		}
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/analysis_cache/get", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"), "expected project query param")
+		assert.Equal(t, "main", r.URL.Query().Get("branch"), "expected branch query param")
 
 		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(mockData)
 	}))
-	defer ts.Close()
+	t.Cleanup(ts.Close)
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, ts.URL+"/")
 
 	opt := &AnalysisCacheGetOption{
 		Project: "my-project",
@@ -155,61 +94,61 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 	}
 
 	resp, err := client.AnalysisCache.Get(opt)
-	if err != nil {
-		t.Fatalf("Get failed: %v", err)
-	}
-
+	require.NoError(t, err)
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 
-	// Read the response body
 	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatalf("failed to read response body: %v", err)
-	}
-
-	if !bytes.Equal(body, mockData) {
-		t.Errorf("expected body %q, got %q", mockData, body)
-	}
+	require.NoError(t, err)
+	assert.True(t, bytes.Equal(body, mockData))
 }
 
 func TestAnalysisCache_ValidateClearOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Nil option should be valid.
-	err := client.AnalysisCache.ValidateClearOpt(nil)
-	if err != nil {
-		t.Errorf("expected nil error for nil option, got %v", err)
+	tests := []struct {
+		name    string
+		opt     *AnalysisCacheClearOption
+		wantErr bool
+	}{
+		{"nil option", nil, false},
+		{"empty option", &AnalysisCacheClearOption{}, false},
 	}
 
-	// Empty option should be valid.
-	err = client.AnalysisCache.ValidateClearOpt(&AnalysisCacheClearOption{})
-	if err != nil {
-		t.Errorf("expected nil error for empty option, got %v", err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.AnalysisCache.ValidateClearOpt(tt.opt)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
 	}
 }
 
 func TestAnalysisCache_ValidateGetOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Nil option should be invalid.
-	err := client.AnalysisCache.ValidateGetOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
+	tests := []struct {
+		name    string
+		opt     *AnalysisCacheGetOption
+		wantErr bool
+	}{
+		{"nil option", nil, true},
+		{"empty option", &AnalysisCacheGetOption{}, true},
+		{"with Project", &AnalysisCacheGetOption{Project: "my-project"}, false},
 	}
 
-	// Empty option should be invalid.
-	err = client.AnalysisCache.ValidateGetOpt(&AnalysisCacheGetOption{})
-	if err == nil {
-		t.Error("expected error for empty option")
-	}
-
-	// Option with Project should be valid.
-	err = client.AnalysisCache.ValidateGetOpt(&AnalysisCacheGetOption{Project: "my-project"})
-	if err != nil {
-		t.Errorf("expected nil error for valid option, got %v", err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.AnalysisCache.ValidateGetOpt(tt.opt)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
 	}
 }

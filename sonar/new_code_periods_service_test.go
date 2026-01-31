@@ -2,126 +2,79 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewCodePeriods_List(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
+	response := `{
+		"newCodePeriods": [
+			{
+				"projectKey": "my-project",
+				"branchKey": "main",
+				"type": "PREVIOUS_VERSION",
+				"inherited": false
+			},
+			{
+				"projectKey": "my-project",
+				"branchKey": "feature-1",
+				"type": "NUMBER_OF_DAYS",
+				"value": "30",
+				"inherited": true
+			}
+		]
+	}`
 
-		if r.URL.Path != "/api/new_code_periods/list" {
-			t.Errorf("expected path /api/new_code_periods/list, got %s", r.URL.Path)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/new_code_periods/list", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"newCodePeriods": [
-				{
-					"projectKey": "my-project",
-					"branchKey": "main",
-					"type": "PREVIOUS_VERSION",
-					"inherited": false
-				},
-				{
-					"projectKey": "my-project",
-					"branchKey": "feature-1",
-					"type": "NUMBER_OF_DAYS",
-					"value": "30",
-					"inherited": true
-				}
-			]
-		}`))
-	}))
-	defer ts.Close()
+		_, _ = w.Write([]byte(response))
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NewCodePeriodsListOption{
 		Project: "my-project",
 	}
 
 	result, resp, err := client.NewCodePeriods.List(opt)
-	if err != nil {
-		t.Fatalf("List failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.NewCodePeriods) != 2 {
-		t.Errorf("expected 2 new code periods, got %d", len(result.NewCodePeriods))
-	}
-
-	if result.NewCodePeriods[0].Type != "PREVIOUS_VERSION" {
-		t.Errorf("expected type 'PREVIOUS_VERSION', got %s", result.NewCodePeriods[0].Type)
-	}
-
-	if result.NewCodePeriods[1].Value != "30" {
-		t.Errorf("expected value '30', got %s", result.NewCodePeriods[1].Value)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.NewCodePeriods, 2)
+	assert.Equal(t, "PREVIOUS_VERSION", result.NewCodePeriods[0].Type)
+	assert.Equal(t, "30", result.NewCodePeriods[1].Value)
 }
 
 func TestNewCodePeriods_List_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.NewCodePeriods.List(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Project should fail validation.
 	_, _, err = client.NewCodePeriods.List(&NewCodePeriodsListOption{})
-	if err == nil {
-		t.Error("expected error for missing Project")
-	}
+	assert.Error(t, err)
 }
 
 func TestNewCodePeriods_Set(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/new_code_periods/set" {
-			t.Errorf("expected path /api/new_code_periods/set, got %s", r.URL.Path)
-		}
-
-		periodType := r.URL.Query().Get("type")
-		if periodType != "NUMBER_OF_DAYS" {
-			t.Errorf("expected type 'NUMBER_OF_DAYS', got %s", periodType)
-		}
-
-		value := r.URL.Query().Get("value")
-		if value != "30" {
-			t.Errorf("expected value '30', got %s", value)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/new_code_periods/set", r.URL.Path)
+		assert.Equal(t, "NUMBER_OF_DAYS", r.URL.Query().Get("type"))
+		assert.Equal(t, "30", r.URL.Query().Get("value"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NewCodePeriodsSetOption{
 		Type:  "NUMBER_OF_DAYS",
@@ -129,124 +82,76 @@ func TestNewCodePeriods_Set(t *testing.T) {
 	}
 
 	resp, err := client.NewCodePeriods.Set(opt)
-	if err != nil {
-		t.Fatalf("Set failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestNewCodePeriods_Set_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.NewCodePeriods.Set(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Type should fail validation.
 	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOption{})
-	if err == nil {
-		t.Error("expected error for missing Type")
-	}
+	assert.Error(t, err)
 
 	// Invalid Type should fail validation.
 	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOption{
 		Type: "INVALID_TYPE",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Type")
-	}
+	assert.Error(t, err)
 
 	// SPECIFIC_ANALYSIS without Branch should fail validation.
 	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOption{
 		Type: "SPECIFIC_ANALYSIS",
 	})
-	if err == nil {
-		t.Error("expected error for SPECIFIC_ANALYSIS without Branch")
-	}
+	assert.Error(t, err)
 
 	// REFERENCE_BRANCH without Project should fail validation.
 	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOption{
 		Type: "REFERENCE_BRANCH",
 	})
-	if err == nil {
-		t.Error("expected error for REFERENCE_BRANCH without Project")
-	}
+	assert.Error(t, err)
 }
 
 func TestNewCodePeriods_Show(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
+	response := `{
+		"type": "NUMBER_OF_DAYS",
+		"inherited": false
+	}`
 
-		if r.URL.Path != "/api/new_code_periods/show" {
-			t.Errorf("expected path /api/new_code_periods/show, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"type": "NUMBER_OF_DAYS",
-			"inherited": false
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/new_code_periods/show", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.NewCodePeriods.Show(nil)
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Type != "NUMBER_OF_DAYS" {
-		t.Errorf("expected type 'NUMBER_OF_DAYS', got %s", result.Type)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "NUMBER_OF_DAYS", result.Type)
 }
 
 func TestNewCodePeriods_Show_WithOptions(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
+	response := `{
+		"projectKey": "my-project",
+		"branchKey": "main",
+		"type": "REFERENCE_BRANCH",
+		"inherited": true
+	}`
 
-		branch := r.URL.Query().Get("branch")
-		if branch != "main" {
-			t.Errorf("expected branch 'main', got %s", branch)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/new_code_periods/show", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
+		assert.Equal(t, "main", r.URL.Query().Get("branch"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"projectKey": "my-project",
-			"branchKey": "main",
-			"type": "REFERENCE_BRANCH",
-			"inherited": true
-		}`))
-	}))
-	defer ts.Close()
+		_, _ = w.Write([]byte(response))
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NewCodePeriodsShowOption{
 		Project: "my-project",
@@ -254,76 +159,41 @@ func TestNewCodePeriods_Show_WithOptions(t *testing.T) {
 	}
 
 	result, _, err := client.NewCodePeriods.Show(opt)
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
-
-	if result.ProjectKey != "my-project" {
-		t.Errorf("expected projectKey 'my-project', got %s", result.ProjectKey)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, "my-project", result.ProjectKey)
 }
 
 func TestNewCodePeriods_Unset(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/new_code_periods/unset" {
-			t.Errorf("expected path /api/new_code_periods/unset, got %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/new_code_periods/unset", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.NewCodePeriods.Unset(nil)
-	if err != nil {
-		t.Fatalf("Unset failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestNewCodePeriods_Unset_WithOptions(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/new_code_periods/unset", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NewCodePeriodsUnsetOption{
 		Project: "my-project",
 	}
 
 	resp, err := client.NewCodePeriods.Unset(opt)
-	if err != nil {
-		t.Fatalf("Unset failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// All valid types without special requirements should pass.
 	validTypes := []string{"PREVIOUS_VERSION"}
@@ -331,9 +201,7 @@ func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
 		err := client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOption{
 			Type: periodType,
 		})
-		if err != nil {
-			t.Errorf("expected nil error for type '%s', got %v", periodType, err)
-		}
+		assert.NoError(t, err, "expected nil error for type '%s'", periodType)
 	}
 
 	// NUMBER_OF_DAYS with valid Value should pass.
@@ -341,25 +209,19 @@ func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
 		Type:  "NUMBER_OF_DAYS",
 		Value: "30",
 	})
-	if err != nil {
-		t.Errorf("expected nil error for NUMBER_OF_DAYS with Value, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// SPECIFIC_ANALYSIS with Branch should pass.
 	err = client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOption{
 		Type:   "SPECIFIC_ANALYSIS",
 		Branch: "main",
 	})
-	if err != nil {
-		t.Errorf("expected nil error for SPECIFIC_ANALYSIS with Branch, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// REFERENCE_BRANCH with Project should pass.
 	err = client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOption{
 		Type:    "REFERENCE_BRANCH",
 		Project: "my-project",
 	})
-	if err != nil {
-		t.Errorf("expected nil error for REFERENCE_BRANCH with Project, got %v", err)
-	}
+	assert.NoError(t, err)
 }

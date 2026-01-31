@@ -2,252 +2,141 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestProjectDump_Export(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/project_dump/export" {
-			t.Errorf("expected path /api/project_dump/export, got %s", r.URL.Path)
-		}
-
-		key := r.URL.Query().Get("key")
-		if key != "my-project" {
-			t.Errorf("expected key 'my-project', got %s", key)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"projectId": "proj-123",
-			"projectKey": "my-project",
-			"projectName": "My Project",
-			"taskId": "task-456"
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := ProjectDumpExport{
+		ProjectID:   "proj-123",
+		ProjectKey:  "my-project",
+		ProjectName: "My Project",
+		TaskID:      "task-456",
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/project_dump/export", http.StatusOK, response))
+
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectDumpExportOption{
 		Key: "my-project",
 	}
 
 	result, resp, err := client.ProjectDump.Export(opt)
-	if err != nil {
-		t.Fatalf("Export failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.ProjectID != "proj-123" {
-		t.Errorf("expected projectId 'proj-123', got %s", result.ProjectID)
-	}
-
-	if result.ProjectKey != "my-project" {
-		t.Errorf("expected projectKey 'my-project', got %s", result.ProjectKey)
-	}
-
-	if result.TaskID != "task-456" {
-		t.Errorf("expected taskId 'task-456', got %s", result.TaskID)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "proj-123", result.ProjectID)
+	assert.Equal(t, "my-project", result.ProjectKey)
+	assert.Equal(t, "task-456", result.TaskID)
 }
 
 func TestProjectDump_Export_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.ProjectDump.Export(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Key should fail validation.
 	_, _, err = client.ProjectDump.Export(&ProjectDumpExportOption{})
-	if err == nil {
-		t.Error("expected error for missing Key")
-	}
+	assert.Error(t, err)
 }
 
 func TestProjectDump_Status(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/project_dump/status" {
-			t.Errorf("expected path /api/project_dump/status, got %s", r.URL.Path)
-		}
-
-		key := r.URL.Query().Get("key")
-		if key != "my-project" {
-			t.Errorf("expected key 'my-project', got %s", key)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"canBeExported": true,
-			"canBeImported": false,
-			"dumpToImport": "",
-			"exportedDump": "/path/to/dump.zip"
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := ProjectDumpStatus{
+		CanBeExported: true,
+		CanBeImported: false,
+		DumpToImport:  "",
+		ExportedDump:  "/path/to/dump.zip",
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/project_dump/status", http.StatusOK, response))
+
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectDumpStatusOption{
 		Key: "my-project",
 	}
 
 	result, resp, err := client.ProjectDump.Status(opt)
-	if err != nil {
-		t.Fatalf("Status failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if !result.CanBeExported {
-		t.Error("expected canBeExported to be true")
-	}
-
-	if result.CanBeImported {
-		t.Error("expected canBeImported to be false")
-	}
-
-	if result.ExportedDump != "/path/to/dump.zip" {
-		t.Errorf("expected exportedDump '/path/to/dump.zip', got %s", result.ExportedDump)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.True(t, result.CanBeExported)
+	assert.False(t, result.CanBeImported)
+	assert.Equal(t, "/path/to/dump.zip", result.ExportedDump)
 }
 
 func TestProjectDump_Status_WithID(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id := r.URL.Query().Get("id")
-		if id != "proj-123" {
-			t.Errorf("expected id 'proj-123', got %s", id)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"canBeExported": true, "canBeImported": true}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
+	response := ProjectDumpStatus{
+		CanBeExported: true,
+		CanBeImported: true,
 	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/project_dump/status", http.StatusOK, response))
+
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectDumpStatusOption{
 		ID: "proj-123",
 	}
 
 	result, resp, err := client.ProjectDump.Status(opt)
-	if err != nil {
-		t.Fatalf("Status failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
 }
 
 func TestProjectDump_Status_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.ProjectDump.Status(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing both ID and Key should fail validation.
 	_, _, err = client.ProjectDump.Status(&ProjectDumpStatusOption{})
-	if err == nil {
-		t.Error("expected error for missing ID and Key")
-	}
+	assert.Error(t, err)
 }
 
 func TestProjectDump_ValidateExportOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Valid option should pass.
 	err := client.ProjectDump.ValidateExportOpt(&ProjectDumpExportOption{
 		Key: "my-project",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Nil option should fail.
 	err = client.ProjectDump.ValidateExportOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Key should fail.
 	err = client.ProjectDump.ValidateExportOpt(&ProjectDumpExportOption{})
-	if err == nil {
-		t.Error("expected error for missing Key")
-	}
+	assert.Error(t, err)
 }
 
 func TestProjectDump_ValidateStatusOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Valid option with Key should pass.
 	err := client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOption{
 		Key: "my-project",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Valid option with ID should pass.
 	err = client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOption{
 		ID: "proj-123",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Nil option should fail.
 	err = client.ProjectDump.ValidateStatusOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing both ID and Key should fail.
 	err = client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOption{})
-	if err == nil {
-		t.Error("expected error for missing ID and Key")
-	}
+	assert.Error(t, err)
 }

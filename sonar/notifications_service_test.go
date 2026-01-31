@@ -2,78 +2,41 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNotifications_Add(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/notifications/add" {
-			t.Errorf("expected path /api/notifications/add, got %s", r.URL.Path)
-		}
-
-		notifType := r.URL.Query().Get("type")
-		if notifType != "NewIssues" {
-			t.Errorf("expected type 'NewIssues', got %s", notifType)
-		}
-
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/notifications/add", r.URL.Path)
+		assert.Equal(t, "NewIssues", r.URL.Query().Get("type"))
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NotificationsAddOption{
 		Type: "NewIssues",
 	}
 
 	resp, err := client.Notifications.Add(opt)
-	if err != nil {
-		t.Fatalf("Add failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestNotifications_Add_WithAllOptions(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		notifType := r.URL.Query().Get("type")
-		if notifType != "NewIssues" {
-			t.Errorf("expected type 'NewIssues', got %s", notifType)
-		}
-
-		channel := r.URL.Query().Get("channel")
-		if channel != "email" {
-			t.Errorf("expected channel 'email', got %s", channel)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		login := r.URL.Query().Get("login")
-		if login != "admin" {
-			t.Errorf("expected login 'admin', got %s", login)
-		}
-
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "NewIssues", r.URL.Query().Get("type"))
+		assert.Equal(t, "email", r.URL.Query().Get("channel"))
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
+		assert.Equal(t, "admin", r.URL.Query().Get("login"))
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NotificationsAddOption{
 		Type:    "NewIssues",
@@ -83,244 +46,144 @@ func TestNotifications_Add_WithAllOptions(t *testing.T) {
 	}
 
 	resp, err := client.Notifications.Add(opt)
-	if err != nil {
-		t.Fatalf("Add failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestNotifications_Add_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Notifications.Add(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Type should fail validation.
 	_, err = client.Notifications.Add(&NotificationsAddOption{})
-	if err == nil {
-		t.Error("expected error for missing Type")
-	}
+	assert.Error(t, err)
 }
 
 func TestNotifications_List(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/notifications/list" {
-			t.Errorf("expected path /api/notifications/list, got %s", r.URL.Path)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"channels": ["email"],
-			"globalTypes": ["NewIssues", "NewAlerts"],
-			"perProjectTypes": ["NewIssues"],
-			"notifications": [
-				{
-					"type": "NewIssues",
-					"channel": "email",
-					"project": "my-project",
-					"projectName": "My Project"
-				}
-			]
-		}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/notifications/list", http.StatusOK, &NotificationsList{
+		Channels:        []string{"email"},
+		GlobalTypes:     []string{"NewIssues", "NewAlerts"},
+		PerProjectTypes: []string{"NewIssues"},
+		Notifications: []Notification{
+			{
+				Type:        "NewIssues",
+				Channel:     "email",
+				Project:     "my-project",
+				ProjectName: "My Project",
+			},
+		},
 	}))
-	defer ts.Close()
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Notifications.List(nil)
-	if err != nil {
-		t.Fatalf("List failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Channels) != 1 {
-		t.Errorf("expected 1 channel, got %d", len(result.Channels))
-	}
-
-	if result.Channels[0] != "email" {
-		t.Errorf("expected channel 'email', got %s", result.Channels[0])
-	}
-
-	if len(result.GlobalTypes) != 2 {
-		t.Errorf("expected 2 global types, got %d", len(result.GlobalTypes))
-	}
-
-	if len(result.Notifications) != 1 {
-		t.Errorf("expected 1 notification, got %d", len(result.Notifications))
-	}
-
-	if result.Notifications[0].Type != "NewIssues" {
-		t.Errorf("expected notification type 'NewIssues', got %s", result.Notifications[0].Type)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Channels, 1)
+	assert.Equal(t, "email", result.Channels[0])
+	assert.Len(t, result.GlobalTypes, 2)
+	assert.Len(t, result.Notifications, 1)
+	assert.Equal(t, "NewIssues", result.Notifications[0].Type)
 }
 
 func TestNotifications_List_WithLogin(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		login := r.URL.Query().Get("login")
-		if login != "admin" {
-			t.Errorf("expected login 'admin', got %s", login)
-		}
-
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "admin", r.URL.Query().Get("login"))
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"channels": [], "globalTypes": [], "perProjectTypes": [], "notifications": []}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NotificationsListOption{
 		Login: "admin",
 	}
 
 	_, resp, err := client.Notifications.List(opt)
-	if err != nil {
-		t.Fatalf("List failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestNotifications_Remove(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/notifications/remove" {
-			t.Errorf("expected path /api/notifications/remove, got %s", r.URL.Path)
-		}
-
-		notifType := r.URL.Query().Get("type")
-		if notifType != "NewIssues" {
-			t.Errorf("expected type 'NewIssues', got %s", notifType)
-		}
-
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/notifications/remove", r.URL.Path)
+		assert.Equal(t, "NewIssues", r.URL.Query().Get("type"))
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &NotificationsRemoveOption{
 		Type: "NewIssues",
 	}
 
 	resp, err := client.Notifications.Remove(opt)
-	if err != nil {
-		t.Fatalf("Remove failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestNotifications_Remove_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.Notifications.Remove(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Type should fail validation.
 	_, err = client.Notifications.Remove(&NotificationsRemoveOption{})
-	if err == nil {
-		t.Error("expected error for missing Type")
-	}
+	assert.Error(t, err)
 }
 
 func TestNotifications_ValidateAddOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Valid option should pass.
 	err := client.Notifications.ValidateAddOpt(&NotificationsAddOption{
 		Type: "NewIssues",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Nil option should fail.
 	err = client.Notifications.ValidateAddOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Type should fail.
 	err = client.Notifications.ValidateAddOpt(&NotificationsAddOption{})
-	if err == nil {
-		t.Error("expected error for missing Type")
-	}
+	assert.Error(t, err)
 }
 
 func TestNotifications_ValidateListOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should be valid.
 	err := client.Notifications.ValidateListOpt(nil)
-	if err != nil {
-		t.Errorf("expected nil error for nil option, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Empty option should be valid.
 	err = client.Notifications.ValidateListOpt(&NotificationsListOption{})
-	if err != nil {
-		t.Errorf("expected nil error for empty option, got %v", err)
-	}
+	assert.NoError(t, err)
 }
 
 func TestNotifications_ValidateRemoveOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Valid option should pass.
 	err := client.Notifications.ValidateRemoveOpt(&NotificationsRemoveOption{
 		Type: "NewIssues",
 	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
-	}
+	assert.NoError(t, err)
 
 	// Nil option should fail.
 	err = client.Notifications.ValidateRemoveOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Type should fail.
 	err = client.Notifications.ValidateRemoveOpt(&NotificationsRemoveOption{})
-	if err == nil {
-		t.Error("expected error for missing Type")
-	}
+	assert.Error(t, err)
 }

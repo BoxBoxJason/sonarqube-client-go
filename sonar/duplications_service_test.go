@@ -2,110 +2,53 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDuplications_Show(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/duplications/show" {
-			t.Errorf("expected path /api/duplications/show, got %s", r.URL.Path)
-		}
-
-		key := r.URL.Query().Get("key")
-		if key != "com.example:MyFile.java" {
-			t.Errorf("expected key 'com.example:MyFile.java', got %s", key)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"duplications": [
-				{
-					"blocks": [
-						{"_ref": "1", "from": 10, "size": 5},
-						{"_ref": "2", "from": 20, "size": 5}
-					]
-				}
-			],
-			"files": {
-				"1": {"key": "com.example:MyFile.java", "name": "MyFile.java", "projectName": "My Project"},
-				"2": {"key": "com.example:OtherFile.java", "name": "OtherFile.java", "projectName": "My Project"}
+	response := `{
+		"duplications": [
+			{
+				"blocks": [
+					{"_ref": "1", "from": 10, "size": 5},
+					{"_ref": "2", "from": 20, "size": 5}
+				]
 			}
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+		],
+		"files": {
+			"1": {"key": "com.example:MyFile.java", "name": "MyFile.java", "projectName": "My Project"},
+			"2": {"key": "com.example:OtherFile.java", "name": "OtherFile.java", "projectName": "My Project"}
+		}
+	}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/duplications/show", http.StatusOK, response))
+	client := newTestClient(t, server.url())
 
 	opt := &DuplicationsShowOption{
 		Key: "com.example:MyFile.java",
 	}
 
 	result, resp, err := client.Duplications.Show(opt)
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Duplications, 1)
+	assert.Len(t, result.Duplications[0].Blocks, 2)
+	assert.Equal(t, "1", result.Duplications[0].Blocks[0].Ref)
+	assert.Equal(t, int64(10), result.Duplications[0].Blocks[0].From)
+	assert.Len(t, result.Files, 2)
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Duplications) != 1 {
-		t.Errorf("expected 1 duplication group, got %d", len(result.Duplications))
-	}
-
-	if len(result.Duplications[0].Blocks) != 2 {
-		t.Errorf("expected 2 blocks, got %d", len(result.Duplications[0].Blocks))
-	}
-
-	if result.Duplications[0].Blocks[0].Ref != "1" {
-		t.Errorf("expected first block ref '1', got %s", result.Duplications[0].Blocks[0].Ref)
-	}
-
-	if result.Duplications[0].Blocks[0].From != 10 {
-		t.Errorf("expected first block from 10, got %d", result.Duplications[0].Blocks[0].From)
-	}
-
-	if len(result.Files) != 2 {
-		t.Errorf("expected 2 files, got %d", len(result.Files))
-	}
-
-	if file, ok := result.Files["1"]; !ok {
-		t.Error("expected file with key '1'")
-	} else if file.Name != "MyFile.java" {
-		t.Errorf("expected file name 'MyFile.java', got %s", file.Name)
-	}
+	file, ok := result.Files["1"]
+	require.True(t, ok, "expected file with key '1'")
+	assert.Equal(t, "MyFile.java", file.Name)
 }
 
 func TestDuplications_Show_WithBranch(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		branch := r.URL.Query().Get("branch")
-		if branch != "feature" {
-			t.Errorf("expected branch 'feature', got %s", branch)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"duplications": [], "files": {}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	response := `{"duplications": [], "files": {}}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/duplications/show", http.StatusOK, response))
+	client := newTestClient(t, server.url())
 
 	opt := &DuplicationsShowOption{
 		Key:    "com.example:MyFile.java",
@@ -113,32 +56,14 @@ func TestDuplications_Show_WithBranch(t *testing.T) {
 	}
 
 	_, resp, err := client.Duplications.Show(opt)
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestDuplications_Show_WithPullRequest(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		pullRequest := r.URL.Query().Get("pullRequest")
-		if pullRequest != "123" {
-			t.Errorf("expected pullRequest '123', got %s", pullRequest)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"duplications": [], "files": {}}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	response := `{"duplications": [], "files": {}}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/duplications/show", http.StatusOK, response))
+	client := newTestClient(t, server.url())
 
 	opt := &DuplicationsShowOption{
 		Key:         "com.example:MyFile.java",
@@ -146,51 +71,70 @@ func TestDuplications_Show_WithPullRequest(t *testing.T) {
 	}
 
 	_, resp, err := client.Duplications.Show(opt)
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestDuplications_Show_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Nil option should fail validation.
-	_, _, err := client.Duplications.Show(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
+	tests := []struct {
+		name string
+		opt  *DuplicationsShowOption
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing Key",
+			opt:  &DuplicationsShowOption{},
+		},
 	}
 
-	// Missing Key should fail validation.
-	_, _, err = client.Duplications.Show(&DuplicationsShowOption{})
-	if err == nil {
-		t.Error("expected error for missing Key")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, _, err := client.Duplications.Show(tt.opt)
+			require.Error(t, err)
+		})
 	}
 }
 
 func TestDuplications_ValidateShowOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
-	// Valid option should pass.
-	err := client.Duplications.ValidateShowOpt(&DuplicationsShowOption{
-		Key: "com.example:MyFile.java",
-	})
-	if err != nil {
-		t.Errorf("expected nil error, got %v", err)
+	tests := []struct {
+		name    string
+		opt     *DuplicationsShowOption
+		wantErr bool
+	}{
+		{
+			name: "valid option",
+			opt: &DuplicationsShowOption{
+				Key: "com.example:MyFile.java",
+			},
+			wantErr: false,
+		},
+		{
+			name:    "nil option",
+			opt:     nil,
+			wantErr: true,
+		},
+		{
+			name:    "missing Key",
+			opt:     &DuplicationsShowOption{},
+			wantErr: true,
+		},
 	}
 
-	// Nil option should fail.
-	err = client.Duplications.ValidateShowOpt(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
-
-	// Missing Key should fail.
-	err = client.Duplications.ValidateShowOpt(&DuplicationsShowOption{})
-	if err == nil {
-		t.Error("expected error for missing Key")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.Duplications.ValidateShowOpt(tt.opt)
+			if tt.wantErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
 	}
 }

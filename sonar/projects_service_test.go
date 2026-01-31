@@ -2,9 +2,11 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // -----------------------------------------------------------------------------
@@ -13,50 +15,28 @@ import (
 
 // TestProjectsService_BulkDelete tests the BulkDelete method.
 func TestProjectsService_BulkDelete(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/bulk_delete") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		if err := r.ParseForm(); err != nil {
-			t.Errorf("failed to parse form: %v", err)
-		}
-		if r.FormValue("projects") != "project1,project2" {
-			t.Errorf("unexpected projects: %s", r.FormValue("projects"))
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/projects/bulk_delete", http.StatusNoContent))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsBulkDeleteOption{
 		Projects: []string{"project1", "project2"},
 	}
 
 	resp, err := client.Projects.BulkDelete(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 // TestProjectsService_BulkDelete_ValidationError tests validation for BulkDelete.
 func TestProjectsService_BulkDelete_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test no filter provided
 	opt := &ProjectsBulkDeleteOption{}
 	_, err := client.Projects.BulkDelete(opt)
-	if err == nil {
-		t.Error("expected validation error for no filter")
-	}
+	assert.Error(t, err)
 
 	// Test invalid qualifier
 	opt = &ProjectsBulkDeleteOption{
@@ -64,44 +44,22 @@ func TestProjectsService_BulkDelete_ValidationError(t *testing.T) {
 		Qualifiers: []string{"INVALID"},
 	}
 	_, err = client.Projects.BulkDelete(opt)
-	if err == nil {
-		t.Error("expected validation error for invalid qualifier")
-	}
+	assert.Error(t, err)
 }
 
 // TestProjectsService_Create tests the Create method.
 func TestProjectsService_Create(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/create") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		if err := r.ParseForm(); err != nil {
-			t.Errorf("failed to parse form: %v", err)
-		}
-		if r.FormValue("name") != "My Project" {
-			t.Errorf("unexpected name: %s", r.FormValue("name"))
-		}
-		if r.FormValue("project") != "my-project" {
-			t.Errorf("unexpected project: %s", r.FormValue("project"))
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"project": {
-				"key": "my-project",
-				"name": "My Project",
-				"qualifier": "TRK",
-				"visibility": "private"
-			}
-		}`))
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/projects/create", http.StatusOK, &ProjectsCreate{
+		Project: Project{
+			Key:        "my-project",
+			Name:       "My Project",
+			Qualifier:  "TRK",
+			Visibility: "private",
+		},
 	}))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsCreateOption{
 		Name:       "My Project",
@@ -110,41 +68,29 @@ func TestProjectsService_Create(t *testing.T) {
 	}
 
 	result, resp, err := client.Projects.Create(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-	if result.Project.Key != "my-project" {
-		t.Errorf("unexpected project key: %s", result.Project.Key)
-	}
-	if result.Project.Visibility != "private" {
-		t.Errorf("unexpected visibility: %s", result.Project.Visibility)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "my-project", result.Project.Key)
+	assert.Equal(t, "private", result.Project.Visibility)
 }
 
 // TestProjectsService_Create_ValidationError tests validation for Create.
 func TestProjectsService_Create_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test missing Name
 	opt := &ProjectsCreateOption{
 		Project: "my-project",
 	}
 	_, _, err := client.Projects.Create(opt)
-	if err == nil {
-		t.Error("expected validation error for missing Name")
-	}
+	assert.Error(t, err)
 
 	// Test missing Project
 	opt = &ProjectsCreateOption{
 		Name: "My Project",
 	}
 	_, _, err = client.Projects.Create(opt)
-	if err == nil {
-		t.Error("expected validation error for missing Project")
-	}
+	assert.Error(t, err)
 
 	// Test Name too long
 	opt = &ProjectsCreateOption{
@@ -152,9 +98,7 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 		Project: "my-project",
 	}
 	_, _, err = client.Projects.Create(opt)
-	if err == nil {
-		t.Error("expected validation error for Name too long")
-	}
+	assert.Error(t, err)
 
 	// Test Project key too long
 	opt = &ProjectsCreateOption{
@@ -162,9 +106,7 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 		Project: strings.Repeat("a", MaxProjectKeyLength+1),
 	}
 	_, _, err = client.Projects.Create(opt)
-	if err == nil {
-		t.Error("expected validation error for Project too long")
-	}
+	assert.Error(t, err)
 
 	// Test invalid visibility
 	opt = &ProjectsCreateOption{
@@ -173,86 +115,59 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 		Visibility: "invalid",
 	}
 	_, _, err = client.Projects.Create(opt)
-	if err == nil {
-		t.Error("expected validation error for invalid Visibility")
-	}
+	assert.Error(t, err)
 }
 
 // TestProjectsService_Delete tests the Delete method.
 func TestProjectsService_Delete(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/delete") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/projects/delete", http.StatusNoContent))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsDeleteOption{
 		Project: "my-project",
 	}
 
 	resp, err := client.Projects.Delete(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 // TestProjectsService_Delete_ValidationError tests validation for Delete.
 func TestProjectsService_Delete_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test missing Project
 	opt := &ProjectsDeleteOption{}
 	_, err := client.Projects.Delete(opt)
-	if err == nil {
-		t.Error("expected validation error for missing Project")
-	}
+	assert.Error(t, err)
 }
 
 // TestProjectsService_Search tests the Search method.
 func TestProjectsService_Search(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/search") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"paging": {"pageIndex": 1, "pageSize": 100, "total": 2},
-			"components": [
-				{
-					"key": "project1",
-					"name": "Project One",
-					"qualifier": "TRK",
-					"visibility": "public",
-					"lastAnalysisDate": "2024-01-15T10:30:00+0000"
-				},
-				{
-					"key": "project2",
-					"name": "Project Two",
-					"qualifier": "TRK",
-					"visibility": "private",
-					"managed": true
-				}
-			]
-		}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/projects/search", http.StatusOK, &ProjectsSearch{
+		Paging: Paging{PageIndex: 1, PageSize: 100, Total: 2},
+		Components: []ProjectComponent{
+			{
+				Key:              "project1",
+				Name:             "Project One",
+				Qualifier:        "TRK",
+				Visibility:       "public",
+				LastAnalysisDate: "2024-01-15T10:30:00+0000",
+			},
+			{
+				Key:        "project2",
+				Name:       "Project Two",
+				Qualifier:  "TRK",
+				Visibility: "private",
+				Managed:    true,
+			},
+		},
 	}))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsSearchOption{
 		Query:      "project",
@@ -260,174 +175,106 @@ func TestProjectsService_Search(t *testing.T) {
 	}
 
 	result, resp, err := client.Projects.Search(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-	if len(result.Components) != 2 {
-		t.Errorf("expected 2 components, got %d", len(result.Components))
-	}
-	if result.Components[0].Key != "project1" {
-		t.Errorf("unexpected project key: %s", result.Components[0].Key)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Len(t, result.Components, 2)
+	assert.Equal(t, "project1", result.Components[0].Key)
 }
 
 // TestProjectsService_Search_ValidationError tests validation for Search.
 func TestProjectsService_Search_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test invalid qualifier
 	opt := &ProjectsSearchOption{
 		Qualifiers: []string{"INVALID"},
 	}
 	_, _, err := client.Projects.Search(opt)
-	if err == nil {
-		t.Error("expected validation error for invalid qualifier")
-	}
+	assert.Error(t, err)
 }
 
 // TestProjectsService_SearchMyProjects tests the SearchMyProjects method.
 func TestProjectsService_SearchMyProjects(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/search_my_projects") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"paging": {"pageIndex": 1, "pageSize": 100, "total": 1},
-			"projects": [
-				{
-					"key": "my-project",
-					"name": "My Project",
-					"description": "A test project",
-					"qualityGate": "OK"
-				}
-			]
-		}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/projects/search_my_projects", http.StatusOK, &ProjectsSearchMyProjects{
+		Paging: Paging{PageIndex: 1, PageSize: 100, Total: 1},
+		Projects: []MyProject{
+			{
+				Key:         "my-project",
+				Name:        "My Project",
+				Description: "A test project",
+				QualityGate: "OK",
+			},
+		},
 	}))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsSearchMyProjectsOption{}
 
 	result, resp, err := client.Projects.SearchMyProjects(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-	if len(result.Projects) != 1 {
-		t.Errorf("expected 1 project, got %d", len(result.Projects))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Len(t, result.Projects, 1)
 }
 
 // TestProjectsService_SearchMyScannableProjects tests the SearchMyScannableProjects method.
 func TestProjectsService_SearchMyScannableProjects(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/search_my_scannable_projects") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{
-			"projects": [
-				{"key": "project1", "name": "Project One"},
-				{"key": "project2", "name": "Project Two"}
-			]
-		}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/projects/search_my_scannable_projects", http.StatusOK, &ProjectsSearchMyScannableProjects{
+		Projects: []ScannableProject{
+			{Key: "project1", Name: "Project One"},
+			{Key: "project2", Name: "Project Two"},
+		},
 	}))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Projects.SearchMyScannableProjects(&ProjectsSearchMyScannableProjectsOption{})
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-	if len(result.Projects) != 2 {
-		t.Errorf("expected 2 projects, got %d", len(result.Projects))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Len(t, result.Projects, 2)
 }
 
 // TestProjectsService_UpdateDefaultVisibility tests the UpdateDefaultVisibility method.
 func TestProjectsService_UpdateDefaultVisibility(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/update_default_visibility") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/projects/update_default_visibility", http.StatusNoContent))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsUpdateDefaultVisibilityOption{
 		ProjectVisibility: "private",
 	}
 
 	resp, err := client.Projects.UpdateDefaultVisibility(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 // TestProjectsService_UpdateDefaultVisibility_ValidationError tests validation for UpdateDefaultVisibility.
 func TestProjectsService_UpdateDefaultVisibility_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test missing ProjectVisibility
 	opt := &ProjectsUpdateDefaultVisibilityOption{}
 	_, err := client.Projects.UpdateDefaultVisibility(opt)
-	if err == nil {
-		t.Error("expected validation error for missing ProjectVisibility")
-	}
+	assert.Error(t, err)
 
 	// Test invalid visibility
 	opt = &ProjectsUpdateDefaultVisibilityOption{
 		ProjectVisibility: "invalid",
 	}
 	_, err = client.Projects.UpdateDefaultVisibility(opt)
-	if err == nil {
-		t.Error("expected validation error for invalid ProjectVisibility")
-	}
+	assert.Error(t, err)
 }
 
 // TestProjectsService_UpdateKey tests the UpdateKey method.
 func TestProjectsService_UpdateKey(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/update_key") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/projects/update_key", http.StatusNoContent))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsUpdateKeyOption{
 		From: "old-project-key",
@@ -435,52 +282,35 @@ func TestProjectsService_UpdateKey(t *testing.T) {
 	}
 
 	resp, err := client.Projects.UpdateKey(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 // TestProjectsService_UpdateKey_ValidationError tests validation for UpdateKey.
 func TestProjectsService_UpdateKey_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test missing From
 	opt := &ProjectsUpdateKeyOption{
 		To: "new-key",
 	}
 	_, err := client.Projects.UpdateKey(opt)
-	if err == nil {
-		t.Error("expected validation error for missing From")
-	}
+	assert.Error(t, err)
 
 	// Test missing To
 	opt = &ProjectsUpdateKeyOption{
 		From: "old-key",
 	}
 	_, err = client.Projects.UpdateKey(opt)
-	if err == nil {
-		t.Error("expected validation error for missing To")
-	}
+	assert.Error(t, err)
 }
 
 // TestProjectsService_UpdateVisibility tests the UpdateVisibility method.
 func TestProjectsService_UpdateVisibility(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST method, got %s", r.Method)
-		}
-		if !strings.HasSuffix(r.URL.Path, "/projects/update_visibility") {
-			t.Errorf("unexpected path: %s", r.URL.Path)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/projects/update_visibility", http.StatusNoContent))
 	defer server.Close()
 
-	client, _ := NewClient(server.URL+"/api/", "user", "pass")
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsUpdateVisibilityOption{
 		Project:    "my-project",
@@ -488,35 +318,27 @@ func TestProjectsService_UpdateVisibility(t *testing.T) {
 	}
 
 	resp, err := client.Projects.UpdateVisibility(opt)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 // TestProjectsService_UpdateVisibility_ValidationError tests validation for UpdateVisibility.
 func TestProjectsService_UpdateVisibility_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Test missing Project
 	opt := &ProjectsUpdateVisibilityOption{
 		Visibility: "public",
 	}
 	_, err := client.Projects.UpdateVisibility(opt)
-	if err == nil {
-		t.Error("expected validation error for missing Project")
-	}
+	assert.Error(t, err)
 
 	// Test missing Visibility
 	opt = &ProjectsUpdateVisibilityOption{
 		Project: "my-project",
 	}
 	_, err = client.Projects.UpdateVisibility(opt)
-	if err == nil {
-		t.Error("expected validation error for missing Visibility")
-	}
+	assert.Error(t, err)
 
 	// Test invalid visibility
 	opt = &ProjectsUpdateVisibilityOption{
@@ -524,7 +346,5 @@ func TestProjectsService_UpdateVisibility_ValidationError(t *testing.T) {
 		Visibility: "invalid",
 	}
 	_, err = client.Projects.UpdateVisibility(opt)
-	if err == nil {
-		t.Error("expected validation error for invalid Visibility")
-	}
+	assert.Error(t, err)
 }

@@ -2,28 +2,20 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost {
-				t.Errorf("expected POST, got %s", r.Method)
-			}
-			if err := r.ParseForm(); err != nil {
-				t.Errorf("failed to parse form: %v", err)
-			}
-			if r.Form.Get("analysis") != "AU-TpxcA-iU5OvuD2FL0" {
-				t.Errorf("expected analysis 'AU-TpxcA-iU5OvuD2FL0', got '%s'", r.Form.Get("analysis"))
-			}
-			if r.Form.Get("name") != "1.0" {
-				t.Errorf("expected name '1.0', got '%s'", r.Form.Get("name"))
-			}
-			if r.Form.Get("category") != "VERSION" {
-				t.Errorf("expected category 'VERSION', got '%s'", r.Form.Get("category"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			require.NoError(t, r.ParseForm())
+			assert.Equal(t, "AU-TpxcA-iU5OvuD2FL0", r.Form.Get("analysis"))
+			assert.Equal(t, "1.0", r.Form.Get("name"))
+			assert.Equal(t, "VERSION", r.Form.Get("category"))
 			w.Header().Set("Content-Type", "application/json")
 			_, err := w.Write([]byte(`{
 				"event": {
@@ -33,180 +25,129 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 					"name": "1.0"
 				}
 			}`))
-			if err != nil {
-				t.Errorf("failed to write response: %v", err)
-			}
-		}))
-		defer server.Close()
+			require.NoError(t, err)
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		result, resp, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 			Category: "VERSION",
 			Name:     "1.0",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("expected status 200, got %d", resp.StatusCode)
-		}
-		if result == nil {
-			t.Fatal("expected result, got nil")
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		require.NotNil(t, result)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.CreateEvent(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing analysis", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
 			Name: "1.0",
 		})
-		if err == nil {
-			t.Error("expected error for missing analysis")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing name", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 		})
-		if err == nil {
-			t.Error("expected error for missing name")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("invalid category", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 			Category: "INVALID",
 			Name:     "1.0",
 		})
-		if err == nil {
-			t.Error("expected error for invalid category")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestProjectAnalysesService_Delete(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost {
-				t.Errorf("expected POST, got %s", r.Method)
-			}
-			if err := r.ParseForm(); err != nil {
-				t.Errorf("failed to parse form: %v", err)
-			}
-			if r.Form.Get("analysis") != "AU-TpxcA-iU5OvuD2FL0" {
-				t.Errorf("expected analysis 'AU-TpxcA-iU5OvuD2FL0', got '%s'", r.Form.Get("analysis"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			require.NoError(t, r.ParseForm())
+			assert.Equal(t, "AU-TpxcA-iU5OvuD2FL0", r.Form.Get("analysis"))
 			w.WriteHeader(http.StatusNoContent)
-		}))
-		defer server.Close()
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		resp, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOption{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusNoContent {
-			t.Errorf("expected status 204, got %d", resp.StatusCode)
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.ProjectAnalyses.Delete(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing analysis", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOption{})
-		if err == nil {
-			t.Error("expected error for missing analysis")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestProjectAnalysesService_DeleteEvent(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost {
-				t.Errorf("expected POST, got %s", r.Method)
-			}
-			if err := r.ParseForm(); err != nil {
-				t.Errorf("failed to parse form: %v", err)
-			}
-			if r.Form.Get("event") != "AU-TpxcA-iU5OvuD2FL1" {
-				t.Errorf("expected event 'AU-TpxcA-iU5OvuD2FL1', got '%s'", r.Form.Get("event"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			require.NoError(t, r.ParseForm())
+			assert.Equal(t, "AU-TpxcA-iU5OvuD2FL1", r.Form.Get("event"))
 			w.WriteHeader(http.StatusNoContent)
-		}))
-		defer server.Close()
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		resp, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOption{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusNoContent {
-			t.Errorf("expected status 204, got %d", resp.StatusCode)
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.ProjectAnalyses.DeleteEvent(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing event", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOption{})
-		if err == nil {
-			t.Error("expected error for missing event")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestProjectAnalysesService_Search(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodGet {
-				t.Errorf("expected GET, got %s", r.Method)
-			}
-			if r.URL.Query().Get("project") != "my-project" {
-				t.Errorf("expected project 'my-project', got '%s'", r.URL.Query().Get("project"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodGet, r.Method)
+			assert.Equal(t, "my-project", r.URL.Query().Get("project"))
 			w.Header().Set("Content-Type", "application/json")
 			_, err := w.Write([]byte(`{
 				"paging": {
@@ -230,60 +171,34 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 					}
 				]
 			}`))
-			if err != nil {
-				t.Errorf("failed to write response: %v", err)
-			}
-		}))
-		defer server.Close()
+			require.NoError(t, err)
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		result, resp, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
 			Project: "my-project",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("expected status 200, got %d", resp.StatusCode)
-		}
-		if result == nil {
-			t.Fatal("expected result, got nil")
-		}
-		if len(result.Analyses) != 1 {
-			t.Errorf("expected 1 analysis, got %d", len(result.Analyses))
-		}
-		if result.Analyses[0].Key != "AU-TpxcA-iU5OvuD2FL0" {
-			t.Errorf("expected key 'AU-TpxcA-iU5OvuD2FL0', got '%s'", result.Analyses[0].Key)
-		}
-		if len(result.Analyses[0].Events) != 1 {
-			t.Errorf("expected 1 event, got %d", len(result.Analyses[0].Events))
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		require.NotNil(t, result)
+		assert.Len(t, result.Analyses, 1)
+		assert.Equal(t, "AU-TpxcA-iU5OvuD2FL0", result.Analyses[0].Key)
+		assert.Len(t, result.Analyses[0].Events, 1)
 	})
 
 	t.Run("with filters", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Query().Get("project") != "my-project" {
-				t.Errorf("expected project 'my-project', got '%s'", r.URL.Query().Get("project"))
-			}
-			if r.URL.Query().Get("branch") != "main" {
-				t.Errorf("expected branch 'main', got '%s'", r.URL.Query().Get("branch"))
-			}
-			if r.URL.Query().Get("category") != "VERSION" {
-				t.Errorf("expected category 'VERSION', got '%s'", r.URL.Query().Get("category"))
-			}
-			if r.URL.Query().Get("from") != "2022-01-01" {
-				t.Errorf("expected from '2022-01-01', got '%s'", r.URL.Query().Get("from"))
-			}
-			if r.URL.Query().Get("to") != "2022-12-31" {
-				t.Errorf("expected to '2022-12-31', got '%s'", r.URL.Query().Get("to"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "my-project", r.URL.Query().Get("project"))
+			assert.Equal(t, "main", r.URL.Query().Get("branch"))
+			assert.Equal(t, "VERSION", r.URL.Query().Get("category"))
+			assert.Equal(t, "2022-01-01", r.URL.Query().Get("from"))
+			assert.Equal(t, "2022-12-31", r.URL.Query().Get("to"))
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write([]byte(`{"paging": {"pageIndex": 1, "pageSize": 100, "total": 0}, "analyses": []}`))
-		}))
-		defer server.Close()
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
 			Project:  "my-project",
@@ -292,89 +207,74 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 			From:     "2022-01-01",
 			To:       "2022-12-31",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+		require.NoError(t, err)
 	})
 
 	t.Run("with datetime format", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			_, _ = w.Write([]byte(`{"paging": {"pageIndex": 1, "pageSize": 100, "total": 0}, "analyses": []}`))
-		}))
-		defer server.Close()
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
 			Project: "my-project",
 			From:    "2022-01-01T00:00:00Z",
 			To:      "2022-12-31T23:59:59Z",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+		require.NoError(t, err)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.Search(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing project", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{})
-		if err == nil {
-			t.Error("expected error for missing project")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("invalid category", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
 			Project:  "my-project",
 			Category: "INVALID",
 		})
-		if err == nil {
-			t.Error("expected error for invalid category")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("invalid from date", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
 			Project: "my-project",
 			From:    "invalid-date",
 		})
-		if err == nil {
-			t.Error("expected error for invalid from date")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("invalid to date", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
 			Project: "my-project",
 			To:      "invalid-date",
 		})
-		if err == nil {
-			t.Error("expected error for invalid to date")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestProjectAnalysesService_SearchAll(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		callCount := 0
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 			callCount++
 			w.Header().Set("Content-Type", "application/json")
 			if callCount == 1 {
@@ -388,10 +288,9 @@ func TestProjectAnalysesService_SearchAll(t *testing.T) {
 					"analyses": [{"key": "analysis2"}]
 				}`))
 			}
-		}))
-		defer server.Close()
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		opt := &ProjectAnalysesSearchOption{
 			Project: "my-project",
@@ -399,42 +298,26 @@ func TestProjectAnalysesService_SearchAll(t *testing.T) {
 		opt.PageSize = 1
 
 		result, _, err := client.ProjectAnalyses.SearchAll(opt)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if len(result) != 2 {
-			t.Errorf("expected 2 analyses, got %d", len(result))
-		}
-		if callCount != 2 {
-			t.Errorf("expected 2 calls, got %d", callCount)
-		}
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.SearchAll(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != http.MethodPost {
-				t.Errorf("expected POST, got %s", r.Method)
-			}
-			if err := r.ParseForm(); err != nil {
-				t.Errorf("failed to parse form: %v", err)
-			}
-			if r.Form.Get("event") != "AU-TpxcA-iU5OvuD2FL1" {
-				t.Errorf("expected event 'AU-TpxcA-iU5OvuD2FL1', got '%s'", r.Form.Get("event"))
-			}
-			if r.Form.Get("name") != "2.0" {
-				t.Errorf("expected name '2.0', got '%s'", r.Form.Get("name"))
-			}
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			require.NoError(t, r.ParseForm())
+			assert.Equal(t, "AU-TpxcA-iU5OvuD2FL1", r.Form.Get("event"))
+			assert.Equal(t, "2.0", r.Form.Get("name"))
 			w.Header().Set("Content-Type", "application/json")
 			_, err := w.Write([]byte(`{
 				"event": {
@@ -443,63 +326,48 @@ func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 					"name": "2.0"
 				}
 			}`))
-			if err != nil {
-				t.Errorf("failed to write response: %v", err)
-			}
-		}))
-		defer server.Close()
+			require.NoError(t, err)
+		})
 
-		client, _ := NewClient(server.URL+"/api/", "user", "pass")
+		client := newTestClient(t, server.URL)
 
 		result, resp, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOption{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 			Name:  "2.0",
 		})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("expected status 200, got %d", resp.StatusCode)
-		}
-		if result == nil {
-			t.Fatal("expected result, got nil")
-		}
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusOK, resp.StatusCode)
+		require.NotNil(t, result)
 	})
 
 	t.Run("nil option", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.UpdateEvent(nil)
-		if err == nil {
-			t.Error("expected error for nil option")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing event", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOption{
 			Name: "2.0",
 		})
-		if err == nil {
-			t.Error("expected error for missing event")
-		}
+		assert.Error(t, err)
 	})
 
 	t.Run("missing name", func(t *testing.T) {
-		client, _ := NewClient("http://localhost/api/", "user", "pass")
+		client := newLocalhostClient(t)
 
 		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOption{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 		})
-		if err == nil {
-			t.Error("expected error for missing name")
-		}
+		assert.Error(t, err)
 	})
 }
 
 func TestProjectAnalysesService_ValidateCreateEventOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -518,15 +386,17 @@ func TestProjectAnalysesService_ValidateCreateEventOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.ProjectAnalyses.ValidateCreateEventOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateCreateEventOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestProjectAnalysesService_ValidateDeleteOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -541,15 +411,17 @@ func TestProjectAnalysesService_ValidateDeleteOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.ProjectAnalyses.ValidateDeleteOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateDeleteOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestProjectAnalysesService_ValidateDeleteEventOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -564,15 +436,17 @@ func TestProjectAnalysesService_ValidateDeleteEventOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.ProjectAnalyses.ValidateDeleteEventOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateDeleteEventOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestProjectAnalysesService_ValidateSearchOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -594,15 +468,17 @@ func TestProjectAnalysesService_ValidateSearchOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.ProjectAnalyses.ValidateSearchOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateSearchOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestProjectAnalysesService_ValidateUpdateEventOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -618,8 +494,10 @@ func TestProjectAnalysesService_ValidateUpdateEventOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.ProjectAnalyses.ValidateUpdateEventOpt(tt.opt)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ValidateUpdateEventOpt() error = %v, wantErr %v", err, tt.wantErr)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
@@ -643,9 +521,7 @@ func TestIsValidDate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			got := isValidDate(tt.input)
-			if got != tt.want {
-				t.Errorf("isValidDate(%q) = %v, want %v", tt.input, got, tt.want)
-			}
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
@@ -666,9 +542,7 @@ func TestIsValidDateTime(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			got := isValidDateTime(tt.input)
-			if got != tt.want {
-				t.Errorf("isValidDateTime(%q) = %v, want %v", tt.input, got, tt.want)
-			}
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

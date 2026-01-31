@@ -1,10 +1,11 @@
 package sonargo
 
 import (
-	"encoding/json"
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // =============================================================================
@@ -12,49 +13,27 @@ import (
 // =============================================================================
 
 func TestHotspots_AddComment(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/add_comment" {
-			t.Errorf("expected path /api/hotspots/add_comment, got %s", r.URL.Path)
-		}
-
-		hotspot := r.URL.Query().Get("hotspot")
-		if hotspot != "hotspot123" {
-			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
-		}
-
-		comment := r.URL.Query().Get("comment")
-		if comment != "This is a comment" {
-			t.Errorf("expected comment 'This is a comment', got %s", comment)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/hotspots/add_comment", r.URL.Path)
+		assert.Equal(t, "hotspot123", r.URL.Query().Get("hotspot"))
+		assert.Equal(t, "This is a comment", r.URL.Query().Get("comment"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Hotspots.AddComment(&HotspotsAddCommentOption{
 		Hotspot: "hotspot123",
 		Comment: "This is a comment",
 	})
-	if err != nil {
-		t.Fatalf("AddComment failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestHotspots_AddComment_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -84,9 +63,7 @@ func TestHotspots_AddComment_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := client.Hotspots.AddComment(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -96,49 +73,27 @@ func TestHotspots_AddComment_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_Assign(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/assign" {
-			t.Errorf("expected path /api/hotspots/assign, got %s", r.URL.Path)
-		}
-
-		hotspot := r.URL.Query().Get("hotspot")
-		if hotspot != "hotspot123" {
-			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
-		}
-
-		assignee := r.URL.Query().Get("assignee")
-		if assignee != "john.doe" {
-			t.Errorf("expected assignee 'john.doe', got %s", assignee)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/hotspots/assign", r.URL.Path)
+		assert.Equal(t, "hotspot123", r.URL.Query().Get("hotspot"))
+		assert.Equal(t, "john.doe", r.URL.Query().Get("assignee"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Hotspots.Assign(&HotspotsAssignOption{
 		Hotspot:  "hotspot123",
 		Assignee: "john.doe",
 	})
-	if err != nil {
-		t.Fatalf("Assign failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestHotspots_Assign_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -157,9 +112,7 @@ func TestHotspots_Assign_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := client.Hotspots.Assign(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -169,55 +122,29 @@ func TestHotspots_Assign_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_ChangeStatus(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/change_status" {
-			t.Errorf("expected path /api/hotspots/change_status, got %s", r.URL.Path)
-		}
-
-		hotspot := r.URL.Query().Get("hotspot")
-		if hotspot != "hotspot123" {
-			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
-		}
-
-		status := r.URL.Query().Get("status")
-		if status != "REVIEWED" {
-			t.Errorf("expected status 'REVIEWED', got %s", status)
-		}
-
-		resolution := r.URL.Query().Get("resolution")
-		if resolution != "SAFE" {
-			t.Errorf("expected resolution 'SAFE', got %s", resolution)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/hotspots/change_status", r.URL.Path)
+		assert.Equal(t, "hotspot123", r.URL.Query().Get("hotspot"))
+		assert.Equal(t, "REVIEWED", r.URL.Query().Get("status"))
+		assert.Equal(t, "SAFE", r.URL.Query().Get("resolution"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Hotspots.ChangeStatus(&HotspotsChangeStatusOption{
 		Hotspot:    "hotspot123",
 		Status:     "REVIEWED",
 		Resolution: "SAFE",
 	})
-	if err != nil {
-		t.Fatalf("ChangeStatus failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -248,9 +175,7 @@ func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := client.Hotspots.ChangeStatus(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -260,43 +185,25 @@ func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_DeleteComment(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/delete_comment" {
-			t.Errorf("expected path /api/hotspots/delete_comment, got %s", r.URL.Path)
-		}
-
-		comment := r.URL.Query().Get("comment")
-		if comment != "comment123" {
-			t.Errorf("expected comment 'comment123', got %s", comment)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/hotspots/delete_comment", r.URL.Path)
+		assert.Equal(t, "comment123", r.URL.Query().Get("comment"))
 
 		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	resp, err := client.Hotspots.DeleteComment(&HotspotsDeleteCommentOption{
 		Comment: "comment123",
 	})
-	if err != nil {
-		t.Fatalf("DeleteComment failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestHotspots_DeleteComment_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -315,9 +222,7 @@ func TestHotspots_DeleteComment_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := client.Hotspots.DeleteComment(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -327,72 +232,30 @@ func TestHotspots_DeleteComment_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_EditComment(t *testing.T) {
-	expectedResponse := &HotspotsEditComment{
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/hotspots/edit_comment", http.StatusOK, &HotspotsEditComment{
 		CreatedAt: "2024-01-01T12:00:00+0000",
 		HTMLText:  "<p>Updated comment</p>",
 		Key:       "comment123",
 		Login:     "john.doe",
 		Markdown:  "Updated comment",
 		Updatable: true,
-	}
-
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/edit_comment" {
-			t.Errorf("expected path /api/hotspots/edit_comment, got %s", r.URL.Path)
-		}
-
-		comment := r.URL.Query().Get("comment")
-		if comment != "comment123" {
-			t.Errorf("expected comment 'comment123', got %s", comment)
-		}
-
-		text := r.URL.Query().Get("text")
-		if text != "Updated comment" {
-			t.Errorf("expected text 'Updated comment', got %s", text)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_ = json.NewEncoder(w).Encode(expectedResponse)
 	}))
-	defer ts.Close()
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Hotspots.EditComment(&HotspotsEditCommentOption{
 		Comment: "comment123",
 		Text:    "Updated comment",
 	})
-	if err != nil {
-		t.Fatalf("EditComment failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Key != expectedResponse.Key {
-		t.Errorf("expected key '%s', got %s", expectedResponse.Key, result.Key)
-	}
-
-	if result.Markdown != expectedResponse.Markdown {
-		t.Errorf("expected markdown '%s', got %s", expectedResponse.Markdown, result.Markdown)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "comment123", result.Key)
+	assert.Equal(t, "Updated comment", result.Markdown)
 }
 
 func TestHotspots_EditComment_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -422,9 +285,7 @@ func TestHotspots_EditComment_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Hotspots.EditComment(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -434,19 +295,10 @@ func TestHotspots_EditComment_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_List(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/list" {
-			t.Errorf("expected path /api/hotspots/list, got %s", r.URL.Path)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/hotspots/list", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -464,40 +316,22 @@ func TestHotspots_List(t *testing.T) {
 			],
 			"paging": {"pageIndex": 1, "pageSize": 100, "total": 1}
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Hotspots.List(&HotspotsListOption{
 		Project: "my-project",
 	})
-	if err != nil {
-		t.Fatalf("List failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Hotspots) != 1 {
-		t.Fatalf("expected 1 hotspot, got %d", len(result.Hotspots))
-	}
-
-	if result.Hotspots[0].Key != "hotspot123" {
-		t.Errorf("expected key 'hotspot123', got %s", result.Hotspots[0].Key)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Hotspots, 1)
+	assert.Equal(t, "hotspot123", result.Hotspots[0].Key)
 }
 
 func TestHotspots_List_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -528,9 +362,7 @@ func TestHotspots_List_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Hotspots.List(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -540,55 +372,30 @@ func TestHotspots_List_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_Pull(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/pull" {
-			t.Errorf("expected path /api/hotspots/pull, got %s", r.URL.Path)
-		}
-
-		projectKey := r.URL.Query().Get("projectKey")
-		if projectKey != "my-project" {
-			t.Errorf("expected projectKey 'my-project', got %s", projectKey)
-		}
-
-		branchName := r.URL.Query().Get("branchName")
-		if branchName != "main" {
-			t.Errorf("expected branchName 'main', got %s", branchName)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/hotspots/pull", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("projectKey"))
+		assert.Equal(t, "main", r.URL.Query().Get("branchName"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`[]`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Hotspots.Pull(&HotspotsPullOption{
 		ProjectKey: "my-project",
 		BranchName: "main",
 	})
-	if err != nil {
-		t.Fatalf("Pull failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
 }
 
 func TestHotspots_Pull_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -611,9 +418,7 @@ func TestHotspots_Pull_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Hotspots.Pull(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -623,19 +428,10 @@ func TestHotspots_Pull_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_Search_WithProject(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/search" {
-			t.Errorf("expected path /api/hotspots/search, got %s", r.URL.Path)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/hotspots/search", r.URL.Path)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -653,113 +449,54 @@ func TestHotspots_Search_WithProject(t *testing.T) {
 			],
 			"paging": {"pageIndex": 1, "pageSize": 100, "total": 1}
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
 		Project: "my-project",
 	})
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if len(result.Hotspots) != 1 {
-		t.Fatalf("expected 1 hotspot, got %d", len(result.Hotspots))
-	}
-
-	if result.Hotspots[0].Key != "hotspot123" {
-		t.Errorf("expected key 'hotspot123', got %s", result.Hotspots[0].Key)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Len(t, result.Hotspots, 1)
+	assert.Equal(t, "hotspot123", result.Hotspots[0].Key)
 }
 
 func TestHotspots_Search_WithHotspots(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		hotspots := r.URL.Query().Get("hotspots")
-		if hotspots != "hotspot1,hotspot2" {
-			t.Errorf("expected hotspots 'hotspot1,hotspot2', got %s", hotspots)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "hotspot1,hotspot2", r.URL.Query().Get("hotspots"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"components": [], "hotspots": [], "paging": {"pageIndex": 1, "pageSize": 100, "total": 0}}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	_, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
 		Hotspots: []string{"hotspot1", "hotspot2"},
 	})
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestHotspots_Search_WithFilters(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		status := r.URL.Query().Get("status")
-		if status != "REVIEWED" {
-			t.Errorf("expected status 'REVIEWED', got %s", status)
-		}
-
-		resolution := r.URL.Query().Get("resolution")
-		if resolution != "SAFE" {
-			t.Errorf("expected resolution 'SAFE', got %s", resolution)
-		}
-
-		inNewCodePeriod := r.URL.Query().Get("inNewCodePeriod")
-		if inNewCodePeriod != "true" {
-			t.Errorf("expected inNewCodePeriod 'true', got %s", inNewCodePeriod)
-		}
-
-		onlyMine := r.URL.Query().Get("onlyMine")
-		if onlyMine != "true" {
-			t.Errorf("expected onlyMine 'true', got %s", onlyMine)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
+		assert.Equal(t, "REVIEWED", r.URL.Query().Get("status"))
+		assert.Equal(t, "SAFE", r.URL.Query().Get("resolution"))
+		assert.Equal(t, "true", r.URL.Query().Get("inNewCodePeriod"))
+		assert.Equal(t, "true", r.URL.Query().Get("onlyMine"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"components": [], "hotspots": [], "paging": {"pageIndex": 1, "pageSize": 100, "total": 0}}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	_, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
 		Project:         "my-project",
@@ -768,17 +505,12 @@ func TestHotspots_Search_WithFilters(t *testing.T) {
 		InNewCodePeriod: true,
 		OnlyMine:        true,
 	})
-	if err != nil {
-		t.Fatalf("Search failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestHotspots_Search_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -817,9 +549,7 @@ func TestHotspots_Search_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Hotspots.Search(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -829,19 +559,10 @@ func TestHotspots_Search_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_Show(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/hotspots/show" {
-			t.Errorf("expected path /api/hotspots/show, got %s", r.URL.Path)
-		}
-
-		hotspot := r.URL.Query().Get("hotspot")
-		if hotspot != "hotspot123" {
-			t.Errorf("expected hotspot 'hotspot123', got %s", hotspot)
-		}
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/hotspots/show", r.URL.Path)
+		assert.Equal(t, "hotspot123", r.URL.Query().Get("hotspot"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -882,68 +603,29 @@ func TestHotspots_Show(t *testing.T) {
 				}
 			]
 		}`))
-	}))
-	defer ts.Close()
+	})
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Hotspots.Show(&HotspotsShowOption{
 		Hotspot: "hotspot123",
 	})
-	if err != nil {
-		t.Fatalf("Show failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Key != "hotspot123" {
-		t.Errorf("expected key 'hotspot123', got %s", result.Key)
-	}
-
-	if result.Status != "TO_REVIEW" {
-		t.Errorf("expected status 'TO_REVIEW', got %s", result.Status)
-	}
-
-	if !result.CanChangeStatus {
-		t.Error("expected canChangeStatus to be true")
-	}
-
-	if len(result.Users) != 1 {
-		t.Fatalf("expected 1 user, got %d", len(result.Users))
-	}
-
-	if result.Users[0].Login != "john.doe" {
-		t.Errorf("expected user login 'john.doe', got %s", result.Users[0].Login)
-	}
-
-	if len(result.Changelog) != 1 {
-		t.Fatalf("expected 1 changelog entry, got %d", len(result.Changelog))
-	}
-
-	if result.Changelog[0].User != "john.doe" {
-		t.Errorf("expected changelog user 'john.doe', got %s", result.Changelog[0].User)
-	}
-
-	if len(result.Changelog[0].Diffs) != 1 {
-		t.Fatalf("expected 1 diff, got %d", len(result.Changelog[0].Diffs))
-	}
-
-	if result.Changelog[0].Diffs[0].Key != "status" {
-		t.Errorf("expected diff key 'status', got %s", result.Changelog[0].Diffs[0].Key)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "hotspot123", result.Key)
+	assert.Equal(t, "TO_REVIEW", result.Status)
+	assert.True(t, result.CanChangeStatus)
+	assert.Len(t, result.Users, 1)
+	assert.Equal(t, "john.doe", result.Users[0].Login)
+	assert.Len(t, result.Changelog, 1)
+	assert.Equal(t, "john.doe", result.Changelog[0].User)
+	assert.Len(t, result.Changelog[0].Diffs, 1)
+	assert.Equal(t, "status", result.Changelog[0].Diffs[0].Key)
 }
 
 func TestHotspots_Show_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -962,9 +644,7 @@ func TestHotspots_Show_ValidationError(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, _, err := client.Hotspots.Show(tt.opt)
-			if err == nil {
-				t.Error("expected error")
-			}
+			assert.Error(t, err)
 		})
 	}
 }
@@ -974,7 +654,7 @@ func TestHotspots_Show_ValidationError(t *testing.T) {
 // =============================================================================
 
 func TestHotspots_ValidateAddCommentOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -1013,18 +693,17 @@ func TestHotspots_ValidateAddCommentOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Hotspots.ValidateAddCommentOpt(tt.opt)
-			if tt.wantErr && err == nil {
-				t.Error("expected error")
-			}
-			if !tt.wantErr && err != nil {
-				t.Errorf("unexpected error: %v", err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -1093,18 +772,17 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Hotspots.ValidateChangeStatusOpt(tt.opt)
-			if tt.wantErr && err == nil {
-				t.Error("expected error")
-			}
-			if !tt.wantErr && err != nil {
-				t.Errorf("unexpected error: %v", err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestHotspots_ValidateSearchOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -1182,18 +860,17 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Hotspots.ValidateSearchOpt(tt.opt)
-			if tt.wantErr && err == nil {
-				t.Error("expected error")
-			}
-			if !tt.wantErr && err != nil {
-				t.Errorf("unexpected error: %v", err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestHotspots_ValidateListOpt(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -1266,11 +943,10 @@ func TestHotspots_ValidateListOpt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := client.Hotspots.ValidateListOpt(tt.opt)
-			if tt.wantErr && err == nil {
-				t.Error("expected error")
-			}
-			if !tt.wantErr && err != nil {
-				t.Errorf("unexpected error: %v", err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}

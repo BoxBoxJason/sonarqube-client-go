@@ -2,8 +2,10 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // -----------------------------------------------------------------------------
@@ -11,41 +13,19 @@ import (
 // -----------------------------------------------------------------------------
 
 func TestSystem_ChangeLogLevel(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST, got %s", r.Method)
-		}
-		// Return 204 No Content (success)
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	handler := mockEmptyHandler(t, http.MethodPost, "/system/change_log_level", http.StatusNoContent)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	opt := &SystemChangeLogLevelOption{Level: "INFO"}
 	resp, err := client.System.ChangeLogLevel(opt)
 
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status %d, got %d", http.StatusNoContent, resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestSystem_ChangeLogLevel_ValidationErrors(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name string
@@ -59,498 +39,225 @@ func TestSystem_ChangeLogLevel_ValidationErrors(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := client.System.ChangeLogLevel(tc.opt)
-			if err == nil {
-				t.Error("expected validation error, got nil")
-			}
+			assert.Error(t, err, "expected validation error")
 		})
 	}
 }
 
 func TestSystem_DbMigrationStatus(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		// Return mock response
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"state":"NO_MIGRATION","message":"Database is up to date."}`))
-	}))
-	defer ts.Close()
+	handler := mockHandler(t, http.MethodGet, "/system/db_migration_status", http.StatusOK,
+		`{"state":"NO_MIGRATION","message":"Database is up to date."}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	result, resp, err := client.System.DbMigrationStatus()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if result.State != "NO_MIGRATION" {
-		t.Errorf("expected state NO_MIGRATION, got %s", result.State)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "NO_MIGRATION", result.State)
 }
 
 func TestSystem_Health(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		// Return mock response
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"health":"GREEN","nodes":[{"name":"node1","host":"localhost","port":9000,"health":"GREEN","type":"APPLICATION"}]}`))
-	}))
-	defer ts.Close()
+	handler := mockHandler(t, http.MethodGet, "/system/health", http.StatusOK,
+		`{"health":"GREEN","nodes":[{"name":"node1","host":"localhost","port":9000,"health":"GREEN","type":"APPLICATION"}]}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	result, resp, err := client.System.Health()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if result.Health != "GREEN" {
-		t.Errorf("expected health GREEN, got %s", result.Health)
-	}
-
-	if len(result.Nodes) == 0 {
-		t.Error("expected nodes in response")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "GREEN", result.Health)
+	assert.NotEmpty(t, result.Nodes)
 }
 
 func TestSystem_Health_WithCauses(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"health":"YELLOW","causes":[{"message":"Cluster has only one search node"}]}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockHandler(t, http.MethodGet, "/system/health", http.StatusOK,
+		`{"health":"YELLOW","causes":[{"message":"Cluster has only one search node"}]}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	result, _, err := client.System.Health()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if result.Health != "YELLOW" {
-		t.Errorf("expected health YELLOW, got %s", result.Health)
-	}
-
-	if len(result.Causes) != 1 {
-		t.Errorf("expected 1 cause, got %d", len(result.Causes))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, "YELLOW", result.Health)
+	assert.Len(t, result.Causes, 1)
 }
 
 func TestSystem_Info(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
+	handler := mockHandler(t, http.MethodGet, "/system/info", http.StatusOK, `{
+		"Health": "GREEN",
+		"System": {
+			"Version": "10.0.0",
+			"Edition": "Community",
+			"Docker": false,
+			"Processors": 8
+		},
+		"Database": {
+			"Database": "PostgreSQL",
+			"Database Version": "14.0"
 		}
-		// Return mock response
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{
-			"Health": "GREEN",
-			"System": {
-				"Version": "10.0.0",
-				"Edition": "Community",
-				"Docker": false,
-				"Processors": 8
-			},
-			"Database": {
-				"Database": "PostgreSQL",
-				"Database Version": "14.0"
-			}
-		}`))
-	}))
-	defer ts.Close()
+	}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	result, resp, err := client.System.Info()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if result.Health != "GREEN" {
-		t.Errorf("expected health GREEN, got %s", result.Health)
-	}
-
-	if result.System.Version != "10.0.0" {
-		t.Errorf("expected version 10.0.0, got %s", result.System.Version)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "GREEN", result.Health)
+	assert.Equal(t, "10.0.0", result.System.Version)
 }
 
 func TestSystem_Liveness(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		// Return 204 No Content (liveness success)
-		w.WriteHeader(http.StatusNoContent)
+	handler := mockHandler(t, http.MethodGet, "/system/liveness", http.StatusNoContent, "{}")
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-		_, _ = w.Write([]byte("{}"))
-	}))
-	defer ts.Close()
-
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	_, resp, err := client.System.Liveness()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status %d, got %d", http.StatusNoContent, resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestSystem_Logs(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		// Return plain text response
-		w.Header().Set("Content-Type", "text/plain")
-		_, _ = w.Write([]byte("2024-01-01 12:00:00 INFO Sample log message"))
-	}))
-	defer ts.Close()
+	handler := mockBinaryHandler(t, http.MethodGet, "/system/logs", http.StatusOK, "text/plain",
+		[]byte("2024-01-01 12:00:00 INFO Sample log message"),
+	)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method with specific log name
 	opt := &SystemLogsOption{Name: "app"}
 	result, resp, err := client.System.Logs(opt)
 
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if result == nil || *result == "" {
-		t.Error("expected log content, got empty")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.NotEmpty(t, *result)
 }
 
 func TestSystem_Logs_NilOption(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain")
-		_, _ = w.Write([]byte("default log content"))
-	}))
-	defer ts.Close()
+	handler := mockBinaryHandler(t, http.MethodGet, "/system/logs", http.StatusOK, "text/plain",
+		[]byte("default log content"))
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call with nil options (should use defaults)
 	result, _, err := client.System.Logs(nil)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if result == nil || *result == "" {
-		t.Error("expected log content, got empty")
-	}
+	require.NoError(t, err)
+	require.NotNil(t, result)
+	assert.NotEmpty(t, *result)
 }
 
 func TestSystem_Logs_ValidationErrors(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
-	// Invalid log name
 	opt := &SystemLogsOption{Name: "invalid_log"}
-	_, _, err = client.System.Logs(opt)
+	_, _, err := client.System.Logs(opt)
 
-	if err == nil {
-		t.Error("expected validation error for invalid log name, got nil")
-	}
+	assert.Error(t, err, "expected validation error for invalid log name")
 }
 
 func TestSystem_MigrateDb(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST, got %s", r.Method)
-		}
-		// Return mock response
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"state":"MIGRATION_RUNNING","startedAt":"2024-01-01T12:00:00+0000"}`))
-	}))
-	defer ts.Close()
+	handler := mockHandler(t, http.MethodPost, "/system/migrate_db", http.StatusOK,
+		`{"state":"MIGRATION_RUNNING","startedAt":"2024-01-01T12:00:00+0000"}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	result, resp, err := client.System.MigrateDb()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if result.State != "MIGRATION_RUNNING" {
-		t.Errorf("expected state MIGRATION_RUNNING, got %s", result.State)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "MIGRATION_RUNNING", result.State)
 }
 
 func TestSystem_Ping(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		// Return plain text response
-		w.Header().Set("Content-Type", "text/plain")
-		_, _ = w.Write([]byte("pong"))
-	}))
-	defer ts.Close()
+	handler := mockBinaryHandler(t, http.MethodGet, "/system/ping", http.StatusOK, "text/plain", []byte("pong"))
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	result, resp, err := client.System.Ping()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if result == nil || *result != "pong" {
-		t.Errorf("expected 'pong', got '%v'", result)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "pong", *result)
 }
 
 func TestSystem_Restart(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodPost {
-			t.Errorf("expected POST, got %s", r.Method)
-		}
-		// Return 204 No Content (success)
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
+	handler := mockEmptyHandler(t, http.MethodPost, "/system/restart", http.StatusNoContent)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	resp, err := client.System.Restart()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status %d, got %d", http.StatusNoContent, resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestSystem_Status(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		// Return mock response
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"id":"ABC123","status":"UP","version":"10.0.0"}`))
-	}))
-	defer ts.Close()
+	handler := mockHandler(t, http.MethodGet, "/system/status", http.StatusOK,
+		`{"id":"ABC123","status":"UP","version":"10.0.0"}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	result, resp, err := client.System.Status()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if result.Status != "UP" {
-		t.Errorf("expected status UP, got %s", result.Status)
-	}
-
-	if result.Version != "10.0.0" {
-		t.Errorf("expected version 10.0.0, got %s", result.Version)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "UP", result.Status)
+	assert.Equal(t, "10.0.0", result.Version)
 }
 
 func TestSystem_Upgrades(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Verify request method
-		if r.Method != http.MethodGet {
-			t.Errorf("expected GET, got %s", r.Method)
-		}
-		// Return mock response
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{
-			"installedVersionActive": true,
-			"latestLTA": "10.1.0",
-			"updateCenterRefresh": "2024-01-01T12:00:00+0000",
-			"upgrades": [
-				{
-					"version": "10.1.0",
-					"description": "New version",
-					"releaseDate": "2024-01-01",
-					"changeLogUrl": "https://example.com/changelog",
-					"plugins": {
-						"incompatible": [
-							{"key": "old-plugin", "name": "Old Plugin"}
-						],
-						"requireUpdate": [
-							{"key": "update-plugin", "name": "Update Plugin", "version": "2.0.0"}
-						]
-					}
+	handler := mockHandler(t, http.MethodGet, "/system/upgrades", http.StatusOK, `{
+		"installedVersionActive": true,
+		"latestLTA": "10.1.0",
+		"updateCenterRefresh": "2024-01-01T12:00:00+0000",
+		"upgrades": [
+			{
+				"version": "10.1.0",
+				"description": "New version",
+				"releaseDate": "2024-01-01",
+				"changeLogUrl": "https://example.com/changelog",
+				"plugins": {
+					"incompatible": [
+						{"key": "old-plugin", "name": "Old Plugin"}
+					],
+					"requireUpdate": [
+						{"key": "update-plugin", "name": "Update Plugin", "version": "2.0.0"}
+					]
 				}
-			]
-		}`))
-	}))
-	defer ts.Close()
+			}
+		]
+	}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
-	// Create client pointing to mock server
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
-
-	// Call service method
 	result, resp, err := client.System.Upgrades()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status %d, got %d", http.StatusOK, resp.StatusCode)
-	}
-
-	if !result.InstalledVersionActive {
-		t.Error("expected InstalledVersionActive to be true")
-	}
-
-	if result.LatestLTA != "10.1.0" {
-		t.Errorf("expected latestLTA 10.1.0, got %s", result.LatestLTA)
-	}
-
-	if len(result.Upgrades) != 1 {
-		t.Errorf("expected 1 upgrade, got %d", len(result.Upgrades))
-	}
-
-	if len(result.Upgrades[0].Plugins.Incompatible) != 1 {
-		t.Errorf("expected 1 incompatible plugin, got %d", len(result.Upgrades[0].Plugins.Incompatible))
-	}
-
-	if len(result.Upgrades[0].Plugins.RequireUpdate) != 1 {
-		t.Errorf("expected 1 requireUpdate plugin, got %d", len(result.Upgrades[0].Plugins.RequireUpdate))
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.True(t, result.InstalledVersionActive)
+	assert.Equal(t, "10.1.0", result.LatestLTA)
+	assert.Len(t, result.Upgrades, 1)
+	assert.Len(t, result.Upgrades[0].Plugins.Incompatible, 1)
+	assert.Len(t, result.Upgrades[0].Plugins.RequireUpdate, 1)
 }
 
 func TestSystem_Upgrades_NoUpgrades(t *testing.T) {
-	// Create mock server
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{
-			"installedVersionActive": true,
-			"latestLTA": "10.0.0",
-			"upgrades": []
-		}`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	handler := mockHandler(t, http.MethodGet, "/system/upgrades", http.StatusOK, `{
+		"installedVersionActive": true,
+		"latestLTA": "10.0.0",
+		"upgrades": []
+	}`)
+	server := newTestServer(t, handler)
+	client := newTestClient(t, server.url())
 
 	result, _, err := client.System.Upgrades()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
 
-	if len(result.Upgrades) != 0 {
-		t.Errorf("expected 0 upgrades, got %d", len(result.Upgrades))
-	}
+	require.NoError(t, err)
+	assert.Empty(t, result.Upgrades)
 }
 
 // -----------------------------------------------------------------------------
@@ -558,10 +265,7 @@ func TestSystem_Upgrades_NoUpgrades(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestValidateChangeLogLevelOpt(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -603,21 +307,17 @@ func TestValidateChangeLogLevelOpt(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			err := client.System.ValidateChangeLogLevelOpt(tc.opt)
-			if tc.wantErr && err == nil {
-				t.Error("expected error, got nil")
-			}
-			if !tc.wantErr && err != nil {
-				t.Errorf("unexpected error: %v", err)
+			if tc.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
 }
 
 func TestValidateLogsOpt(t *testing.T) {
-	client, err := NewClient("http://localhost/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newLocalhostClient(t)
 
 	tests := []struct {
 		name    string
@@ -674,11 +374,10 @@ func TestValidateLogsOpt(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			err := client.System.ValidateLogsOpt(tc.opt)
-			if tc.wantErr && err == nil {
-				t.Error("expected error, got nil")
-			}
-			if !tc.wantErr && err != nil {
-				t.Errorf("unexpected error: %v", err)
+			if tc.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}

@@ -2,40 +2,15 @@ package sonargo
 
 import (
 	"net/http"
-	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestProjectBadges_Measure(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/project_badges/measure" {
-			t.Errorf("expected path /api/project_badges/measure, got %s", r.URL.Path)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		metric := r.URL.Query().Get("metric")
-		if metric != "coverage" {
-			t.Errorf("expected metric 'coverage', got %s", metric)
-		}
-
-		w.Header().Set("Content-Type", "image/svg+xml")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`<svg>badge content</svg>`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockBinaryHandler(t, http.MethodGet, "/project_badges/measure", http.StatusOK, "image/svg+xml", []byte(`<svg>badge content</svg>`)))
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectBadgesMeasureOption{
 		Project: "my-project",
@@ -43,238 +18,121 @@ func TestProjectBadges_Measure(t *testing.T) {
 	}
 
 	result, resp, err := client.ProjectBadges.Measure(opt)
-	if err != nil {
-		t.Fatalf("Measure failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if *result != "<svg>badge content</svg>" {
-		t.Errorf("expected SVG content, got %s", *result)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "<svg>badge content</svg>", *result)
 }
 
 func TestProjectBadges_Measure_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.ProjectBadges.Measure(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Project should fail validation.
 	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOption{
 		Metric: "coverage",
 	})
-	if err == nil {
-		t.Error("expected error for missing Project")
-	}
+	assert.Error(t, err)
 
 	// Missing Metric should fail validation.
 	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOption{
 		Project: "my-project",
 	})
-	if err == nil {
-		t.Error("expected error for missing Metric")
-	}
+	assert.Error(t, err)
 
 	// Invalid Metric should fail validation.
 	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOption{
 		Project: "my-project",
 		Metric:  "invalid_metric",
 	})
-	if err == nil {
-		t.Error("expected error for invalid Metric")
-	}
+	assert.Error(t, err)
 }
 
 func TestProjectBadges_QualityGate(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/project_badges/quality_gate" {
-			t.Errorf("expected path /api/project_badges/quality_gate, got %s", r.URL.Path)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		w.Header().Set("Content-Type", "image/svg+xml")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`<svg>quality gate badge</svg>`))
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockBinaryHandler(t, http.MethodGet, "/project_badges/quality_gate", http.StatusOK, "image/svg+xml", []byte(`<svg>quality gate badge</svg>`)))
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectBadgesQualityGateOption{
 		Project: "my-project",
 	}
 
 	result, resp, err := client.ProjectBadges.QualityGate(opt)
-	if err != nil {
-		t.Fatalf("QualityGate failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
 }
 
 func TestProjectBadges_QualityGate_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.ProjectBadges.QualityGate(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Project should fail validation.
 	_, _, err = client.ProjectBadges.QualityGate(&ProjectBadgesQualityGateOption{})
-	if err == nil {
-		t.Error("expected error for missing Project")
-	}
+	assert.Error(t, err)
 }
 
 func TestProjectBadges_RenewToken(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			t.Errorf("expected method POST, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/project_badges/renew_token" {
-			t.Errorf("expected path /api/project_badges/renew_token, got %s", r.URL.Path)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/project_badges/renew_token", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectBadgesRenewTokenOption{
 		Project: "my-project",
 	}
 
 	resp, err := client.ProjectBadges.RenewToken(opt)
-	if err != nil {
-		t.Fatalf("RenewToken failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusNoContent {
-		t.Errorf("expected status 204, got %d", resp.StatusCode)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
 func TestProjectBadges_RenewToken_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, err := client.ProjectBadges.RenewToken(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Project should fail validation.
 	_, err = client.ProjectBadges.RenewToken(&ProjectBadgesRenewTokenOption{})
-	if err == nil {
-		t.Error("expected error for missing Project")
-	}
+	assert.Error(t, err)
 }
 
 func TestProjectBadges_Token(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			t.Errorf("expected method GET, got %s", r.Method)
-		}
-
-		if r.URL.Path != "/api/project_badges/token" {
-			t.Errorf("expected path /api/project_badges/token, got %s", r.URL.Path)
-		}
-
-		project := r.URL.Query().Get("project")
-		if project != "my-project" {
-			t.Errorf("expected project 'my-project', got %s", project)
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"token": "abc123def456"}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/project_badges/token", http.StatusOK, &ProjectBadgesToken{
+		Token: "abc123def456",
 	}))
-	defer ts.Close()
-
-	client, err := NewClient(ts.URL+"/api/", "user", "pass")
-	if err != nil {
-		t.Fatalf("failed to create client: %v", err)
-	}
+	client := newTestClient(t, server.URL)
 
 	opt := &ProjectBadgesTokenOption{
 		Project: "my-project",
 	}
 
 	result, resp, err := client.ProjectBadges.Token(opt)
-	if err != nil {
-		t.Fatalf("Token failed: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
-	}
-
-	if result == nil {
-		t.Fatal("expected non-nil result")
-	}
-
-	if result.Token != "abc123def456" {
-		t.Errorf("expected token 'abc123def456', got %s", result.Token)
-	}
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "abc123def456", result.Token)
 }
 
 func TestProjectBadges_Token_ValidationError(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
 	_, _, err := client.ProjectBadges.Token(nil)
-	if err == nil {
-		t.Error("expected error for nil option")
-	}
+	assert.Error(t, err)
 
 	// Missing Project should fail validation.
 	_, _, err = client.ProjectBadges.Token(&ProjectBadgesTokenOption{})
-	if err == nil {
-		t.Error("expected error for missing Project")
-	}
+	assert.Error(t, err)
 }
 
 func TestProjectBadges_ValidateMeasureOpt_AllMetrics(t *testing.T) {
-	client, _ := NewClient("http://localhost/api/", "user", "pass")
+	client := newLocalhostClient(t)
 
 	validMetrics := []string{
 		"coverage",
@@ -303,8 +161,6 @@ func TestProjectBadges_ValidateMeasureOpt_AllMetrics(t *testing.T) {
 			Project: "my-project",
 			Metric:  metric,
 		})
-		if err != nil {
-			t.Errorf("expected nil error for metric '%s', got %v", metric, err)
-		}
+		assert.NoError(t, err, "expected nil error for metric '%s'", metric)
 	}
 }
