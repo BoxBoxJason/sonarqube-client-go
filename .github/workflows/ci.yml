@@ -49,25 +49,25 @@ jobs:
           name: codequality
           path: codequality/
 
-  # e2e-test:
-  #   name: E2E Test
-  #   runs-on: ubuntu-latest
-  #   services:
-  #     sonarqube:
-  #       image: docker.io/library/sonarqube:25.12.0.117093-community
-  #       ports:
-  #         - 9000:9000
-  #       env:
-  #         SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v6
+  e2e-test:
+    name: E2E Test
+    runs-on: ubuntu-latest
+    services:
+      sonarqube:
+        image: docker.io/library/sonarqube:26.1.0.118079-community
+        ports:
+          - 9000:9000
+        env:
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-  #     - name: Set up Go
-  #       uses: actions/setup-go@v6
-  #       with:
-  #         go-version: "1.25.5"
-  #         cache: true
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.5"
+          cache: true
 
-  #     - name: Run E2E tests
-  #       run: make e2e-test
+      - name: Run E2E tests
+        run: make e2e

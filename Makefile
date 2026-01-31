@@ -3,7 +3,7 @@ target_dir := sonar
 endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
-container_engine := podman
+container_engine := docker
 sonarqube_version := 26.1.0.118079-community
 
 .PHONY: setup.sonar test lint coverage
@@ -22,9 +22,9 @@ coverage:
 	@echo "Coverage report generated: codequality/coverage.html"
 
 # Run integration tests
-e2e-test: setup.sonar
+e2e: setup.sonar
 	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/ginkgo@latest; }
-	SONAR_URL=${endpoint} ginkgo -r integration_testing
+	SONAR_TOKEN= SONAR_URL=${endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
 # Generate changelog using git-cliff
 changelog:

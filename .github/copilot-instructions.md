@@ -47,6 +47,7 @@ An iteration is complete only when:
 
 - `make lint`: runs `golangci-lint` and reports lint results.
 - `make test`: runs unit tests.
+- `make e2e`: runs end-to-end integration tests against a local SonarQube instance.
 
 These commands should always pass before considering an iteration complete.
 
