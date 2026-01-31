@@ -152,6 +152,8 @@ var _ = Describe("Users Service", Ordered, func() {
 					Local:    true,
 				})
 
+				Expect(err).NotTo(HaveOccurred())
+
 				// Register cleanup
 				cleanup.RegisterCleanup("user", login, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
@@ -161,8 +163,6 @@ var _ = Describe("Users Service", Ordered, func() {
 					})
 					return err
 				})
-
-				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 				Expect(result.User.Login).To(Equal(login))
@@ -188,6 +188,8 @@ var _ = Describe("Users Service", Ordered, func() {
 					ScmAccounts: []string{scmAccount1, scmAccount2},
 				})
 
+				Expect(err).NotTo(HaveOccurred())
+
 				// Register cleanup
 				cleanup.RegisterCleanup("user", login, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
@@ -197,8 +199,6 @@ var _ = Describe("Users Service", Ordered, func() {
 					})
 					return err
 				})
-
-				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 				Expect(result.User.Login).To(Equal(login))
