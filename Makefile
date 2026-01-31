@@ -10,21 +10,21 @@ sonarqube_version := 26.1.0.118079-community
 
 # Run all unit tests
 test:
-	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@2.8.0; }
+	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@v1.13.0; }
 	@mkdir -p codequality
 	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ./${target_dir}/...
 
 # Run tests with coverage report
 coverage:
-	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@latest; }
+	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@v1.13.0; }
 	@mkdir -p codequality
 	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./${target_dir}/...
 	@echo "Coverage report generated: codequality/coverage.html"
 
 # Run integration tests
-e2e-test: setup.sonar
-	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/ginkgo@latest; }
-	SONAR_URL=${endpoint} ginkgo -r integration_testing
+e2e: setup.sonar
+	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1; }
+	SONAR_TOKEN= SONAR_URL=${endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
 # Generate changelog using git-cliff
 changelog:
@@ -51,7 +51,7 @@ changelog-check:
 
 # Run golangci-lint
 lint:
-	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest; }
+	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.8.0; }
 	@mkdir -p codequality
 	golangci-lint run ./${target_dir}/...
 
@@ -75,4 +75,14 @@ setup.sonar:
 			sleep 5; \
 		done; \
 		echo "\nSonarQube is ready at ${endpoint}."; \
+	fi
+
+# Teardown SonarQube instance
+teardown.sonar:
+	@if ${container_engine} ps -a --format '{{.Names}}' | grep -w sonargo-sonarqube >/dev/null 2>&1; then \
+		echo "Stopping SonarQube instance..."; \
+		${container_engine} rm -f sonargo-sonarqube >/dev/null 2>&1 || echo "Failed to remove SonarQube container."; \
+		echo "SonarQube instance stopped."; \
+	else \
+		echo "No SonarQube container 'sonargo-sonarqube' found. Nothing to teardown."; \
 	fi

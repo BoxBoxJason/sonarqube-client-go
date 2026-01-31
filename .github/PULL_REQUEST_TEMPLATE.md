@@ -28,5 +28,6 @@ already been done or which is planned for this change.
 
 - [ ] Made sure `make lint` passes to verify that the code style is correct.
 - [ ] Made sure `make test` passes to verify that the code is working as intended.
+- [ ] Made sure `make e2e` passes to verify that end-to-end tests pass against a real SonarQube instance.
 - [ ] Added unit tests to cover the code changes.
 - [ ] Added end-to-end tests if necessary.
