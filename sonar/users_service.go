@@ -192,7 +192,7 @@ type UserGroup struct {
 	// Description is the group description.
 	Description string `json:"description,omitempty"`
 	// ID is the group's unique identifier.
-	ID int64 `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Name is the group name.
 	Name string `json:"name,omitempty"`
 	// Selected indicates whether the user is a member of this group.

@@ -306,14 +306,14 @@ func TestUsers_Groups(t *testing.T) {
 			{
 				Default:     true,
 				Description: "Default group",
-				ID:          1,
+				ID:          "1",
 				Name:        "sonar-users",
 				Selected:    true,
 			},
 			{
 				Default:     false,
 				Description: "Administrators",
-				ID:          2,
+				ID:          "2",
 				Name:        "sonar-administrators",
 				Selected:    false,
 			},

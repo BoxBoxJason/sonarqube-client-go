@@ -27,6 +27,9 @@ const (
 
 	// DefaultPollInterval is the default interval between poll attempts.
 	DefaultPollInterval = 2 * time.Second
+
+	// nanosModulo is used to get last 6 digits of nanoseconds for uniqueness.
+	nanosModulo = 1000000
 )
 
 // Config holds configuration for e2e tests.
@@ -70,9 +73,11 @@ func NormalizeBaseURL(baseURL string) string {
 	if !strings.HasSuffix(baseURL, "/") {
 		baseURL += "/"
 	}
+
 	if !strings.HasSuffix(baseURL, "api/") {
 		baseURL += "api/"
 	}
+
 	return baseURL
 }
 
@@ -108,14 +113,18 @@ func NewDefaultClient() (*sonargo.Client, error) {
 
 // UniqueResourceName generates a unique name for e2e test resources.
 func UniqueResourceName(prefix string) string {
-	timestamp := time.Now().Format("20060102-150405")
+	now := time.Now()
+	timestamp := now.Format("20060102-150405")
+	nanos := now.UnixNano() % nanosModulo
 
-	return fmt.Sprintf("%s%s-%s", E2EResourcePrefix, prefix, timestamp)
+	return fmt.Sprintf("%s%s-%s-%06d", E2EResourcePrefix, prefix, timestamp, nanos)
 }
 
 // UniqueResourceNameWithSuffix generates a unique name with an additional suffix.
 func UniqueResourceNameWithSuffix(prefix, suffix string) string {
-	timestamp := time.Now().Format("20060102-150405")
+	now := time.Now()
+	timestamp := now.Format("20060102-150405")
+	nanos := now.UnixNano() % nanosModulo
 
-	return fmt.Sprintf("%s%s-%s-%s", E2EResourcePrefix, prefix, timestamp, suffix)
+	return fmt.Sprintf("%s%s-%s-%06d-%s", E2EResourcePrefix, prefix, timestamp, nanos, suffix)
 }
