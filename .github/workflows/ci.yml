@@ -28,7 +28,6 @@ jobs:
         with:
           path: |
             /home/runner/go/bin
-            /home/runner/go/pkg/mod
           key: ${{ runner.os }}-go-tools-${{ hashFiles('Makefile') }}-lint
           restore-keys: |
             ${{ runner.os }}-go-tools-
@@ -54,7 +53,6 @@ jobs:
         with:
           path: |
             /home/runner/go/bin
-            /home/runner/go/pkg/mod
           key: ${{ runner.os }}-go-tools-${{ hashFiles('Makefile') }}-test
           restore-keys: |
             ${{ runner.os }}-go-tools-
@@ -94,7 +92,6 @@ jobs:
         with:
           path: |
             /home/runner/go/bin
-            /home/runner/go/pkg/mod
           key: ${{ runner.os }}-go-tools-${{ hashFiles('Makefile') }}-e2e
           restore-keys: |
             ${{ runner.os }}-go-tools-
