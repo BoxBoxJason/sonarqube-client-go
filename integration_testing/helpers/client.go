@@ -73,7 +73,7 @@ func NewClient(cfg *Config) (*sonargo.Client, error) {
 	}
 
 	// Ensure the URL ends with /api/ as expected by the SDK
-	if !strings.HasSuffix(baseURL, "/api/") && !strings.HasSuffix(baseURL, "api/") {
+	if !strings.HasSuffix(baseURL, "api/") {
 		baseURL += "api/"
 	}
 
