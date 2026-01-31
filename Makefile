@@ -3,7 +3,7 @@ target_dir := sonar
 endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
-container_engine := docker
+container_engine := podman
 sonarqube_version := 26.1.0.118079-community
 
 .PHONY: setup.sonar test lint coverage
@@ -75,4 +75,15 @@ setup.sonar:
 			sleep 5; \
 		done; \
 		echo "\nSonarQube is ready at ${endpoint}."; \
+	fi
+
+# Teardown SonarQube instance
+teardown.sonar:
+	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
+	@if curl -s -u ${username}:${password} ${endpoint}/api/system/health | grep -q "GREEN"; then \
+		echo "Stopping SonarQube instance..."; \
+		${container_engine} rm -f sonargo-sonarqube || echo "No SonarQube container to remove."; \
+		echo "SonarQube instance stopped."; \
+	else \
+		echo "No SonarQube instance running at ${endpoint}. Nothing to teardown."; \
 	fi
