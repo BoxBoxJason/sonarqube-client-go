@@ -332,14 +332,8 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			Expect(resp.StatusCode).To(BeNumerically(">=", http.StatusOK))
 			Expect(resp.StatusCode).To(BeNumerically("<", 300))
 
-			// Update cleanup to use new name
-			cleanup.RegisterCleanup("group", newName, func() error {
-				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
-					Name: newName,
-				})
-				return err
-			})
+			// Ensure existing cleanup uses the new group name instead of the old one.
+			testGroupName = newName
 
 			// Verify update
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
