@@ -51,24 +51,16 @@ func WaitForConditionWithDefault(condition WaitCondition) error {
 
 // Retry executes a function with retries.
 func Retry(fn func() error, maxRetries int, delay time.Duration) error {
-	var lastErr error
-
-	for range maxRetries {
+	var attempts int
+	for {
 		err := fn()
-		if err != nil {
-			lastErr = err
-
-			time.Sleep(delay)
-
-			continue
+		if err == nil {
+			return nil
 		}
-
-		return nil
+		attempts++
+		if attempts > maxRetries {
+			return fmt.Errorf("failed after %d attempts: %w", attempts, err)
+		}
+		time.Sleep(delay)
 	}
-
-	if lastErr != nil {
-		return fmt.Errorf("failed after %d retries: %w", maxRetries, lastErr)
-	}
-
-	return nil
 }
