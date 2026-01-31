@@ -2,6 +2,7 @@ package integration_testing_test
 
 import (
 	"net/http"
+	"net/http/cookiejar"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -38,8 +39,11 @@ var _ = Describe("Authentication Service", Ordered, func() {
 
 		Context("with basic auth client", func() {
 			It("should validate basic auth credentials", func() {
-				// Create a new client with basic auth
-				basicAuthClient, err := helpers.NewClient(cfg)
+				// Create a new client with basic auth (explicitly, to ensure basic auth is tested)
+				basicAuthClient, err := sonargo.NewClient(nil,
+					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+					sonargo.WithBasicAuth(cfg.Username, cfg.Password),
+				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(basicAuthClient).NotTo(BeNil())
 
@@ -55,7 +59,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			It("should return valid=false for anonymous access", func() {
 				// Create a client without credentials
 				anonClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(cfg.BaseURL+"/api/"),
+					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(anonClient).NotTo(BeNil())
@@ -74,7 +78,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			It("should successfully login with correct username and password", func() {
 				// Create a fresh client without auth for login testing
 				loginClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(cfg.BaseURL+"/api/"),
+					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
@@ -95,7 +99,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			It("should fail login with incorrect password", func() {
 				// Create a fresh client without auth
 				loginClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(cfg.BaseURL+"/api/"),
+					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
@@ -116,7 +120,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			It("should fail login with non-existent user", func() {
 				// Create a fresh client without auth
 				loginClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(cfg.BaseURL+"/api/"),
+					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
@@ -189,9 +193,13 @@ var _ = Describe("Authentication Service", Ordered, func() {
 	Describe("Logout", func() {
 		Context("after successful login", func() {
 			It("should successfully logout", func() {
-				// Create a client and login first
+				// Create a client with cookie jar for session management
+				jar, err := cookiejar.New(nil)
+				Expect(err).NotTo(HaveOccurred())
+				httpClient := &http.Client{Jar: jar}
 				sessionClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(cfg.BaseURL+"/api/"),
+					sonargo.WithHTTPClient(httpClient),
+					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(sessionClient).NotTo(BeNil())
@@ -219,7 +227,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			It("should handle logout gracefully for unauthenticated client", func() {
 				// Create a client without any authentication
 				anonClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(cfg.BaseURL+"/api/"),
+					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(anonClient).NotTo(BeNil())
@@ -235,9 +243,13 @@ var _ = Describe("Authentication Service", Ordered, func() {
 
 	Describe("Session Lifecycle", func() {
 		It("should complete full login/validate/logout cycle", func() {
-			// Create a fresh client for session testing
+			// Create a fresh client with cookie jar for session testing
+			jar, err := cookiejar.New(nil)
+			Expect(err).NotTo(HaveOccurred())
+			httpClient := &http.Client{Jar: jar}
 			sessionClient, err := sonargo.NewClient(nil,
-				sonargo.WithBaseURL(cfg.BaseURL+"/api/"),
+				sonargo.WithHTTPClient(httpClient),
+				sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 			)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(sessionClient).NotTo(BeNil())
@@ -261,20 +273,24 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
 
 			// Step 3: Validate should now show authenticated
-			// Note: Session-based auth requires cookie handling which
-			// may not work with the default HTTP client. This test verifies
-			// the API calls work correctly.
 			result, resp, err = sessionClient.Authentication.Validate()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
-			// After login, session should be established (if cookies are preserved)
+			Expect(result.Valid).To(BeTrue()) // Session should be established after login
 
 			// Step 4: Logout
 			resp, err = sessionClient.Authentication.Logout()
 			Expect(err).NotTo(HaveOccurred())
 			// SonarQube may return 200 OK or 204 No Content depending on version
 			Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
+
+			// Step 5: Validate should show not authenticated after logout
+			result, resp, err = sessionClient.Authentication.Validate()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(result).NotTo(BeNil())
+			Expect(result.Valid).To(BeFalse()) // Session should be cleared after logout
 		})
 	})
 })

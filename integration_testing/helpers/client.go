@@ -65,17 +65,20 @@ func LoadConfig() *Config {
 	return cfg
 }
 
-// NewClient creates a new SonarQube client for e2e tests using the provided config.
-func NewClient(cfg *Config) (*sonargo.Client, error) {
-	baseURL := cfg.BaseURL
+// NormalizeBaseURL ensures the base URL ends with /api/ as expected by the SDK.
+func NormalizeBaseURL(baseURL string) string {
 	if !strings.HasSuffix(baseURL, "/") {
 		baseURL += "/"
 	}
-
-	// Ensure the URL ends with /api/ as expected by the SDK
 	if !strings.HasSuffix(baseURL, "api/") {
 		baseURL += "api/"
 	}
+	return baseURL
+}
+
+// NewClient creates a new SonarQube client for e2e tests using the provided config.
+func NewClient(cfg *Config) (*sonargo.Client, error) {
+	baseURL := NormalizeBaseURL(cfg.BaseURL)
 
 	// Prefer token auth if available
 	if cfg.Token != "" {
