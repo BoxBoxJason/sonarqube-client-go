@@ -26,6 +26,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 	})
 
 	AfterAll(func() {
+		// Cleanup all test resources
 		errors := cleanup.Cleanup()
 		for _, err := range errors {
 			GinkgoWriter.Printf("Cleanup error: %v\n", err)
