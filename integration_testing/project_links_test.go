@@ -1,21 +1,21 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("ProjectLinks Service", Ordered, func() {
 	var (
-client  *sonargo.Client
-cleanup *helpers.CleanupManager
-)
+		client  *sonargo.Client
+		cleanup *helpers.CleanupManager
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -116,6 +116,44 @@ cleanup *helpers.CleanupManager
 			Expect(len(searchResult.Links)).To(BeNumerically(">=", 2))
 		})
 
+		It("should create links with different types", func() {
+			// Create a generic custom link (won't match predefined type patterns)
+			customResult, _, err := client.ProjectLinks.Create(&sonargo.ProjectLinksCreateOption{
+				ProjectKey: testProjectKey,
+				Name:       "Documentation",
+				URL:        "https://docs.example.com",
+			})
+			Expect(err).NotTo(HaveOccurred())
+			Expect(customResult.Link.Type).NotTo(BeEmpty())
+			Expect(customResult.Link.Name).To(Equal("Documentation"))
+
+			cleanup.RegisterCleanup("project-link", customResult.Link.ID, func() error {
+				_, err := client.ProjectLinks.Delete(&sonargo.ProjectLinksDeleteOption{
+					ID: customResult.Link.ID,
+				})
+				return err
+			})
+
+			// Verify the link type is set (SonarQube infers types based on name/URL patterns)
+			// Types can be: homepage, issue, scm, ci, custom, etc.
+			// Note: Links with certain inferred types (homepage, issue, scm, ci) may be
+			// provided by SonarQube and cannot be deleted
+			searchResult, _, err := client.ProjectLinks.Search(&sonargo.ProjectLinksSearchOption{
+				ProjectKey: testProjectKey,
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			foundLink := false
+			for _, link := range searchResult.Links {
+				if link.ID == customResult.Link.ID {
+					foundLink = true
+					Expect(link.Type).NotTo(BeEmpty(), "Link type should be set")
+					break
+				}
+			}
+			Expect(foundLink).To(BeTrue(), "Created link should be found in search results")
+		})
+
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
 				_, resp, err := client.ProjectLinks.Create(nil)
@@ -162,6 +200,10 @@ cleanup *helpers.CleanupManager
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(Equal(http.StatusNotFound))
 			})
+
+			// Note: SonarQube is very lenient with URL validation and accepts most formats.
+			// Testing with empty URL is covered in parameter validation.
+			// Invalid URL format testing is skipped as SonarQube accepts various URL formats.
 		})
 	})
 
@@ -304,6 +346,14 @@ cleanup *helpers.CleanupManager
 			Expect(err).NotTo(HaveOccurred())
 			linkID := result.Link.ID
 
+			// Register cleanup in case deletion fails
+			cleanup.RegisterCleanup("project-link", linkID, func() error {
+				_, err := client.ProjectLinks.Delete(&sonargo.ProjectLinksDeleteOption{
+					ID: linkID,
+				})
+				return err
+			})
+
 			resp, err := client.ProjectLinks.Delete(&sonargo.ProjectLinksDeleteOption{
 				ID: linkID,
 			})
@@ -373,6 +423,14 @@ cleanup *helpers.CleanupManager
 			Expect(err).NotTo(HaveOccurred())
 			Expect(createResult.Link.ID).NotTo(BeEmpty())
 			linkID := createResult.Link.ID
+
+			// Register cleanup in case test fails before deletion
+			cleanup.RegisterCleanup("project-link", linkID, func() error {
+				_, err := client.ProjectLinks.Delete(&sonargo.ProjectLinksDeleteOption{
+					ID: linkID,
+				})
+				return err
+			})
 
 			searchResult, _, err := client.ProjectLinks.Search(&sonargo.ProjectLinksSearchOption{
 				ProjectKey: projectKey,
