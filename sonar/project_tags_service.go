@@ -121,6 +121,16 @@ func (s *ProjectTagsService) Set(opt *ProjectTagsSetOption) (*http.Response, err
 		return nil, err
 	}
 
+	// Handle empty tags array: SonarQube API requires the tags parameter to be present even when empty
+	// The query encoder omits empty slices, so we need to add it manually
+	if len(opt.Tags) == 0 {
+		if req.URL.RawQuery == "" {
+			req.URL.RawQuery = "tags="
+		} else {
+			req.URL.RawQuery += "&tags="
+		}
+	}
+
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
 		return resp, err

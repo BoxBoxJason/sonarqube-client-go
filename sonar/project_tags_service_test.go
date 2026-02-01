@@ -63,6 +63,29 @@ func TestProjectTagsService_Set(t *testing.T) {
 		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 	})
 
+	t.Run("clear all tags with empty array", func(t *testing.T) {
+		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, http.MethodPost, r.Method)
+			assert.Contains(t, r.URL.Path, "/project_tags/set")
+			// Verify that tags parameter is present even when empty
+			assert.Contains(t, r.URL.RawQuery, "tags=")
+			assert.Contains(t, r.URL.RawQuery, "project=my-project")
+			w.WriteHeader(http.StatusNoContent)
+		})
+		server := newTestServer(t, handler)
+		client := newTestClient(t, server.URL)
+
+		opt := &ProjectTagsSetOption{
+			Project: "my-project",
+			Tags:    []string{},
+		}
+
+		resp, err := client.ProjectTags.Set(opt)
+
+		require.NoError(t, err)
+		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	})
+
 	t.Run("nil option fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
@@ -116,6 +139,7 @@ func TestProjectTagsService_ValidateSetOpt(t *testing.T) {
 		wantErr bool
 	}{
 		{"valid", &ProjectTagsSetOption{Project: "my-project", Tags: []string{"tag1", "tag2"}}, false},
+		{"empty tags array", &ProjectTagsSetOption{Project: "my-project", Tags: []string{}}, false},
 		{"nil option", nil, true},
 		{"missing project", &ProjectTagsSetOption{Tags: []string{"tag1"}}, true},
 	}
