@@ -1,21 +1,21 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("ProjectTags Service", Ordered, func() {
 	var (
-client  *sonargo.Client
-cleanup *helpers.CleanupManager
-)
+		client  *sonargo.Client
+		cleanup *helpers.CleanupManager
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -148,6 +148,30 @@ cleanup *helpers.CleanupManager
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
+		})
+
+		It("should clear all tags with empty array", func() {
+			// Set initial tags
+			_, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+				Project: testProjectKey,
+				Tags:    []string{"tag1", "tag2", "tag3"},
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			// Clear all tags by passing an empty array
+			resp, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+				Project: testProjectKey,
+				Tags:    []string{},
+			})
+			Expect(err).NotTo(HaveOccurred())
+			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
+
+			// Verify tags were cleared by setting them again
+			_, err = client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+				Project: testProjectKey,
+				Tags:    []string{"verified"},
+			})
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		Context("parameter validation", func() {
