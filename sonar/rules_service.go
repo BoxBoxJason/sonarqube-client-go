@@ -692,7 +692,7 @@ func (s *RulesService) Tags(opt *RulesTagsOption) (v *RulesTags, resp *http.Resp
 func (s *RulesService) Update(opt *RulesUpdateOption) (v *RulesUpdate, resp *http.Response, err error) {
 	err = s.ValidateUpdateOpt(opt)
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 
 	// Convert to URL-encodable format
@@ -700,7 +700,18 @@ func (s *RulesService) Update(opt *RulesUpdateOption) (v *RulesUpdate, resp *htt
 
 	req, err := s.client.NewRequest(http.MethodPost, "rules/update", urlOpt)
 	if err != nil {
-		return
+		return nil, nil, err
+	}
+
+	// Special handling: If Tags is explicitly set to an empty array, we need to append "tags="
+	// to the query string because the URL encoder omits empty values with omitempty.
+	// This allows clearing all tags from a rule.
+	if opt.Tags != nil && len(opt.Tags) == 0 {
+		if req.URL.RawQuery == "" {
+			req.URL.RawQuery = "tags="
+		} else {
+			req.URL.RawQuery += "&tags="
+		}
 	}
 
 	v = new(RulesUpdate)
@@ -710,7 +721,7 @@ func (s *RulesService) Update(opt *RulesUpdateOption) (v *RulesUpdate, resp *htt
 		return nil, resp, err
 	}
 
-	return
+	return v, resp, nil
 }
 
 // ValidateCreateOpt validates the options for creating a custom rule.

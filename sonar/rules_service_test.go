@@ -2,6 +2,7 @@ package sonargo
 
 import (
 	"encoding/json"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -127,6 +128,25 @@ func TestRules_Update(t *testing.T) {
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
 	assert.Equal(t, "Updated Rule", result.Rule.Name)
+}
+
+func TestRules_UpdateClearTags(t *testing.T) {
+	var capturedURL string
+	server := newTestServer(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedURL = r.URL.String()
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"rule":{"key":"java:MyRule","tags":[]}}`))
+	}))
+	client := newTestClient(t, server.URL)
+
+	opt := &RulesUpdateOption{Key: "java:MyRule", Tags: []string{}}
+	result, resp, err := client.Rules.Update(opt)
+	require.NoError(t, err)
+	assert.Equal(t, 200, resp.StatusCode)
+	require.NotNil(t, result)
+	// Verify that "tags=" is present in the query string even though Tags is empty
+	assert.Contains(t, capturedURL, "tags=")
+	assert.Empty(t, result.Rule.Tags)
 }
 
 func TestRules_Repositories(t *testing.T) {
