@@ -73,6 +73,8 @@ type NewCodePeriodsShow struct {
 	ProjectKey string `json:"projectKey,omitempty"`
 	// Type is the type of the new code period.
 	Type string `json:"type,omitempty"`
+	// Value is the value of the new code period.
+	Value string `json:"value,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

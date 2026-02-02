@@ -71,7 +71,7 @@ func TestNewCodePeriods_Set(t *testing.T) {
 		assert.Equal(t, "NUMBER_OF_DAYS", r.URL.Query().Get("type"))
 		assert.Equal(t, "30", r.URL.Query().Get("value"))
 
-		w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusOK)
 	})
 
 	client := newTestClient(t, server.URL)
@@ -83,7 +83,7 @@ func TestNewCodePeriods_Set(t *testing.T) {
 
 	resp, err := client.NewCodePeriods.Set(opt)
 	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestNewCodePeriods_Set_ValidationError(t *testing.T) {
@@ -119,6 +119,7 @@ func TestNewCodePeriods_Set_ValidationError(t *testing.T) {
 func TestNewCodePeriods_Show(t *testing.T) {
 	response := `{
 		"type": "NUMBER_OF_DAYS",
+		"value": "30",
 		"inherited": false
 	}`
 
@@ -130,6 +131,7 @@ func TestNewCodePeriods_Show(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
 	assert.Equal(t, "NUMBER_OF_DAYS", result.Type)
+	assert.Equal(t, "30", result.Value)
 }
 
 func TestNewCodePeriods_Show_WithOptions(t *testing.T) {
@@ -137,6 +139,7 @@ func TestNewCodePeriods_Show_WithOptions(t *testing.T) {
 		"projectKey": "my-project",
 		"branchKey": "main",
 		"type": "REFERENCE_BRANCH",
+		"value": "main",
 		"inherited": true
 	}`
 
@@ -161,15 +164,17 @@ func TestNewCodePeriods_Show_WithOptions(t *testing.T) {
 	result, _, err := client.NewCodePeriods.Show(opt)
 	require.NoError(t, err)
 	assert.Equal(t, "my-project", result.ProjectKey)
+	assert.Equal(t, "REFERENCE_BRANCH", result.Type)
+	assert.Equal(t, "main", result.Value)
 }
 
 func TestNewCodePeriods_Unset(t *testing.T) {
-	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/new_code_periods/unset", http.StatusNoContent))
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/new_code_periods/unset", http.StatusOK))
 	client := newTestClient(t, server.URL)
 
 	resp, err := client.NewCodePeriods.Unset(nil)
 	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestNewCodePeriods_Unset_WithOptions(t *testing.T) {
@@ -178,7 +183,7 @@ func TestNewCodePeriods_Unset_WithOptions(t *testing.T) {
 		assert.Equal(t, "/new_code_periods/unset", r.URL.Path)
 		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
 
-		w.WriteHeader(http.StatusNoContent)
+		w.WriteHeader(http.StatusOK)
 	})
 
 	client := newTestClient(t, server.URL)
@@ -189,7 +194,7 @@ func TestNewCodePeriods_Unset_WithOptions(t *testing.T) {
 
 	resp, err := client.NewCodePeriods.Unset(opt)
 	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
