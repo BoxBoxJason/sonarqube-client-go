@@ -8,6 +8,25 @@ import (
 	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
+// IgnoreNotFoundError returns nil if the error indicates a resource was not found,
+// otherwise returns the original error. This is useful in cleanup functions where
+// the resource may have already been deleted by the test itself.
+func IgnoreNotFoundError(err error) error {
+	if err == nil {
+		return nil
+	}
+	// Check if the error message contains "not found" or similar patterns
+	// that indicate the resource doesn't exist
+	errStr := strings.ToLower(err.Error())
+	if strings.Contains(errStr, "not found") ||
+		strings.Contains(errStr, "does not exist") ||
+		strings.Contains(errStr, "404") {
+		return nil
+	}
+
+	return err
+}
+
 // CleanupManager manages cleanup of e2e test resources.
 type CleanupManager struct {
 	client    *sonargo.Client
