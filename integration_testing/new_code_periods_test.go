@@ -1,21 +1,37 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("NewCodePeriods Service", Ordered, func() {
+	// NOTE: New Code Periods E2E testing has known limitations:
+	//
+	// 1. Global-level settings affect all subsequent project-level tests in the same suite.
+	//    Therefore, global-level Set tests are skipped to avoid test interference.
+	//
+	// 2. SonarQube's Show API returns the "effective" value for a project, which may be
+	//    inherited from the global setting. When a project-level setting matches the global
+	//    setting, SonarQube may optimize storage and not create a distinct project-level entry,
+	//    making verification unreliable in E2E tests.
+	//
+	// 3. Settings with value-less types (like PREVIOUS_VERSION) are particularly affected by
+	//    inheritance behavior and cannot be reliably verified in E2E tests.
+	//
+	// These are characteristics of the SonarQube API, not SDK bugs. Unit tests provide
+	// comprehensive coverage of the SDK's request/response handling.
+
 	var (
-client  *sonargo.Client
-cleanup *helpers.CleanupManager
-)
+		client  *sonargo.Client
+		cleanup *helpers.CleanupManager
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -160,6 +176,10 @@ cleanup *helpers.CleanupManager
 	// Set
 	// =========================================================================
 	Describe("Set", func() {
+		It("should set global-level new code period", func() {
+			Skip("Global-level setting tests are skipped in E2E suite to avoid affecting other tests. Global settings should be tested in isolated unit tests.")
+		})
+
 		It("should set project-level new code period with PREVIOUS_VERSION", func() {
 			projectKey := helpers.UniqueResourceName("ncp-prevver")
 
@@ -183,6 +203,10 @@ cleanup *helpers.CleanupManager
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+
+			// Note: Verification of PREVIOUS_VERSION is skipped because SonarQube may not
+			// create a distinct project-level setting when the type matches the global setting.
+			// The Show API returns the effective value which may be inherited from global.
 		})
 
 		It("should set project-level new code period with NUMBER_OF_DAYS", func() {
@@ -209,6 +233,14 @@ cleanup *helpers.CleanupManager
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+
+			// Verify the setting was applied
+			result, _, err := client.NewCodePeriods.Show(&sonargo.NewCodePeriodsShowOption{
+				Project: projectKey,
+			})
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result.Type).To(Equal("NUMBER_OF_DAYS"))
+			Expect(result.Value).To(Equal("30"))
 		})
 
 		It("should set project-level new code period with REFERENCE_BRANCH", func() {
@@ -235,6 +267,10 @@ cleanup *helpers.CleanupManager
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+
+			// Note: Verification skipped due to SonarQube API behavior where Show may return
+			// the inherited global setting instead of the project-specific setting.
+			// See suite-level NOTE for details.
 		})
 
 		It("should set branch-level new code period", func() {
@@ -262,6 +298,15 @@ cleanup *helpers.CleanupManager
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+
+			// Verify the setting was applied
+			result, _, err := client.NewCodePeriods.Show(&sonargo.NewCodePeriodsShowOption{
+				Project: projectKey,
+				Branch:  "main",
+			})
+			Expect(err).NotTo(HaveOccurred())
+			Expect(result.Type).To(Equal("NUMBER_OF_DAYS"))
+			Expect(result.Value).To(Equal("15"))
 		})
 
 		Context("parameter validation", func() {
@@ -298,7 +343,7 @@ cleanup *helpers.CleanupManager
 				Expect(resp).To(BeNil())
 			})
 
-			It("should fail with NUMBER_OF_DAYS exceeding max", func() {
+			It("should fail with NUMBER_OF_DAYS exceeding max value", func() {
 				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "NUMBER_OF_DAYS",
@@ -306,6 +351,86 @@ cleanup *helpers.CleanupManager
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
+			})
+
+			It("should fail with NUMBER_OF_DAYS without value", func() {
+				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+					Project: "some-project",
+					Type:    "NUMBER_OF_DAYS",
+					Value:   "",
+				})
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+			})
+
+			It("should fail with NUMBER_OF_DAYS with zero value", func() {
+				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+					Project: "some-project",
+					Type:    "NUMBER_OF_DAYS",
+					Value:   "0",
+				})
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+			})
+
+			It("should fail with NUMBER_OF_DAYS with negative value", func() {
+				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+					Project: "some-project",
+					Type:    "NUMBER_OF_DAYS",
+					Value:   "-5",
+				})
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+			})
+
+			It("should succeed with NUMBER_OF_DAYS minimum value", func() {
+				projectKey := helpers.UniqueResourceName("ncp-mindays")
+
+				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+					Name:    "NCP Min Days Test",
+					Project: projectKey,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("project", projectKey, func() error {
+					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+						Project: projectKey,
+					})
+					return err
+				})
+
+				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+					Project: projectKey,
+					Type:    "NUMBER_OF_DAYS",
+					Value:   "1",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			})
+
+			It("should succeed with NUMBER_OF_DAYS maximum value", func() {
+				projectKey := helpers.UniqueResourceName("ncp-maxdays")
+
+				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+					Name:    "NCP Max Days Test",
+					Project: projectKey,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("project", projectKey, func() error {
+					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+						Project: projectKey,
+					})
+					return err
+				})
+
+				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+					Project: projectKey,
+					Type:    "NUMBER_OF_DAYS",
+					Value:   "90",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			})
 
 			It("should fail with REFERENCE_BRANCH missing project", func() {
@@ -399,14 +524,11 @@ cleanup *helpers.CleanupManager
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 		})
 
-		It("should succeed when unsetting with nil options", func() {
+		It("should unset global new code period when called with nil options", func() {
 			resp, err := client.NewCodePeriods.Unset(nil)
-			// Should get either success or a valid error
-			if err != nil {
-				Expect(resp).NotTo(BeNil())
-			} else {
-				Expect(resp.StatusCode).To(Equal(http.StatusOK))
-			}
+			Expect(err).NotTo(HaveOccurred())
+			Expect(resp).NotTo(BeNil())
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 		})
 	})
 
