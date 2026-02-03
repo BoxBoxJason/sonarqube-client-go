@@ -1,22 +1,27 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+)
+
+const (
+	nonExistentProjectKey = "non-existent-project"
+	nonExistentIssueKey   = "AXxxxxxxxxxxxxxxxxxx"
 )
 
 var _ = Describe("Issues Service", Ordered, func() {
 	var (
-client     *sonargo.Client
-cleanup    *helpers.CleanupManager
-projectKey string
-)
+		client     *sonargo.Client
+		cleanup    *helpers.CleanupManager
+		projectKey string
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -136,7 +141,7 @@ projectKey string
 		Context("Non-Existent Project", func() {
 			It("should return empty results for non-existent project", func() {
 				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
-					Projects: []string{"non-existent-project"},
+					Projects: []string{nonExistentProjectKey},
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -290,7 +295,7 @@ projectKey string
 
 			It("should fail without required text", func() {
 				result, resp, err := client.Issues.AddComment(&sonargo.IssuesAddCommentOption{
-					Issue: "AXxxxxxxxxxxxxxxxxxx",
+					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Text"))
@@ -302,7 +307,7 @@ projectKey string
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.AddComment(&sonargo.IssuesAddCommentOption{
-					Issue: "AXxxxxxxxxxxxxxxxxxx",
+					Issue: nonExistentIssueKey,
 					Text:  "Test comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -341,7 +346,7 @@ projectKey string
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.Assign(&sonargo.IssuesAssignOption{
-					Issue:    "AXxxxxxxxxxxxxxxxxxx",
+					Issue:    nonExistentIssueKey,
 					Assignee: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -378,7 +383,7 @@ projectKey string
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.Changelog(&sonargo.IssuesChangelogOption{
-					Issue: "AXxxxxxxxxxxxxxxxxxx",
+					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())
@@ -414,7 +419,7 @@ projectKey string
 
 			It("should fail without required transition", func() {
 				result, resp, err := client.Issues.DoTransition(&sonargo.IssuesDoTransitionOption{
-					Issue: "AXxxxxxxxxxxxxxxxxxx",
+					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Transition"))
@@ -426,7 +431,7 @@ projectKey string
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.DoTransition(&sonargo.IssuesDoTransitionOption{
-					Issue:      "AXxxxxxxxxxxxxxxxxxx",
+					Issue:      nonExistentIssueKey,
 					Transition: "confirm",
 				})
 				Expect(err).To(HaveOccurred())
@@ -465,7 +470,7 @@ projectKey string
 		Context("Non-Existent Issues", func() {
 			It("should handle bulk change on non-existent issues", func() {
 				result, resp, err := client.Issues.BulkChange(&sonargo.IssuesBulkChangeOption{
-					Issues:  []string{"AXxxxxxxxxxxxxxxxxxx"},
+					Issues:  []string{nonExistentIssueKey},
 					AddTags: []string{"test-tag"},
 				})
 				// API may succeed with 0 failures or may fail
@@ -506,7 +511,7 @@ projectKey string
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.SetSeverity(&sonargo.IssuesSetSeverityOption{
-					Issue:    "AXxxxxxxxxxxxxxxxxxx",
+					Issue:    nonExistentIssueKey,
 					Severity: "MAJOR",
 				})
 				Expect(err).To(HaveOccurred())
@@ -545,7 +550,7 @@ projectKey string
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.SetTags(&sonargo.IssuesSetTagsOption{
-					Issue: "AXxxxxxxxxxxxxxxxxxx",
+					Issue: nonExistentIssueKey,
 					Tags:  []string{"test-tag"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -582,7 +587,7 @@ projectKey string
 
 			It("should fail without required type", func() {
 				result, resp, err := client.Issues.SetType(&sonargo.IssuesSetTypeOption{
-					Issue: "AXxxxxxxxxxxxxxxxxxx",
+					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Type"))
@@ -594,7 +599,7 @@ projectKey string
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.SetType(&sonargo.IssuesSetTypeOption{
-					Issue: "AXxxxxxxxxxxxxxxxxxx",
+					Issue: nonExistentIssueKey,
 					Type:  "BUG",
 				})
 				Expect(err).To(HaveOccurred())
@@ -631,7 +636,7 @@ projectKey string
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
 				result, resp, err := client.Issues.DeleteComment(&sonargo.IssuesDeleteCommentOption{
-					Comment: "AXxxxxxxxxxxxxxxxxxx",
+					Comment: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())
@@ -667,7 +672,7 @@ projectKey string
 
 			It("should fail without required text", func() {
 				result, resp, err := client.Issues.EditComment(&sonargo.IssuesEditCommentOption{
-					Comment: "AXxxxxxxxxxxxxxxxxxx",
+					Comment: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Text"))
@@ -679,7 +684,7 @@ projectKey string
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
 				result, resp, err := client.Issues.EditComment(&sonargo.IssuesEditCommentOption{
-					Comment: "AXxxxxxxxxxxxxxxxxxx",
+					Comment: nonExistentIssueKey,
 					Text:    "Updated comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -724,7 +729,7 @@ projectKey string
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
 				resp, err := client.Issues.Reindex(&sonargo.IssuesReindexOption{
-					Project: "non-existent-project",
+					Project: nonExistentProjectKey,
 				})
 				Expect(err).To(HaveOccurred())
 				if resp != nil {
@@ -771,7 +776,7 @@ projectKey string
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
 				result, resp, err := client.Issues.Pull(&sonargo.IssuesPullOption{
-					ProjectKey: "non-existent-project",
+					ProjectKey: nonExistentProjectKey,
 					BranchName: "main",
 				})
 				Expect(err).To(HaveOccurred())
@@ -820,7 +825,7 @@ projectKey string
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
 				result, resp, err := client.Issues.PullTaint(&sonargo.IssuesPullTaintOption{
-					ProjectKey: "non-existent-project",
+					ProjectKey: nonExistentProjectKey,
 					BranchName: "main",
 				})
 				Expect(err).To(HaveOccurred())
