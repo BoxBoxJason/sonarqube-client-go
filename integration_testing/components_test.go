@@ -74,10 +74,16 @@ var _ = Describe("Components Service", Ordered, func() {
 				return err
 			})
 
+			// Build a search query using up to the first 10 characters of the project key.
+			query := projectKey
+			if len(projectKey) > 10 {
+				query = projectKey[:10]
+			}
+
 			// Search for it
 			result, resp, err := client.Components.Search(&sonargo.ComponentsSearchOption{
 				Qualifiers: []string{"TRK"},
-				Query:      projectKey[:10], // First 10 chars
+				Query:      query,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -137,9 +143,15 @@ var _ = Describe("Components Service", Ordered, func() {
 				return err
 			})
 
+			// Build filter prefix using up to the first 10 characters of the project key.
+			filterPrefix := projectKey
+			if len(projectKey) > 10 {
+				filterPrefix = projectKey[:10]
+			}
+
 			// Search with filter
 			result, resp, err := client.Components.SearchProjects(&sonargo.ComponentsSearchProjectsOption{
-				Filter: "query = \"" + projectKey[:10] + "\"",
+				Filter: "query = \"" + filterPrefix + "\"",
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -388,9 +400,15 @@ var _ = Describe("Components Service", Ordered, func() {
 				return err
 			})
 
+			// Use up to the first 8 characters of the project key when available
+			searchQuery := projectKey
+			if len(projectKey) > 8 {
+				searchQuery = projectKey[:8]
+			}
+
 			// Search for suggestions
 			result, resp, err := client.Components.Suggestions(&sonargo.ComponentsSuggestionsOption{
-				Search: projectKey[:8], // Min 2 chars
+				Search: searchQuery, // Min 2 chars
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
