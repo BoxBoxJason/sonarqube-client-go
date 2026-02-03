@@ -373,7 +373,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 				Expect(resp).To(BeNil())
 			})
 
-			It("should fail without required deliveryId", func() {
+			It("should fail without required DeliveryID", func() {
 				result, resp, err := client.Webhooks.Delivery(&sonargo.WebhooksDeliveryOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("DeliveryID"))
