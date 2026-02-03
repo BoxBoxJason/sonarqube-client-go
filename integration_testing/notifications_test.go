@@ -108,9 +108,12 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up
-				_, _ = client.Notifications.Remove(&sonargo.NotificationsRemoveOption{
-					Type: notificationType,
-				})
+			_, err = client.Notifications.Remove(&sonargo.NotificationsRemoveOption{
+				Type: notificationType,
+			})
+			if err != nil {
+				GinkgoWriter.Printf("Cleanup error: failed to remove notification: %v\n", err)
+			}
 			})
 
 			It("should add a project-scoped notification", func() {
@@ -130,10 +133,13 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up
-				_, _ = client.Notifications.Remove(&sonargo.NotificationsRemoveOption{
-					Type:    notificationType,
-					Project: projectKey,
-				})
+			_, err = client.Notifications.Remove(&sonargo.NotificationsRemoveOption{
+				Type:    notificationType,
+				Project: projectKey,
+			})
+			if err != nil {
+				GinkgoWriter.Printf("Cleanup error: failed to remove notification: %v\n", err)
+			}
 			})
 		})
 
@@ -246,9 +252,12 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			notificationType := listResult.GlobalTypes[0]
 
 			// Remove if already exists (clean state)
-			_, _ = client.Notifications.Remove(&sonargo.NotificationsRemoveOption{
+			_, err = client.Notifications.Remove(&sonargo.NotificationsRemoveOption{
 				Type: notificationType,
 			})
+			if err != nil {
+				GinkgoWriter.Printf("Cleanup error: failed to remove notification for clean state: %v\n", err)
+			}
 
 			// Add the notification
 			resp, err := client.Notifications.Add(&sonargo.NotificationsAddOption{
