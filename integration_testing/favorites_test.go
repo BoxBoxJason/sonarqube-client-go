@@ -18,6 +18,16 @@ var _ = Describe("Favorites Service", Ordered, func() {
 		projectKey string
 	)
 
+	// Helper function to check if a favorite exists in the list
+	containsFavorite := func(favorites []sonargo.Favorite, key string) bool {
+		for _, fav := range favorites {
+			if fav.Key == key {
+				return true
+			}
+		}
+		return false
+	}
+
 	BeforeAll(func() {
 		var err error
 		client, err = helpers.NewDefaultClient()
@@ -208,14 +218,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(searchResult).NotTo(BeNil())
 
-			found := false
-			for _, fav := range searchResult.Favorites {
-				if fav.Key == projectKey {
-					found = true
-					break
-				}
-			}
-			Expect(found).To(BeTrue(), "Project should be in favorites")
+			Expect(containsFavorite(searchResult.Favorites, projectKey)).To(BeTrue(), "Project should be in favorites")
 
 			// Remove favorite
 			resp, err = client.Favorites.Remove(&sonargo.FavoritesRemoveOption{
@@ -229,14 +232,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
-			found = false
-			for _, fav := range searchResult.Favorites {
-				if fav.Key == projectKey {
-					found = true
-					break
-				}
-			}
-			Expect(found).To(BeFalse(), "Project should not be in favorites")
+			Expect(containsFavorite(searchResult.Favorites, projectKey)).To(BeFalse(), "Project should not be in favorites")
 		})
 	})
 })
