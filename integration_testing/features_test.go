@@ -27,24 +27,19 @@ var _ = Describe("Features Service", Ordered, func() {
 	// List
 	// =========================================================================
 	Describe("List", func() {
-		Context("Functional Tests", func() {
-			It("should list supported features", func() {
-				result, resp, err := client.Features.List()
-				Expect(err).NotTo(HaveOccurred())
-				Expect(resp.StatusCode).To(Equal(http.StatusOK))
-				Expect(result).NotTo(BeNil())
-			})
-
-			It("should return features as string slice", func() {
+		Context("Valid Requests", func() {
+			It("should list supported features with non-empty values", func() {
 				result, resp, err := client.Features.List()
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 
-				// FeaturesList is a []string type
+				// Validate the returned list
 				features := *result
+				// Some SonarQube instances may have no features (e.g., community edition)
+				// We just validate that when features exist, they are non-empty strings
 				for _, feature := range features {
-					Expect(feature).To(BeAssignableToTypeOf(""))
+					Expect(feature).NotTo(BeEmpty(), "Feature name should not be empty")
 				}
 			})
 
@@ -57,7 +52,8 @@ var _ = Describe("Features Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 
-				Expect(len(*result1)).To(Equal(len(*result2)))
+				// Compare actual contents, not just length
+				Expect(*result1).To(ConsistOf(*result2), "Features list should be consistent across calls")
 			})
 		})
 	})
