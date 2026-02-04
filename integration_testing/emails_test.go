@@ -27,6 +27,33 @@ var _ = Describe("Emails Service", Ordered, func() {
 	// Send
 	// =========================================================================
 	Describe("Send", func() {
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				resp, err := client.Emails.Send(nil)
+				Expect(resp).To(BeNil())
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("required"))
+			})
+
+			It("should fail with missing to address", func() {
+				resp, err := client.Emails.Send(&sonargo.EmailsSendOption{
+					Message: "Test message",
+				})
+				Expect(resp).To(BeNil())
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("required"))
+			})
+
+			It("should fail with missing message", func() {
+				resp, err := client.Emails.Send(&sonargo.EmailsSendOption{
+					To: "test@example.com",
+				})
+				Expect(resp).To(BeNil())
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("Message"))
+			})
+		})
+
 		Context("Functional Tests", func() {
 			It("should attempt to send test email with valid parameters", func() {
 				// Email sending requires SMTP to be configured
@@ -54,27 +81,6 @@ var _ = Describe("Emails Service", Ordered, func() {
 					// If no response, an error should have occurred
 					Expect(err).To(HaveOccurred())
 				}
-			})
-		})
-
-		Context("Error Handling", func() {
-			It("should fail with missing to address", func() {
-				_, err := client.Emails.Send(&sonargo.EmailsSendOption{
-					Message: "Test message",
-				})
-				Expect(err).To(HaveOccurred())
-			})
-
-			It("should fail with missing message", func() {
-				_, err := client.Emails.Send(&sonargo.EmailsSendOption{
-					To: "test@example.com",
-				})
-				Expect(err).To(HaveOccurred())
-			})
-
-			It("should fail with nil options", func() {
-				_, err := client.Emails.Send(nil)
-				Expect(err).To(HaveOccurred())
 			})
 		})
 	})
