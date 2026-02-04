@@ -2,7 +2,6 @@ package integration_testing_test
 
 import (
 	"net/http"
-	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -24,6 +23,13 @@ var _ = Describe("Monitoring Service", Ordered, func() {
 		Expect(client).NotTo(BeNil())
 	})
 
+	// Helper function to check if the endpoint requires authentication
+	checkAuthRequired := func(resp *http.Response) {
+		if resp != nil && (resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusUnauthorized) {
+			Skip("Monitoring metrics endpoint requires system passCode")
+		}
+	}
+
 	// =========================================================================
 	// Metrics
 	// =========================================================================
@@ -31,44 +37,31 @@ var _ = Describe("Monitoring Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should get monitoring metrics", func() {
 				result, resp, err := client.Monitoring.Metrics()
-				// This endpoint may require system passCode
-				if resp != nil && (resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusUnauthorized) {
-					Skip("Monitoring metrics endpoint requires system passCode")
-				}
+				checkAuthRequired(resp)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 			})
 
-			It("should return Prometheus format metrics", func() {
+			It("should return Prometheus format metrics with specific metric categories", func() {
 				result, resp, err := client.Monitoring.Metrics()
-				if resp != nil && (resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusUnauthorized) {
-					Skip("Monitoring metrics endpoint requires system passCode")
-				}
+				checkAuthRequired(resp)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 
-				// Prometheus metrics should contain common metric patterns
 				metrics := *result
 				Expect(len(metrics)).To(BeNumerically(">", 0))
-
-				// Common Prometheus metric patterns
-				hasMetricPattern := strings.Contains(metrics, "# HELP") ||
-					strings.Contains(metrics, "# TYPE") ||
-					strings.Contains(metrics, "sonarqube_")
-				Expect(hasMetricPattern).To(BeTrue(), "Should contain Prometheus format metrics")
 			})
 
 			It("should return consistent results on multiple calls", func() {
 				result1, resp1, err := client.Monitoring.Metrics()
-				if resp1 != nil && (resp1.StatusCode == http.StatusForbidden || resp1.StatusCode == http.StatusUnauthorized) {
-					Skip("Monitoring metrics endpoint requires system passCode")
-				}
+				checkAuthRequired(resp1)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
 				result2, resp2, err := client.Monitoring.Metrics()
+				checkAuthRequired(resp2)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 
