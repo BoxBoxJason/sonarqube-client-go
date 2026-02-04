@@ -1,21 +1,22 @@
 package integration_testing_test
 
 import (
-"net/http"
-"regexp"
+	"fmt"
+	"net/http"
+	"regexp"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("Server Service", Ordered, func() {
 	var (
-client *sonargo.Client
-)
+		client *sonargo.Client
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -43,10 +44,10 @@ client *sonargo.Client
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(version).NotTo(BeNil())
 
-				// SonarQube version format: X.Y.Z or X.Y.Z.BUILDNUMBER
-				versionPattern := regexp.MustCompile(`^\d+\.\d+(\.\d+)?(\.\d+)?$`)
+				// SonarQube version format: X.Y, X.Y.Z or X.Y.Z.BUILDNUMBER
+				versionPattern := regexp.MustCompile(`^\d+\.\d+(\.\d+(\.\d+)?)?$`)
 				Expect(versionPattern.MatchString(*version)).To(BeTrue(),
-					"Version %s should match pattern X.Y.Z or X.Y.Z.BUILD", *version)
+					"Version %s should match pattern X.Y, X.Y.Z or X.Y.Z.BUILDNUMBER", *version)
 			})
 
 			It("should return consistent version on multiple calls", func() {
@@ -71,6 +72,13 @@ client *sonargo.Client
 				majorVersionPattern := regexp.MustCompile(`^(\d+)\.`)
 				matches := majorVersionPattern.FindStringSubmatch(*version)
 				Expect(matches).To(HaveLen(2), "Should extract major version from %s", *version)
+
+				// Convert to integer and verify >= 9
+				var majorVersion int
+				_, err = fmt.Sscanf(matches[1], "%d", &majorVersion)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(majorVersion).To(BeNumerically(">=", 9),
+					"Major version should be >= 9, got %d from version %s", majorVersion, *version)
 			})
 		})
 	})
