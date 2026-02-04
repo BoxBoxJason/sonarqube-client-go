@@ -27,6 +27,24 @@ var _ = Describe("Languages Service", Ordered, func() {
 	// List
 	// =========================================================================
 	Describe("List", func() {
+		Context("Parameter Validation", func() {
+			It("should succeed with nil options", func() {
+				result, resp, err := client.Languages.List(nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
+				Expect(result).NotTo(BeNil())
+				Expect(result.Languages).NotTo(BeEmpty())
+			})
+
+			It("should succeed with empty options", func() {
+				result, resp, err := client.Languages.List(&sonargo.LanguagesListOption{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
+				Expect(result).NotTo(BeNil())
+				Expect(result.Languages).NotTo(BeEmpty())
+			})
+		})
+
 		Context("Functional Tests", func() {
 			It("should list all languages", func() {
 				result, resp, err := client.Languages.List(nil)
@@ -48,12 +66,29 @@ var _ = Describe("Languages Service", Ordered, func() {
 				}
 			})
 
-			It("should list languages with empty options", func() {
-				result, resp, err := client.Languages.List(&sonargo.LanguagesListOption{})
+			It("should verify common languages present", func() {
+				result, resp, err := client.Languages.List(nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
-				Expect(result.Languages).NotTo(BeEmpty())
+
+				// Build a map of language keys for easy lookup
+				langKeys := make(map[string]bool)
+				for _, lang := range result.Languages {
+					langKeys[lang.Key] = true
+				}
+
+				// Verify common languages are present (as per issue #110)
+				commonLanguages := []string{"java", "js", "py", "go"}
+				foundCount := 0
+				for _, lang := range commonLanguages {
+					if langKeys[lang] {
+						foundCount++
+					}
+				}
+				// At least some common languages should be present
+				Expect(foundCount).To(BeNumerically(">", 0),
+					"At least one common language (java, js, py, go) should be present")
 			})
 
 			It("should filter languages with query", func() {
@@ -63,9 +98,20 @@ var _ = Describe("Languages Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
-				// May or may not find results depending on installed plugins
+				// If results are returned, verify the query parameter is working
+				// The filter may return languages where key or name partially matches
+				if len(result.Languages) > 0 {
+					// At least one result should contain "java" in the key
+					foundJava := false
+					for _, lang := range result.Languages {
+						if lang.Key == "java" {
+							foundJava = true
+							break
+						}
+					}
+					Expect(foundJava).To(BeTrue(), "Should find 'java' language when filtering with 'java' query")
+				}
 			})
-
 			It("should limit results with page size", func() {
 				result, resp, err := client.Languages.List(&sonargo.LanguagesListOption{
 					PageSize: 2,
