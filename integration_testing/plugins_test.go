@@ -69,22 +69,25 @@ var _ = Describe("Plugins Service", Ordered, func() {
 				if resp != nil && (resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest) {
 					Skip("Plugins Download API is not available in this SonarQube version")
 				}
-				// Accept 200 OK or errors for missing/unavailable plugins
-				if err != nil {
-					Expect(resp).NotTo(BeNil())
-				}
+				// Assert successful download path: no error and 200 status
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing plugin key", func() {
-				_, _, err := client.Plugins.Download(&sonargo.PluginsDownloadOption{})
+				result, resp, err := client.Plugins.Download(&sonargo.PluginsDownloadOption{})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				_, _, err := client.Plugins.Download(nil)
+				result, resp, err := client.Plugins.Download(nil)
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
 			})
 		})
 	})
@@ -93,15 +96,17 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	// Install
 	// =========================================================================
 	Describe("Install", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				_, err := client.Plugins.Install(&sonargo.PluginsInstallOption{})
+				resp, err := client.Plugins.Install(&sonargo.PluginsInstallOption{})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				_, err := client.Plugins.Install(nil)
+				resp, err := client.Plugins.Install(nil)
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent plugin key", func() {
@@ -114,6 +119,8 @@ var _ = Describe("Plugins Service", Ordered, func() {
 				}
 				// Expect an error since the plugin doesn't exist
 				Expect(err).To(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.StatusCode).To(BeNumerically(">", 399))
 			})
 		})
 	})
@@ -175,19 +182,23 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with invalid type", func() {
-				_, _, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
 					Type: "INVALID",
 				})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
 			})
 
 			It("should fail with invalid field", func() {
-				_, _, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
 					Fields: []string{"invalid_field"},
 				})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
 			})
 		})
 	})
@@ -214,15 +225,17 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	// Uninstall
 	// =========================================================================
 	Describe("Uninstall", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				_, err := client.Plugins.Uninstall(&sonargo.PluginsUninstallOption{})
+				resp, err := client.Plugins.Uninstall(&sonargo.PluginsUninstallOption{})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				_, err := client.Plugins.Uninstall(nil)
+				resp, err := client.Plugins.Uninstall(nil)
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent plugin key", func() {
@@ -235,6 +248,8 @@ var _ = Describe("Plugins Service", Ordered, func() {
 				}
 				// Expect an error since the plugin doesn't exist
 				Expect(err).To(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.StatusCode).To(BeNumerically(">", 399))
 			})
 		})
 	})
@@ -243,15 +258,17 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	// Update
 	// =========================================================================
 	Describe("Update", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				_, err := client.Plugins.Update(&sonargo.PluginsUpdateOption{})
+				resp, err := client.Plugins.Update(&sonargo.PluginsUpdateOption{})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				_, err := client.Plugins.Update(nil)
+				resp, err := client.Plugins.Update(nil)
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent plugin key", func() {
@@ -264,6 +281,8 @@ var _ = Describe("Plugins Service", Ordered, func() {
 				}
 				// Expect an error since the plugin doesn't exist
 				Expect(err).To(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(resp.StatusCode).To(BeNumerically(">", 399))
 			})
 		})
 	})
