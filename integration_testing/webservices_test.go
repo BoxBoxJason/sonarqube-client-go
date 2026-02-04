@@ -52,6 +52,17 @@ var _ = Describe("Webservices Service", Ordered, func() {
 
 				for _, ws := range result.Webservices {
 					Expect(ws.Path).NotTo(BeEmpty())
+					Expect(ws.Actions).NotTo(BeNil())
+					// Verify actions have valid keys and params structure
+					for _, action := range ws.Actions {
+						Expect(action.Key).NotTo(BeEmpty())
+						// Params may be nil for actions with no parameters, which is valid
+						if len(action.Params) > 0 {
+							for _, param := range action.Params {
+								Expect(param.Key).NotTo(BeEmpty())
+							}
+						}
+					}
 				}
 			})
 
@@ -60,15 +71,30 @@ var _ = Describe("Webservices Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
+			})
 
-				paths := make(map[string]bool)
-				for _, ws := range result.Webservices {
-					paths[ws.Path] = true
+			It("should filter and search for specific web service domains", func() {
+				result, resp, err := client.Webservices.List(nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
+				Expect(result).NotTo(BeNil())
+
+				// Verify specific domains exist as per issue #113
+				domains := map[string]bool{
+					"api/projects": false,
+					"api/issues":   false,
+					"api/measures": false,
 				}
 
-				// Common APIs that should exist
-				Expect(paths["api/system"]).To(BeTrue(), "Should have api/system")
-				Expect(paths["api/projects"]).To(BeTrue(), "Should have api/projects")
+				for _, ws := range result.Webservices {
+					if _, exists := domains[ws.Path]; exists {
+						domains[ws.Path] = true
+					}
+				}
+
+				Expect(domains["api/projects"]).To(BeTrue(), "Should find api/projects domain")
+				Expect(domains["api/issues"]).To(BeTrue(), "Should find api/issues domain")
+				Expect(domains["api/measures"]).To(BeTrue(), "Should find api/measures domain")
 			})
 
 			It("should include internals when requested", func() {
@@ -124,32 +150,52 @@ var _ = Describe("Webservices Service", Ordered, func() {
 					}
 				}
 
-				if controller != "" && action != "" {
-					result, resp, err := client.Webservices.ResponseExample(&sonargo.WebservicesResponseExampleOption{
-						Controller: controller,
-						Action:     action,
-					})
-					Expect(err).NotTo(HaveOccurred())
-					Expect(resp.StatusCode).To(Equal(http.StatusOK))
-					Expect(result).NotTo(BeNil())
-					Expect(*result).NotTo(BeEmpty())
+				// Ensure test data exists
+				if controller == "" || action == "" {
+					Skip("No action with response example found in this SonarQube version")
 				}
+
+				result, resp, err := client.Webservices.ResponseExample(&sonargo.WebservicesResponseExampleOption{
+					Controller: controller,
+					Action:     action,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
+				Expect(result).NotTo(BeNil())
+				Expect(*result).NotTo(BeEmpty())
 			})
 		})
 
 		Context("Error Handling", func() {
+			It("should fail with nil options", func() {
+				_, resp, err := client.Webservices.ResponseExample(nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+			})
+
+			It("should fail with empty options", func() {
+				_, resp, err := client.Webservices.ResponseExample(&sonargo.WebservicesResponseExampleOption{})
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(err.Error()).To(ContainSubstring("Action"))
+			})
+
 			It("should fail with missing action", func() {
-				_, _, err := client.Webservices.ResponseExample(&sonargo.WebservicesResponseExampleOption{
+				_, resp, err := client.Webservices.ResponseExample(&sonargo.WebservicesResponseExampleOption{
 					Controller: "api/system",
 				})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(err.Error()).To(ContainSubstring("Action"))
 			})
 
 			It("should fail with missing controller", func() {
-				_, _, err := client.Webservices.ResponseExample(&sonargo.WebservicesResponseExampleOption{
+				_, resp, err := client.Webservices.ResponseExample(&sonargo.WebservicesResponseExampleOption{
 					Action: "status",
 				})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(err.Error()).To(ContainSubstring("Controller"))
 			})
 		})
 	})
