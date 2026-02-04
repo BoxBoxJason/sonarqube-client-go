@@ -14,8 +14,9 @@ import (
 
 var _ = Describe("Developers Service", Ordered, func() {
 	var (
-		client      *sonargo.Client
-		testProject *sonargo.ProjectsCreate
+		client         *sonargo.Client
+		cleanupManager *helpers.CleanupManager
+		testProject    *sonargo.ProjectsCreate
 	)
 
 	BeforeAll(func() {
@@ -24,19 +25,27 @@ var _ = Describe("Developers Service", Ordered, func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(client).NotTo(BeNil())
 
-		// Create a test project for developer events
+		cleanupManager = helpers.NewCleanupManager(client)
+
+		// Create a uniquely named test project for developer events to avoid collisions across runs.
+		projectKey := helpers.UniqueResourceName("developers")
 		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
-			Name:    "developers-e2e-test-project",
-			Project: "developers-e2e-test-project",
+			Name:    projectKey,
+			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
+		cleanupManager.RegisterCleanup("project", projectKey, func() error {
+			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				Project: testProject.Project.Key,
+			})
+			return err
+		})
 	})
 
 	AfterAll(func() {
-		if testProject != nil {
-			_, _ = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
-				Project: testProject.Project.Key,
-			})
+		errors := cleanupManager.Cleanup()
+		for _, err := range errors {
+			GinkgoWriter.Printf("Cleanup error: %v\n", err)
 		}
 	})
 
@@ -46,7 +55,7 @@ var _ = Describe("Developers Service", Ordered, func() {
 	Describe("SearchEvents", func() {
 		Context("Functional Tests", func() {
 			It("should search developer events with valid parameters", func() {
-				fromDate := time.Now().Add(-24 * time.Hour).Format("2006-01-02T15:04:05+0000")
+				fromDate := time.Now().UTC().Add(-24 * time.Hour).Format("2006-01-02T15:04:05-0700")
 				result, resp, err := client.Developers.SearchEvents(&sonargo.DevelopersSearchEventsOption{
 					From:     []string{fromDate},
 					Projects: []string{testProject.Project.Key},
@@ -62,47 +71,33 @@ var _ = Describe("Developers Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
-				// Events might be empty for a new project
-			})
-
-			It("should return empty events for new project", func() {
-				fromDate := time.Now().Add(-24 * time.Hour).Format("2006-01-02T15:04:05+0000")
-				result, resp, err := client.Developers.SearchEvents(&sonargo.DevelopersSearchEventsOption{
-					From:     []string{fromDate},
-					Projects: []string{testProject.Project.Key},
-				})
-				if resp != nil && resp.StatusCode == http.StatusNotFound {
-					Skip("Developers API is not available in this SonarQube version")
-				}
-				if resp != nil && resp.StatusCode == http.StatusServiceUnavailable {
-					Skip("Issue indexing is in progress")
-				}
-				Expect(err).NotTo(HaveOccurred())
-				Expect(resp.StatusCode).To(Equal(http.StatusOK))
-				Expect(result).NotTo(BeNil())
-				// New project with no analysis should have empty or minimal events
+				// Events might be empty for a new project with no analysis
+				Expect(result.Events).NotTo(BeNil())
 			})
 		})
 
 		Context("Error Handling", func() {
 			It("should fail with missing from date", func() {
-				_, _, err := client.Developers.SearchEvents(&sonargo.DevelopersSearchEventsOption{
+				_, resp, err := client.Developers.SearchEvents(&sonargo.DevelopersSearchEventsOption{
 					Projects: []string{testProject.Project.Key},
 				})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing projects", func() {
-				fromDate := time.Now().Add(-24 * time.Hour).Format("2006-01-02T15:04:05+0000")
-				_, _, err := client.Developers.SearchEvents(&sonargo.DevelopersSearchEventsOption{
+				fromDate := time.Now().UTC().Add(-24 * time.Hour).Format("2006-01-02T15:04:05-0700")
+				_, resp, err := client.Developers.SearchEvents(&sonargo.DevelopersSearchEventsOption{
 					From: []string{fromDate},
 				})
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				_, _, err := client.Developers.SearchEvents(nil)
+				_, resp, err := client.Developers.SearchEvents(nil)
 				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
 			})
 		})
 	})
