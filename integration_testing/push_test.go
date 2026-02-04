@@ -13,8 +13,9 @@ import (
 
 var _ = Describe("Push Service", Ordered, func() {
 	var (
-		client      *sonargo.Client
-		testProject *sonargo.ProjectsCreate
+		client         *sonargo.Client
+		cleanupManager *helpers.CleanupManager
+		testProject    *sonargo.ProjectsCreate
 	)
 
 	BeforeAll(func() {
@@ -23,19 +24,27 @@ var _ = Describe("Push Service", Ordered, func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(client).NotTo(BeNil())
 
+		cleanupManager = helpers.NewCleanupManager(client)
+
 		// Create a test project for push events
+		projectKey := helpers.UniqueResourceName("push")
 		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
-			Name:    "push-e2e-test-project",
-			Project: "push-e2e-test-project",
+			Name:    projectKey,
+			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
+		cleanupManager.RegisterCleanup("project", projectKey, func() error {
+			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				Project: testProject.Project.Key,
+			})
+			return err
+		})
 	})
 
 	AfterAll(func() {
-		if testProject != nil {
-			_, _ = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
-				Project: testProject.Project.Key,
-			})
+		errors := cleanupManager.Cleanup()
+		for _, err := range errors {
+			GinkgoWriter.Printf("Cleanup error: %v\n", err)
 		}
 	})
 
@@ -49,13 +58,12 @@ var _ = Describe("Push Service", Ordered, func() {
 					Languages:   []string{"java"},
 					ProjectKeys: []string{testProject.Project.Key},
 				})
+				if resp != nil && resp.Body != nil {
+					defer resp.Body.Close()
+				}
 				// The endpoint may not be available in all SonarQube versions
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Push API is not available in this SonarQube version")
-				}
-				// This is a streaming endpoint, so we immediately close the connection
-				if resp != nil && resp.Body != nil {
-					_ = resp.Body.Close()
 				}
 				// Expect either success or specific errors (the endpoint may require specific setup)
 				if err == nil {
@@ -69,11 +77,11 @@ var _ = Describe("Push Service", Ordered, func() {
 					Languages:   []string{"java", "js", "py"},
 					ProjectKeys: []string{testProject.Project.Key},
 				})
+				if resp != nil && resp.Body != nil {
+					defer resp.Body.Close()
+				}
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Push API is not available in this SonarQube version")
-				}
-				if resp != nil && resp.Body != nil {
-					_ = resp.Body.Close()
 				}
 				if err == nil {
 					Expect(resp.StatusCode).To(BeNumerically(">=", http.StatusOK))
