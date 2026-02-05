@@ -1,22 +1,23 @@
 package integration_testing_test
 
 import (
-"net/http"
-"strings"
+	"net/http"
+	"strings"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("Batch Service", Ordered, func() {
 	var (
-client      *sonargo.Client
-testProject *sonargo.ProjectsCreate
-)
+		client         *sonargo.Client
+		cleanupManager *helpers.CleanupManager
+		testProject    *sonargo.ProjectsCreate
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -24,19 +25,27 @@ testProject *sonargo.ProjectsCreate
 		Expect(err).NotTo(HaveOccurred())
 		Expect(client).NotTo(BeNil())
 
+		cleanupManager = helpers.NewCleanupManager(client)
+
 		// Create a test project for batch operations
+		projectKey := helpers.UniqueResourceName("batch")
 		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
-			Name:    "batch-e2e-test-project",
-			Project: "batch-e2e-test-project",
+			Name:    "Batch Test Project",
+			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
+		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
+			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				Project: testProject.Project.Key,
+			})
+			return err
+		})
 	})
 
 	AfterAll(func() {
-		if testProject != nil {
-			_, _ = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
-				Project: testProject.Project.Key,
-			})
+		errors := cleanupManager.Cleanup()
+		for _, err := range errors {
+			GinkgoWriter.Printf("Cleanup error: %v\n", err)
 		}
 	})
 
@@ -69,7 +78,7 @@ testProject *sonargo.ProjectsCreate
 				index := *result
 				if len(index) > 0 {
 					// Should contain JAR file references
-					Expect(strings.Contains(index, ".jar") || len(index) > 0).To(BeTrue())
+					Expect(strings.Contains(index, ".jar")).To(BeTrue())
 				}
 			})
 
@@ -122,7 +131,18 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
+			It("should handle nil options", func() {
+				_, resp, err := client.Batch.File(nil)
+				if resp != nil && resp.StatusCode == http.StatusNotFound {
+					Skip("Batch API is not available in this SonarQube version")
+				}
+				// File accepts nil options, should handle gracefully
+				if err == nil {
+					Expect(resp).NotTo(BeNil())
+				}
+			})
+
 			It("should fail with non-existent file", func() {
 				_, resp, err := client.Batch.File(&sonargo.BatchFileOption{
 					Name: "non-existent-file.jar",
@@ -155,12 +175,38 @@ testProject *sonargo.ProjectsCreate
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
+
+				// Verify project settings in batch data
+				if result.LastAnalysisDate != 0 {
+					Expect(result.LastAnalysisDate).To(BeNumerically(">", 0))
+				}
+				if result.Timestamp != 0 {
+					Expect(result.Timestamp).To(BeNumerically(">", 0))
+				}
+				// FileDataByModuleAndPath may be empty if no analysis has been run
+				Expect(result.FileDataByModuleAndPath).NotTo(BeNil())
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				_, _, err := client.Batch.Project(nil)
+				Expect(err).To(HaveOccurred())
+			})
+
 			It("should fail with missing key", func() {
 				_, _, err := client.Batch.Project(&sonargo.BatchProjectOption{})
+				Expect(err).To(HaveOccurred())
+			})
+
+			It("should fail with non-existent project", func() {
+				_, resp, err := client.Batch.Project(&sonargo.BatchProjectOption{
+					Key: "non-existent-project-12345",
+				})
+				if resp != nil && resp.StatusCode == http.StatusNotFound {
+					// Could be API not available or project not found
+					return
+				}
 				Expect(err).To(HaveOccurred())
 			})
 		})
