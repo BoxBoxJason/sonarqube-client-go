@@ -1,21 +1,22 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("AnalysisCache Service", Ordered, func() {
 	var (
-client      *sonargo.Client
-testProject *sonargo.ProjectsCreate
-)
+		client         *sonargo.Client
+		cleanupManager *helpers.CleanupManager
+		testProject    *sonargo.ProjectsCreate
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -23,19 +24,27 @@ testProject *sonargo.ProjectsCreate
 		Expect(err).NotTo(HaveOccurred())
 		Expect(client).NotTo(BeNil())
 
+		cleanupManager = helpers.NewCleanupManager(client)
+
 		// Create a test project for analysis cache operations
+		projectKey := helpers.UniqueResourceName("analysis-cache")
 		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
-			Name:    "analysis-cache-e2e-test-project",
-			Project: "analysis-cache-e2e-test-project",
+			Name:    projectKey,
+			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
+		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
+			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				Project: testProject.Project.Key,
+			})
+			return err
+		})
 	})
 
 	AfterAll(func() {
-		if testProject != nil {
-			_, _ = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
-				Project: testProject.Project.Key,
-			})
+		errors := cleanupManager.Cleanup()
+		for _, err := range errors {
+			GinkgoWriter.Printf("Cleanup error: %v\n", err)
 		}
 	})
 
@@ -74,7 +83,7 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail when branch is specified without project", func() {
 				_, err := client.AnalysisCache.Clear(&sonargo.AnalysisCacheClearOption{
 					Branch: "main",
@@ -105,9 +114,9 @@ testProject *sonargo.ProjectsCreate
 				// May return 404 if no cache exists yet (project not analyzed)
 				if err == nil {
 					Expect(resp.StatusCode).To(SatisfyAny(
-Equal(http.StatusOK),
-Equal(http.StatusNoContent),
-))
+						Equal(http.StatusOK),
+						Equal(http.StatusNoContent),
+					))
 					if resp.Body != nil {
 						_ = resp.Body.Close()
 					}
@@ -125,9 +134,9 @@ Equal(http.StatusNoContent),
 				// May return 404 if no cache exists yet (branch not analyzed)
 				if err == nil {
 					Expect(resp.StatusCode).To(SatisfyAny(
-Equal(http.StatusOK),
-Equal(http.StatusNoContent),
-))
+						Equal(http.StatusOK),
+						Equal(http.StatusNoContent),
+					))
 					if resp.Body != nil {
 						_ = resp.Body.Close()
 					}
@@ -138,7 +147,7 @@ Equal(http.StatusNoContent),
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
 				_, err := client.AnalysisCache.Get(nil)
 				Expect(err).To(HaveOccurred())
