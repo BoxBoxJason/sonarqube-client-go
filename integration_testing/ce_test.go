@@ -1,21 +1,22 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("Ce Service", Ordered, func() {
 	var (
-client      *sonargo.Client
-testProject *sonargo.ProjectsCreate
-)
+		client         *sonargo.Client
+		cleanupManager *helpers.CleanupManager
+		testProject    *sonargo.ProjectsCreate
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -23,19 +24,27 @@ testProject *sonargo.ProjectsCreate
 		Expect(err).NotTo(HaveOccurred())
 		Expect(client).NotTo(BeNil())
 
+		cleanupManager = helpers.NewCleanupManager(client)
+
 		// Create a test project for CE operations
+		projectName := helpers.UniqueResourceName("ce-test-project")
 		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
-			Name:    "ce-e2e-test-project",
-			Project: "ce-e2e-test-project",
+			Name:    projectName,
+			Project: projectName,
 		})
 		Expect(err).NotTo(HaveOccurred())
+		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
+			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				Project: testProject.Project.Key,
+			})
+			return err
+		})
 	})
 
 	AfterAll(func() {
-		if testProject != nil {
-			_, _ = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
-				Project: testProject.Project.Key,
-			})
+		errors := cleanupManager.Cleanup()
+		for _, err := range errors {
+			GinkgoWriter.Printf("Cleanup error: %v\n", err)
 		}
 	})
 
@@ -110,7 +119,7 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with invalid status", func() {
 				_, _, err := client.Ce.Activity(&sonargo.CeActivityOption{
 					Statuses: []string{"INVALID_STATUS"},
@@ -174,7 +183,7 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing component", func() {
 				_, _, err := client.Ce.AnalysisStatus(&sonargo.CeAnalysisStatusOption{})
 				Expect(err).To(HaveOccurred())
@@ -200,7 +209,7 @@ testProject *sonargo.ProjectsCreate
 	// Cancel
 	// =========================================================================
 	Describe("Cancel", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing task ID", func() {
 				_, err := client.Ce.Cancel(&sonargo.CeCancelOption{})
 				Expect(err).To(HaveOccurred())
@@ -251,7 +260,7 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing component", func() {
 				_, _, err := client.Ce.Component(&sonargo.CeComponentOption{})
 				Expect(err).To(HaveOccurred())
@@ -277,7 +286,7 @@ testProject *sonargo.ProjectsCreate
 	// DismissAnalysisWarning
 	// =========================================================================
 	Describe("DismissAnalysisWarning", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing component", func() {
 				_, err := client.Ce.DismissAnalysisWarning(&sonargo.CeDismissAnalysisWarningOption{
 					Warning: "some-warning",
@@ -359,7 +368,7 @@ testProject *sonargo.ProjectsCreate
 	// Submit
 	// =========================================================================
 	Describe("Submit", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing project key", func() {
 				_, _, err := client.Ce.Submit(&sonargo.CeSubmitOption{
 					Report: "dummy-report",
@@ -442,7 +451,7 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing task ID", func() {
 				_, _, err := client.Ce.Task(&sonargo.CeTaskOption{})
 				Expect(err).To(HaveOccurred())
