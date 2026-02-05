@@ -3,10 +3,19 @@ target_dir := sonar
 endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
-container_engine := docker
 sonarqube_version := 26.1.0.118079-community
 
-.PHONY: setup.sonar test lint coverage
+# Automatically detect container engine (docker or podman)
+ifeq ($(shell command -v docker 2>/dev/null),)
+  ifeq ($(shell command -v podman 2>/dev/null),)
+    $(error Neither docker nor podman is installed. Please install one of them.)
+  endif
+  container_engine := podman
+else
+  container_engine := docker
+endif
+
+.PHONY: setup.sonar test lint coverage api
 
 # Run all unit tests
 test:
@@ -54,6 +63,14 @@ lint:
 	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.8.0; }
 	@mkdir -p codequality
 	golangci-lint run ./${target_dir}/...
+
+# Fetch SonarQube API specification
+api:
+	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
+	@mkdir -p assets
+	@echo "Fetching SonarQube API specification from ${endpoint}/api/webservices/list..."
+	curl -u ${username}:${password} "${endpoint}/api/webservices/list?include_internals=true" -o ./assets/api.json
+	@echo "API specification saved to ./assets/api.json"
 
 # Setup SonarQube instance for integration testing
 # If SonarQube API is already reachable, skip setup
