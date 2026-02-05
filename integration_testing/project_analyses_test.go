@@ -1,21 +1,22 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
 
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
 )
 
 var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 	var (
-client      *sonargo.Client
-testProject *sonargo.ProjectsCreate
-)
+		client         *sonargo.Client
+		cleanupManager *helpers.CleanupManager
+		testProject    *sonargo.ProjectsCreate
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -23,19 +24,27 @@ testProject *sonargo.ProjectsCreate
 		Expect(err).NotTo(HaveOccurred())
 		Expect(client).NotTo(BeNil())
 
+		cleanupManager = helpers.NewCleanupManager(client)
+
 		// Create a test project for project analyses operations
+		projectKey := helpers.UniqueResourceName("proj-analyses")
 		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
-			Name:    "project-analyses-e2e-test-project",
-			Project: "project-analyses-e2e-test-project",
+			Name:    projectKey,
+			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
+		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
+			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				Project: testProject.Project.Key,
+			})
+			return err
+		})
 	})
 
 	AfterAll(func() {
-		if testProject != nil {
-			_, _ = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
-				Project: testProject.Project.Key,
-			})
+		errors := cleanupManager.Cleanup()
+		for _, err := range errors {
+			GinkgoWriter.Printf("Cleanup error: %v\n", err)
 		}
 	})
 
@@ -89,7 +98,7 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing project", func() {
 				_, _, err := client.ProjectAnalyses.Search(&sonargo.ProjectAnalysesSearchOption{})
 				Expect(err).To(HaveOccurred())
@@ -143,7 +152,7 @@ testProject *sonargo.ProjectsCreate
 			})
 		})
 
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing project", func() {
 				_, _, err := client.ProjectAnalyses.SearchAll(&sonargo.ProjectAnalysesSearchOption{})
 				Expect(err).To(HaveOccurred())
@@ -160,7 +169,7 @@ testProject *sonargo.ProjectsCreate
 	// CreateEvent
 	// =========================================================================
 	Describe("CreateEvent", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing analysis", func() {
 				_, _, err := client.ProjectAnalyses.CreateEvent(&sonargo.ProjectAnalysesCreateEventOption{
 					Name: "test-event",
@@ -206,7 +215,7 @@ testProject *sonargo.ProjectsCreate
 	// UpdateEvent
 	// =========================================================================
 	Describe("UpdateEvent", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing event", func() {
 				_, _, err := client.ProjectAnalyses.UpdateEvent(&sonargo.ProjectAnalysesUpdateEventOption{
 					Name: "updated-name",
@@ -242,7 +251,7 @@ testProject *sonargo.ProjectsCreate
 	// DeleteEvent
 	// =========================================================================
 	Describe("DeleteEvent", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing event", func() {
 				_, err := client.ProjectAnalyses.DeleteEvent(&sonargo.ProjectAnalysesDeleteEventOption{})
 				Expect(err).To(HaveOccurred())
@@ -268,7 +277,7 @@ testProject *sonargo.ProjectsCreate
 	// Delete
 	// =========================================================================
 	Describe("Delete", func() {
-		Context("Error Handling", func() {
+		Context("Parameter Validation", func() {
 			It("should fail with missing analysis", func() {
 				_, err := client.ProjectAnalyses.Delete(&sonargo.ProjectAnalysesDeleteOption{})
 				Expect(err).To(HaveOccurred())
