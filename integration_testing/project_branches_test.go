@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("ProjectBranches Service", Ordered, func() {
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -42,14 +41,14 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 		BeforeEach(func() {
 			testProjectKey = helpers.UniqueResourceName("proj-branch")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Branch Test Project",
 				Project: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: testProjectKey,
 				})
 				return err
@@ -57,7 +56,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 		})
 
 		It("should list branches of a project", func() {
-			result, resp, err := client.ProjectBranches.List(&sonargo.ProjectBranchesListOption{
+			result, resp, err := client.ProjectBranches.List(&sonar.ProjectBranchesListOption{
 				Project: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -67,7 +66,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(result.Branches).NotTo(BeEmpty())
 
 			// Find and verify the main branch
-			var mainBranch *sonargo.Branch
+			var mainBranch *sonar.Branch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]
@@ -87,7 +86,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				_, resp, err := client.ProjectBranches.List(&sonargo.ProjectBranchesListOption{})
+				_, resp, err := client.ProjectBranches.List(&sonar.ProjectBranchesListOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -95,7 +94,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				_, resp, err := client.ProjectBranches.List(&sonargo.ProjectBranchesListOption{
+				_, resp, err := client.ProjectBranches.List(&sonar.ProjectBranchesListOption{
 					Project: "non-existent-project-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -114,7 +113,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 		BeforeEach(func() {
 			testProjectKey = helpers.UniqueResourceName("proj-rename")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Rename Branch Test Project",
 				Project:    testProjectKey,
 				MainBranch: "main",
@@ -122,7 +121,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: testProjectKey,
 				})
 				return err
@@ -130,7 +129,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 		})
 
 		It("should rename the main branch", func() {
-			resp, err := client.ProjectBranches.Rename(&sonargo.ProjectBranchesRenameOption{
+			resp, err := client.ProjectBranches.Rename(&sonar.ProjectBranchesRenameOption{
 				Project: testProjectKey,
 				Name:    "master",
 			})
@@ -138,12 +137,12 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify the branch was renamed
-			result, _, err := client.ProjectBranches.List(&sonargo.ProjectBranchesListOption{
+			result, _, err := client.ProjectBranches.List(&sonar.ProjectBranchesListOption{
 				Project: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			var mainBranch *sonargo.Branch
+			var mainBranch *sonar.Branch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]
@@ -162,7 +161,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.ProjectBranches.Rename(&sonargo.ProjectBranchesRenameOption{
+				resp, err := client.ProjectBranches.Rename(&sonar.ProjectBranchesRenameOption{
 					Name: "new-main",
 				})
 				Expect(err).To(HaveOccurred())
@@ -170,7 +169,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing name", func() {
-				resp, err := client.ProjectBranches.Rename(&sonargo.ProjectBranchesRenameOption{
+				resp, err := client.ProjectBranches.Rename(&sonar.ProjectBranchesRenameOption{
 					Project: helpers.UniqueResourceName("proj"),
 				})
 				Expect(err).To(HaveOccurred())
@@ -191,7 +190,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.ProjectBranches.Delete(&sonargo.ProjectBranchesDeleteOption{
+				resp, err := client.ProjectBranches.Delete(&sonar.ProjectBranchesDeleteOption{
 					Branch: "feature-branch",
 				})
 				Expect(err).To(HaveOccurred())
@@ -199,7 +198,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing branch name", func() {
-				resp, err := client.ProjectBranches.Delete(&sonargo.ProjectBranchesDeleteOption{
+				resp, err := client.ProjectBranches.Delete(&sonar.ProjectBranchesDeleteOption{
 					Project: helpers.UniqueResourceName("proj"),
 				})
 				Expect(err).To(HaveOccurred())
@@ -209,7 +208,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				resp, err := client.ProjectBranches.Delete(&sonargo.ProjectBranchesDeleteOption{
+				resp, err := client.ProjectBranches.Delete(&sonar.ProjectBranchesDeleteOption{
 					Project: "non-existent-project-12345",
 					Branch:  "feature-branch",
 				})
@@ -221,7 +220,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			It("should fail when trying to delete main branch", func() {
 				projectKey := helpers.UniqueResourceName("proj-del-main")
 
-				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:       "Delete Main Branch Test",
 					Project:    projectKey,
 					MainBranch: "main",
@@ -229,13 +228,13 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 						Project: projectKey,
 					})
 					return err
 				})
 
-				resp, err := client.ProjectBranches.Delete(&sonargo.ProjectBranchesDeleteOption{
+				resp, err := client.ProjectBranches.Delete(&sonar.ProjectBranchesDeleteOption{
 					Project: projectKey,
 					Branch:  "main",
 				})
@@ -247,20 +246,20 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			It("should fail for non-existent branch", func() {
 				projectKey := helpers.UniqueResourceName("proj-del-noexist")
 
-				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:    "Delete Non-existent Branch Test",
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 						Project: projectKey,
 					})
 					return err
 				})
 
-				resp, err := client.ProjectBranches.Delete(&sonargo.ProjectBranchesDeleteOption{
+				resp, err := client.ProjectBranches.Delete(&sonar.ProjectBranchesDeleteOption{
 					Project: projectKey,
 					Branch:  "non-existent-branch",
 				})
@@ -280,7 +279,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 		BeforeEach(func() {
 			testProjectKey = helpers.UniqueResourceName("proj-protect")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Protection Test Project",
 				Project:    testProjectKey,
 				MainBranch: "main",
@@ -288,7 +287,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: testProjectKey,
 				})
 				return err
@@ -297,7 +296,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 
 		It("should set automatic deletion protection on main branch", func() {
 			// Main branch should already be protected, but we can still call the API
-			resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonargo.ProjectBranchesSetAutomaticDeletionProtectionOption{
+			resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonar.ProjectBranchesSetAutomaticDeletionProtectionOption{
 				Project: testProjectKey,
 				Branch:  "main",
 				Value:   true,
@@ -306,12 +305,12 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify protection is set
-			result, _, err := client.ProjectBranches.List(&sonargo.ProjectBranchesListOption{
+			result, _, err := client.ProjectBranches.List(&sonar.ProjectBranchesListOption{
 				Project: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			var mainBranch *sonargo.Branch
+			var mainBranch *sonar.Branch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]
@@ -330,7 +329,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonargo.ProjectBranchesSetAutomaticDeletionProtectionOption{
+				resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonar.ProjectBranchesSetAutomaticDeletionProtectionOption{
 					Branch: "main",
 					Value:  true,
 				})
@@ -339,7 +338,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing branch name", func() {
-				resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonargo.ProjectBranchesSetAutomaticDeletionProtectionOption{
+				resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonar.ProjectBranchesSetAutomaticDeletionProtectionOption{
 					Project: helpers.UniqueResourceName("proj"),
 					Value:   true,
 				})
@@ -350,7 +349,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonargo.ProjectBranchesSetAutomaticDeletionProtectionOption{
+				resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(&sonar.ProjectBranchesSetAutomaticDeletionProtectionOption{
 					Project: "non-existent-project-12345",
 					Branch:  "main",
 					Value:   true,
@@ -374,7 +373,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.ProjectBranches.SetMain(&sonargo.ProjectBranchesSetMainOption{
+				resp, err := client.ProjectBranches.SetMain(&sonar.ProjectBranchesSetMainOption{
 					Branch: "new-main",
 				})
 				Expect(err).To(HaveOccurred())
@@ -382,7 +381,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 
 			It("should fail with missing branch name", func() {
-				resp, err := client.ProjectBranches.SetMain(&sonargo.ProjectBranchesSetMainOption{
+				resp, err := client.ProjectBranches.SetMain(&sonar.ProjectBranchesSetMainOption{
 					Project: helpers.UniqueResourceName("proj"),
 				})
 				Expect(err).To(HaveOccurred())
@@ -392,7 +391,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				resp, err := client.ProjectBranches.SetMain(&sonargo.ProjectBranchesSetMainOption{
+				resp, err := client.ProjectBranches.SetMain(&sonar.ProjectBranchesSetMainOption{
 					Project: "non-existent-project-12345",
 					Branch:  "develop",
 				})
@@ -404,20 +403,20 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			It("should fail for non-existent branch", func() {
 				projectKey := helpers.UniqueResourceName("proj-setmain")
 
-				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:    "Set Main Test Project",
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 						Project: projectKey,
 					})
 					return err
 				})
 
-				resp, err := client.ProjectBranches.SetMain(&sonargo.ProjectBranchesSetMainOption{
+				resp, err := client.ProjectBranches.SetMain(&sonar.ProjectBranchesSetMainOption{
 					Project: projectKey,
 					Branch:  "non-existent-branch",
 				})
@@ -436,7 +435,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			projectKey := helpers.UniqueResourceName("proj-lifecycle")
 
 			// Step 1: Create project with specific main branch name
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Lifecycle Test Project",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -444,20 +443,20 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// Step 2: List branches
-			result, _, err := client.ProjectBranches.List(&sonargo.ProjectBranchesListOption{
+			result, _, err := client.ProjectBranches.List(&sonar.ProjectBranchesListOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result.Branches).NotTo(BeEmpty())
 
-			var mainBranch *sonargo.Branch
+			var mainBranch *sonar.Branch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]
@@ -468,14 +467,14 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(mainBranch.Name).To(Equal("main"))
 
 			// Step 3: Rename main branch
-			_, err = client.ProjectBranches.Rename(&sonargo.ProjectBranchesRenameOption{
+			_, err = client.ProjectBranches.Rename(&sonar.ProjectBranchesRenameOption{
 				Project: projectKey,
 				Name:    "master",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 4: Verify rename
-			result, _, err = client.ProjectBranches.List(&sonargo.ProjectBranchesListOption{
+			result, _, err = client.ProjectBranches.List(&sonar.ProjectBranchesListOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())

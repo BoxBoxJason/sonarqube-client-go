@@ -88,17 +88,17 @@ import (
 
 func main() {
     // Create a new client with token authentication
-    client, err := sonargo.NewClient(
+    client, err := sonar.NewClient(
         "https://your-sonarqube-instance.com",
-        sonargo.WithToken("your-sonarqube-token"),
+        sonar.WithToken("your-sonarqube-token"),
     )
     if err != nil {
         log.Fatal(err)
     }
 
     // Example 1: Search for projects
-    projects, _, err := client.Projects.Search(context.Background(), &sonargo.ProjectsSearchOption{
-        Ps: sonargo.Int(10), // Page size: 10 results
+    projects, _, err := client.Projects.Search(context.Background(), &sonar.ProjectsSearchOption{
+        Ps: sonar.Int(10), // Page size: 10 results
     })
     if err != nil {
         log.Fatal(err)
@@ -110,10 +110,10 @@ func main() {
     }
 
     // Example 2: Get project issues
-    issues, _, err := client.Issues.Search(context.Background(), &sonargo.IssuesSearchOption{
-        Projects: sonargo.String("my-project-key"),
-        Statuses: sonargo.String("OPEN,CONFIRMED"),
-        Ps:       sonargo.Int(50),
+    issues, _, err := client.Issues.Search(context.Background(), &sonar.IssuesSearchOption{
+        Projects: sonar.String("my-project-key"),
+        Statuses: sonar.String("OPEN,CONFIRMED"),
+        Ps:       sonar.Int(50),
     })
     if err != nil {
         log.Fatal(err)
@@ -128,18 +128,18 @@ func main() {
 #### Token Authentication (Recommended)
 
 ```go
-client, err := sonargo.NewClient(
+client, err := sonar.NewClient(
     "https://your-sonarqube-instance.com",
-    sonargo.WithToken("your-sonarqube-token"),
+    sonar.WithToken("your-sonarqube-token"),
 )
 ```
 
 #### Username/Password Authentication
 
 ```go
-client, err := sonargo.NewClient(
+client, err := sonar.NewClient(
     "https://your-sonarqube-instance.com",
-    sonargo.WithBasicAuth("username", "password"),
+    sonar.WithBasicAuth("username", "password"),
 )
 ```
 
@@ -154,10 +154,10 @@ httpClient := &http.Client{
     Timeout: 30 * time.Second,
 }
 
-client, err := sonargo.NewClient(
+client, err := sonar.NewClient(
     "https://your-sonarqube-instance.com",
-    sonargo.WithHTTPClient(httpClient),
-    sonargo.WithToken("your-token"),
+    sonar.WithHTTPClient(httpClient),
+    sonar.WithToken("your-token"),
 )
 ```
 
@@ -165,8 +165,8 @@ client, err := sonargo.NewClient(
 
 ```go
 // Get quality gate status for a project
-status, _, err := client.Qualitygates.GetProjectStatus(context.Background(), &sonargo.QualitygatesGetProjectStatusOption{
-    ProjectKey: sonargo.String("my-project"),
+status, _, err := client.Qualitygates.GetProjectStatus(context.Background(), &sonar.QualitygatesGetProjectStatusOption{
+    ProjectKey: sonar.String("my-project"),
 })
 if err != nil {
     log.Fatal(err)
@@ -179,8 +179,8 @@ fmt.Printf("Quality Gate Status: %s\n", status.ProjectStatus.Status)
 
 ```go
 // Search for users
-users, _, err := client.Users.Search(context.Background(), &sonargo.UsersSearchOption{
-    Q: sonargo.String("john"),
+users, _, err := client.Users.Search(context.Background(), &sonar.UsersSearchOption{
+    Q: sonar.String("john"),
 })
 if err != nil {
     log.Fatal(err)
@@ -408,7 +408,6 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 - [SonarQube Web API Documentation](https://docs.sonarsource.com/sonarqube/latest/extension-guide/web-api/)
 - [Go Documentation](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go)
 - [Contributing Guide](CONTRIBUTING.md)
-- [Changelog](CHANGELOG.md)
 - [GitHub Issues](https://github.com/BoxBoxJason/sonarqube-client-go/issues)
 
 ---

@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Components Service", Ordered, func() {
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -37,7 +36,7 @@ var _ = Describe("Components Service", Ordered, func() {
 	// =========================================================================
 	Describe("Search", func() {
 		It("should search for projects", func() {
-			result, resp, err := client.Components.Search(&sonargo.ComponentsSearchOption{
+			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOption{
 				Qualifiers: []string{"TRK"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -47,9 +46,9 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should search projects with pagination", func() {
-			result, resp, err := client.Components.Search(&sonargo.ComponentsSearchOption{
+			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOption{
 				Qualifiers: []string{"TRK"},
-				PaginationArgs: sonargo.PaginationArgs{
+				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
 				},
 			})
@@ -61,14 +60,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should search projects by query", func() {
 			// First create a project to search for
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -81,7 +80,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			}
 
 			// Search for it
-			result, resp, err := client.Components.Search(&sonargo.ComponentsSearchOption{
+			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOption{
 				Qualifiers: []string{"TRK"},
 				Query:      query,
 			})
@@ -98,7 +97,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			})
 
 			It("should fail with missing qualifiers", func() {
-				_, resp, err := client.Components.Search(&sonargo.ComponentsSearchOption{})
+				_, resp, err := client.Components.Search(&sonar.ComponentsSearchOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -110,15 +109,15 @@ var _ = Describe("Components Service", Ordered, func() {
 	// =========================================================================
 	Describe("SearchProjects", func() {
 		It("should search for projects", func() {
-			result, resp, err := client.Components.SearchProjects(&sonargo.ComponentsSearchProjectsOption{})
+			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOption{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 		})
 
 		It("should search projects with pagination", func() {
-			result, resp, err := client.Components.SearchProjects(&sonargo.ComponentsSearchProjectsOption{
-				PaginationArgs: sonargo.PaginationArgs{
+			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOption{
+				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
 				},
 			})
@@ -130,14 +129,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should search projects with filter by name", func() {
 			// First create a project to search for
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -150,7 +149,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			}
 
 			// Search with filter
-			result, resp, err := client.Components.SearchProjects(&sonargo.ComponentsSearchProjectsOption{
+			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOption{
 				Filter: "query = \"" + filterPrefix + "\"",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -159,7 +158,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should search projects with facets", func() {
-			result, resp, err := client.Components.SearchProjects(&sonargo.ComponentsSearchProjectsOption{
+			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOption{
 				Facets: []string{"languages", "tags"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -168,7 +167,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should search projects sorted by name", func() {
-			result, resp, err := client.Components.SearchProjects(&sonargo.ComponentsSearchProjectsOption{
+			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOption{
 				Sort:      "name",
 				Ascending: true,
 			})
@@ -195,14 +194,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		BeforeAll(func() {
 			// Create a project for Show tests
 			projectKey = helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -210,7 +209,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should show component details", func() {
-			result, resp, err := client.Components.Show(&sonargo.ComponentsShowOption{
+			result, resp, err := client.Components.Show(&sonar.ComponentsShowOption{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -221,7 +220,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should return ancestors for project", func() {
-			result, resp, err := client.Components.Show(&sonargo.ComponentsShowOption{
+			result, resp, err := client.Components.Show(&sonar.ComponentsShowOption{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -238,13 +237,13 @@ var _ = Describe("Components Service", Ordered, func() {
 			})
 
 			It("should fail with missing component", func() {
-				_, resp, err := client.Components.Show(&sonargo.ComponentsShowOption{})
+				_, resp, err := client.Components.Show(&sonar.ComponentsShowOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent component", func() {
-				_, resp, err := client.Components.Show(&sonargo.ComponentsShowOption{
+				_, resp, err := client.Components.Show(&sonar.ComponentsShowOption{
 					Component: "non-existent-component-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -262,14 +261,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		BeforeAll(func() {
 			// Create a project for Tree tests
 			projectKey = helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -277,7 +276,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get component tree", func() {
-			result, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -287,7 +286,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with all strategy", func() {
-			result, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 				Component: projectKey,
 				Strategy:  "all",
 			})
@@ -297,7 +296,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with children strategy", func() {
-			result, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 				Component: projectKey,
 				Strategy:  "children",
 			})
@@ -307,7 +306,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with leaves strategy", func() {
-			result, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 				Component: projectKey,
 				Strategy:  "leaves",
 			})
@@ -317,9 +316,9 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with pagination", func() {
-			result, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 				Component: projectKey,
-				PaginationArgs: sonargo.PaginationArgs{
+				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 10,
 				},
 			})
@@ -329,7 +328,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with qualifiers filter", func() {
-			result, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 				Component:  projectKey,
 				Qualifiers: []string{"FIL", "DIR"},
 			})
@@ -339,7 +338,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree sorted by name", func() {
-			result, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 				Component: projectKey,
 				Sort:      []string{"name"},
 				Ascending: true,
@@ -357,13 +356,13 @@ var _ = Describe("Components Service", Ordered, func() {
 			})
 
 			It("should fail with missing component", func() {
-				_, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{})
+				_, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid strategy", func() {
-				_, resp, err := client.Components.Tree(&sonargo.ComponentsTreeOption{
+				_, resp, err := client.Components.Tree(&sonar.ComponentsTreeOption{
 					Component: projectKey,
 					Strategy:  "invalid-strategy",
 				})
@@ -378,7 +377,7 @@ var _ = Describe("Components Service", Ordered, func() {
 	// =========================================================================
 	Describe("Suggestions", func() {
 		It("should get suggestions without search query", func() {
-			result, resp, err := client.Components.Suggestions(&sonargo.ComponentsSuggestionsOption{})
+			result, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOption{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -387,14 +386,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should get suggestions with search query", func() {
 			// First create a project
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -407,7 +406,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			}
 
 			// Search for suggestions
-			result, resp, err := client.Components.Suggestions(&sonargo.ComponentsSuggestionsOption{
+			result, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOption{
 				Search: searchQuery, // Min 2 chars
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -416,7 +415,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get more suggestions for TRK qualifier", func() {
-			result, resp, err := client.Components.Suggestions(&sonargo.ComponentsSuggestionsOption{
+			result, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOption{
 				More: "TRK",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -432,7 +431,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			})
 
 			It("should fail with invalid more qualifier", func() {
-				_, resp, err := client.Components.Suggestions(&sonargo.ComponentsSuggestionsOption{
+				_, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOption{
 					More: "INVALID",
 				})
 				Expect(err).To(HaveOccurred())
@@ -450,14 +449,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		BeforeAll(func() {
 			// Create a project for App tests
 			projectKey = helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -465,7 +464,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get app data for component", func() {
-			result, resp, err := client.Components.App(&sonargo.ComponentsAppOption{
+			result, resp, err := client.Components.App(&sonar.ComponentsAppOption{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -475,7 +474,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should return component info", func() {
-			result, resp, err := client.Components.App(&sonargo.ComponentsAppOption{
+			result, resp, err := client.Components.App(&sonar.ComponentsAppOption{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -492,13 +491,13 @@ var _ = Describe("Components Service", Ordered, func() {
 			})
 
 			It("should fail with missing component", func() {
-				_, resp, err := client.Components.App(&sonargo.ComponentsAppOption{})
+				_, resp, err := client.Components.App(&sonar.ComponentsAppOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with both branch and pullRequest", func() {
-				_, resp, err := client.Components.App(&sonargo.ComponentsAppOption{
+				_, resp, err := client.Components.App(&sonar.ComponentsAppOption{
 					Component:   projectKey,
 					Branch:      "main",
 					PullRequest: "123",

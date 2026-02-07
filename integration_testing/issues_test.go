@@ -6,9 +6,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 const (
@@ -18,7 +17,7 @@ const (
 
 var _ = Describe("Issues Service", Ordered, func() {
 	var (
-		client     *sonargo.Client
+		client     *sonar.Client
 		cleanup    *helpers.CleanupManager
 		projectKey string
 	)
@@ -32,14 +31,14 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		// Create a test project for issues-related operations
 		projectKey = helpers.UniqueResourceName("iss")
-		_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    "Issues Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: projectKey,
 			})
 			return err
@@ -66,7 +65,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should search issues for a project", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects: []string{projectKey},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -75,9 +74,9 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should search issues with pagination", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects: []string{projectKey},
-					PaginationArgs: sonargo.PaginationArgs{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
 						Page:     1,
 					},
@@ -88,7 +87,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should search issues with impact severities filter", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects:         []string{projectKey},
 					ImpactSeverities: []string{"HIGH", "MEDIUM"},
 				})
@@ -98,7 +97,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should search issues with issue statuses filter", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects:      []string{projectKey},
 					IssueStatuses: []string{"OPEN", "CONFIRMED"},
 				})
@@ -108,7 +107,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should search issues with clean code categories filter", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects:                     []string{projectKey},
 					CleanCodeAttributeCategories: []string{"INTENTIONAL", "CONSISTENT"},
 				})
@@ -118,7 +117,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should search issues with additional fields", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects:         []string{projectKey},
 					AdditionalFields: []string{"rules", "users"},
 				})
@@ -128,7 +127,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should search issues with facets", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects: []string{projectKey},
 					Facets:   []string{"impactSeverities", "issueStatuses"},
 				})
@@ -140,7 +139,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should return empty results for non-existent project", func() {
-				result, resp, err := client.Issues.Search(&sonargo.IssuesSearchOption{
+				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOption{
 					Projects: []string{nonExistentProjectKey},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -165,7 +164,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without project or component", func() {
-				result, resp, err := client.Issues.List(&sonargo.IssuesListOption{})
+				result, resp, err := client.Issues.List(&sonar.IssuesListOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())
 				Expect(resp).To(BeNil())
@@ -174,7 +173,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should list issues for a project", func() {
-				result, resp, err := client.Issues.List(&sonargo.IssuesListOption{
+				result, resp, err := client.Issues.List(&sonar.IssuesListOption{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -183,9 +182,9 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should list issues with pagination", func() {
-				result, resp, err := client.Issues.List(&sonargo.IssuesListOption{
+				result, resp, err := client.Issues.List(&sonar.IssuesListOption{
 					Project: projectKey,
-					PaginationArgs: sonargo.PaginationArgs{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
 						Page:     1,
 					},
@@ -210,7 +209,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should list authors for a project", func() {
-				result, resp, err := client.Issues.Authors(&sonargo.IssuesAuthorsOption{
+				result, resp, err := client.Issues.Authors(&sonar.IssuesAuthorsOption{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -219,7 +218,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should list authors with query filter", func() {
-				result, resp, err := client.Issues.Authors(&sonargo.IssuesAuthorsOption{
+				result, resp, err := client.Issues.Authors(&sonar.IssuesAuthorsOption{
 					Query: "admin",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -228,7 +227,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should list authors with pagination", func() {
-				result, resp, err := client.Issues.Authors(&sonargo.IssuesAuthorsOption{
+				result, resp, err := client.Issues.Authors(&sonar.IssuesAuthorsOption{
 					PageSize: 10,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -251,7 +250,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should list tags for a project", func() {
-				result, resp, err := client.Issues.Tags(&sonargo.IssuesTagsOption{
+				result, resp, err := client.Issues.Tags(&sonar.IssuesTagsOption{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -260,7 +259,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should list tags with query filter", func() {
-				result, resp, err := client.Issues.Tags(&sonargo.IssuesTagsOption{
+				result, resp, err := client.Issues.Tags(&sonar.IssuesTagsOption{
 					Query: "security",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -284,7 +283,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Issues.AddComment(&sonargo.IssuesAddCommentOption{
+				result, resp, err := client.Issues.AddComment(&sonar.IssuesAddCommentOption{
 					Text: "Test comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -294,7 +293,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required text", func() {
-				result, resp, err := client.Issues.AddComment(&sonargo.IssuesAddCommentOption{
+				result, resp, err := client.Issues.AddComment(&sonar.IssuesAddCommentOption{
 					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -306,7 +305,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Issues.AddComment(&sonargo.IssuesAddCommentOption{
+				result, resp, err := client.Issues.AddComment(&sonar.IssuesAddCommentOption{
 					Issue: nonExistentIssueKey,
 					Text:  "Test comment",
 				})
@@ -333,7 +332,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Issues.Assign(&sonargo.IssuesAssignOption{
+				result, resp, err := client.Issues.Assign(&sonar.IssuesAssignOption{
 					Assignee: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -345,7 +344,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Issues.Assign(&sonargo.IssuesAssignOption{
+				result, resp, err := client.Issues.Assign(&sonar.IssuesAssignOption{
 					Issue:    nonExistentIssueKey,
 					Assignee: "admin",
 				})
@@ -372,7 +371,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Issues.Changelog(&sonargo.IssuesChangelogOption{})
+				result, resp, err := client.Issues.Changelog(&sonar.IssuesChangelogOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Issue"))
 				Expect(result).To(BeNil())
@@ -382,7 +381,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Issues.Changelog(&sonargo.IssuesChangelogOption{
+				result, resp, err := client.Issues.Changelog(&sonar.IssuesChangelogOption{
 					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -408,7 +407,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Issues.DoTransition(&sonargo.IssuesDoTransitionOption{
+				result, resp, err := client.Issues.DoTransition(&sonar.IssuesDoTransitionOption{
 					Transition: "confirm",
 				})
 				Expect(err).To(HaveOccurred())
@@ -418,7 +417,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required transition", func() {
-				result, resp, err := client.Issues.DoTransition(&sonargo.IssuesDoTransitionOption{
+				result, resp, err := client.Issues.DoTransition(&sonar.IssuesDoTransitionOption{
 					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -430,7 +429,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Issues.DoTransition(&sonargo.IssuesDoTransitionOption{
+				result, resp, err := client.Issues.DoTransition(&sonar.IssuesDoTransitionOption{
 					Issue:      nonExistentIssueKey,
 					Transition: "confirm",
 				})
@@ -457,7 +456,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issues", func() {
-				result, resp, err := client.Issues.BulkChange(&sonargo.IssuesBulkChangeOption{
+				result, resp, err := client.Issues.BulkChange(&sonar.IssuesBulkChangeOption{
 					AddTags: []string{"test-tag"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -469,7 +468,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issues", func() {
 			It("should handle bulk change on non-existent issues", func() {
-				result, resp, err := client.Issues.BulkChange(&sonargo.IssuesBulkChangeOption{
+				result, resp, err := client.Issues.BulkChange(&sonar.IssuesBulkChangeOption{
 					Issues:  []string{nonExistentIssueKey},
 					AddTags: []string{"test-tag"},
 				})
@@ -498,7 +497,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Issues.SetSeverity(&sonargo.IssuesSetSeverityOption{
+				result, resp, err := client.Issues.SetSeverity(&sonar.IssuesSetSeverityOption{
 					Severity: "MAJOR",
 				})
 				Expect(err).To(HaveOccurred())
@@ -510,7 +509,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Issues.SetSeverity(&sonargo.IssuesSetSeverityOption{
+				result, resp, err := client.Issues.SetSeverity(&sonar.IssuesSetSeverityOption{
 					Issue:    nonExistentIssueKey,
 					Severity: "MAJOR",
 				})
@@ -537,7 +536,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Issues.SetTags(&sonargo.IssuesSetTagsOption{
+				result, resp, err := client.Issues.SetTags(&sonar.IssuesSetTagsOption{
 					Tags: []string{"test-tag"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -549,7 +548,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Issues.SetTags(&sonargo.IssuesSetTagsOption{
+				result, resp, err := client.Issues.SetTags(&sonar.IssuesSetTagsOption{
 					Issue: nonExistentIssueKey,
 					Tags:  []string{"test-tag"},
 				})
@@ -576,7 +575,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Issues.SetType(&sonargo.IssuesSetTypeOption{
+				result, resp, err := client.Issues.SetType(&sonar.IssuesSetTypeOption{
 					Type: "BUG",
 				})
 				Expect(err).To(HaveOccurred())
@@ -586,7 +585,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required type", func() {
-				result, resp, err := client.Issues.SetType(&sonargo.IssuesSetTypeOption{
+				result, resp, err := client.Issues.SetType(&sonar.IssuesSetTypeOption{
 					Issue: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -598,7 +597,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Issues.SetType(&sonargo.IssuesSetTypeOption{
+				result, resp, err := client.Issues.SetType(&sonar.IssuesSetTypeOption{
 					Issue: nonExistentIssueKey,
 					Type:  "BUG",
 				})
@@ -625,7 +624,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required comment key", func() {
-				result, resp, err := client.Issues.DeleteComment(&sonargo.IssuesDeleteCommentOption{})
+				result, resp, err := client.Issues.DeleteComment(&sonar.IssuesDeleteCommentOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Comment"))
 				Expect(result).To(BeNil())
@@ -635,7 +634,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
-				result, resp, err := client.Issues.DeleteComment(&sonargo.IssuesDeleteCommentOption{
+				result, resp, err := client.Issues.DeleteComment(&sonar.IssuesDeleteCommentOption{
 					Comment: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -661,7 +660,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required comment key", func() {
-				result, resp, err := client.Issues.EditComment(&sonargo.IssuesEditCommentOption{
+				result, resp, err := client.Issues.EditComment(&sonar.IssuesEditCommentOption{
 					Text: "Updated comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -671,7 +670,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required text", func() {
-				result, resp, err := client.Issues.EditComment(&sonargo.IssuesEditCommentOption{
+				result, resp, err := client.Issues.EditComment(&sonar.IssuesEditCommentOption{
 					Comment: nonExistentIssueKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -683,7 +682,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
-				result, resp, err := client.Issues.EditComment(&sonargo.IssuesEditCommentOption{
+				result, resp, err := client.Issues.EditComment(&sonar.IssuesEditCommentOption{
 					Comment: nonExistentIssueKey,
 					Text:    "Updated comment",
 				})
@@ -709,7 +708,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required project key", func() {
-				resp, err := client.Issues.Reindex(&sonargo.IssuesReindexOption{})
+				resp, err := client.Issues.Reindex(&sonar.IssuesReindexOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Project"))
 				Expect(resp).To(BeNil())
@@ -718,7 +717,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should trigger reindex for a project", func() {
-				resp, err := client.Issues.Reindex(&sonargo.IssuesReindexOption{
+				resp, err := client.Issues.Reindex(&sonar.IssuesReindexOption{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -728,7 +727,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				resp, err := client.Issues.Reindex(&sonargo.IssuesReindexOption{
+				resp, err := client.Issues.Reindex(&sonar.IssuesReindexOption{
 					Project: nonExistentProjectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -753,7 +752,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required project key", func() {
-				result, resp, err := client.Issues.Pull(&sonargo.IssuesPullOption{})
+				result, resp, err := client.Issues.Pull(&sonar.IssuesPullOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("ProjectKey"))
 				Expect(result).To(BeNil())
@@ -761,7 +760,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required branch name", func() {
-				result, resp, err := client.Issues.Pull(&sonargo.IssuesPullOption{
+				result, resp, err := client.Issues.Pull(&sonar.IssuesPullOption{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -775,7 +774,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Issues.Pull(&sonargo.IssuesPullOption{
+				result, resp, err := client.Issues.Pull(&sonar.IssuesPullOption{
 					ProjectKey: nonExistentProjectKey,
 					BranchName: "main",
 				})
@@ -802,7 +801,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required project key", func() {
-				result, resp, err := client.Issues.PullTaint(&sonargo.IssuesPullTaintOption{})
+				result, resp, err := client.Issues.PullTaint(&sonar.IssuesPullTaintOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("ProjectKey"))
 				Expect(result).To(BeNil())
@@ -810,7 +809,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required branch name", func() {
-				result, resp, err := client.Issues.PullTaint(&sonargo.IssuesPullTaintOption{
+				result, resp, err := client.Issues.PullTaint(&sonar.IssuesPullTaintOption{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -824,7 +823,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Issues.PullTaint(&sonargo.IssuesPullTaintOption{
+				result, resp, err := client.Issues.PullTaint(&sonar.IssuesPullTaintOption{
 					ProjectKey: nonExistentProjectKey,
 					BranchName: "main",
 				})
@@ -851,7 +850,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 
 			It("should fail without required component UUID", func() {
-				result, resp, err := client.Issues.ComponentTags(&sonargo.IssuesComponentTagsOption{})
+				result, resp, err := client.Issues.ComponentTags(&sonar.IssuesComponentTagsOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("ComponentUuid"))
 				Expect(result).To(BeNil())
@@ -863,7 +862,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			It("should handle non-existent component UUID", func() {
 				// Use a properly formatted UUID that's guaranteed to not exist
 				// Format matches SonarQube's UUID format: 8-4-4-4-12 hexadecimal digits
-				result, resp, err := client.Issues.ComponentTags(&sonargo.IssuesComponentTagsOption{
+				result, resp, err := client.Issues.ComponentTags(&sonar.IssuesComponentTagsOption{
 					ComponentUuid: "00000000-0000-0000-0000-000000000000",
 				})
 

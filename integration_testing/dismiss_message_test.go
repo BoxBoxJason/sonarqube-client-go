@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("DismissMessage Service", Ordered, func() {
 	var (
-		client     *sonargo.Client
+		client     *sonar.Client
 		cleanup    *helpers.CleanupManager
 		projectKey string
 	)
@@ -27,14 +26,14 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 
 		// Create a test project for dismiss message operations
 		projectKey = helpers.UniqueResourceName("dms")
-		_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    "DismissMessage Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: projectKey,
 			})
 			return err
@@ -54,7 +53,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 	Describe("Check", func() {
 		Context("Valid Requests", func() {
 			It("should check message dismissal status", func() {
-				result, resp, err := client.DismissMessage.Check(&sonargo.DismissMessageCheckOption{
+				result, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
 					MessageType: "PROJECT_NCD_90",
 					ProjectKey:  projectKey,
 				})
@@ -70,14 +69,14 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing message type", func() {
-				_, _, err := client.DismissMessage.Check(&sonargo.DismissMessageCheckOption{
+				_, _, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing project key", func() {
-				_, _, err := client.DismissMessage.Check(&sonargo.DismissMessageCheckOption{
+				_, _, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
 					MessageType: "PROJECT_NCD_90",
 				})
 				Expect(err).To(HaveOccurred())
@@ -96,7 +95,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 	Describe("Dismiss", func() {
 		Context("Valid Requests", func() {
 			It("should dismiss a message", func() {
-				resp, err := client.DismissMessage.Dismiss(&sonargo.DismissMessageDismissOption{
+				resp, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
 					MessageType: "PROJECT_NCD_90",
 					ProjectKey:  projectKey,
 				})
@@ -111,14 +110,14 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing message type", func() {
-				_, err := client.DismissMessage.Dismiss(&sonargo.DismissMessageDismissOption{
+				_, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing project key", func() {
-				_, err := client.DismissMessage.Dismiss(&sonargo.DismissMessageDismissOption{
+				_, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
 					MessageType: "PROJECT_NCD_90",
 				})
 				Expect(err).To(HaveOccurred())
@@ -137,7 +136,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 	Describe("Full Workflow", func() {
 		It("should verify message is dismissed after dismissal", func() {
 			// Check message is not dismissed initially
-			initialCheck, resp, err := client.DismissMessage.Check(&sonargo.DismissMessageCheckOption{
+			initialCheck, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
 				MessageType: "PROJECT_NCD_90",
 				ProjectKey:  projectKey,
 			})
@@ -150,7 +149,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 			Expect(initialCheck).NotTo(BeNil())
 
 			// Dismiss the message
-			resp, err = client.DismissMessage.Dismiss(&sonargo.DismissMessageDismissOption{
+			resp, err = client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
 				MessageType: "PROJECT_NCD_90",
 				ProjectKey:  projectKey,
 			})
@@ -158,7 +157,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 			Expect(resp.StatusCode).To(SatisfyAny(Equal(http.StatusOK), Equal(http.StatusNoContent)))
 
 			// Check message is now dismissed
-			finalCheck, resp, err := client.DismissMessage.Check(&sonargo.DismissMessageCheckOption{
+			finalCheck, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
 				MessageType: "PROJECT_NCD_90",
 				ProjectKey:  projectKey,
 			})

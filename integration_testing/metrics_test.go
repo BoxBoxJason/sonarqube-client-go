@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Metrics Service", Ordered, func() {
 	var (
-		client *sonargo.Client
+		client *sonar.Client
 	)
 
 	BeforeAll(func() {
@@ -37,7 +36,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should search metrics with empty options", func() {
-				result, resp, err := client.Metrics.Search(&sonargo.MetricsSearchOption{})
+				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOption{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -81,8 +80,8 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should support pagination", func() {
-				result, resp, err := client.Metrics.Search(&sonargo.MetricsSearchOption{
-					PaginationArgs: sonargo.PaginationArgs{
+				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOption{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 5,
 					},
 				})

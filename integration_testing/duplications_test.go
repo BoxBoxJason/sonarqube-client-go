@@ -1,22 +1,21 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Duplications Service", Ordered, func() {
 	var (
-client     *sonargo.Client
-cleanup    *helpers.CleanupManager
-projectKey string
-)
+		client     *sonar.Client
+		cleanup    *helpers.CleanupManager
+		projectKey string
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -27,14 +26,14 @@ projectKey string
 
 		// Create a test project for duplications-related operations
 		projectKey = helpers.UniqueResourceName("dup")
-		_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    "Duplications Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: projectKey,
 			})
 			return err
@@ -62,7 +61,7 @@ projectKey string
 			})
 
 			It("should fail without required key", func() {
-				result, resp, err := client.Duplications.Show(&sonargo.DuplicationsShowOption{})
+				result, resp, err := client.Duplications.Show(&sonar.DuplicationsShowOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(result).To(BeNil())
@@ -72,7 +71,7 @@ projectKey string
 
 		Context("Non-Existent File", func() {
 			It("should fail for non-existent file key", func() {
-				result, resp, err := client.Duplications.Show(&sonargo.DuplicationsShowOption{
+				result, resp, err := client.Duplications.Show(&sonar.DuplicationsShowOption{
 					Key: "non-existent-file-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -85,15 +84,15 @@ projectKey string
 
 		Context("Project Key", func() {
 			It("should work with project key (empty duplications)", func() {
-				result, resp, err := client.Duplications.Show(&sonargo.DuplicationsShowOption{
+				result, resp, err := client.Duplications.Show(&sonar.DuplicationsShowOption{
 					Key: projectKey,
 				})
 				// May succeed with empty result or fail if the project doesn't have analyzed files
-if err == nil {
-Expect(resp.StatusCode).To(Equal(http.StatusOK))
-Expect(result).NotTo(BeNil())
-}
-})
-})
-})
+				if err == nil {
+					Expect(resp.StatusCode).To(Equal(http.StatusOK))
+					Expect(result).NotTo(BeNil())
+				}
+			})
+		})
+	})
 })

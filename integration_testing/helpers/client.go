@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 const (
@@ -82,12 +82,12 @@ func NormalizeBaseURL(baseURL string) string {
 }
 
 // NewClient creates a new SonarQube client for e2e tests using the provided config.
-func NewClient(cfg *Config) (*sonargo.Client, error) {
+func NewClient(cfg *Config) (*sonar.Client, error) {
 	baseURL := NormalizeBaseURL(cfg.BaseURL)
 
 	// Prefer token auth if available
 	if cfg.Token != "" {
-		client, err := sonargo.NewClient(nil, sonargo.WithBaseURL(baseURL), sonargo.WithToken(cfg.Token))
+		client, err := sonar.NewClient(nil, sonar.WithBaseURL(baseURL), sonar.WithToken(cfg.Token))
 		if err != nil {
 			return nil, fmt.Errorf("failed to create client with token: %w", err)
 		}
@@ -96,7 +96,7 @@ func NewClient(cfg *Config) (*sonargo.Client, error) {
 	}
 
 	// Fall back to basic auth
-	client, err := sonargo.NewClient(nil, sonargo.WithBaseURL(baseURL), sonargo.WithBasicAuth(cfg.Username, cfg.Password))
+	client, err := sonar.NewClient(nil, sonar.WithBaseURL(baseURL), sonar.WithBasicAuth(cfg.Username, cfg.Password))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create client with basic auth: %w", err)
 	}
@@ -105,7 +105,7 @@ func NewClient(cfg *Config) (*sonargo.Client, error) {
 }
 
 // NewDefaultClient creates a new SonarQube client with default configuration.
-func NewDefaultClient() (*sonargo.Client, error) {
+func NewDefaultClient() (*sonar.Client, error) {
 	cfg := LoadConfig()
 
 	return NewClient(cfg)

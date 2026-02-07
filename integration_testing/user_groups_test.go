@@ -7,14 +7,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("UserGroups Service", Ordered, func() {
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -38,7 +37,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 		Context("with default options", func() {
 			It("should return list of groups", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{})
+				result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -50,7 +49,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 		Context("with query filter", func() {
 			It("should filter groups by query", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+				result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 					Query: "admin",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -69,7 +68,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should return empty list for non-matching query", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+				result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 					Query: "nonexistentgroupxyz123",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -82,8 +81,8 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 		Context("with pagination", func() {
 			It("should support page size", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
-					PaginationArgs: sonargo.PaginationArgs{
+				result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 1,
 					},
 				})
@@ -97,7 +96,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 		Context("with fields selection", func() {
 			It("should return specified fields", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+				result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 					Fields: []string{"name", "description", "membersCount"},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -121,8 +120,8 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with invalid page size", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
-					PaginationArgs: sonargo.PaginationArgs{
+				_, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 1000, // Too large
 					},
 				})
@@ -131,7 +130,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with invalid field", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+				_, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 					Fields: []string{"invalid_field"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -146,7 +145,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 				groupName := helpers.UniqueResourceName("group")
 
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+				result, resp, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 					Name: groupName,
 				})
 
@@ -155,7 +154,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 				// Register cleanup
 				cleanup.RegisterCleanup("group", groupName, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
-					_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+					_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 						Name: groupName,
 					})
 					return err
@@ -173,7 +172,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 				groupName := helpers.UniqueResourceName("group-desc")
 
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+				result, resp, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 					Name:        groupName,
 					Description: "E2E test group with description",
 				})
@@ -183,7 +182,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 				// Register cleanup
 				cleanup.RegisterCleanup("group", groupName, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
-					_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+					_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 						Name: groupName,
 					})
 					return err
@@ -202,7 +201,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 				// Create first group
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+				_, _, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 					Name: groupName,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -210,7 +209,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 				// Register cleanup
 				cleanup.RegisterCleanup("group", groupName, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
-					_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+					_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 						Name: groupName,
 					})
 					return err
@@ -218,7 +217,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 				// Try to create duplicate
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+				_, resp, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 					Name: groupName,
 				})
 				Expect(err).To(HaveOccurred())
@@ -238,7 +237,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with missing name", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+				_, resp, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 					Description: "Test description",
 				})
 				Expect(err).To(HaveOccurred())
@@ -247,8 +246,8 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with name too long", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
-					Name: strings.Repeat("a", sonargo.MaxGroupNameLength+1),
+				_, resp, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
+					Name: strings.Repeat("a", sonar.MaxGroupNameLength+1),
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -256,9 +255,9 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with description too long", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+				_, resp, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 					Name:        "validname",
-					Description: strings.Repeat("a", sonargo.MaxGroupDescriptionLength+1),
+					Description: strings.Repeat("a", sonar.MaxGroupDescriptionLength+1),
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -275,7 +274,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			nameToCleanup := testGroupName
 
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+			_, _, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 				Name:        testGroupName,
 				Description: "Original description",
 			})
@@ -283,7 +282,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("group", nameToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 					Name: nameToCleanup,
 				})
 				return err
@@ -292,7 +291,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should update group description", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.UserGroups.Update(&sonargo.UserGroupsUpdateOption{
+			resp, err := client.UserGroups.Update(&sonar.UserGroupsUpdateOption{
 				CurrentName: testGroupName,
 				Description: "Updated description",
 			})
@@ -303,7 +302,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Verify update
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, _, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+			result, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 				Query:  testGroupName,
 				Fields: []string{"name", "description"},
 			})
@@ -323,7 +322,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			newName := helpers.UniqueResourceName("group-renamed")
 
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.UserGroups.Update(&sonargo.UserGroupsUpdateOption{
+			resp, err := client.UserGroups.Update(&sonar.UserGroupsUpdateOption{
 				CurrentName: testGroupName,
 				Name:        newName,
 			})
@@ -337,7 +336,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Verify update
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, _, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+			result, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 				Query: newName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -361,7 +360,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with missing current name", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.UserGroups.Update(&sonargo.UserGroupsUpdateOption{
+				resp, err := client.UserGroups.Update(&sonar.UserGroupsUpdateOption{
 					Name: "newname",
 				})
 				Expect(err).To(HaveOccurred())
@@ -370,9 +369,9 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with name too long", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.UserGroups.Update(&sonargo.UserGroupsUpdateOption{
+				resp, err := client.UserGroups.Update(&sonar.UserGroupsUpdateOption{
 					CurrentName: testGroupName,
-					Name:        strings.Repeat("a", sonargo.MaxGroupNameLength+1),
+					Name:        strings.Repeat("a", sonar.MaxGroupNameLength+1),
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -380,9 +379,9 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with description too long", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.UserGroups.Update(&sonargo.UserGroupsUpdateOption{
+				resp, err := client.UserGroups.Update(&sonar.UserGroupsUpdateOption{
 					CurrentName: testGroupName,
-					Description: strings.Repeat("a", sonargo.MaxGroupDescriptionLength+1),
+					Description: strings.Repeat("a", sonar.MaxGroupDescriptionLength+1),
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -390,7 +389,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail for non-existent group", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Update(&sonargo.UserGroupsUpdateOption{
+				_, err := client.UserGroups.Update(&sonar.UserGroupsUpdateOption{
 					CurrentName: "nonexistentgroup12345",
 					Description: "New description",
 				})
@@ -405,14 +404,14 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Create group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+			_, _, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 				Name: groupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Delete group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+			resp, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 				Name: groupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -420,7 +419,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Verify deletion
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, _, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+			result, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 				Query: groupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -439,14 +438,14 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with missing name", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{})
+				resp, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail for non-existent group", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 					Name: "nonexistentgroup12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -468,14 +467,14 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Create group first
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+			_, _, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 				Name: testGroupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("group", groupToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 					Name: groupToCleanup,
 				})
 				return err
@@ -483,7 +482,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err = client.Users.Create(&sonar.UsersCreateOption{
 				Login:    testUserLogin,
 				Name:     "Test User for Group",
 				Password: "SecurePassword123!",
@@ -493,7 +492,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", userToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 					Login:     userToCleanup,
 					Anonymize: true,
 				})
@@ -503,7 +502,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should add user to group", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+			resp, err := client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 				Name:  testGroupName,
 				Login: testUserLogin,
 			})
@@ -512,7 +511,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Verify user is in group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, _, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			result, _, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     testGroupName,
 				Selected: "selected",
 			})
@@ -530,7 +529,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should add user to group by login only", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+			resp, err := client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 				Name:  testGroupName,
 				Login: testUserLogin,
 			})
@@ -548,7 +547,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with missing group name", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+				resp, err := client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 					Login: testUserLogin,
 				})
 				Expect(err).To(HaveOccurred())
@@ -557,7 +556,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail for non-existent group", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+				_, err := client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 					Name:  "nonexistentgroup12345",
 					Login: testUserLogin,
 				})
@@ -566,7 +565,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail for non-existent user", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+				_, err := client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 					Name:  testGroupName,
 					Login: "nonexistentuser12345",
 				})
@@ -589,14 +588,14 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Create group first
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+			_, _, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 				Name: testGroupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("group", groupToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 					Name: groupToCleanup,
 				})
 				return err
@@ -604,7 +603,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err = client.Users.Create(&sonar.UsersCreateOption{
 				Login:    testUserLogin,
 				Name:     "Test User for Remove",
 				Password: "SecurePassword123!",
@@ -614,7 +613,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", userToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 					Login:     userToCleanup,
 					Anonymize: true,
 				})
@@ -623,7 +622,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Add user to group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, err = client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+			_, err = client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 				Name:  testGroupName,
 				Login: testUserLogin,
 			})
@@ -632,7 +631,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should remove user from group", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.UserGroups.RemoveUser(&sonargo.UserGroupsRemoveUserOption{
+			resp, err := client.UserGroups.RemoveUser(&sonar.UserGroupsRemoveUserOption{
 				Name:  testGroupName,
 				Login: testUserLogin,
 			})
@@ -641,7 +640,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Verify user is not in group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, _, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			result, _, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     testGroupName,
 				Selected: "selected",
 			})
@@ -661,7 +660,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with missing group name", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.UserGroups.RemoveUser(&sonargo.UserGroupsRemoveUserOption{
+				resp, err := client.UserGroups.RemoveUser(&sonar.UserGroupsRemoveUserOption{
 					Login: testUserLogin,
 				})
 				Expect(err).To(HaveOccurred())
@@ -670,7 +669,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail for non-existent group", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.RemoveUser(&sonargo.UserGroupsRemoveUserOption{
+				_, err := client.UserGroups.RemoveUser(&sonar.UserGroupsRemoveUserOption{
 					Name:  "nonexistentgroup12345",
 					Login: testUserLogin,
 				})
@@ -693,14 +692,14 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Create group first
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+			_, _, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 				Name: testGroupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("group", groupToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 					Name: groupToCleanup,
 				})
 				return err
@@ -708,7 +707,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err = client.Users.Create(&sonar.UsersCreateOption{
 				Login:    testUserLogin,
 				Name:     "Test User in Group",
 				Password: "SecurePassword123!",
@@ -718,7 +717,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", userToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 					Login:     userToCleanup,
 					Anonymize: true,
 				})
@@ -727,7 +726,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Add user to group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, err = client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+			_, err = client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 				Name:  testGroupName,
 				Login: testUserLogin,
 			})
@@ -736,7 +735,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should list selected users in group", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     testGroupName,
 				Selected: "selected",
 			})
@@ -759,7 +758,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should list all users with membership info", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     testGroupName,
 				Selected: "all",
 			})
@@ -772,7 +771,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should list deselected users", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     testGroupName,
 				Selected: "deselected",
 			})
@@ -787,7 +786,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should filter users by query", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     testGroupName,
 				Query:    testUserLogin,
 				Selected: "all",
@@ -809,9 +808,9 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 		Context("with pagination", func() {
 			It("should support page size", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+				result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 					Name: testGroupName,
-					PaginationArgs: sonargo.PaginationArgs{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 1,
 					},
 				})
@@ -832,14 +831,14 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail with missing name", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{})
+				_, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid selected value", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+				_, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 					Name:     testGroupName,
 					Selected: "invalid",
 				})
@@ -849,7 +848,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			It("should fail for non-existent group", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+				_, _, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 					Name: "nonexistentgroup12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -864,7 +863,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 1: Create group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			createResult, _, err := client.UserGroups.Create(&sonargo.UserGroupsCreateOption{
+			createResult, _, err := client.UserGroups.Create(&sonar.UserGroupsCreateOption{
 				Name:        groupName,
 				Description: "Lifecycle test group",
 			})
@@ -875,7 +874,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 2: Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err = client.Users.Create(&sonar.UsersCreateOption{
 				Login:    userLogin,
 				Name:     "Lifecycle Test User",
 				Password: "SecurePassword123!",
@@ -885,7 +884,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 3: Add user to group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, err = client.UserGroups.AddUser(&sonargo.UserGroupsAddUserOption{
+			_, err = client.UserGroups.AddUser(&sonar.UserGroupsAddUserOption{
 				Name:  groupName,
 				Login: userLogin,
 			})
@@ -893,7 +892,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 4: Verify user in group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			usersResult, _, err := client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			usersResult, _, err := client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     groupName,
 				Selected: "selected",
 			})
@@ -909,7 +908,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 5: Update group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, err = client.UserGroups.Update(&sonargo.UserGroupsUpdateOption{
+			_, err = client.UserGroups.Update(&sonar.UserGroupsUpdateOption{
 				CurrentName: groupName,
 				Description: "Updated lifecycle description",
 			})
@@ -917,7 +916,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 6: Remove user from group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, err = client.UserGroups.RemoveUser(&sonargo.UserGroupsRemoveUserOption{
+			_, err = client.UserGroups.RemoveUser(&sonar.UserGroupsRemoveUserOption{
 				Name:  groupName,
 				Login: userLogin,
 			})
@@ -925,7 +924,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 7: Verify user removed
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			usersResult, _, err = client.UserGroups.Users(&sonargo.UserGroupsUsersOption{
+			usersResult, _, err = client.UserGroups.Users(&sonar.UserGroupsUsersOption{
 				Name:     groupName,
 				Selected: "selected",
 			})
@@ -936,7 +935,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 8: Cleanup - deactivate user first
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+			_, _, err = client.Users.Deactivate(&sonar.UsersDeactivateOption{
 				Login:     userLogin,
 				Anonymize: true,
 			})
@@ -944,14 +943,14 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 			// Step 9: Delete group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, err = client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+			_, err = client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 				Name: groupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Verify group deleted
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			searchResult, _, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+			searchResult, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 				Query: groupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -964,7 +963,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 	Describe("Default Groups", func() {
 		It("should find sonar-users group", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+			result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 				Query: "sonar-users",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -982,7 +981,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 
 		It("should find sonar-administrators group", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
+			result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
 				Query: "sonar-administrators",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1001,7 +1000,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 		It("should not delete default groups", func() {
 			// Try to delete sonar-users (default group) - should fail
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, err := client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+			_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 				Name: "sonar-users",
 			})
 			// Default groups cannot be deleted

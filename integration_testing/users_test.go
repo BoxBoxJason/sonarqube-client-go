@@ -8,14 +8,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Users Service", Ordered, func() {
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -82,7 +81,7 @@ var _ = Describe("Users Service", Ordered, func() {
 		Context("with query filter", func() {
 			It("should filter users by query", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.Users.Search(&sonargo.UsersSearchOption{
+				result, resp, err := client.Users.Search(&sonar.UsersSearchOption{
 					Q: "admin",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -101,7 +100,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should return empty list for non-matching query", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.Users.Search(&sonargo.UsersSearchOption{
+				result, resp, err := client.Users.Search(&sonar.UsersSearchOption{
 					Q: "nonexistentuserxyz123",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -114,8 +113,8 @@ var _ = Describe("Users Service", Ordered, func() {
 		Context("with pagination", func() {
 			It("should support page size", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.Users.Search(&sonargo.UsersSearchOption{
-					PaginationArgs: sonargo.PaginationArgs{
+				result, resp, err := client.Users.Search(&sonar.UsersSearchOption{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 1,
 					},
 				})
@@ -129,8 +128,8 @@ var _ = Describe("Users Service", Ordered, func() {
 		Context("parameter validation", func() {
 			It("should reject invalid page size", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Search(&sonargo.UsersSearchOption{
-					PaginationArgs: sonargo.PaginationArgs{
+				_, _, err := client.Users.Search(&sonar.UsersSearchOption{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 1000, // Too large
 					},
 				})
@@ -145,7 +144,7 @@ var _ = Describe("Users Service", Ordered, func() {
 				login := helpers.UniqueResourceName("user")
 
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				result, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login:    login,
 					Name:     "E2E Test User",
 					Password: "SecurePassword123!",
@@ -157,7 +156,7 @@ var _ = Describe("Users Service", Ordered, func() {
 				// Register cleanup
 				cleanup.RegisterCleanup("user", login, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
-					_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+					_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 						Login:     login,
 						Anonymize: true,
 					})
@@ -179,7 +178,7 @@ var _ = Describe("Users Service", Ordered, func() {
 				scmAccount2 := fmt.Sprintf("gitlab:%s", login)
 
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				result, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				result, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login:       login,
 					Name:        "E2E Full User",
 					Email:       "e2e-test@example.com",
@@ -193,7 +192,7 @@ var _ = Describe("Users Service", Ordered, func() {
 				// Register cleanup
 				cleanup.RegisterCleanup("user", login, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
-					_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+					_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 						Login:     login,
 						Anonymize: true,
 					})
@@ -213,7 +212,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 				// Create first user
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+				_, _, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login:    login,
 					Name:     "First User",
 					Password: "SecurePassword123!",
@@ -224,7 +223,7 @@ var _ = Describe("Users Service", Ordered, func() {
 				// Register cleanup
 				cleanup.RegisterCleanup("user", login, func() error {
 					//nolint:staticcheck // Using deprecated API until v2 API is implemented
-					_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+					_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 						Login:     login,
 						Anonymize: true,
 					})
@@ -233,7 +232,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 				// Try to create duplicate
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				_, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login:    login,
 					Name:     "Duplicate User",
 					Password: "AnotherPassword123!",
@@ -256,7 +255,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				_, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Name:     "Test User",
 					Password: "SecurePassword123!",
 				})
@@ -266,7 +265,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing name", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				_, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login:    "testuser",
 					Password: "SecurePassword123!",
 				})
@@ -276,7 +275,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with login too short", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				_, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login:    "x",
 					Name:     "Test User",
 					Password: "SecurePassword123!",
@@ -287,7 +286,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing password for local user", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				_, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login: "testuser",
 					Name:  "Test User",
 					Local: true,
@@ -298,7 +297,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with password too short", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Create(&sonargo.UsersCreateOption{
+				_, resp, err := client.Users.Create(&sonar.UsersCreateOption{
 					Login:    "testuser",
 					Name:     "Test User",
 					Password: "short",
@@ -319,7 +318,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			loginToCleanup := testUserLogin
 
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err := client.Users.Create(&sonar.UsersCreateOption{
 				Login:    testUserLogin,
 				Name:     "Original Name",
 				Email:    "original@example.com",
@@ -330,7 +329,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", loginToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 					Login:     loginToCleanup,
 					Anonymize: true,
 				})
@@ -340,7 +339,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 		It("should update user name", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.Users.Update(&sonargo.UsersUpdateOption{
+			result, resp, err := client.Users.Update(&sonar.UsersUpdateOption{
 				Login: testUserLogin,
 				Name:  "Updated Name",
 			})
@@ -352,7 +351,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 		It("should update user email", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.Users.Update(&sonargo.UsersUpdateOption{
+			result, resp, err := client.Users.Update(&sonar.UsersUpdateOption{
 				Login: testUserLogin,
 				Email: "updated@example.com",
 			})
@@ -368,7 +367,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			scmAccount2 := fmt.Sprintf("bitbucket:%s", testUserLogin)
 
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.Users.Update(&sonargo.UsersUpdateOption{
+			result, resp, err := client.Users.Update(&sonar.UsersUpdateOption{
 				Login:       testUserLogin,
 				ScmAccounts: []string{scmAccount1, scmAccount2},
 			})
@@ -388,7 +387,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Update(&sonargo.UsersUpdateOption{
+				_, resp, err := client.Users.Update(&sonar.UsersUpdateOption{
 					Name: "Some Name",
 				})
 				Expect(err).To(HaveOccurred())
@@ -397,7 +396,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail for non-existent user", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Update(&sonargo.UsersUpdateOption{
+				_, resp, err := client.Users.Update(&sonar.UsersUpdateOption{
 					Login: "nonexistentuser12345",
 					Name:  "New Name",
 				})
@@ -418,7 +417,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			loginToCleanup := testUserLogin
 
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err := client.Users.Create(&sonar.UsersCreateOption{
 				Login:    testUserLogin,
 				Name:     "Password Test User",
 				Password: "OldPassword123!",
@@ -428,7 +427,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", loginToCleanup, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 					Login:     loginToCleanup,
 					Anonymize: true,
 				})
@@ -438,7 +437,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 		It("should change user password", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.Users.ChangePassword(&sonargo.UsersChangePasswordOption{
+			resp, err := client.Users.ChangePassword(&sonar.UsersChangePasswordOption{
 				Login:    testUserLogin,
 				Password: "NewPassword456!",
 			})
@@ -447,9 +446,9 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Verify new password works by creating a client with the new credentials
 			cfg := helpers.LoadConfig()
-			newClient, err := sonargo.NewClient(nil,
-				sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
-				sonargo.WithBasicAuth(testUserLogin, "NewPassword456!"),
+			newClient, err := sonar.NewClient(nil,
+				sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+				sonar.WithBasicAuth(testUserLogin, "NewPassword456!"),
 			)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -469,7 +468,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.ChangePassword(&sonargo.UsersChangePasswordOption{
+				resp, err := client.Users.ChangePassword(&sonar.UsersChangePasswordOption{
 					Password: "NewPassword123!",
 				})
 				Expect(err).To(HaveOccurred())
@@ -478,7 +477,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing password", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.ChangePassword(&sonargo.UsersChangePasswordOption{
+				resp, err := client.Users.ChangePassword(&sonar.UsersChangePasswordOption{
 					Login: testUserLogin,
 				})
 				Expect(err).To(HaveOccurred())
@@ -487,7 +486,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with password too short", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.ChangePassword(&sonargo.UsersChangePasswordOption{
+				resp, err := client.Users.ChangePassword(&sonar.UsersChangePasswordOption{
 					Login:    testUserLogin,
 					Password: "short",
 				})
@@ -504,7 +503,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err := client.Users.Create(&sonar.UsersCreateOption{
 				Login:    oldLogin,
 				Name:     "Login Update User",
 				Password: "SecurePassword123!",
@@ -514,7 +513,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Update login
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.Users.UpdateLogin(&sonargo.UsersUpdateLoginOption{
+			resp, err := client.Users.UpdateLogin(&sonar.UsersUpdateLoginOption{
 				Login:    oldLogin,
 				NewLogin: newLogin,
 			})
@@ -524,7 +523,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			// Register cleanup with new login
 			cleanup.RegisterCleanup("user", newLogin, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 					Login:     newLogin,
 					Anonymize: true,
 				})
@@ -533,7 +532,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Verify new login exists
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, _, err := client.Users.Search(&sonargo.UsersSearchOption{
+			result, _, err := client.Users.Search(&sonar.UsersSearchOption{
 				Q: newLogin,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -557,7 +556,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.UpdateLogin(&sonargo.UsersUpdateLoginOption{
+				resp, err := client.Users.UpdateLogin(&sonar.UsersUpdateLoginOption{
 					NewLogin: "newlogin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -566,7 +565,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing new login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.UpdateLogin(&sonargo.UsersUpdateLoginOption{
+				resp, err := client.Users.UpdateLogin(&sonar.UsersUpdateLoginOption{
 					Login: "oldlogin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -575,7 +574,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with new login too short", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.UpdateLogin(&sonargo.UsersUpdateLoginOption{
+				resp, err := client.Users.UpdateLogin(&sonar.UsersUpdateLoginOption{
 					Login:    "someuser",
 					NewLogin: "x",
 				})
@@ -588,7 +587,7 @@ var _ = Describe("Users Service", Ordered, func() {
 	Describe("Groups", func() {
 		It("should return groups for a user", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.Users.Groups(&sonargo.UsersGroupsOption{
+			result, resp, err := client.Users.Groups(&sonar.UsersGroupsOption{
 				Login: "admin",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -600,7 +599,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 		It("should filter groups with query", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.Users.Groups(&sonargo.UsersGroupsOption{
+			result, resp, err := client.Users.Groups(&sonar.UsersGroupsOption{
 				Login: "admin",
 				Q:     "sonar",
 			})
@@ -619,7 +618,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Groups(&sonargo.UsersGroupsOption{})
+				_, resp, err := client.Users.Groups(&sonar.UsersGroupsOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -653,7 +652,7 @@ var _ = Describe("Users Service", Ordered, func() {
 	Describe("SetHomepage", func() {
 		It("should set homepage to PROJECTS", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.Users.SetHomepage(&sonargo.UsersSetHomepageOption{
+			resp, err := client.Users.SetHomepage(&sonar.UsersSetHomepageOption{
 				Type: "PROJECTS",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -662,7 +661,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 		It("should set homepage to ISSUES", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.Users.SetHomepage(&sonargo.UsersSetHomepageOption{
+			resp, err := client.Users.SetHomepage(&sonar.UsersSetHomepageOption{
 				Type: "ISSUES",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -679,14 +678,14 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing type", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.SetHomepage(&sonargo.UsersSetHomepageOption{})
+				resp, err := client.Users.SetHomepage(&sonar.UsersSetHomepageOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid type", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.SetHomepage(&sonargo.UsersSetHomepageOption{
+				resp, err := client.Users.SetHomepage(&sonar.UsersSetHomepageOption{
 					Type: "INVALID_TYPE",
 				})
 				Expect(err).To(HaveOccurred())
@@ -698,7 +697,7 @@ var _ = Describe("Users Service", Ordered, func() {
 	Describe("DismissNotice", func() {
 		It("should dismiss a notice", func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.Users.DismissNotice(&sonargo.UsersDismissNoticeOption{
+			resp, err := client.Users.DismissNotice(&sonar.UsersDismissNoticeOption{
 				Notice: "educationPrinciples",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -708,7 +707,7 @@ var _ = Describe("Users Service", Ordered, func() {
 		It("should handle already dismissed notice gracefully", func() {
 			// Dismiss the same notice twice - should succeed silently
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.Users.DismissNotice(&sonargo.UsersDismissNoticeOption{
+			resp, err := client.Users.DismissNotice(&sonar.UsersDismissNoticeOption{
 				Notice: "sonarlintAd",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -716,7 +715,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Dismiss again
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err = client.Users.DismissNotice(&sonargo.UsersDismissNoticeOption{
+			resp, err = client.Users.DismissNotice(&sonar.UsersDismissNoticeOption{
 				Notice: "sonarlintAd",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -733,14 +732,14 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing notice", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.DismissNotice(&sonargo.UsersDismissNoticeOption{})
+				resp, err := client.Users.DismissNotice(&sonar.UsersDismissNoticeOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid notice type", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.DismissNotice(&sonargo.UsersDismissNoticeOption{
+				resp, err := client.Users.DismissNotice(&sonar.UsersDismissNoticeOption{
 					Notice: "invalidNoticeType",
 				})
 				Expect(err).To(HaveOccurred())
@@ -755,7 +754,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err := client.Users.Create(&sonar.UsersCreateOption{
 				Login:    login,
 				Name:     "Deactivate Test User",
 				Password: "SecurePassword123!",
@@ -765,7 +764,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Deactivate user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+			result, resp, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 				Login: login,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -776,7 +775,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Verify user is deactivated
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			searchResult, _, err := client.Users.Search(&sonargo.UsersSearchOption{
+			searchResult, _, err := client.Users.Search(&sonar.UsersSearchOption{
 				Q:           login,
 				Deactivated: true,
 			})
@@ -797,7 +796,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err := client.Users.Create(&sonar.UsersCreateOption{
 				Login:    login,
 				Name:     "Anonymize Test User",
 				Email:    "anon@example.com",
@@ -808,7 +807,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Deactivate with anonymize
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			result, resp, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+			result, resp, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 				Login:     login,
 				Anonymize: true,
 			})
@@ -828,14 +827,14 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{})
+				_, resp, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail for non-existent user", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, resp, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+				_, resp, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 					Login: "nonexistentuser12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -852,7 +851,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+			_, _, err := client.Users.Create(&sonar.UsersCreateOption{
 				Login:    login,
 				Name:     "Anonymize Test User 2",
 				Email:    "anon2@example.com",
@@ -863,14 +862,14 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Deactivate first (required before anonymize)
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+			_, _, err = client.Users.Deactivate(&sonar.UsersDeactivateOption{
 				Login: login,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Anonymize
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			resp, err := client.Users.Anonymize(&sonargo.UsersAnonymizeOption{
+			resp, err := client.Users.Anonymize(&sonar.UsersAnonymizeOption{
 				Login: login,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -887,7 +886,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.Anonymize(&sonargo.UsersAnonymizeOption{})
+				resp, err := client.Users.Anonymize(&sonar.UsersAnonymizeOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -905,7 +904,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing login", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.UpdateIdentityProvider(&sonargo.UsersUpdateIdentityProviderOption{
+				resp, err := client.Users.UpdateIdentityProvider(&sonar.UsersUpdateIdentityProviderOption{
 					NewExternalProvider: "sonarqube",
 				})
 				Expect(err).To(HaveOccurred())
@@ -914,7 +913,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			It("should fail with missing new external provider", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				resp, err := client.Users.UpdateIdentityProvider(&sonargo.UsersUpdateIdentityProviderOption{
+				resp, err := client.Users.UpdateIdentityProvider(&sonar.UsersUpdateIdentityProviderOption{
 					Login: "someuser",
 				})
 				Expect(err).To(HaveOccurred())
@@ -930,7 +929,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Step 1: Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			createResult, _, err := client.Users.Create(&sonargo.UsersCreateOption{
+			createResult, _, err := client.Users.Create(&sonar.UsersCreateOption{
 				Login:    login,
 				Name:     "Lifecycle User " + timestamp,
 				Email:    "lifecycle" + timestamp + "@example.com",
@@ -943,7 +942,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Step 2: Search and verify
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			searchResult, _, err := client.Users.Search(&sonargo.UsersSearchOption{
+			searchResult, _, err := client.Users.Search(&sonar.UsersSearchOption{
 				Q: login,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -958,7 +957,7 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Step 3: Update user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			updateResult, _, err := client.Users.Update(&sonargo.UsersUpdateOption{
+			updateResult, _, err := client.Users.Update(&sonar.UsersUpdateOption{
 				Login: login,
 				Name:  "Updated Lifecycle User",
 			})
@@ -967,14 +966,14 @@ var _ = Describe("Users Service", Ordered, func() {
 
 			// Step 4: Get user groups
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Groups(&sonargo.UsersGroupsOption{
+			_, _, err = client.Users.Groups(&sonar.UsersGroupsOption{
 				Login: login,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5: Deactivate and anonymize
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			deactivateResult, _, err := client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+			deactivateResult, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOption{
 				Login:     login,
 				Anonymize: true,
 			})

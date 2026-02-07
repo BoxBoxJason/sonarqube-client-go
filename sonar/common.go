@@ -1,4 +1,4 @@
-package sonargo
+package sonar
 
 const (
 	// defaultBaseURL is the default base URL for the SonarQube API.

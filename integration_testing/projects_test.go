@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Projects Service", Ordered, func() {
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -39,7 +38,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		It("should create a project with minimal parameters", func() {
 			projectKey := helpers.UniqueResourceName("proj-min")
 
-			result, resp, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			result, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Minimal Project",
 				Project: projectKey,
 			})
@@ -47,7 +46,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup immediately after successful Create to avoid orphaned resources
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -62,7 +61,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		It("should create a project with full configuration", func() {
 			projectKey := helpers.UniqueResourceName("proj-full")
 
-			result, resp, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			result, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Full Config Project",
 				Project:    projectKey,
 				Visibility: "private",
@@ -72,7 +71,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup immediately after successful Create to avoid orphaned resources
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -87,7 +86,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		It("should create a public project", func() {
 			projectKey := helpers.UniqueResourceName("proj-pub")
 
-			result, resp, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			result, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Public Project",
 				Project:    projectKey,
 				Visibility: "public",
@@ -96,7 +95,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup immediately after successful Create to avoid orphaned resources
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -115,7 +114,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing name", func() {
-				_, resp, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Project: helpers.UniqueResourceName("proj-noname"),
 				})
 				Expect(err).To(HaveOccurred())
@@ -123,7 +122,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				_, resp, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name: "No Key Project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -131,7 +130,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with invalid visibility", func() {
-				_, resp, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:       "Invalid Visibility",
 					Project:    helpers.UniqueResourceName("proj-badvis"),
 					Visibility: "invalid",
@@ -146,21 +145,21 @@ var _ = Describe("Projects Service", Ordered, func() {
 				projectKey := helpers.UniqueResourceName("proj-dup")
 
 				// Create first project
-				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:    "Original Project",
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 						Project: projectKey,
 					})
 					return err
 				})
 
 				// Try to create duplicate
-				_, resp, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:    "Duplicate Project",
 					Project: projectKey,
 				})
@@ -181,7 +180,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		BeforeEach(func() {
 			testProjectKey = helpers.UniqueResourceName("proj-search")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Search Test Project",
 				Project:    testProjectKey,
 				Visibility: "private",
@@ -189,7 +188,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: testProjectKey,
 				})
 				return err
@@ -197,7 +196,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should search all projects", func() {
-			result, resp, err := client.Projects.Search(&sonargo.ProjectsSearchOption{})
+			result, resp, err := client.Projects.Search(&sonar.ProjectsSearchOption{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -205,7 +204,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should search projects by query", func() {
-			result, resp, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, resp, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -222,8 +221,8 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should search projects with pagination", func() {
-			result, resp, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
-				PaginationArgs: sonargo.PaginationArgs{
+			result, resp, err := client.Projects.Search(&sonar.ProjectsSearchOption{
+				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
 					Page:     1,
 				},
@@ -235,7 +234,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should search projects by visibility", func() {
-			result, resp, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, resp, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Visibility: "private",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -247,7 +246,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should search projects by qualifier", func() {
-			result, resp, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, resp, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Qualifiers: []string{"TRK"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -266,7 +265,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with invalid visibility", func() {
-				_, resp, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+				_, resp, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 					Visibility: "invalid",
 				})
 				Expect(err).To(HaveOccurred())
@@ -274,7 +273,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with invalid qualifier", func() {
-				_, resp, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+				_, resp, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 					Qualifiers: []string{"INVALID"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -290,7 +289,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		It("should delete a project", func() {
 			projectKey := helpers.UniqueResourceName("proj-del")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Delete Test Project",
 				Project: projectKey,
 			})
@@ -299,21 +298,21 @@ var _ = Describe("Projects Service", Ordered, func() {
 			// Register cleanup to handle orphaned resources if delete or assertions fail
 			// The cleanup will gracefully handle "not found" errors if the project was already deleted
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				// Ignore not found errors since the test may have already deleted it
 				return helpers.IgnoreNotFoundError(err)
 			})
 
-			resp, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			resp, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify project is deleted
-			result, _, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -330,7 +329,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{})
+				resp, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -338,7 +337,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail to delete non-existent project", func() {
-				resp, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				resp, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: "non-existent-project-key-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -357,7 +356,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			oldKey := helpers.UniqueResourceName("proj-oldkey")
 			newKey := helpers.UniqueResourceName("proj-newkey")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Update Key Project",
 				Project: oldKey,
 			})
@@ -365,13 +364,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup with old key first in case UpdateKey fails
 			cleanup.RegisterCleanup("project", oldKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: oldKey,
 				})
 				return helpers.IgnoreNotFoundError(err)
 			})
 
-			resp, err := client.Projects.UpdateKey(&sonargo.ProjectsUpdateKeyOption{
+			resp, err := client.Projects.UpdateKey(&sonar.ProjectsUpdateKeyOption{
 				From: oldKey,
 				To:   newKey,
 			})
@@ -380,14 +379,14 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup with new key
 			cleanup.RegisterCleanup("project", newKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: newKey,
 				})
 				return err
 			})
 
 			// Verify old key no longer exists
-			result, _, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: oldKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -396,7 +395,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			}
 
 			// Verify new key exists
-			result, _, err = client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, _, err = client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: newKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -418,7 +417,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing from key", func() {
-				resp, err := client.Projects.UpdateKey(&sonargo.ProjectsUpdateKeyOption{
+				resp, err := client.Projects.UpdateKey(&sonar.ProjectsUpdateKeyOption{
 					To: helpers.UniqueResourceName("proj-to"),
 				})
 				Expect(err).To(HaveOccurred())
@@ -426,7 +425,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing to key", func() {
-				resp, err := client.Projects.UpdateKey(&sonargo.ProjectsUpdateKeyOption{
+				resp, err := client.Projects.UpdateKey(&sonar.ProjectsUpdateKeyOption{
 					From: helpers.UniqueResourceName("proj-from"),
 				})
 				Expect(err).To(HaveOccurred())
@@ -442,7 +441,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		It("should update project visibility from public to private", func() {
 			projectKey := helpers.UniqueResourceName("proj-vis")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Visibility Test Project",
 				Project:    projectKey,
 				Visibility: "public",
@@ -450,13 +449,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.Projects.UpdateVisibility(&sonargo.ProjectsUpdateVisibilityOption{
+			resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOption{
 				Project:    projectKey,
 				Visibility: "private",
 			})
@@ -464,7 +463,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify visibility changed
-			result, _, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -482,7 +481,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		It("should update project visibility from private to public", func() {
 			projectKey := helpers.UniqueResourceName("proj-vis2")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Visibility Test Project 2",
 				Project:    projectKey,
 				Visibility: "private",
@@ -490,13 +489,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.Projects.UpdateVisibility(&sonargo.ProjectsUpdateVisibilityOption{
+			resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOption{
 				Project:    projectKey,
 				Visibility: "public",
 			})
@@ -504,7 +503,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify visibility changed
-			result, _, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -527,7 +526,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.Projects.UpdateVisibility(&sonargo.ProjectsUpdateVisibilityOption{
+				resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOption{
 					Visibility: "private",
 				})
 				Expect(err).To(HaveOccurred())
@@ -535,7 +534,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing visibility", func() {
-				resp, err := client.Projects.UpdateVisibility(&sonargo.ProjectsUpdateVisibilityOption{
+				resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOption{
 					Project: helpers.UniqueResourceName("proj"),
 				})
 				Expect(err).To(HaveOccurred())
@@ -543,7 +542,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with invalid visibility", func() {
-				resp, err := client.Projects.UpdateVisibility(&sonargo.ProjectsUpdateVisibilityOption{
+				resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOption{
 					Project:    helpers.UniqueResourceName("proj"),
 					Visibility: "invalid",
 				})
@@ -561,7 +560,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			projectKey1 := helpers.UniqueResourceName("proj-bulk1")
 			projectKey2 := helpers.UniqueResourceName("proj-bulk2")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Bulk Delete 1",
 				Project: projectKey1,
 			})
@@ -569,13 +568,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup immediately after successful Create (ignores 404 if bulk delete succeeds)
 			cleanup.RegisterCleanup("project", projectKey1, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey1,
 				})
 				return helpers.IgnoreNotFoundError(err)
 			})
 
-			_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Bulk Delete 2",
 				Project: projectKey2,
 			})
@@ -583,20 +582,20 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup immediately after successful Create (ignores 404 if bulk delete succeeds)
 			cleanup.RegisterCleanup("project", projectKey2, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey2,
 				})
 				return helpers.IgnoreNotFoundError(err)
 			})
 
-			resp, err := client.Projects.BulkDelete(&sonargo.ProjectsBulkDeleteOption{
+			resp, err := client.Projects.BulkDelete(&sonar.ProjectsBulkDeleteOption{
 				Projects: []string{projectKey1, projectKey2},
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify projectKey1 is deleted
-			result, _, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: projectKey1,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -605,7 +604,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			}
 
 			// Verify projectKey2 is deleted
-			result, _, err = client.Projects.Search(&sonargo.ProjectsSearchOption{
+			result, _, err = client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: projectKey2,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -619,7 +618,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			projectKey1 := uniquePrefix + "-a"
 			projectKey2 := uniquePrefix + "-b"
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Bulk Query Delete 1",
 				Project: projectKey1,
 			})
@@ -627,13 +626,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup immediately after successful Create (ignores 404 if bulk delete succeeds)
 			cleanup.RegisterCleanup("project", projectKey1, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey1,
 				})
 				return helpers.IgnoreNotFoundError(err)
 			})
 
-			_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Bulk Query Delete 2",
 				Project: projectKey2,
 			})
@@ -641,13 +640,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup immediately after successful Create (ignores 404 if bulk delete succeeds)
 			cleanup.RegisterCleanup("project", projectKey2, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey2,
 				})
 				return helpers.IgnoreNotFoundError(err)
 			})
 
-			resp, err := client.Projects.BulkDelete(&sonargo.ProjectsBulkDeleteOption{
+			resp, err := client.Projects.BulkDelete(&sonar.ProjectsBulkDeleteOption{
 				Query: uniquePrefix,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -662,13 +661,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with no filter", func() {
-				resp, err := client.Projects.BulkDelete(&sonargo.ProjectsBulkDeleteOption{})
+				resp, err := client.Projects.BulkDelete(&sonar.ProjectsBulkDeleteOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid visibility", func() {
-				resp, err := client.Projects.BulkDelete(&sonargo.ProjectsBulkDeleteOption{
+				resp, err := client.Projects.BulkDelete(&sonar.ProjectsBulkDeleteOption{
 					Query:      "test",
 					Visibility: "invalid",
 				})
@@ -677,7 +676,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with invalid qualifier", func() {
-				resp, err := client.Projects.BulkDelete(&sonargo.ProjectsBulkDeleteOption{
+				resp, err := client.Projects.BulkDelete(&sonar.ProjectsBulkDeleteOption{
 					Query:      "test",
 					Qualifiers: []string{"INVALID"},
 				})
@@ -692,7 +691,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 	// =========================================================================
 	Describe("SearchMyProjects", func() {
 		It("should search my projects", func() {
-			result, resp, err := client.Projects.SearchMyProjects(&sonargo.ProjectsSearchMyProjectsOption{})
+			result, resp, err := client.Projects.SearchMyProjects(&sonar.ProjectsSearchMyProjectsOption{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -700,8 +699,8 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should search my projects with pagination", func() {
-			result, resp, err := client.Projects.SearchMyProjects(&sonargo.ProjectsSearchMyProjectsOption{
-				PaginationArgs: sonargo.PaginationArgs{
+			result, resp, err := client.Projects.SearchMyProjects(&sonar.ProjectsSearchMyProjectsOption{
+				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
 					Page:     1,
 				},
@@ -732,7 +731,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should search my scannable projects with query", func() {
-			result, resp, err := client.Projects.SearchMyScannableProjects(&sonargo.ProjectsSearchMyScannableProjectsOption{
+			result, resp, err := client.Projects.SearchMyScannableProjects(&sonar.ProjectsSearchMyScannableProjectsOption{
 				Query: helpers.E2EResourcePrefix,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -758,7 +757,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 		AfterAll(func() {
 			// Restore original default visibility
-			_, err := client.Projects.UpdateDefaultVisibility(&sonargo.ProjectsUpdateDefaultVisibilityOption{
+			_, err := client.Projects.UpdateDefaultVisibility(&sonar.ProjectsUpdateDefaultVisibilityOption{
 				ProjectVisibility: originalVisibility,
 			})
 			if err != nil {
@@ -767,7 +766,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should update default visibility to private", func() {
-			resp, err := client.Projects.UpdateDefaultVisibility(&sonargo.ProjectsUpdateDefaultVisibilityOption{
+			resp, err := client.Projects.UpdateDefaultVisibility(&sonar.ProjectsUpdateDefaultVisibilityOption{
 				ProjectVisibility: "private",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -775,7 +774,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 		})
 
 		It("should update default visibility to public", func() {
-			resp, err := client.Projects.UpdateDefaultVisibility(&sonargo.ProjectsUpdateDefaultVisibilityOption{
+			resp, err := client.Projects.UpdateDefaultVisibility(&sonar.ProjectsUpdateDefaultVisibilityOption{
 				ProjectVisibility: "public",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -790,13 +789,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			It("should fail with missing visibility", func() {
-				resp, err := client.Projects.UpdateDefaultVisibility(&sonargo.ProjectsUpdateDefaultVisibilityOption{})
+				resp, err := client.Projects.UpdateDefaultVisibility(&sonar.ProjectsUpdateDefaultVisibilityOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid visibility", func() {
-				resp, err := client.Projects.UpdateDefaultVisibility(&sonargo.ProjectsUpdateDefaultVisibilityOption{
+				resp, err := client.Projects.UpdateDefaultVisibility(&sonar.ProjectsUpdateDefaultVisibilityOption{
 					ProjectVisibility: "invalid",
 				})
 				Expect(err).To(HaveOccurred())
@@ -814,7 +813,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			newProjectKey := helpers.UniqueResourceName("proj-lifecycle-new")
 
 			// Step 1: Create project
-			result, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			result, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "Lifecycle Test",
 				Project:    projectKey,
 				Visibility: "public",
@@ -823,13 +822,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			// Register cleanup for both possible project keys to handle orphans
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return helpers.IgnoreNotFoundError(err)
 			})
 			cleanup.RegisterCleanup("project", newProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: newProjectKey,
 				})
 				return helpers.IgnoreNotFoundError(err)
@@ -839,7 +838,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(result.Project.Visibility).To(Equal("public"))
 
 			// Step 2: Search for project
-			searchResult, _, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
+			searchResult, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -853,21 +852,21 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(found).To(BeTrue())
 
 			// Step 3: Update visibility
-			_, err = client.Projects.UpdateVisibility(&sonargo.ProjectsUpdateVisibilityOption{
+			_, err = client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOption{
 				Project:    projectKey,
 				Visibility: "private",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 4: Update key
-			_, err = client.Projects.UpdateKey(&sonargo.ProjectsUpdateKeyOption{
+			_, err = client.Projects.UpdateKey(&sonar.ProjectsUpdateKeyOption{
 				From: projectKey,
 				To:   newProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5: Verify changes
-			searchResult, _, err = client.Projects.Search(&sonargo.ProjectsSearchOption{
+			searchResult, _, err = client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: newProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -882,13 +881,13 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(found).To(BeTrue())
 
 			// Step 6: Delete project
-			_, err = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err = client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: newProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 7: Verify deletion
-			searchResult, _, err = client.Projects.Search(&sonargo.ProjectsSearchOption{
+			searchResult, _, err = client.Projects.Search(&sonar.ProjectsSearchOption{
 				Query: newProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())

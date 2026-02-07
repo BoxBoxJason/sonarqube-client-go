@@ -7,16 +7,15 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Batch Service", Ordered, func() {
 	var (
-		client         *sonargo.Client
+		client         *sonar.Client
 		cleanupManager *helpers.CleanupManager
-		testProject    *sonargo.ProjectsCreate
+		testProject    *sonar.ProjectsCreate
 	)
 
 	BeforeAll(func() {
@@ -29,13 +28,13 @@ var _ = Describe("Batch Service", Ordered, func() {
 
 		// Create a test project for batch operations
 		projectKey := helpers.UniqueResourceName("batch")
-		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    "Batch Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -117,7 +116,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 					for _, line := range lines {
 						parts := strings.Split(strings.TrimSpace(line), "|")
 						if len(parts) > 0 && strings.HasSuffix(parts[0], ".jar") {
-							result, resp, err := client.Batch.File(&sonargo.BatchFileOption{
+							result, resp, err := client.Batch.File(&sonar.BatchFileOption{
 								Name: parts[0],
 							})
 							Expect(err).NotTo(HaveOccurred())
@@ -144,7 +143,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent file", func() {
-				_, resp, err := client.Batch.File(&sonargo.BatchFileOption{
+				_, resp, err := client.Batch.File(&sonar.BatchFileOption{
 					Name: "non-existent-file.jar",
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
@@ -166,7 +165,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 	Describe("Project", func() {
 		Context("Functional Tests", func() {
 			It("should get project batch info with valid key", func() {
-				result, resp, err := client.Batch.Project(&sonargo.BatchProjectOption{
+				result, resp, err := client.Batch.Project(&sonar.BatchProjectOption{
 					Key: testProject.Project.Key,
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
@@ -195,12 +194,12 @@ var _ = Describe("Batch Service", Ordered, func() {
 			})
 
 			It("should fail with missing key", func() {
-				_, _, err := client.Batch.Project(&sonargo.BatchProjectOption{})
+				_, _, err := client.Batch.Project(&sonar.BatchProjectOption{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with non-existent project", func() {
-				_, resp, err := client.Batch.Project(&sonargo.BatchProjectOption{
+				_, resp, err := client.Batch.Project(&sonar.BatchProjectOption{
 					Key: "non-existent-project-12345",
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {

@@ -4,14 +4,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Sources Service", Ordered, func() {
 	var (
-		client     *sonargo.Client
+		client     *sonar.Client
 		cleanup    *helpers.CleanupManager
 		projectKey string
 	)
@@ -25,14 +24,14 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		// Create a test project for source-related operations
 		projectKey = helpers.UniqueResourceName("src")
-		_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    "Sources Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: projectKey,
 			})
 			return err
@@ -60,7 +59,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 			})
 
 			It("should fail without required resource parameter", func() {
-				result, resp, err := client.Sources.Index(&sonargo.SourcesIndexOption{})
+				result, resp, err := client.Sources.Index(&sonar.SourcesIndexOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Resource"))
 				Expect(result).To(BeNil())
@@ -70,7 +69,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("Non-Existent Resource", func() {
 			It("should fail with non-existent file key", func() {
-				result, resp, err := client.Sources.Index(&sonargo.SourcesIndexOption{
+				result, resp, err := client.Sources.Index(&sonar.SourcesIndexOption{
 					Resource: "non-existent:src/main.go",
 				})
 				// API should return an error for non-existent resource
@@ -85,7 +84,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 		Context("With Valid Project (No Analysis)", func() {
 			It("should fail for project without analyzed files", func() {
 				// Projects without analysis have no source files indexed
-				result, resp, err := client.Sources.Index(&sonargo.SourcesIndexOption{
+				result, resp, err := client.Sources.Index(&sonar.SourcesIndexOption{
 					Resource: projectKey + ":src/main.go",
 				})
 				// Should fail because there's no analyzed source
@@ -99,7 +98,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Line Range", func() {
 			It("should fail for non-existent file with line range", func() {
-				result, resp, err := client.Sources.Index(&sonargo.SourcesIndexOption{
+				result, resp, err := client.Sources.Index(&sonar.SourcesIndexOption{
 					Resource: "non-existent:src/main.go",
 					From:     1,
 					To:       10,
@@ -127,7 +126,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 			})
 
 			It("should fail without required issue key", func() {
-				result, resp, err := client.Sources.IssueSnippets(&sonargo.SourcesIssueSnippetsOption{})
+				result, resp, err := client.Sources.IssueSnippets(&sonar.SourcesIssueSnippetsOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("IssueKey"))
 				Expect(result).To(BeNil())
@@ -137,7 +136,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("Non-Existent Issue", func() {
 			It("should fail with non-existent issue key", func() {
-				result, resp, err := client.Sources.IssueSnippets(&sonargo.SourcesIssueSnippetsOption{
+				result, resp, err := client.Sources.IssueSnippets(&sonar.SourcesIssueSnippetsOption{
 					IssueKey: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				// API should return an error for non-existent issue
@@ -164,7 +163,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 			})
 
 			It("should fail without required key parameter", func() {
-				result, resp, err := client.Sources.Lines(&sonargo.SourcesLinesOption{})
+				result, resp, err := client.Sources.Lines(&sonar.SourcesLinesOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(result).To(BeNil())
@@ -174,7 +173,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("Non-Existent File", func() {
 			It("should fail with non-existent file key", func() {
-				result, resp, err := client.Sources.Lines(&sonargo.SourcesLinesOption{
+				result, resp, err := client.Sources.Lines(&sonar.SourcesLinesOption{
 					Key: "non-existent:src/main.go",
 				})
 				// API should return an error for non-existent file
@@ -188,7 +187,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Valid Project (No Analysis)", func() {
 			It("should fail for project without analyzed files", func() {
-				result, resp, err := client.Sources.Lines(&sonargo.SourcesLinesOption{
+				result, resp, err := client.Sources.Lines(&sonar.SourcesLinesOption{
 					Key: projectKey + ":src/main.go",
 				})
 				// Should fail because there's no analyzed source
@@ -202,7 +201,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Line Range", func() {
 			It("should fail for non-existent file with line range", func() {
-				result, resp, err := client.Sources.Lines(&sonargo.SourcesLinesOption{
+				result, resp, err := client.Sources.Lines(&sonar.SourcesLinesOption{
 					Key:  "non-existent:src/main.go",
 					From: 1,
 					To:   10,
@@ -217,7 +216,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Branch", func() {
 			It("should fail for non-existent branch", func() {
-				result, resp, err := client.Sources.Lines(&sonargo.SourcesLinesOption{
+				result, resp, err := client.Sources.Lines(&sonar.SourcesLinesOption{
 					Key:    projectKey + ":src/main.go",
 					Branch: "non-existent-branch",
 				})
@@ -231,7 +230,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Pull Request", func() {
 			It("should fail for non-existent pull request", func() {
-				result, resp, err := client.Sources.Lines(&sonargo.SourcesLinesOption{
+				result, resp, err := client.Sources.Lines(&sonar.SourcesLinesOption{
 					Key:         projectKey + ":src/main.go",
 					PullRequest: "99999",
 				})
@@ -258,7 +257,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 			})
 
 			It("should fail without required key parameter", func() {
-				result, resp, err := client.Sources.Raw(&sonargo.SourcesRawOption{})
+				result, resp, err := client.Sources.Raw(&sonar.SourcesRawOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(result).To(BeEmpty())
@@ -268,7 +267,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("Non-Existent File", func() {
 			It("should fail with non-existent file key", func() {
-				result, resp, err := client.Sources.Raw(&sonargo.SourcesRawOption{
+				result, resp, err := client.Sources.Raw(&sonar.SourcesRawOption{
 					Key: "non-existent:src/main.go",
 				})
 				// API should return an error for non-existent file
@@ -282,7 +281,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Valid Project (No Analysis)", func() {
 			It("should fail for project without analyzed files", func() {
-				result, resp, err := client.Sources.Raw(&sonargo.SourcesRawOption{
+				result, resp, err := client.Sources.Raw(&sonar.SourcesRawOption{
 					Key: projectKey + ":src/main.go",
 				})
 				// Should fail because there's no analyzed source
@@ -296,7 +295,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Branch", func() {
 			It("should fail for non-existent branch", func() {
-				result, resp, err := client.Sources.Raw(&sonargo.SourcesRawOption{
+				result, resp, err := client.Sources.Raw(&sonar.SourcesRawOption{
 					Key:    projectKey + ":src/main.go",
 					Branch: "non-existent-branch",
 				})
@@ -310,7 +309,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Pull Request", func() {
 			It("should fail for non-existent pull request", func() {
-				result, resp, err := client.Sources.Raw(&sonargo.SourcesRawOption{
+				result, resp, err := client.Sources.Raw(&sonar.SourcesRawOption{
 					Key:         projectKey + ":src/main.go",
 					PullRequest: "99999",
 				})
@@ -337,7 +336,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 			})
 
 			It("should fail without required key parameter", func() {
-				result, resp, err := client.Sources.Scm(&sonargo.SourcesScmOption{})
+				result, resp, err := client.Sources.Scm(&sonar.SourcesScmOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(result).To(BeNil())
@@ -347,7 +346,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("Non-Existent File", func() {
 			It("should fail with non-existent file key", func() {
-				result, resp, err := client.Sources.Scm(&sonargo.SourcesScmOption{
+				result, resp, err := client.Sources.Scm(&sonar.SourcesScmOption{
 					Key: "non-existent:src/main.go",
 				})
 				// API should return an error for non-existent file
@@ -361,7 +360,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Valid Project (No Analysis)", func() {
 			It("should fail for project without analyzed files", func() {
-				result, resp, err := client.Sources.Scm(&sonargo.SourcesScmOption{
+				result, resp, err := client.Sources.Scm(&sonar.SourcesScmOption{
 					Key: projectKey + ":src/main.go",
 				})
 				// Should fail because there's no analyzed source
@@ -375,7 +374,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Line Range", func() {
 			It("should fail for non-existent file with line range", func() {
-				result, resp, err := client.Sources.Scm(&sonargo.SourcesScmOption{
+				result, resp, err := client.Sources.Scm(&sonar.SourcesScmOption{
 					Key:  "non-existent:src/main.go",
 					From: 1,
 					To:   10,
@@ -390,7 +389,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With CommitsByLine Option", func() {
 			It("should fail for non-existent file with commits_by_line", func() {
-				result, resp, err := client.Sources.Scm(&sonargo.SourcesScmOption{
+				result, resp, err := client.Sources.Scm(&sonar.SourcesScmOption{
 					Key:           "non-existent:src/main.go",
 					CommitsByLine: true,
 				})
@@ -417,7 +416,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 			})
 
 			It("should fail without required key parameter", func() {
-				result, resp, err := client.Sources.Show(&sonargo.SourcesShowOption{})
+				result, resp, err := client.Sources.Show(&sonar.SourcesShowOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(result).To(BeNil())
@@ -427,7 +426,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("Non-Existent File", func() {
 			It("should fail with non-existent file key", func() {
-				result, resp, err := client.Sources.Show(&sonargo.SourcesShowOption{
+				result, resp, err := client.Sources.Show(&sonar.SourcesShowOption{
 					Key: "non-existent:src/main.go",
 				})
 				// API should return an error for non-existent file
@@ -441,7 +440,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Valid Project (No Analysis)", func() {
 			It("should fail for project without analyzed files", func() {
-				result, resp, err := client.Sources.Show(&sonargo.SourcesShowOption{
+				result, resp, err := client.Sources.Show(&sonar.SourcesShowOption{
 					Key: projectKey + ":src/main.go",
 				})
 				// Should fail because there's no analyzed source
@@ -455,7 +454,7 @@ var _ = Describe("Sources Service", Ordered, func() {
 
 		Context("With Line Range", func() {
 			It("should fail for non-existent file with line range", func() {
-				result, resp, err := client.Sources.Show(&sonargo.SourcesShowOption{
+				result, resp, err := client.Sources.Show(&sonar.SourcesShowOption{
 					Key:  "non-existent:src/main.go",
 					From: 1,
 					To:   10,

@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("System Service", Ordered, func() {
 	var (
-		client *sonargo.Client
+		client *sonar.Client
 	)
 
 	BeforeAll(func() {
@@ -163,14 +162,14 @@ var _ = Describe("System Service", Ordered, func() {
 
 			AfterEach(func() {
 				// Restore original log level
-				_, err := client.System.ChangeLogLevel(&sonargo.SystemChangeLogLevelOption{
+				_, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
 					Level: originalLevel,
 				})
 				Expect(err).NotTo(HaveOccurred())
 			})
 
 			It("should change log level to DEBUG", func() {
-				resp, err := client.System.ChangeLogLevel(&sonargo.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
 					Level: "DEBUG",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -178,7 +177,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should change log level to TRACE", func() {
-				resp, err := client.System.ChangeLogLevel(&sonargo.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
 					Level: "TRACE",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -186,7 +185,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should change log level to INFO", func() {
-				resp, err := client.System.ChangeLogLevel(&sonargo.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
 					Level: "INFO",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -194,7 +193,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should reject invalid log levels", func() {
-				resp, err := client.System.ChangeLogLevel(&sonargo.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
 					Level: "INVALID_LEVEL",
 				})
 				// This should fail with validation error
@@ -205,7 +204,7 @@ var _ = Describe("System Service", Ordered, func() {
 
 		Describe("Logs", func() {
 			It("should retrieve app logs", func() {
-				logs, resp, err := client.System.Logs(&sonargo.SystemLogsOption{
+				logs, resp, err := client.System.Logs(&sonar.SystemLogsOption{
 					Name: "app",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -215,7 +214,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should retrieve web logs", func() {
-				logs, resp, err := client.System.Logs(&sonargo.SystemLogsOption{
+				logs, resp, err := client.System.Logs(&sonar.SystemLogsOption{
 					Name: "web",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -224,7 +223,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should retrieve ce logs", func() {
-				logs, resp, err := client.System.Logs(&sonargo.SystemLogsOption{
+				logs, resp, err := client.System.Logs(&sonar.SystemLogsOption{
 					Name: "ce",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -233,7 +232,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should reject invalid log names", func() {
-				_, resp, err := client.System.Logs(&sonargo.SystemLogsOption{
+				_, resp, err := client.System.Logs(&sonar.SystemLogsOption{
 					Name: "invalid_log_name",
 				})
 				// This should fail with validation error

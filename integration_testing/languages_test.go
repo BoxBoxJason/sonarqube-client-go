@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Languages Service", Ordered, func() {
 	var (
-		client *sonargo.Client
+		client *sonar.Client
 	)
 
 	BeforeAll(func() {
@@ -37,7 +36,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should succeed with empty options", func() {
-				result, resp, err := client.Languages.List(&sonargo.LanguagesListOption{})
+				result, resp, err := client.Languages.List(&sonar.LanguagesListOption{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -92,7 +91,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should filter languages with query", func() {
-				result, resp, err := client.Languages.List(&sonargo.LanguagesListOption{
+				result, resp, err := client.Languages.List(&sonar.LanguagesListOption{
 					Query: "java",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -113,7 +112,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 				}
 			})
 			It("should limit results with page size", func() {
-				result, resp, err := client.Languages.List(&sonargo.LanguagesListOption{
+				result, resp, err := client.Languages.List(&sonar.LanguagesListOption{
 					PageSize: 2,
 				})
 				Expect(err).NotTo(HaveOccurred())

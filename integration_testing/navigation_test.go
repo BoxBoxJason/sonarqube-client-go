@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Navigation Service", Ordered, func() {
 	var (
-		client     *sonargo.Client
+		client     *sonar.Client
 		cleanup    *helpers.CleanupManager
 		projectKey string
 	)
@@ -27,14 +26,14 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		// Create a test project for component navigation
 		projectKey = helpers.UniqueResourceName("nav")
-		_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    "Navigation Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: projectKey,
 			})
 			return err
@@ -60,7 +59,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 			})
 
 			It("should fail with empty component key", func() {
-				resp, _, err := client.Navigation.Component(&sonargo.NavigationComponentOption{
+				resp, _, err := client.Navigation.Component(&sonar.NavigationComponentOption{
 					Component: "",
 				})
 				Expect(resp).To(BeNil())
@@ -70,7 +69,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get component navigation with valid component key and breadcrumbs", func() {
-				result, resp, err := client.Navigation.Component(&sonargo.NavigationComponentOption{
+				result, resp, err := client.Navigation.Component(&sonar.NavigationComponentOption{
 					Component: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -83,7 +82,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		Context("Error Cases", func() {
 			It("should fail with non-existent component key", func() {
-				_, resp, err := client.Navigation.Component(&sonargo.NavigationComponentOption{
+				_, resp, err := client.Navigation.Component(&sonar.NavigationComponentOption{
 					Component: "non-existent-component-key-12345",
 				})
 				Expect(err).To(HaveOccurred())
