@@ -63,7 +63,7 @@ The client intelligently handles different response formats:
 Install the SDK using `go get`:
 
 ```bash
-go get github.com/boxboxjason/sonarqube-client-go
+go get github.com/boxboxjason/sonarqube-client-go/sonar
 ```
 
 **Requirements**:
