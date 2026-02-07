@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("AnalysisReports Service", Ordered, func() {
 	var (
-		client *sonargo.Client
+		client *sonar.Client
 	)
 
 	BeforeAll(func() {

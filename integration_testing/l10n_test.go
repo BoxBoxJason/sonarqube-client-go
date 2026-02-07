@@ -7,14 +7,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("L10N Service", Ordered, func() {
 	var (
-		client *sonargo.Client
+		client *sonar.Client
 	)
 
 	BeforeAll(func() {
@@ -72,7 +71,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 
 		Context("Specific Locale", func() {
 			It("should get localization messages for specific locale", func() {
-				result, resp, err := client.L10N.Index(&sonargo.L10NIndexOption{
+				result, resp, err := client.L10N.Index(&sonar.L10NIndexOption{
 					Locale: "en",
 				})
 				// Skip if API not available
@@ -94,7 +93,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 		Context("Compare Different Locales", func() {
 			It("should return different translations for different locales if available", func() {
 				// Get English locale
-				resultEN, respEN, err := client.L10N.Index(&sonargo.L10NIndexOption{
+				resultEN, respEN, err := client.L10N.Index(&sonar.L10NIndexOption{
 					Locale: "en",
 				})
 				// Skip if API not available
@@ -105,7 +104,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 				Expect(respEN.StatusCode).To(Equal(http.StatusOK))
 
 				// Try to get French locale
-				resultFR, respFR, err := client.L10N.Index(&sonargo.L10NIndexOption{
+				resultFR, respFR, err := client.L10N.Index(&sonar.L10NIndexOption{
 					Locale: "fr",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -131,7 +130,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 			It("should get localization messages with timestamp", func() {
 				// Use a recent timestamp (1 year ago)
 				oneYearAgo := time.Now().AddDate(-1, 0, 0).Format("2006-01-02T15:04:05-0700")
-				result, resp, err := client.L10N.Index(&sonargo.L10NIndexOption{
+				result, resp, err := client.L10N.Index(&sonar.L10NIndexOption{
 					Timestamp: oneYearAgo,
 				})
 				// Skip if API not available

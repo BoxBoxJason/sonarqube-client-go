@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("ProjectTags Service", Ordered, func() {
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -48,14 +47,14 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 			// First set a tag on a project
 			projectKey := helpers.UniqueResourceName("proj-tag-search")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Tag Search Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
@@ -63,14 +62,14 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 
 			// Set a unique tag
 			tagName := "e2e-test-tag"
-			_, err = client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			_, err = client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: projectKey,
 				Tags:    []string{tagName},
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Search for the tag
-			result, resp, err := client.ProjectTags.Search(&sonargo.ProjectTagsSearchOption{
+			result, resp, err := client.ProjectTags.Search(&sonar.ProjectTagsSearchOption{
 				Query: tagName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -80,8 +79,8 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 		})
 
 		It("should search tags with pagination", func() {
-			result, resp, err := client.ProjectTags.Search(&sonargo.ProjectTagsSearchOption{
-				PaginationArgs: sonargo.PaginationArgs{
+			result, resp, err := client.ProjectTags.Search(&sonar.ProjectTagsSearchOption{
+				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
 					Page:     1,
 				},
@@ -101,14 +100,14 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 		BeforeEach(func() {
 			testProjectKey = helpers.UniqueResourceName("proj-tag")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Tag Test Project",
 				Project: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: testProjectKey,
 				})
 				return err
@@ -116,7 +115,7 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 		})
 
 		It("should set a single tag on a project", func() {
-			resp, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			resp, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: testProjectKey,
 				Tags:    []string{"backend"},
 			})
@@ -125,7 +124,7 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 		})
 
 		It("should set multiple tags on a project", func() {
-			resp, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			resp, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: testProjectKey,
 				Tags:    []string{"backend", "api", "golang"},
 			})
@@ -135,14 +134,14 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 
 		It("should replace existing tags", func() {
 			// Set initial tags
-			_, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			_, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: testProjectKey,
 				Tags:    []string{"old-tag"},
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Replace with new tags
-			resp, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			resp, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: testProjectKey,
 				Tags:    []string{"new-tag"},
 			})
@@ -152,14 +151,14 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 
 		It("should clear all tags with empty array", func() {
 			// Set initial tags
-			_, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			_, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: testProjectKey,
 				Tags:    []string{"tag1", "tag2", "tag3"},
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Clear all tags by passing an empty array
-			resp, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			resp, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: testProjectKey,
 				Tags:    []string{},
 			})
@@ -167,7 +166,7 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify tags were cleared by setting them again
-			_, err = client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			_, err = client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: testProjectKey,
 				Tags:    []string{"verified"},
 			})
@@ -182,7 +181,7 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+				resp, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 					Tags: []string{"tag1"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -192,7 +191,7 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				resp, err := client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+				resp, err := client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 					Project: "non-existent-project-12345",
 					Tags:    []string{"tag1"},
 				})
@@ -211,42 +210,42 @@ var _ = Describe("ProjectTags Service", Ordered, func() {
 			projectKey := helpers.UniqueResourceName("proj-tag-lifecycle")
 
 			// Step 1: Create project
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Tag Lifecycle Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// Step 2: Set initial tags
-			_, err = client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			_, err = client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: projectKey,
 				Tags:    []string{"initial-tag", "e2e-lifecycle"},
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 3: Search for the tag
-			result, _, err := client.ProjectTags.Search(&sonargo.ProjectTagsSearchOption{
+			result, _, err := client.ProjectTags.Search(&sonar.ProjectTagsSearchOption{
 				Query: "e2e-lifecycle",
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result.Tags).To(ContainElement("e2e-lifecycle"))
 
 			// Step 4: Update tags (replaces all previous tags)
-			_, err = client.ProjectTags.Set(&sonargo.ProjectTagsSetOption{
+			_, err = client.ProjectTags.Set(&sonar.ProjectTagsSetOption{
 				Project: projectKey,
 				Tags:    []string{"updated-tag"},
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5: Verify update by searching
-			result, _, err = client.ProjectTags.Search(&sonargo.ProjectTagsSearchOption{
+			result, _, err = client.ProjectTags.Search(&sonar.ProjectTagsSearchOption{
 				Query: "updated-tag",
 			})
 			Expect(err).NotTo(HaveOccurred())

@@ -1,22 +1,21 @@
 package integration_testing_test
 
 import (
-"net/http"
+	"net/http"
 
-. "github.com/onsi/ginkgo/v2"
-. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
-sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
-"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Hotspots Service", Ordered, func() {
 	var (
-client     *sonargo.Client
-cleanup    *helpers.CleanupManager
-projectKey string
-)
+		client     *sonar.Client
+		cleanup    *helpers.CleanupManager
+		projectKey string
+	)
 
 	BeforeAll(func() {
 		var err error
@@ -27,14 +26,14 @@ projectKey string
 
 		// Create a test project for hotspots-related operations
 		projectKey = helpers.UniqueResourceName("hot")
-		_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    "Hotspots Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: projectKey,
 			})
 			return err
@@ -62,7 +61,7 @@ projectKey string
 			})
 
 			It("should fail without project or hotspots parameter", func() {
-				result, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{})
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())
 				Expect(resp).To(BeNil())
@@ -71,7 +70,7 @@ projectKey string
 
 		Context("Valid Requests", func() {
 			It("should search hotspots for a project", func() {
-				result, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -80,9 +79,9 @@ projectKey string
 			})
 
 			It("should search hotspots with pagination", func() {
-				result, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
 					Project: projectKey,
-					PaginationArgs: sonargo.PaginationArgs{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
 						Page:     1,
 					},
@@ -93,7 +92,7 @@ projectKey string
 			})
 
 			It("should search hotspots with status filter", func() {
-				result, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
 					Project: projectKey,
 					Status:  "TO_REVIEW",
 				})
@@ -103,7 +102,7 @@ projectKey string
 			})
 
 			It("should search hotspots in new code period", func() {
-				result, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
 					Project:         projectKey,
 					InNewCodePeriod: true,
 				})
@@ -115,7 +114,7 @@ projectKey string
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Hotspots.Search(&sonargo.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
 					Project: "non-existent-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -141,7 +140,7 @@ projectKey string
 			})
 
 			It("should fail without required project", func() {
-				result, resp, err := client.Hotspots.List(&sonargo.HotspotsListOption{})
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Project"))
 				Expect(result).To(BeNil())
@@ -151,7 +150,7 @@ projectKey string
 
 		Context("Valid Requests", func() {
 			It("should list hotspots for a project", func() {
-				result, resp, err := client.Hotspots.List(&sonargo.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -160,9 +159,9 @@ projectKey string
 			})
 
 			It("should list hotspots with pagination", func() {
-				result, resp, err := client.Hotspots.List(&sonargo.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
 					Project: projectKey,
-					PaginationArgs: sonargo.PaginationArgs{
+					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
 						Page:     1,
 					},
@@ -173,7 +172,7 @@ projectKey string
 			})
 
 			It("should list hotspots with status filter", func() {
-				result, resp, err := client.Hotspots.List(&sonargo.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
 					Project: projectKey,
 					Status:  "TO_REVIEW",
 				})
@@ -185,7 +184,7 @@ projectKey string
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Hotspots.List(&sonargo.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
 					Project: "non-existent-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -211,7 +210,7 @@ projectKey string
 			})
 
 			It("should fail without required hotspot key", func() {
-				result, resp, err := client.Hotspots.Show(&sonargo.HotspotsShowOption{})
+				result, resp, err := client.Hotspots.Show(&sonar.HotspotsShowOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Hotspot"))
 				Expect(result).To(BeNil())
@@ -221,7 +220,7 @@ projectKey string
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				result, resp, err := client.Hotspots.Show(&sonargo.HotspotsShowOption{
+				result, resp, err := client.Hotspots.Show(&sonar.HotspotsShowOption{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -247,7 +246,7 @@ projectKey string
 			})
 
 			It("should fail without required project key", func() {
-				result, resp, err := client.Hotspots.Pull(&sonargo.HotspotsPullOption{
+				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOption{
 					BranchName: "main",
 				})
 				Expect(err).To(HaveOccurred())
@@ -257,7 +256,7 @@ projectKey string
 			})
 
 			It("should fail without required branch name", func() {
-				result, resp, err := client.Hotspots.Pull(&sonargo.HotspotsPullOption{
+				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOption{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -269,7 +268,7 @@ projectKey string
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Hotspots.Pull(&sonargo.HotspotsPullOption{
+				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOption{
 					ProjectKey: "non-existent-project",
 					BranchName: "main",
 				})
@@ -295,7 +294,7 @@ projectKey string
 			})
 
 			It("should fail without required hotspot key", func() {
-				resp, err := client.Hotspots.AddComment(&sonargo.HotspotsAddCommentOption{
+				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOption{
 					Comment: "Test comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -304,7 +303,7 @@ projectKey string
 			})
 
 			It("should fail without required comment", func() {
-				resp, err := client.Hotspots.AddComment(&sonargo.HotspotsAddCommentOption{
+				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOption{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -315,7 +314,7 @@ projectKey string
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				resp, err := client.Hotspots.AddComment(&sonargo.HotspotsAddCommentOption{
+				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOption{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 					Comment: "Test comment",
 				})
@@ -340,7 +339,7 @@ projectKey string
 			})
 
 			It("should fail without required hotspot key", func() {
-				resp, err := client.Hotspots.Assign(&sonargo.HotspotsAssignOption{
+				resp, err := client.Hotspots.Assign(&sonar.HotspotsAssignOption{
 					Assignee: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -351,7 +350,7 @@ projectKey string
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				resp, err := client.Hotspots.Assign(&sonargo.HotspotsAssignOption{
+				resp, err := client.Hotspots.Assign(&sonar.HotspotsAssignOption{
 					Hotspot:  "AXxxxxxxxxxxxxxxxxxx",
 					Assignee: "admin",
 				})
@@ -376,7 +375,7 @@ projectKey string
 			})
 
 			It("should fail without required hotspot key", func() {
-				resp, err := client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
+				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOption{
 					Status: "REVIEWED",
 				})
 				Expect(err).To(HaveOccurred())
@@ -385,7 +384,7 @@ projectKey string
 			})
 
 			It("should fail without required status", func() {
-				resp, err := client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
+				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOption{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -396,7 +395,7 @@ projectKey string
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				resp, err := client.Hotspots.ChangeStatus(&sonargo.HotspotsChangeStatusOption{
+				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOption{
 					Hotspot:    "AXxxxxxxxxxxxxxxxxxx",
 					Status:     "REVIEWED",
 					Resolution: "SAFE",
@@ -422,7 +421,7 @@ projectKey string
 			})
 
 			It("should fail without required comment key", func() {
-				resp, err := client.Hotspots.DeleteComment(&sonargo.HotspotsDeleteCommentOption{})
+				resp, err := client.Hotspots.DeleteComment(&sonar.HotspotsDeleteCommentOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Comment"))
 				Expect(resp).To(BeNil())
@@ -431,7 +430,7 @@ projectKey string
 
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
-				resp, err := client.Hotspots.DeleteComment(&sonargo.HotspotsDeleteCommentOption{
+				resp, err := client.Hotspots.DeleteComment(&sonar.HotspotsDeleteCommentOption{
 					Comment: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -456,7 +455,7 @@ projectKey string
 			})
 
 			It("should fail without required comment key", func() {
-				result, resp, err := client.Hotspots.EditComment(&sonargo.HotspotsEditCommentOption{
+				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOption{
 					Text: "Updated comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -466,7 +465,7 @@ projectKey string
 			})
 
 			It("should fail without required text", func() {
-				result, resp, err := client.Hotspots.EditComment(&sonargo.HotspotsEditCommentOption{
+				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOption{
 					Comment: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -478,7 +477,7 @@ projectKey string
 
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
-				result, resp, err := client.Hotspots.EditComment(&sonargo.HotspotsEditCommentOption{
+				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOption{
 					Comment: "AXxxxxxxxxxxxxxxxxxx",
 					Text:    "Updated comment",
 				})

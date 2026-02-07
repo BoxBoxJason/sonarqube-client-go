@@ -6,9 +6,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("NewCodePeriods Service", Ordered, func() {
@@ -29,7 +28,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 	// comprehensive coverage of the SDK's request/response handling.
 
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -63,20 +62,20 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should show project-level new code period definition", func() {
 			projectKey := helpers.UniqueResourceName("ncp-show-proj")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "NCP Show Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			result, resp, err := client.NewCodePeriods.Show(&sonargo.NewCodePeriodsShowOption{
+			result, resp, err := client.NewCodePeriods.Show(&sonar.NewCodePeriodsShowOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -88,7 +87,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should show branch-level new code period definition", func() {
 			projectKey := helpers.UniqueResourceName("ncp-show-branch")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP Branch Show Test Project",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -96,13 +95,13 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			result, resp, err := client.NewCodePeriods.Show(&sonargo.NewCodePeriodsShowOption{
+			result, resp, err := client.NewCodePeriods.Show(&sonar.NewCodePeriodsShowOption{
 				Project: projectKey,
 				Branch:  "main",
 			})
@@ -120,7 +119,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should list new code periods for project", func() {
 			projectKey := helpers.UniqueResourceName("ncp-list-proj")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP List Test Project",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -128,13 +127,13 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			result, resp, err := client.NewCodePeriods.List(&sonargo.NewCodePeriodsListOption{
+			result, resp, err := client.NewCodePeriods.List(&sonar.NewCodePeriodsListOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -152,7 +151,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				result, resp, err := client.NewCodePeriods.List(&sonargo.NewCodePeriodsListOption{})
+				result, resp, err := client.NewCodePeriods.List(&sonar.NewCodePeriodsListOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -161,7 +160,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.NewCodePeriods.List(&sonargo.NewCodePeriodsListOption{
+				result, resp, err := client.NewCodePeriods.List(&sonar.NewCodePeriodsListOption{
 					Project: "non-existent-project-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -183,7 +182,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should set project-level new code period with PREVIOUS_VERSION", func() {
 			projectKey := helpers.UniqueResourceName("ncp-prevver")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP Set PreviousVersion Test",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -191,13 +190,13 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Type:    "PREVIOUS_VERSION",
 			})
@@ -212,7 +211,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should set project-level new code period with NUMBER_OF_DAYS", func() {
 			projectKey := helpers.UniqueResourceName("ncp-numdays")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP Set Days Test",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -220,13 +219,13 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Type:    "NUMBER_OF_DAYS",
 				Value:   "30",
@@ -242,7 +241,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should set project-level new code period with REFERENCE_BRANCH", func() {
 			projectKey := helpers.UniqueResourceName("ncp-refbranch")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP Set RefBranch Test",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -250,13 +249,13 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Type:    "REFERENCE_BRANCH",
 				Value:   "main",
@@ -272,7 +271,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should set branch-level new code period", func() {
 			projectKey := helpers.UniqueResourceName("ncp-branchlvl")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP Set Branch Test",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -280,13 +279,13 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Branch:  "main",
 				Type:    "NUMBER_OF_DAYS",
@@ -296,7 +295,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 			// Verify the setting was applied
-			result, _, err := client.NewCodePeriods.Show(&sonargo.NewCodePeriodsShowOption{
+			result, _, err := client.NewCodePeriods.Show(&sonar.NewCodePeriodsShowOption{
 				Project: projectKey,
 				Branch:  "main",
 			})
@@ -313,7 +312,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with missing type", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -321,7 +320,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with invalid type", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "INVALID_TYPE",
 				})
@@ -330,7 +329,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with NUMBER_OF_DAYS and invalid value", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "NUMBER_OF_DAYS",
 					Value:   "invalid",
@@ -340,7 +339,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with NUMBER_OF_DAYS exceeding max value", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "NUMBER_OF_DAYS",
 					Value:   "100",
@@ -350,7 +349,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with NUMBER_OF_DAYS without value", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "NUMBER_OF_DAYS",
 					Value:   "",
@@ -360,7 +359,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with NUMBER_OF_DAYS with zero value", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "NUMBER_OF_DAYS",
 					Value:   "0",
@@ -370,7 +369,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with NUMBER_OF_DAYS with negative value", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "NUMBER_OF_DAYS",
 					Value:   "-5",
@@ -382,20 +381,20 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should succeed with NUMBER_OF_DAYS minimum value", func() {
 				projectKey := helpers.UniqueResourceName("ncp-mindays")
 
-				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:    "NCP Min Days Test",
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 						Project: projectKey,
 					})
 					return err
 				})
 
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: projectKey,
 					Type:    "NUMBER_OF_DAYS",
 					Value:   "1",
@@ -407,20 +406,20 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should succeed with NUMBER_OF_DAYS maximum value", func() {
 				projectKey := helpers.UniqueResourceName("ncp-maxdays")
 
-				_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 					Name:    "NCP Max Days Test",
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 						Project: projectKey,
 					})
 					return err
 				})
 
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: projectKey,
 					Type:    "NUMBER_OF_DAYS",
 					Value:   "90",
@@ -430,7 +429,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with REFERENCE_BRANCH missing project", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Type:  "REFERENCE_BRANCH",
 					Value: "main",
 				})
@@ -439,7 +438,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			})
 
 			It("should fail with SPECIFIC_ANALYSIS missing branch", func() {
-				resp, err := client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 					Project: "some-project",
 					Type:    "SPECIFIC_ANALYSIS",
 					Value:   "some-analysis-id",
@@ -457,28 +456,28 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should unset project-level new code period", func() {
 			projectKey := helpers.UniqueResourceName("ncp-unsetproj")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "NCP Unset Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// First, set a new code period
-			_, err = client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Type:    "PREVIOUS_VERSION",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Unset it
-			resp, err := client.NewCodePeriods.Unset(&sonargo.NewCodePeriodsUnsetOption{
+			resp, err := client.NewCodePeriods.Unset(&sonar.NewCodePeriodsUnsetOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -488,7 +487,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 		It("should unset branch-level new code period", func() {
 			projectKey := helpers.UniqueResourceName("ncp-unsetbranch")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP Unset Branch Test Project",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -496,14 +495,14 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// First, set a branch-level new code period
-			_, err = client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Branch:  "main",
 				Type:    "NUMBER_OF_DAYS",
@@ -512,7 +511,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Unset it
-			resp, err := client.NewCodePeriods.Unset(&sonargo.NewCodePeriodsUnsetOption{
+			resp, err := client.NewCodePeriods.Unset(&sonar.NewCodePeriodsUnsetOption{
 				Project: projectKey,
 				Branch:  "main",
 			})
@@ -536,7 +535,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			projectKey := helpers.UniqueResourceName("ncp-lifecycle")
 
 			// Step 1: Create project
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:       "NCP Lifecycle Test Project",
 				Project:    projectKey,
 				MainBranch: "main",
@@ -544,21 +543,21 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// Step 2: Show project-level (inherits from global initially)
-			result, _, err := client.NewCodePeriods.Show(&sonargo.NewCodePeriodsShowOption{
+			result, _, err := client.NewCodePeriods.Show(&sonar.NewCodePeriodsShowOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).NotTo(BeNil())
 
 			// Step 3: Set project-level new code period
-			_, err = client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Type:    "NUMBER_OF_DAYS",
 				Value:   "30",
@@ -566,7 +565,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 4: Set branch-level new code period
-			_, err = client.NewCodePeriods.Set(&sonargo.NewCodePeriodsSetOption{
+			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOption{
 				Project: projectKey,
 				Branch:  "main",
 				Type:    "PREVIOUS_VERSION",
@@ -574,14 +573,14 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5: List all new code periods for project
-			listResult, _, err := client.NewCodePeriods.List(&sonargo.NewCodePeriodsListOption{
+			listResult, _, err := client.NewCodePeriods.List(&sonar.NewCodePeriodsListOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(listResult.NewCodePeriods).NotTo(BeNil())
 
 			// Step 6: Show branch-level
-			result, _, err = client.NewCodePeriods.Show(&sonargo.NewCodePeriodsShowOption{
+			result, _, err = client.NewCodePeriods.Show(&sonar.NewCodePeriodsShowOption{
 				Project: projectKey,
 				Branch:  "main",
 			})
@@ -589,14 +588,14 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			Expect(result.BranchKey).To(Equal("main"))
 
 			// Step 7: Unset branch-level
-			_, err = client.NewCodePeriods.Unset(&sonargo.NewCodePeriodsUnsetOption{
+			_, err = client.NewCodePeriods.Unset(&sonar.NewCodePeriodsUnsetOption{
 				Project: projectKey,
 				Branch:  "main",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 8: Unset project-level
-			_, err = client.NewCodePeriods.Unset(&sonargo.NewCodePeriodsUnsetOption{
+			_, err = client.NewCodePeriods.Unset(&sonar.NewCodePeriodsUnsetOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())

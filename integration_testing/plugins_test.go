@@ -6,13 +6,12 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Plugins Service", Ordered, func() {
-	var client *sonargo.Client
+	var client *sonar.Client
 
 	BeforeAll(func() {
 		var err error
@@ -62,7 +61,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Download", func() {
 		Context("Functional Tests", func() {
 			It("should attempt to download a plugin", func() {
-				_, resp, err := client.Plugins.Download(&sonargo.PluginsDownloadOption{
+				_, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOption{
 					Plugin: "java",
 				})
 				// Skip if API not available - this is internal API
@@ -77,7 +76,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing plugin key", func() {
-				result, resp, err := client.Plugins.Download(&sonargo.PluginsDownloadOption{})
+				result, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -98,7 +97,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Install", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Install(&sonargo.PluginsInstallOption{})
+				resp, err := client.Plugins.Install(&sonar.PluginsInstallOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -110,7 +109,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Install(&sonargo.PluginsInstallOption{
+				resp, err := client.Plugins.Install(&sonar.PluginsInstallOption{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available
@@ -143,7 +142,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list installed plugins with category field", func() {
-				result, resp, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
 					Fields: []string{"category"},
 				})
 				// Skip if API not available
@@ -156,7 +155,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list bundled plugins only", func() {
-				result, resp, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
 					Type: "BUNDLED",
 				})
 				// Skip if API not available
@@ -169,7 +168,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list external plugins only", func() {
-				result, resp, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
 					Type: "EXTERNAL",
 				})
 				// Skip if API not available
@@ -184,7 +183,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with invalid type", func() {
-				result, resp, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
 					Type: "INVALID",
 				})
 				Expect(err).To(HaveOccurred())
@@ -193,7 +192,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with invalid field", func() {
-				result, resp, err := client.Plugins.Installed(&sonargo.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
 					Fields: []string{"invalid_field"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -227,7 +226,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Uninstall", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Uninstall(&sonargo.PluginsUninstallOption{})
+				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -239,7 +238,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Uninstall(&sonargo.PluginsUninstallOption{
+				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOption{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available
@@ -260,7 +259,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Update", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Update(&sonargo.PluginsUpdateOption{})
+				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -272,7 +271,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Update(&sonargo.PluginsUpdateOption{
+				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOption{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available

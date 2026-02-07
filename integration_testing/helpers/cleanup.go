@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 // IgnoreNotFoundError returns nil if the error indicates a resource was not found,
@@ -29,7 +29,7 @@ func IgnoreNotFoundError(err error) error {
 
 // CleanupManager manages cleanup of e2e test resources.
 type CleanupManager struct {
-	client    *sonargo.Client
+	client    *sonar.Client
 	resources []cleanupResource
 }
 
@@ -40,7 +40,7 @@ type cleanupResource struct {
 }
 
 // NewCleanupManager creates a new cleanup manager.
-func NewCleanupManager(client *sonargo.Client) *CleanupManager {
+func NewCleanupManager(client *sonar.Client) *CleanupManager {
 	return &CleanupManager{
 		client:    client,
 		resources: make([]cleanupResource, 0),
@@ -77,7 +77,7 @@ func (cm *CleanupManager) Cleanup() []error {
 }
 
 // CleanupOrphanedResources cleans up any orphaned e2e resources older than maxAge.
-func CleanupOrphanedResources(client *sonargo.Client, maxAge time.Duration) error {
+func CleanupOrphanedResources(client *sonar.Client, maxAge time.Duration) error {
 	// Clean up orphaned projects
 	err := cleanupOrphanedProjects(client, maxAge)
 	if err != nil {
@@ -99,10 +99,10 @@ func CleanupOrphanedResources(client *sonargo.Client, maxAge time.Duration) erro
 	return nil
 }
 
-func cleanupOrphanedProjects(client *sonargo.Client, _ time.Duration) error {
+func cleanupOrphanedProjects(client *sonar.Client, _ time.Duration) error {
 	// Search for projects with e2e prefix
-	projects, _, err := client.Projects.Search(&sonargo.ProjectsSearchOption{
-		PaginationArgs:    sonargo.PaginationArgs{Page: 0, PageSize: 0},
+	projects, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
+		PaginationArgs:    sonar.PaginationArgs{Page: 0, PageSize: 0},
 		AnalyzedBefore:    "",
 		OnProvisionedOnly: false,
 		Projects:          nil,
@@ -120,7 +120,7 @@ func cleanupOrphanedProjects(client *sonargo.Client, _ time.Duration) error {
 
 	for _, p := range projects.Components {
 		if strings.HasPrefix(p.Key, E2EResourcePrefix) {
-			_, _ = client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, _ = client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: p.Key,
 			})
 		}
@@ -129,10 +129,10 @@ func cleanupOrphanedProjects(client *sonargo.Client, _ time.Duration) error {
 	return nil
 }
 
-func cleanupOrphanedUsers(client *sonargo.Client, _ time.Duration) error {
+func cleanupOrphanedUsers(client *sonar.Client, _ time.Duration) error {
 	//nolint:staticcheck // Using deprecated API until v2 API is implemented
-	users, _, err := client.Users.Search(&sonargo.UsersSearchOption{
-		PaginationArgs:        sonargo.PaginationArgs{Page: 0, PageSize: 0},
+	users, _, err := client.Users.Search(&sonar.UsersSearchOption{
+		PaginationArgs:        sonar.PaginationArgs{Page: 0, PageSize: 0},
 		Deactivated:           false,
 		ExternalIdentity:      "",
 		LastConnectedAfter:    "",
@@ -153,7 +153,7 @@ func cleanupOrphanedUsers(client *sonargo.Client, _ time.Duration) error {
 	for _, u := range users.Users {
 		if strings.HasPrefix(u.Login, E2EResourcePrefix) {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, _ = client.Users.Deactivate(&sonargo.UsersDeactivateOption{
+			_, _, _ = client.Users.Deactivate(&sonar.UsersDeactivateOption{
 				Login:     u.Login,
 				Anonymize: false,
 			})
@@ -163,10 +163,10 @@ func cleanupOrphanedUsers(client *sonargo.Client, _ time.Duration) error {
 	return nil
 }
 
-func cleanupOrphanedGroups(client *sonargo.Client, _ time.Duration) error {
+func cleanupOrphanedGroups(client *sonar.Client, _ time.Duration) error {
 	//nolint:staticcheck // Using deprecated API until v2 API is implemented
-	groups, _, err := client.UserGroups.Search(&sonargo.UserGroupsSearchOption{
-		PaginationArgs: sonargo.PaginationArgs{Page: 0, PageSize: 0},
+	groups, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
+		PaginationArgs: sonar.PaginationArgs{Page: 0, PageSize: 0},
 		Managed:        nil,
 		Fields:         nil,
 		Query:          E2EResourcePrefix,
@@ -182,7 +182,7 @@ func cleanupOrphanedGroups(client *sonargo.Client, _ time.Duration) error {
 	for _, g := range groups.Groups {
 		if strings.HasPrefix(g.Name, E2EResourcePrefix) {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _ = client.UserGroups.Delete(&sonargo.UserGroupsDeleteOption{
+			_, _ = client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
 				Name: g.Name,
 			})
 		}

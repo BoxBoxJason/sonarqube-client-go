@@ -289,7 +289,7 @@ The project includes several Make targets for common development tasks:
 | Command | Description |
 |---------|-------------|
 | `make changelog` | Generate CHANGELOG.md using git-cliff |
-| `make changelog-check` | Verify CHANGELOG.md is up-to-date (used in CI) |
+| `make changelog-check` | Verify CHANGELOG.md is up-to-date |
 
 ### Configuration Variables
 

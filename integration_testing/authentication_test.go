@@ -7,14 +7,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Authentication Service", Ordered, func() {
 	var (
-		client *sonargo.Client
+		client *sonar.Client
 		cfg    *helpers.Config
 	)
 
@@ -40,9 +39,9 @@ var _ = Describe("Authentication Service", Ordered, func() {
 		Context("with basic auth client", func() {
 			It("should validate basic auth credentials", func() {
 				// Create a new client with basic auth (explicitly, to ensure basic auth is tested)
-				basicAuthClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
-					sonargo.WithBasicAuth(cfg.Username, cfg.Password),
+				basicAuthClient, err := sonar.NewClient(nil,
+					sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+					sonar.WithBasicAuth(cfg.Username, cfg.Password),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(basicAuthClient).NotTo(BeNil())
@@ -58,8 +57,8 @@ var _ = Describe("Authentication Service", Ordered, func() {
 		Context("with unauthenticated client", func() {
 			It("should return valid=false for anonymous access", func() {
 				// Create a client without credentials
-				anonClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+				anonClient, err := sonar.NewClient(nil,
+					sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(anonClient).NotTo(BeNil())
@@ -77,13 +76,13 @@ var _ = Describe("Authentication Service", Ordered, func() {
 		Context("with valid credentials", func() {
 			It("should successfully login with correct username and password", func() {
 				// Create a fresh client without auth for login testing
-				loginClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+				loginClient, err := sonar.NewClient(nil,
+					sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
 
-				opt := &sonargo.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOption{
 					Login:    cfg.Username,
 					Password: cfg.Password,
 				}
@@ -98,13 +97,13 @@ var _ = Describe("Authentication Service", Ordered, func() {
 		Context("with invalid credentials", func() {
 			It("should fail login with incorrect password", func() {
 				// Create a fresh client without auth
-				loginClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+				loginClient, err := sonar.NewClient(nil,
+					sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
 
-				opt := &sonargo.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOption{
 					Login:    cfg.Username,
 					Password: "wrongpassword",
 				}
@@ -119,13 +118,13 @@ var _ = Describe("Authentication Service", Ordered, func() {
 
 			It("should fail login with non-existent user", func() {
 				// Create a fresh client without auth
-				loginClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+				loginClient, err := sonar.NewClient(nil,
+					sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
 
-				opt := &sonargo.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOption{
 					Login:    "nonexistentuser",
 					Password: "somepassword",
 				}
@@ -147,7 +146,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with missing Login field", func() {
-				opt := &sonargo.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOption{
 					Password: "somepassword",
 				}
 
@@ -157,7 +156,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with missing Password field", func() {
-				opt := &sonargo.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOption{
 					Login: "someuser",
 				}
 
@@ -167,7 +166,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with empty Login field", func() {
-				opt := &sonargo.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOption{
 					Login:    "",
 					Password: "somepassword",
 				}
@@ -178,7 +177,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with empty Password field", func() {
-				opt := &sonargo.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOption{
 					Login:    "someuser",
 					Password: "",
 				}
@@ -197,15 +196,15 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				jar, err := cookiejar.New(nil)
 				Expect(err).NotTo(HaveOccurred())
 				httpClient := &http.Client{Jar: jar}
-				sessionClient, err := sonargo.NewClient(nil,
-					sonargo.WithHTTPClient(httpClient),
-					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+				sessionClient, err := sonar.NewClient(nil,
+					sonar.WithHTTPClient(httpClient),
+					sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(sessionClient).NotTo(BeNil())
 
 				// Login first
-				loginOpt := &sonargo.AuthenticationLoginOption{
+				loginOpt := &sonar.AuthenticationLoginOption{
 					Login:    cfg.Username,
 					Password: cfg.Password,
 				}
@@ -226,8 +225,8 @@ var _ = Describe("Authentication Service", Ordered, func() {
 		Context("without prior login", func() {
 			It("should handle logout gracefully for unauthenticated client", func() {
 				// Create a client without any authentication
-				anonClient, err := sonargo.NewClient(nil,
-					sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+				anonClient, err := sonar.NewClient(nil,
+					sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 				)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(anonClient).NotTo(BeNil())
@@ -247,9 +246,9 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			jar, err := cookiejar.New(nil)
 			Expect(err).NotTo(HaveOccurred())
 			httpClient := &http.Client{Jar: jar}
-			sessionClient, err := sonargo.NewClient(nil,
-				sonargo.WithHTTPClient(httpClient),
-				sonargo.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
+			sessionClient, err := sonar.NewClient(nil,
+				sonar.WithHTTPClient(httpClient),
+				sonar.WithBaseURL(helpers.NormalizeBaseURL(cfg.BaseURL)),
 			)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(sessionClient).NotTo(BeNil())
@@ -262,7 +261,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			Expect(result.Valid).To(BeFalse())
 
 			// Step 2: Login
-			loginOpt := &sonargo.AuthenticationLoginOption{
+			loginOpt := &sonar.AuthenticationLoginOption{
 				Login:    cfg.Username,
 				Password: cfg.Password,
 			}

@@ -6,16 +6,15 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Push Service", Ordered, func() {
 	var (
-		client         *sonargo.Client
+		client         *sonar.Client
 		cleanupManager *helpers.CleanupManager
-		testProject    *sonargo.ProjectsCreate
+		testProject    *sonar.ProjectsCreate
 	)
 
 	BeforeAll(func() {
@@ -28,13 +27,13 @@ var _ = Describe("Push Service", Ordered, func() {
 
 		// Create a test project for push events
 		projectKey := helpers.UniqueResourceName("push")
-		testProject, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 			Name:    projectKey,
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -54,7 +53,7 @@ var _ = Describe("Push Service", Ordered, func() {
 	Describe("SonarlintEvents", func() {
 		Context("Functional Tests", func() {
 			It("should connect to sonarlint events stream with valid parameters", func() {
-				resp, err := client.Push.SonarlintEvents(&sonargo.PushSonarlintEventsOption{
+				resp, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOption{
 					Languages:   []string{"java"},
 					ProjectKeys: []string{testProject.Project.Key},
 				})
@@ -73,7 +72,7 @@ var _ = Describe("Push Service", Ordered, func() {
 			})
 
 			It("should connect with multiple languages", func() {
-				resp, err := client.Push.SonarlintEvents(&sonargo.PushSonarlintEventsOption{
+				resp, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOption{
 					Languages:   []string{"java", "js", "py"},
 					ProjectKeys: []string{testProject.Project.Key},
 				})
@@ -92,14 +91,14 @@ var _ = Describe("Push Service", Ordered, func() {
 
 		Context("Error Handling", func() {
 			It("should fail with missing languages", func() {
-				_, err := client.Push.SonarlintEvents(&sonargo.PushSonarlintEventsOption{
+				_, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOption{
 					ProjectKeys: []string{testProject.Project.Key},
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing project keys", func() {
-				_, err := client.Push.SonarlintEvents(&sonargo.PushSonarlintEventsOption{
+				_, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOption{
 					Languages: []string{"java"},
 				})
 				Expect(err).To(HaveOccurred())

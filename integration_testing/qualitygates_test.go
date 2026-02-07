@@ -6,14 +6,13 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	sonargo "github.com/boxboxjason/sonarqube-client-go/sonar"
-
 	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 var _ = Describe("Qualitygates Service", Ordered, func() {
 	var (
-		client  *sonargo.Client
+		client  *sonar.Client
 		cleanup *helpers.CleanupManager
 	)
 
@@ -68,7 +67,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should create a new quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg")
 
-			result, resp, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			result, resp, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -77,7 +76,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(result.Name).To(Equal(gateName))
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
@@ -93,7 +92,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty name", func() {
-				result, resp, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{})
+				result, resp, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -104,20 +103,20 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			It("should fail with duplicate name", func() {
 				gateName := helpers.UniqueResourceName("qg-dup")
 
-				_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+				_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 					Name: gateName,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-					_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+					_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 						Name: gateName,
 					})
 					return err
 				})
 
 				// Try to create with same name
-				result, resp, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+				result, resp, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 					Name: gateName,
 				})
 				Expect(err).To(HaveOccurred())
@@ -134,19 +133,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should show quality gate details", func() {
 			gateName := helpers.UniqueResourceName("qg-show")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			result, resp, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -165,7 +164,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty name", func() {
-				result, resp, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{})
+				result, resp, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -174,7 +173,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent quality gate", func() {
-				result, resp, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+				result, resp, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 					Name: "non-existent-gate-xyz",
 				})
 				Expect(err).To(HaveOccurred())
@@ -193,19 +192,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			originalName := helpers.UniqueResourceName("qg-rename")
 			newName := helpers.UniqueResourceName("qg-renamed")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: originalName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", newName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: newName,
 				})
 				return err
 			})
 
-			resp, err := client.Qualitygates.Rename(&sonargo.QualitygatesRenameOption{
+			resp, err := client.Qualitygates.Rename(&sonar.QualitygatesRenameOption{
 				CurrentName: originalName,
 				Name:        newName,
 			})
@@ -213,7 +212,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 			// Verify rename succeeded
-			result, _, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			result, _, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: newName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -228,7 +227,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty current name", func() {
-				resp, err := client.Qualitygates.Rename(&sonargo.QualitygatesRenameOption{
+				resp, err := client.Qualitygates.Rename(&sonar.QualitygatesRenameOption{
 					Name: "new-name",
 				})
 				Expect(err).To(HaveOccurred())
@@ -236,7 +235,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty new name", func() {
-				resp, err := client.Qualitygates.Rename(&sonargo.QualitygatesRenameOption{
+				resp, err := client.Qualitygates.Rename(&sonar.QualitygatesRenameOption{
 					CurrentName: "current-name",
 				})
 				Expect(err).To(HaveOccurred())
@@ -253,19 +252,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			sourceName := helpers.UniqueResourceName("qg-source")
 			copyName := helpers.UniqueResourceName("qg-copy")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: sourceName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", sourceName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: sourceName,
 				})
 				return err
 			})
 
-			resp, err := client.Qualitygates.Copy(&sonargo.QualitygatesCopyOption{
+			resp, err := client.Qualitygates.Copy(&sonar.QualitygatesCopyOption{
 				SourceName: sourceName,
 				Name:       copyName,
 			})
@@ -273,14 +272,14 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 			cleanup.RegisterCleanup("qualitygate", copyName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: copyName,
 				})
 				return err
 			})
 
 			// Verify copy exists
-			result, _, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			result, _, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: copyName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -295,7 +294,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty source name", func() {
-				resp, err := client.Qualitygates.Copy(&sonargo.QualitygatesCopyOption{
+				resp, err := client.Qualitygates.Copy(&sonar.QualitygatesCopyOption{
 					Name: "new-copy",
 				})
 				Expect(err).To(HaveOccurred())
@@ -303,7 +302,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty target name", func() {
-				resp, err := client.Qualitygates.Copy(&sonargo.QualitygatesCopyOption{
+				resp, err := client.Qualitygates.Copy(&sonar.QualitygatesCopyOption{
 					SourceName: "source",
 				})
 				Expect(err).To(HaveOccurred())
@@ -319,19 +318,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should delete a quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-destroy")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			resp, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+			resp, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify deletion
-			_, _, err = client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			_, _, err = client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: gateName,
 			})
 			Expect(err).To(HaveOccurred())
@@ -345,7 +344,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty name", func() {
-				resp, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{})
+				resp, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -353,7 +352,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent quality gate", func() {
-				resp, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				resp, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: "non-existent-gate-xyz",
 				})
 				Expect(err).To(HaveOccurred())
@@ -370,26 +369,26 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should set a quality gate as default", func() {
 			gateName := helpers.UniqueResourceName("qg-default")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			resp, err := client.Qualitygates.SetAsDefault(&sonargo.QualitygatesSetAsDefaultOption{
+			resp, err := client.Qualitygates.SetAsDefault(&sonar.QualitygatesSetAsDefaultOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify it's now default
-			result, _, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			result, _, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -399,7 +398,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			listResult, _, _ := client.Qualitygates.List()
 			for _, gate := range listResult.Qualitygates {
 				if gate.IsBuiltIn {
-					_, _ = client.Qualitygates.SetAsDefault(&sonargo.QualitygatesSetAsDefaultOption{
+					_, _ = client.Qualitygates.SetAsDefault(&sonar.QualitygatesSetAsDefaultOption{
 						Name: gate.Name,
 					})
 					break
@@ -415,7 +414,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty name", func() {
-				resp, err := client.Qualitygates.SetAsDefault(&sonargo.QualitygatesSetAsDefaultOption{})
+				resp, err := client.Qualitygates.SetAsDefault(&sonar.QualitygatesSetAsDefaultOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -429,19 +428,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should create a condition for a quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-cond")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+			result, resp, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 				GateName: gateName,
 				Metric:   "coverage",
 				Op:       "LT",
@@ -458,19 +457,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should create condition with GT operator", func() {
 			gateName := helpers.UniqueResourceName("qg-condgt")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+			result, resp, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 				GateName: gateName,
 				Metric:   "duplicated_lines_density",
 				Op:       "GT",
@@ -490,7 +489,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				result, resp, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+				result, resp, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 					Metric: "coverage",
 					Error:  "80",
 				})
@@ -500,7 +499,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing metric", func() {
-				result, resp, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+				result, resp, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 					GateName: "some-gate",
 					Error:    "80",
 				})
@@ -510,7 +509,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing error threshold", func() {
-				result, resp, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+				result, resp, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 					GateName: "some-gate",
 					Metric:   "coverage",
 				})
@@ -528,20 +527,20 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should update a condition", func() {
 			gateName := helpers.UniqueResourceName("qg-upd")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
 			// Create a condition first
-			condResult, _, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+			condResult, _, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 				GateName: gateName,
 				Metric:   "coverage",
 				Op:       "LT",
@@ -550,7 +549,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Update it
-			resp, err := client.Qualitygates.UpdateCondition(&sonargo.QualitygatesUpdateConditionOption{
+			resp, err := client.Qualitygates.UpdateCondition(&sonar.QualitygatesUpdateConditionOption{
 				ID:     condResult.ID,
 				Metric: "coverage",
 				Op:     "LT",
@@ -560,7 +559,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 			// Verify update - find the condition with our ID
-			result, _, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			result, _, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -584,7 +583,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing ID", func() {
-				resp, err := client.Qualitygates.UpdateCondition(&sonargo.QualitygatesUpdateConditionOption{
+				resp, err := client.Qualitygates.UpdateCondition(&sonar.QualitygatesUpdateConditionOption{
 					Metric: "coverage",
 					Error:  "80",
 				})
@@ -601,20 +600,20 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should delete a condition", func() {
 			gateName := helpers.UniqueResourceName("qg-delcond")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
 			// Create a condition first
-			condResult, _, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+			condResult, _, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 				GateName: gateName,
 				Metric:   "coverage",
 				Op:       "LT",
@@ -623,14 +622,14 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Delete it
-			resp, err := client.Qualitygates.DeleteCondition(&sonargo.QualitygatesDeleteConditionOption{
+			resp, err := client.Qualitygates.DeleteCondition(&sonar.QualitygatesDeleteConditionOption{
 				ID: condResult.ID,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify deletion - the specific condition should no longer exist
-			result, _, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			result, _, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -647,7 +646,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing ID", func() {
-				resp, err := client.Qualitygates.DeleteCondition(&sonargo.QualitygatesDeleteConditionOption{})
+				resp, err := client.Qualitygates.DeleteCondition(&sonar.QualitygatesDeleteConditionOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -662,32 +661,32 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			gateName := helpers.UniqueResourceName("qg-sel")
 			projectKey := helpers.UniqueResourceName("proj-qg")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "QualityGate Select Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.Qualitygates.Select(&sonargo.QualitygatesSelectOption{
+			resp, err := client.Qualitygates.Select(&sonar.QualitygatesSelectOption{
 				GateName:   gateName,
 				ProjectKey: projectKey,
 			})
@@ -695,7 +694,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify association
-			result, _, err := client.Qualitygates.GetByProject(&sonargo.QualitygatesGetByProjectOption{
+			result, _, err := client.Qualitygates.GetByProject(&sonar.QualitygatesGetByProjectOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -710,7 +709,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				resp, err := client.Qualitygates.Select(&sonargo.QualitygatesSelectOption{
+				resp, err := client.Qualitygates.Select(&sonar.QualitygatesSelectOption{
 					ProjectKey: "some-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -718,7 +717,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.Qualitygates.Select(&sonargo.QualitygatesSelectOption{
+				resp, err := client.Qualitygates.Select(&sonar.QualitygatesSelectOption{
 					GateName: "some-gate",
 				})
 				Expect(err).To(HaveOccurred())
@@ -732,47 +731,47 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			gateName := helpers.UniqueResourceName("qg-desel")
 			projectKey := helpers.UniqueResourceName("proj-qgde")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "QualityGate Deselect Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// Associate first
-			_, err = client.Qualitygates.Select(&sonargo.QualitygatesSelectOption{
+			_, err = client.Qualitygates.Select(&sonar.QualitygatesSelectOption{
 				GateName:   gateName,
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Deselect
-			resp, err := client.Qualitygates.Deselect(&sonargo.QualitygatesDeselectOption{
+			resp, err := client.Qualitygates.Deselect(&sonar.QualitygatesDeselectOption{
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify - project should now use default gate
-			result, _, err := client.Qualitygates.GetByProject(&sonargo.QualitygatesGetByProjectOption{
+			result, _, err := client.Qualitygates.GetByProject(&sonar.QualitygatesGetByProjectOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -787,7 +786,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing project key", func() {
-				resp, err := client.Qualitygates.Deselect(&sonargo.QualitygatesDeselectOption{})
+				resp, err := client.Qualitygates.Deselect(&sonar.QualitygatesDeselectOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -801,20 +800,20 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should get quality gate for a project", func() {
 			projectKey := helpers.UniqueResourceName("proj-getqg")
 
-			_, _, err := client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "GetByProject Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualitygates.GetByProject(&sonargo.QualitygatesGetByProjectOption{
+			result, resp, err := client.Qualitygates.GetByProject(&sonar.QualitygatesGetByProjectOption{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -833,7 +832,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with empty project", func() {
-				result, resp, err := client.Qualitygates.GetByProject(&sonargo.QualitygatesGetByProjectOption{})
+				result, resp, err := client.Qualitygates.GetByProject(&sonar.QualitygatesGetByProjectOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -842,7 +841,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Qualitygates.GetByProject(&sonargo.QualitygatesGetByProjectOption{
+				result, resp, err := client.Qualitygates.GetByProject(&sonar.QualitygatesGetByProjectOption{
 					Project: "non-existent-project-xyz",
 				})
 				Expect(err).To(HaveOccurred())
@@ -860,19 +859,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should search projects for a quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-search")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualitygates.Search(&sonargo.QualitygatesSearchOption{
+			result, resp, err := client.Qualitygates.Search(&sonar.QualitygatesSearchOption{
 				GateName: gateName,
 				Selected: "all",
 			})
@@ -885,40 +884,40 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			gateName := helpers.UniqueResourceName("qg-searchq")
 			projectKey := helpers.UniqueResourceName("proj-searchq")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Search Query Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// Associate project with gate
-			_, err = client.Qualitygates.Select(&sonargo.QualitygatesSelectOption{
+			_, err = client.Qualitygates.Select(&sonar.QualitygatesSelectOption{
 				GateName:   gateName,
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Search
-			result, resp, err := client.Qualitygates.Search(&sonargo.QualitygatesSearchOption{
+			result, resp, err := client.Qualitygates.Search(&sonar.QualitygatesSearchOption{
 				GateName: gateName,
 				Query:    projectKey,
 			})
@@ -937,7 +936,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				result, resp, err := client.Qualitygates.Search(&sonargo.QualitygatesSearchOption{})
+				result, resp, err := client.Qualitygates.Search(&sonar.QualitygatesSearchOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -952,19 +951,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should add group permission to quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-grp")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			resp, err := client.Qualitygates.AddGroup(&sonargo.QualitygatesAddGroupOption{
+			resp, err := client.Qualitygates.AddGroup(&sonar.QualitygatesAddGroupOption{
 				GateName:  gateName,
 				GroupName: "sonar-users",
 			})
@@ -972,7 +971,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify the group was actually added
-			groupsResult, _, err := client.Qualitygates.SearchGroups(&sonargo.QualitygatesSearchGroupsOption{
+			groupsResult, _, err := client.Qualitygates.SearchGroups(&sonar.QualitygatesSearchGroupsOption{
 				GateName: gateName,
 				Selected: "selected",
 			})
@@ -995,7 +994,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				resp, err := client.Qualitygates.AddGroup(&sonargo.QualitygatesAddGroupOption{
+				resp, err := client.Qualitygates.AddGroup(&sonar.QualitygatesAddGroupOption{
 					GroupName: "sonar-users",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1003,7 +1002,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing group name", func() {
-				resp, err := client.Qualitygates.AddGroup(&sonargo.QualitygatesAddGroupOption{
+				resp, err := client.Qualitygates.AddGroup(&sonar.QualitygatesAddGroupOption{
 					GateName: "some-gate",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1016,19 +1015,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should search groups for a quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-sgrp")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualitygates.SearchGroups(&sonargo.QualitygatesSearchGroupsOption{
+			result, resp, err := client.Qualitygates.SearchGroups(&sonar.QualitygatesSearchGroupsOption{
 				GateName: gateName,
 				Selected: "all",
 			})
@@ -1046,7 +1045,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				result, resp, err := client.Qualitygates.SearchGroups(&sonargo.QualitygatesSearchGroupsOption{})
+				result, resp, err := client.Qualitygates.SearchGroups(&sonar.QualitygatesSearchGroupsOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -1058,27 +1057,27 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should remove group permission from quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-rmgrp")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
 			// Add group first
-			_, err = client.Qualitygates.AddGroup(&sonargo.QualitygatesAddGroupOption{
+			_, err = client.Qualitygates.AddGroup(&sonar.QualitygatesAddGroupOption{
 				GateName:  gateName,
 				GroupName: "sonar-users",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Remove group
-			resp, err := client.Qualitygates.RemoveGroup(&sonargo.QualitygatesRemoveGroupOption{
+			resp, err := client.Qualitygates.RemoveGroup(&sonar.QualitygatesRemoveGroupOption{
 				GateName:  gateName,
 				GroupName: "sonar-users",
 			})
@@ -1086,7 +1085,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify the group was actually removed
-			groupsResult, _, err := client.Qualitygates.SearchGroups(&sonargo.QualitygatesSearchGroupsOption{
+			groupsResult, _, err := client.Qualitygates.SearchGroups(&sonar.QualitygatesSearchGroupsOption{
 				GateName: gateName,
 				Selected: "selected",
 			})
@@ -1104,7 +1103,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				resp, err := client.Qualitygates.RemoveGroup(&sonargo.QualitygatesRemoveGroupOption{
+				resp, err := client.Qualitygates.RemoveGroup(&sonar.QualitygatesRemoveGroupOption{
 					GroupName: "sonar-users",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1112,7 +1111,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing group name", func() {
-				resp, err := client.Qualitygates.RemoveGroup(&sonargo.QualitygatesRemoveGroupOption{
+				resp, err := client.Qualitygates.RemoveGroup(&sonar.QualitygatesRemoveGroupOption{
 					GateName: "some-gate",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1128,19 +1127,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should add user permission to quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-usr")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			resp, err := client.Qualitygates.AddUser(&sonargo.QualitygatesAddUserOption{
+			resp, err := client.Qualitygates.AddUser(&sonar.QualitygatesAddUserOption{
 				GateName: gateName,
 				Login:    "admin",
 			})
@@ -1156,7 +1155,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				resp, err := client.Qualitygates.AddUser(&sonargo.QualitygatesAddUserOption{
+				resp, err := client.Qualitygates.AddUser(&sonar.QualitygatesAddUserOption{
 					Login: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1164,7 +1163,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing login", func() {
-				resp, err := client.Qualitygates.AddUser(&sonargo.QualitygatesAddUserOption{
+				resp, err := client.Qualitygates.AddUser(&sonar.QualitygatesAddUserOption{
 					GateName: "some-gate",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1177,19 +1176,19 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should search users for a quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-susr")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualitygates.SearchUsers(&sonargo.QualitygatesSearchUsersOption{
+			result, resp, err := client.Qualitygates.SearchUsers(&sonar.QualitygatesSearchUsersOption{
 				GateName: gateName,
 				Selected: "all",
 			})
@@ -1207,7 +1206,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				result, resp, err := client.Qualitygates.SearchUsers(&sonargo.QualitygatesSearchUsersOption{})
+				result, resp, err := client.Qualitygates.SearchUsers(&sonar.QualitygatesSearchUsersOption{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -1219,27 +1218,27 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 		It("should remove user permission from quality gate", func() {
 			gateName := helpers.UniqueResourceName("qg-rmusr")
 
-			_, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			_, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
 			// Add user first
-			_, err = client.Qualitygates.AddUser(&sonargo.QualitygatesAddUserOption{
+			_, err = client.Qualitygates.AddUser(&sonar.QualitygatesAddUserOption{
 				GateName: gateName,
 				Login:    "admin",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Remove user
-			resp, err := client.Qualitygates.RemoveUser(&sonargo.QualitygatesRemoveUserOption{
+			resp, err := client.Qualitygates.RemoveUser(&sonar.QualitygatesRemoveUserOption{
 				GateName: gateName,
 				Login:    "admin",
 			})
@@ -1255,7 +1254,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing gate name", func() {
-				resp, err := client.Qualitygates.RemoveUser(&sonargo.QualitygatesRemoveUserOption{
+				resp, err := client.Qualitygates.RemoveUser(&sonar.QualitygatesRemoveUserOption{
 					Login: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1263,7 +1262,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 
 			It("should fail with missing login", func() {
-				resp, err := client.Qualitygates.RemoveUser(&sonargo.QualitygatesRemoveUserOption{
+				resp, err := client.Qualitygates.RemoveUser(&sonar.QualitygatesRemoveUserOption{
 					GateName: "some-gate",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1281,28 +1280,28 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			projectKey := helpers.UniqueResourceName("proj-lifecycle")
 
 			// Step 1: Create quality gate
-			createResult, _, err := client.Qualitygates.Create(&sonargo.QualitygatesCreateOption{
+			createResult, _, err := client.Qualitygates.Create(&sonar.QualitygatesCreateOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(createResult.Name).To(Equal(gateName))
 
 			cleanup.RegisterCleanup("qualitygate", gateName, func() error {
-				_, err := client.Qualitygates.Destroy(&sonargo.QualitygatesDestroyOption{
+				_, err := client.Qualitygates.Destroy(&sonar.QualitygatesDestroyOption{
 					Name: gateName,
 				})
 				return err
 			})
 
 			// Step 2: Show the quality gate
-			showResult, _, err := client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			showResult, _, err := client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(showResult).NotTo(BeNil())
 
 			// Step 3: Create condition
-			condResult, _, err := client.Qualitygates.CreateCondition(&sonargo.QualitygatesCreateConditionOption{
+			condResult, _, err := client.Qualitygates.CreateCondition(&sonar.QualitygatesCreateConditionOption{
 				GateName: gateName,
 				Metric:   "coverage",
 				Op:       "LT",
@@ -1312,7 +1311,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			conditionID := condResult.ID
 
 			// Step 4: Update condition
-			_, err = client.Qualitygates.UpdateCondition(&sonargo.QualitygatesUpdateConditionOption{
+			_, err = client.Qualitygates.UpdateCondition(&sonar.QualitygatesUpdateConditionOption{
 				ID:     conditionID,
 				Metric: "coverage",
 				Op:     "LT",
@@ -1321,27 +1320,27 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5: Create project and associate
-			_, _, err = client.Projects.Create(&sonargo.ProjectsCreateOption{
+			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
 				Name:    "Lifecycle Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonargo.ProjectsDeleteOption{
+				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			_, err = client.Qualitygates.Select(&sonargo.QualitygatesSelectOption{
+			_, err = client.Qualitygates.Select(&sonar.QualitygatesSelectOption{
 				GateName:   gateName,
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5.5: Get project status for the quality gate
-			projectStatusResult, _, err := client.Qualitygates.ProjectStatus(&sonargo.QualitygatesProjectStatusOption{
+			projectStatusResult, _, err := client.Qualitygates.ProjectStatus(&sonar.QualitygatesProjectStatusOption{
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1349,14 +1348,14 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(projectStatusResult.ProjectStatus).NotTo(BeNil())
 
 			// Step 6: Add user permission
-			_, err = client.Qualitygates.AddUser(&sonargo.QualitygatesAddUserOption{
+			_, err = client.Qualitygates.AddUser(&sonar.QualitygatesAddUserOption{
 				GateName: gateName,
 				Login:    "admin",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 7: Search users
-			usersResult, _, err := client.Qualitygates.SearchUsers(&sonargo.QualitygatesSearchUsersOption{
+			usersResult, _, err := client.Qualitygates.SearchUsers(&sonar.QualitygatesSearchUsersOption{
 				GateName: gateName,
 				Selected: "selected",
 			})
@@ -1364,26 +1363,26 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			Expect(usersResult.Users).To(HaveLen(1))
 
 			// Step 8: Remove user permission
-			_, err = client.Qualitygates.RemoveUser(&sonargo.QualitygatesRemoveUserOption{
+			_, err = client.Qualitygates.RemoveUser(&sonar.QualitygatesRemoveUserOption{
 				GateName: gateName,
 				Login:    "admin",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 9: Deselect project
-			_, err = client.Qualitygates.Deselect(&sonargo.QualitygatesDeselectOption{
+			_, err = client.Qualitygates.Deselect(&sonar.QualitygatesDeselectOption{
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 10: Delete condition
-			_, err = client.Qualitygates.DeleteCondition(&sonargo.QualitygatesDeleteConditionOption{
+			_, err = client.Qualitygates.DeleteCondition(&sonar.QualitygatesDeleteConditionOption{
 				ID: conditionID,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 11: Verify condition was deleted
-			showResult, _, err = client.Qualitygates.Show(&sonargo.QualitygatesShowOption{
+			showResult, _, err = client.Qualitygates.Show(&sonar.QualitygatesShowOption{
 				Name: gateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
