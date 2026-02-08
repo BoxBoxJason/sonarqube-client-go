@@ -159,6 +159,14 @@ type RuleActivation struct {
 	Severity string `json:"severity,omitempty"`
 	// Params is the list of parameter values for the activated rule.
 	Params []ParamKV `json:"params,omitempty"`
+	// CreatedAt is the timestamp when the rule was activated in the profile.
+	CreatedAt string `json:"createdAt,omitempty"`
+	// UpdatedAt is the timestamp when the rule activation was last updated in the profile.
+	UpdatedAt string `json:"updatedAt,omitempty"`
+	// Impacts is the list of impacts on software quality for this activated rule.
+	Impacts []RuleImpact `json:"impacts,omitempty"`
+	// PrioritizedRule indicates if the rule is prioritized in this profile.
+	PrioritizedRule bool `json:"prioritizedRule,omitempty"`
 }
 
 // ParamKV represents a key-value pair for rule parameters.
