@@ -53,13 +53,13 @@ type Project struct {
 // ProjectsSearch represents the response from searching projects.
 type ProjectsSearch struct {
 	// Components is the list of projects.
-	Components []ProjectComponent `json:"components,omitempty"`
+	Components []ProjectSearchComponent `json:"components,omitempty"`
 	// Paging is the pagination info.
 	Paging Paging `json:"paging,omitzero"`
 }
 
-// ProjectComponent represents a project component.
-type ProjectComponent struct {
+// ProjectSearchComponent represents a project component.
+type ProjectSearchComponent struct {
 	// Key is the project key.
 	Key string `json:"key,omitempty"`
 	// Name is the project name.
@@ -72,6 +72,8 @@ type ProjectComponent struct {
 	LastAnalysisDate string `json:"lastAnalysisDate,omitempty"`
 	// Revision is the last analysis revision.
 	Revision string `json:"revision,omitempty"`
+	// ProjectUuid is the project UUID.
+	ProjectUuid string `json:"projectUuid,omitempty"`
 	// Managed indicates if the project is managed.
 	Managed bool `json:"managed,omitempty"`
 }

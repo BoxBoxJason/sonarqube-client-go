@@ -148,7 +148,7 @@ func TestProjectsService_Delete_ValidationError(t *testing.T) {
 func TestProjectsService_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/projects/search", http.StatusOK, &ProjectsSearch{
 		Paging: Paging{PageIndex: 1, PageSize: 100, Total: 2},
-		Components: []ProjectComponent{
+		Components: []ProjectSearchComponent{
 			{
 				Key:              "project1",
 				Name:             "Project One",
