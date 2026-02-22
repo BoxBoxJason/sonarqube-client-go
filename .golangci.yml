@@ -46,3 +46,7 @@ linters:
       allow-first-in-block: true
       allow-whole-block: false
       branch-max-lines: 2
+    gosec:
+      excludes:
+        - G117 # secret pattern matches in exported structs (required for API client)
+        - G704 # SSRF false positives on client HTTP calls (required for API client)

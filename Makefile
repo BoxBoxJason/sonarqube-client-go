@@ -60,7 +60,7 @@ changelog-check:
 
 # Run golangci-lint
 lint:
-	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.8.0; }
+	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1; }
 	@mkdir -p codequality
 	golangci-lint run ./${target_dir}/...
 
