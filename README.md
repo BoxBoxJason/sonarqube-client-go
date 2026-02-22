@@ -4,196 +4,336 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/boxboxjason/sonarqube-client-go)](https://goreportcard.com/report/github.com/boxboxjason/sonarqube-client-go)
 [![License](https://img.shields.io/github/license/BoxBoxJason/sonarqube-client-go)](LICENSE)
 
-A comprehensive, type-safe Go client library for the SonarQube Web API. This SDK provides idiomatic Go access to SonarQube's extensive REST API, enabling seamless integration with SonarQube for code quality analysis, project management, and continuous inspection workflows.
+A comprehensive, type-safe Go client library **and command-line interface** for the SonarQube Web API. Whether you're building automation tools, integrating SonarQube into your CI/CD pipeline, or managing your SonarQube instance from the terminal — this project has you covered.
 
 ## Table of Contents
 
-- [Project Goals](#project-goals)
 - [Features](#features)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
+- [CLI — sonar-cli](#cli--sonar-cli)
+  - [Installation](#installation)
+  - [Authentication](#authentication)
+  - [Basic Usage](#basic-usage)
+  - [Output Formats](#output-formats)
+  - [Pagination](#pagination)
+  - [Shell Completion](#shell-completion)
+- [Go SDK](#go-sdk)
+  - [SDK Installation](#sdk-installation)
+  - [Quick Start](#quick-start)
+  - [Authentication Options](#authentication-options)
+  - [Advanced Usage](#advanced-usage)
 - [Available Services](#available-services)
 - [Dependencies](#dependencies)
 - [Contributing](#contributing)
 - [Reporting Issues](#reporting-issues)
 - [License](#license)
 
-## Project Goals
-
-The SonarQube Go Client aims to:
-
-- **Provide complete API coverage**: Support all SonarQube Web API endpoints, including projects, issues, quality gates, quality profiles, users, permissions, and more
-- **Type-safe interactions**: Offer strongly-typed Go structs for all API requests and responses to catch errors at compile time
-- **Idiomatic Go design**: Follow Go best practices and conventions for a natural developer experience
-- **Maintainability**: Keep the codebase clean, well-documented, and easy to extend
-- **Production-ready**: Deliver a reliable SDK with comprehensive testing and error handling
-
-This SDK is ideal for:
-
-- Building automation tools for SonarQube
-- Integrating code quality analysis into CI/CD pipelines
-- Creating custom dashboards and reporting tools
-- Managing SonarQube resources programmatically
-- Extending SonarQube functionality with custom applications
-
 ## Features
 
-### Core Capabilities
+### CLI (`sonar-cli`)
+
+- ✅ **Full API Coverage from the Terminal**: Every SonarQube service and method available as a subcommand
+- ✅ **Multiple Output Formats**: JSON, YAML, and ASCII table — pipe-friendly
+- ✅ **Automatic Pagination**: Fetch all pages of results with a single `--all` flag
+- ✅ **Shell Completion**: Tab completion for Bash, Zsh, Fish, and PowerShell
+- ✅ **Flexible Authentication**: Token, username/password, or environment variables
+- ✅ **Structured Error Logging**: Clear, context-rich error messages to stderr
+- ✅ **Configurable Timeout**: Per-command HTTP timeout control
+
+### Go SDK
 
 - ✅ **Complete API Coverage**: Support for all major SonarQube API services
 - ✅ **Type Safety**: Strongly-typed request options and response structures
-- ✅ **Flexible Authentication**: Support for token-based and username/password authentication
-- ✅ **Multiple Response Formats**: Handle JSON, Protocol Buffers, text, and binary responses
-- ✅ **Error Handling**: Detailed error responses with status codes and messages
-- ✅ **Modern Go**: Built with Go 1.25+, using Go modules (no GOPATH required)
+- ✅ **Flexible Authentication**: Token-based and username/password authentication
+- ✅ **Multiple Response Formats**: JSON, Protocol Buffers, text, and binary responses
+- ✅ **Modern Go**: Built with Go 1.25+, using Go modules
 - ✅ **Well Tested**: Comprehensive unit tests and integration tests against real SonarQube instances
-- ✅ **Production Ready**: Used in production environments with extensive edge case handling
 
-### Response Type Support
+---
 
-The client intelligently handles different response formats:
+## CLI — sonar-cli
 
-- **JSON**: Automatically unmarshals JSON responses into Go structs
-- **Protocol Buffers**: Returns raw bytes for protobuf endpoints
-- **Text/CSV**: Returns plain text responses as strings
-- **Binary**: Handles binary data (e.g., file downloads)
+`sonar-cli` is a fully featured command-line interface that wraps the entire SonarQube API. Every service and method available in the SDK is exposed as a CLI subcommand, making it trivial to interact with SonarQube from scripts, CI pipelines, or your terminal.
 
-## Installation
+### Installation
 
-Install the SDK using `go get`:
+**From source:**
+
+```bash
+go install github.com/boxboxjason/sonarqube-client-go/cmd/sonar-cli@latest
+```
+
+**From a release binary:**
+
+Download the latest binary for your platform from the [Releases](https://github.com/BoxBoxJason/sonarqube-client-go/releases) page.
+
+**Build locally:**
+
+```bash
+git clone https://github.com/BoxBoxJason/sonarqube-client-go.git
+cd sonarqube-client-go
+make build
+# Binary: ./bin/sonar-cli
+```
+
+Build with a specific version:
+
+```bash
+make build version=1.2.3
+./bin/sonar-cli --version  # sonar-cli version 1.2.3
+```
+
+### Authentication
+
+Authentication can be provided via flags or environment variables (environment variables take precedence):
+
+| Flag | Environment Variable | Description |
+|------|---------------------|-------------|
+| `--url` | `SONAR_CLI_URL` | SonarQube server URL |
+| `--token` | `SONAR_CLI_TOKEN` | Authentication token (recommended) |
+| `--username` | `SONAR_CLI_USERNAME` | Username for basic auth |
+| `--password` | `SONAR_CLI_PASSWORD` | Password for basic auth |
+
+```bash
+# Using flags
+sonar-cli --url https://sonar.example.com --token mytoken projects search
+
+# Using environment variables (recommended for scripts and CI)
+export SONAR_CLI_URL=https://sonar.example.com
+export SONAR_CLI_TOKEN=mytoken
+sonar-cli projects search
+```
+
+### Basic Usage
+
+Commands follow the pattern: `sonar-cli [global flags] <service> <method> [flags]`
+
+```bash
+# List all projects
+sonar-cli projects search
+
+# Search for critical issues in a project
+sonar-cli issues search --projects my-project --severities CRITICAL,MAJOR
+
+# Get quality gate status
+sonar-cli qualitygates project-status --project-key my-project
+
+# Create a user token
+sonar-cli user-tokens generate --login john --name "ci-token"
+
+# Delete a project
+sonar-cli projects delete --project my-old-project
+
+# Search rules
+sonar-cli rules search --languages go --severities MAJOR
+
+# Get system health
+sonar-cli system health
+```
+
+Use `--help` at any level to explore available commands:
+
+```bash
+sonar-cli --help
+sonar-cli projects --help
+sonar-cli issues search --help
+```
+
+### Output Formats
+
+Control output format globally with `--output` (default: `json`):
+
+```bash
+# JSON output (default) — great for jq and scripting
+sonar-cli projects search --output json | jq '.components[].key'
+
+# YAML output — human-readable structured data
+sonar-cli projects search --output yaml
+
+# Table output — quick visual overview in the terminal
+sonar-cli projects search --output table
+```
+
+**Table output example:**
+
+```
+KEY              NAME             QUALIFIER  VISIBILITY
+my-project       My Project       TRK        public
+another-project  Another Project  TRK        private
+```
+
+### Pagination
+
+Endpoints that return paginated results support a `--all` flag to automatically fetch and merge every page:
+
+```bash
+# Fetch the first page (default)
+sonar-cli issues search --projects my-project
+
+# Fetch ALL issues across all pages automatically
+sonar-cli issues search --projects my-project --all
+
+# Manual pagination control
+sonar-cli projects search --p 2 --ps 50
+```
+
+### Shell Completion
+
+Enable tab-completion for your shell. Once set up, pressing `Tab` will autocomplete services, methods, and flags.
+
+**Bash:**
+
+```bash
+sonar-cli completion bash > /etc/bash_completion.d/sonar-cli
+# or for the current user:
+sonar-cli completion bash > ~/.local/share/bash-completion/completions/sonar-cli
+```
+
+**Zsh:**
+
+```bash
+sonar-cli completion zsh > "${fpath[1]}/_sonar-cli"
+# Then reload your shell or run:
+source ~/.zshrc
+```
+
+**Fish:**
+
+```bash
+sonar-cli completion fish > ~/.config/fish/completions/sonar-cli.fish
+```
+
+**PowerShell:**
+
+```powershell
+sonar-cli completion powershell | Out-String | Invoke-Expression
+```
+
+---
+
+## Go SDK
+
+### SDK Installation
 
 ```bash
 go get github.com/boxboxjason/sonarqube-client-go/sonar
 ```
 
-**Requirements**:
+**Requirements**: Go 1.25 or higher, access to a SonarQube instance (version 25+ recommended).
 
-- Go 1.25 or higher
-- Access to a SonarQube instance (version 25+ recommended)
-
-## Quick Start
-
-### Basic Usage
+### Quick Start
 
 ```go
 package main
 
 import (
-    "context"
-    "fmt"
-    "log"
+ "context"
+ "fmt"
+ "log"
 
-    "github.com/boxboxjason/sonarqube-client-go/sonar"
+ "github.com/boxboxjason/sonarqube-client-go/sonar"
 )
 
 func main() {
-    // Create a new client with token authentication
-    client, err := sonar.NewClient(
-        "https://your-sonarqube-instance.com",
-        sonar.WithToken("your-sonarqube-token"),
-    )
-    if err != nil {
-        log.Fatal(err)
-    }
+ url := "https://your-sonarqube-instance.com"
+ token := "your-sonarqube-token"
 
-    // Example 1: Search for projects
-    projects, _, err := client.Projects.Search(context.Background(), &sonar.ProjectsSearchOption{
-        Ps: sonar.Int(10), // Page size: 10 results
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
+ client, err := sonar.NewClient(&sonar.ClientCreateOption{
+  URL:   &url,
+  Token: &token,
+ })
+ if err != nil {
+  log.Fatal(err)
+ }
 
-    fmt.Printf("Found %d projects:\n", len(projects.Components))
-    for _, project := range projects.Components {
-        fmt.Printf("  - %s (%s)\n", project.Name, project.Key)
-    }
+ // Search for projects
+ projects, _, err := client.Projects.Search(context.Background(), &sonar.ProjectsSearchOption{
+  Ps: sonar.Int(10),
+ })
+ if err != nil {
+  log.Fatal(err)
+ }
 
-    // Example 2: Get project issues
-    issues, _, err := client.Issues.Search(context.Background(), &sonar.IssuesSearchOption{
-        Projects: sonar.String("my-project-key"),
-        Statuses: sonar.String("OPEN,CONFIRMED"),
-        Ps:       sonar.Int(50),
-    })
-    if err != nil {
-        log.Fatal(err)
-    }
+ fmt.Printf("Found %d projects:\n", len(projects.Components))
+ for _, project := range projects.Components {
+  fmt.Printf("  - %s (%s)\n", project.Name, project.Key)
+ }
 
-    fmt.Printf("\nFound %d open issues\n", issues.Total)
+ // Search for open issues
+ issues, _, err := client.Issues.Search(context.Background(), &sonar.IssuesSearchOption{
+  Projects: sonar.String("my-project-key"),
+  Statuses: sonar.String("OPEN,CONFIRMED"),
+ })
+ if err != nil {
+  log.Fatal(err)
+ }
+
+ fmt.Printf("Found %d open issues\n", issues.Total)
 }
 ```
 
 ### Authentication Options
 
-#### Token Authentication (Recommended)
+**Token authentication (recommended):**
 
 ```go
-client, err := sonar.NewClient(
-    "https://your-sonarqube-instance.com",
-    sonar.WithToken("your-sonarqube-token"),
-)
+client, err := sonar.NewClient(&sonar.ClientCreateOption{
+ URL:   &url,
+ Token: &token,
+})
 ```
 
-#### Username/Password Authentication
+**Username/password authentication:**
 
 ```go
-client, err := sonar.NewClient(
-    "https://your-sonarqube-instance.com",
-    sonar.WithBasicAuth("username", "password"),
-)
+client, err := sonar.NewClient(&sonar.ClientCreateOption{
+ URL:      &url,
+ Username: &username,
+ Password: &password,
+})
 ```
 
 ### Advanced Usage
 
-#### Custom HTTP Client
+**Custom HTTP client:**
 
 ```go
 import "net/http"
+import "time"
 
-httpClient := &http.Client{
-    Timeout: 30 * time.Second,
-}
+httpClient := &http.Client{Timeout: 60 * time.Second}
 
-client, err := sonar.NewClient(
-    "https://your-sonarqube-instance.com",
-    sonar.WithHTTPClient(httpClient),
-    sonar.WithToken("your-token"),
-)
+client, err := sonar.NewClient(&sonar.ClientCreateOption{
+ URL:        &url,
+ Token:      &token,
+ HttpClient: httpClient,
+})
 ```
 
-#### Working with Quality Gates
+**Quality gate status:**
 
 ```go
-// Get quality gate status for a project
-status, _, err := client.Qualitygates.GetProjectStatus(context.Background(), &sonar.QualitygatesGetProjectStatusOption{
-    ProjectKey: sonar.String("my-project"),
+status, _, err := client.Qualitygates.ProjectStatus(ctx, &sonar.QualitygatesProjectStatusOption{
+ ProjectKey: sonar.String("my-project"),
 })
-if err != nil {
-    log.Fatal(err)
-}
-
-fmt.Printf("Quality Gate Status: %s\n", status.ProjectStatus.Status)
+fmt.Printf("Quality Gate: %s\n", status.ProjectStatus.Status)
 ```
 
-#### Managing Users
+**User management:**
 
 ```go
-// Search for users
-users, _, err := client.Users.Search(context.Background(), &sonar.UsersSearchOption{
-    Q: sonar.String("john"),
+users, _, err := client.Users.Search(ctx, &sonar.UsersSearchOption{
+ Q: sonar.String("john"),
 })
-if err != nil {
-    log.Fatal(err)
-}
-
 for _, user := range users.Users {
-    fmt.Printf("User: %s (%s)\n", user.Name, user.Login)
+ fmt.Printf("User: %s (%s)\n", user.Name, user.Login)
 }
 ```
+
+---
 
 ## Available Services
 
-The SDK provides access to the following SonarQube API services:
+Both the SDK and CLI expose all 50+ SonarQube API services:
 
 <details>
 <summary><strong>Project Management</strong></summary>
@@ -290,59 +430,40 @@ The SDK provides access to the following SonarQube API services:
 
 </details>
 
-**Total**: 50+ services covering all SonarQube API endpoints
-
 ## Dependencies
-
-This project uses carefully selected dependencies to provide a robust and maintainable SDK:
 
 ### Production Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| [google/go-querystring](https://github.com/google/go-querystring) | v1.2.0 | Encoding Go structs into URL query parameters for API requests. Provides type-safe URL generation. |
+| [google/go-querystring](https://github.com/google/go-querystring) | v1.2.0 | Type-safe URL query parameter encoding |
+| [spf13/cobra](https://github.com/spf13/cobra) | v1.10.2 | CLI framework (commands, flags, shell completion) |
+| [spf13/pflag](https://github.com/spf13/pflag) | v1.0.10 | POSIX-compatible flag parsing |
+| [go.uber.org/zap](https://github.com/uber-go/zap) | v1.27.1 | Structured, high-performance logging |
+| [gopkg.in/yaml.v3](https://pkg.go.dev/gopkg.in/yaml.v3) | v3 | YAML output formatting |
 
 ### Development/Testing Dependencies
 
 | Package | Version | Purpose |
 |---------|---------|---------|
-| [onsi/ginkgo](https://github.com/onsi/ginkgo) | v2.28.1 | BDD-style testing framework used for integration tests. Provides expressive test structure and excellent readability. |
-| [onsi/gomega](https://github.com/onsi/gomega) | v1.39.1 | Matcher library for Ginkgo. Offers rich assertion syntax for testing. |
-| [stretchr/testify](https://github.com/stretchr/testify) | v1.11.1 | Assertion toolkit for unit tests. Provides simple and intuitive test assertions. |
-| [Masterminds/semver](https://github.com/Masterminds/semver) | v3.4.0 | Semantic versioning library. Used for version comparison and validation. |
-
-### Standard Library Usage
-
-The SDK extensively uses Go's standard library, including:
-
-- `net/http` - HTTP client and server functionality
-- `encoding/json` - JSON encoding/decoding
-- `context` - Request context and cancellation
-- `io` - Input/output primitives
-
-### Why These Dependencies?
-
-- **Minimal external dependencies**: Only one production dependency reduces supply chain risk and maintenance burden
-- **Well-maintained packages**: All dependencies are actively maintained with strong community support
-- **Type safety**: `go-querystring` ensures compile-time safety for API request parameters
-- **Testing excellence**: Ginkgo/Gomega provide superior test readability and reporting
-- **No unnecessary bloat**: Each dependency serves a specific, irreplaceable purpose
+| [onsi/ginkgo](https://github.com/onsi/ginkgo) | v2.28.1 | BDD-style integration testing framework |
+| [onsi/gomega](https://github.com/onsi/gomega) | v1.39.1 | Matcher library for Ginkgo |
+| [stretchr/testify](https://github.com/stretchr/testify) | v1.11.1 | Unit test assertions and mocking |
+| [Masterminds/semver](https://github.com/Masterminds/semver) | v3.4.0 | Semantic version comparison |
 
 ## Contributing
 
-We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation — your help is appreciated.
 
 ### How to Contribute
 
-1. **Read the [Contributing Guide](CONTRIBUTING.md)** - Comprehensive guide covering development setup, testing, and PR guidelines
-2. **Check existing issues** - Look for issues labeled `good first issue` or `help wanted`
-3. **Fork and create a branch** - Use conventional commit format (`feat:`, `fix:`, `docs:`, etc.)
-4. **Write tests** - Ensure 80%+ coverage for new code
-5. **Submit a Pull Request** - Reference the issue you're addressing
+1. **Read the [Contributing Guide](CONTRIBUTING.md)** — covers development setup, testing, and PR guidelines
+2. **Check existing issues** — look for labels `good first issue` or `help wanted`
+3. **Fork and create a branch** — use conventional commit format (`feat:`, `fix:`, `docs:`, etc.)
+4. **Write tests** — ensure 80%+ coverage for new code
+5. **Submit a Pull Request** — reference the issue you're addressing
 
 ### Quick Contribution Checklist
-
-Before submitting a PR, ensure:
 
 - [ ] `make lint` passes without errors
 - [ ] `make test` passes (unit tests)
@@ -352,61 +473,41 @@ Before submitting a PR, ensure:
 - [ ] Commit messages follow [conventional commits](https://www.conventionalcommits.org/)
 - [ ] PR description references an issue (e.g., "Fixes #123")
 
-For detailed guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
-
 ## Reporting Issues
 
 ### Bug Reports
 
-Found a bug? Help us fix it by providing:
+Found a bug? Provide:
 
-- Clear description of the problem
-- Steps to reproduce
+- Clear description and steps to reproduce
 - Expected vs actual behavior
 - Go version, OS, and SonarQube version
-- Code sample demonstrating the issue (if possible)
+- Minimal code or command reproducing the issue
 
 [Report a bug →](https://github.com/BoxBoxJason/sonarqube-client-go/issues/new)
 
 ### Feature Requests
 
-Have an idea for a new feature or improvement?
-
-- Describe your use case and how it would benefit users
-- Explain why existing alternatives don't meet your needs
-- Provide examples of how you'd like the API to work
-
 [Request a feature →](https://github.com/BoxBoxJason/sonarqube-client-go/issues/new)
 
 ### Security Issues
 
-If you discover a security vulnerability:
-
-- **DO NOT** open a public issue
-- Email security concerns privately to the maintainers
-- Provide detailed information to help us address the issue quickly
-
-For non-security bugs and features, please use GitHub Issues.
+**DO NOT** open a public issue for security vulnerabilities. Email the maintainers privately with full details.
 
 ## License
 
-This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
 
-### What This Means
-
-- ✅ **Commercial use** - Use this SDK in commercial projects
-- ✅ **Modification** - Modify the source code
-- ✅ **Distribution** - Distribute the SDK
-- ✅ **Patent use** - Use any patents that cover the SDK
-- ⚠️ **License and copyright notice** - Include the license and copyright notice in distributions
-- ⚠️ **State changes** - Document significant changes you make
+- ✅ Commercial use, modification, and distribution
+- ✅ Patent use
+- ⚠️ Include license and copyright notice in distributions
 
 ---
 
 ## Additional Resources
 
 - [SonarQube Web API Documentation](https://docs.sonarsource.com/sonarqube/latest/extension-guide/web-api/)
-- [Go Documentation](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go)
+- [Go Package Documentation](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go)
 - [Contributing Guide](CONTRIBUTING.md)
 - [GitHub Issues](https://github.com/BoxBoxJason/sonarqube-client-go/issues)
 
@@ -414,4 +515,4 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 
 **Made with ❤️ by [BoxBoxJason](https://github.com/BoxBoxJason)**
 
-If this SDK helps you, please consider giving it a ⭐ on GitHub!
+If this project helps you, please consider giving it a ⭐ on GitHub!
