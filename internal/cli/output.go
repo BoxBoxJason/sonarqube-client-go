@@ -171,8 +171,75 @@ func formatSliceTable(writer io.Writer, sliceVal reflect.Value) error {
 	return nil
 }
 
-// formatStructTable formats a single struct as a key-value table.
+// formatStructTable formats a struct as a table.
+// If the struct contains an exported slice-of-structs field (typical of paginated API responses
+// such as ProjectsSearchResponse{Components []..., Paging ...}), that slice is rendered as a
+// proper multi-column table using the slice element fields as columns.
+// When multiple slice fields are present, the one with the most elements is chosen.
+// If no slice-of-structs field exists, output falls back to a key-value table.
 func formatStructTable(writer io.Writer, structVal reflect.Value) error {
+	// Try to find the primary data slice inside the response struct.
+	if sliceField, ok := findPrimarySliceField(structVal); ok {
+		return formatSliceTable(writer, sliceField)
+	}
+
+	// Fallback: render the struct itself as a two-column key-value table.
+	return formatStructKeyValueTable(writer, structVal)
+}
+
+// findPrimarySliceField scans the exported fields of a struct and returns the slice-of-structs
+// field that has the greatest number of elements. Returns false when no such field is found.
+func findPrimarySliceField(structVal reflect.Value) (reflect.Value, bool) {
+	structType := structVal.Type()
+	best := reflect.Value{}
+	bestLen := -1
+
+	for fieldIdx := range structType.NumField() {
+		field := structType.Field(fieldIdx)
+		if !field.IsExported() {
+			continue
+		}
+
+		fieldVal := structVal.Field(fieldIdx)
+
+		// Dereference pointer fields.
+		for fieldVal.Kind() == reflect.Ptr {
+			if fieldVal.IsNil() {
+				break
+			}
+
+			fieldVal = fieldVal.Elem()
+		}
+
+		if fieldVal.Kind() != reflect.Slice {
+			continue
+		}
+
+		// Check that the slice element type is (or points to) a struct.
+		elemType := fieldVal.Type().Elem()
+		for elemType.Kind() == reflect.Ptr {
+			elemType = elemType.Elem()
+		}
+
+		if elemType.Kind() != reflect.Struct {
+			continue
+		}
+
+		if fieldVal.Len() > bestLen {
+			best = fieldVal
+			bestLen = fieldVal.Len()
+		}
+	}
+
+	if bestLen >= 0 {
+		return best, true
+	}
+
+	return reflect.Value{}, false
+}
+
+// formatStructKeyValueTable renders a struct as a two-column FIELD | VALUE table.
+func formatStructKeyValueTable(writer io.Writer, structVal reflect.Value) error {
 	structType := structVal.Type()
 	headers := []string{"FIELD", "VALUE"}
 	rows := make([][]string, 0, structType.NumField())
@@ -190,7 +257,6 @@ func formatStructTable(writer io.Writer, structVal reflect.Value) error {
 			continue
 		}
 
-		// For nested structs/slices, format as JSON inline.
 		var valueStr string
 
 		//nolint:exhaustive // only struct/slice/map need JSON inline formatting
