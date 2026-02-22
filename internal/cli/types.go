@@ -3,6 +3,8 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -173,4 +175,14 @@ func (j *JSONMapValue) Set(val string) error {
 // Type returns the type name for help text.
 func (j *JSONMapValue) Type() string {
 	return "JSON"
+}
+
+// CloseBody closes the body of an http.Response safely.
+// If the response or body is nil, it does nothing.
+// The error return value of Close is intentionally ignored.
+func CloseBody(resp *http.Response) {
+	if resp != nil && resp.Body != nil {
+		_, _ = io.Copy(io.Discard, resp.Body)
+		_ = resp.Body.Close()
+	}
 }

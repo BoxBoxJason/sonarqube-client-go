@@ -83,7 +83,8 @@ func PaginateAll(
 	sliceFieldName, hasSlice := findSliceField(responseType)
 	if !hasSlice {
 		// No slice field to paginate — just call once.
-		result, _, err := InvokeMethod(service, methodName, opt, pattern, true) //nolint:bodyclose // caller manages lifecycle
+		result, resp, err := InvokeMethod(service, methodName, opt, pattern, true)
+		CloseBody(resp)
 
 		return result, err
 	}
@@ -102,7 +103,9 @@ func PaginateAll(
 	for {
 		setPageField(optElem, paginationPageField, pageNum)
 
-		result, _, err := InvokeMethod(service, methodName, opt, pattern, true) //nolint:bodyclose // caller manages lifecycle
+		result, resp, err := InvokeMethod(service, methodName, opt, pattern, true)
+		CloseBody(resp)
+
 		if err != nil {
 			return nil, err
 		}

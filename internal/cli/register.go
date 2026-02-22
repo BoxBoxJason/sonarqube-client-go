@@ -206,7 +206,9 @@ func runMethodCommand(
 
 	hasOpt := optValue.IsValid()
 
-	result, _, invokeErr := InvokeMethod(service, methodName, optValue, pattern, hasOpt) //nolint:bodyclose // CLI does not need to manage response body
+	result, resp, invokeErr := InvokeMethod(service, methodName, optValue, pattern, hasOpt)
+	defer CloseBody(resp)
+
 	if invokeErr != nil {
 		Logger().Error("method invocation failed",
 			zap.String("service", serviceName),
