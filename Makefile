@@ -65,12 +65,15 @@ lint:
 	golangci-lint run ./${target_dir}/...
 
 # Fetch SonarQube API specification
-api:
+api: setup.sonar
 	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
 	@mkdir -p assets
-	@echo "Fetching SonarQube API specification from ${endpoint}/api/webservices/list..."
+	@echo "Fetching SonarQube API v1 specification from ${endpoint}/api/webservices/list..."
 	curl -u ${username}:${password} "${endpoint}/api/webservices/list?include_internals=true" -o ./assets/api.json
-	@echo "API specification saved to ./assets/api.json"
+	@echo "Fetching SonarQube API v2 specification from ${endpoint}/api/webservices/list?format=openapi..."
+	curl -u ${username}:${password} "${endpoint}/api/v2/api-docs" -o ./assets/api.v2.json
+	@echo "API specification saved to ./assets/api.json  and ./assets/api.v2.json"
+
 
 # Setup SonarQube instance for integration testing
 # If SonarQube API is already reachable, skip setup
