@@ -312,7 +312,7 @@ client, err := sonar.NewClient(&sonar.ClientCreateOption{
 **Quality gate status:**
 
 ```go
-status, _, err := client.Qualitygates.GetProjectStatus(ctx, &sonar.QualitygatesGetProjectStatusOption{
+status, _, err := client.Qualitygates.ProjectStatus(ctx, &sonar.QualitygatesProjectStatusOption{
  ProjectKey: sonar.String("my-project"),
 })
 fmt.Printf("Quality Gate: %s\n", status.ProjectStatus.Status)
