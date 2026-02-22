@@ -1,9 +1,23 @@
 package_name := sonargo
-target_dir := sonar
+sdk_dir := sonar
+cli_dirs := ./cmd/... ./internal/...
 endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
 sonarqube_version := 26.2.0.119303-community
+version := dev
+
+# target can be: all (default), sdk, cli
+target := all
+
+# Compute the lint/test paths based on target
+ifeq ($(target),sdk)
+  target_paths := ./${sdk_dir}/...
+else ifeq ($(target),cli)
+  target_paths := ${cli_dirs}
+else
+  target_paths := ./${sdk_dir}/... ${cli_dirs}
+endif
 
 # Automatically detect container engine (docker or podman)
 ifeq ($(shell command -v docker 2>/dev/null),)
@@ -15,25 +29,31 @@ else
   container_engine := docker
 endif
 
-.PHONY: setup.sonar test lint coverage api
+.PHONY: setup.sonar test lint coverage api build
 
-# Run all unit tests
+# Run all unit tests (use target=sdk|cli|all to filter)
 test:
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@v1.13.0; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ./${target_dir}/...
+	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ${target_paths}
 
-# Run tests with coverage report
+# Run tests with coverage report (use target=sdk|cli|all to filter)
 coverage:
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@v1.13.0; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ./${target_dir}/...
+	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ${target_paths}
 	@echo "Coverage report generated: codequality/coverage.html"
 
 # Run integration tests
 e2e: setup.sonar
 	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1; }
 	SONAR_TOKEN= SONAR_URL=${endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
+
+# Build the CLI binary to ./bin/sonar-cli
+# This supports passing -ldflags "-X main.version=1.2.3" to set the version at build time
+build:
+	@mkdir -p bin
+	go build -o bin/sonar-cli -ldflags "-X github.com/boxboxjason/sonarqube-client-go/internal/cli.version=$(version)" ./cmd/sonar-cli
 
 # Generate changelog using git-cliff
 changelog:
@@ -58,11 +78,11 @@ changelog-check:
 		rm -f /tmp/CHANGELOG.md; \
 	fi
 
-# Run golangci-lint
+# Run golangci-lint (use target=sdk|cli|all to filter)
 lint:
 	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1; }
 	@mkdir -p codequality
-	golangci-lint run ./${target_dir}/...
+	golangci-lint run ${target_paths}
 
 # Fetch SonarQube API specification
 api: setup.sonar
