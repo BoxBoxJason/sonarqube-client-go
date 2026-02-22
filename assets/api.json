@@ -3007,6 +3007,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "Param \u0027complianceStandards\u0027 has been added",
+              "version": "2025.6"
+            },
+            {
               "description": "Added parameter \u0027stig-ASD_V5R3\u0027 and \u0027casa\u0027",
               "version": "10.7"
             },
@@ -3053,6 +3057,14 @@
               "since": "10.7",
               "required": false,
               "internal": false
+            },
+            {
+              "key": "complianceStandards",
+              "description": "Comma-separated list of compliance standards",
+              "since": "2025.6",
+              "required": false,
+              "internal": false,
+              "exampleValue": "asvs:4.0.3\u003d6.1.2"
             },
             {
               "key": "cwe",
