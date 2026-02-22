@@ -20,7 +20,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: "1.25.5"
+          go-version: "1.25.7"
           cache: true
 
       - name: Cache Go tools
@@ -45,7 +45,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: "1.25.5"
+          go-version: "1.25.7"
           cache: true
 
       - name: Cache Go tools
@@ -84,7 +84,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: "1.25.5"
+          go-version: "1.25.7"
           cache: true
 
       - name: Cache Go tools
@@ -98,3 +98,22 @@ jobs:
 
       - name: Run E2E tests
         run: make e2e
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.7"
+
+      - name: Build
+        run: make build
+        env:
+          CGO_ENABLED: 0
+          GO111MODULE: on
