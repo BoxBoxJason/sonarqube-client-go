@@ -24,9 +24,6 @@ const (
 	completeNoDescDirective = "__completeNoDesc"
 )
 
-// version is set at build time via -ldflags "-X github.com/boxboxjason/sonarqube-client-go/internal/cli.version=1.2.3".
-var version = "dev"
-
 // contextKey is a typed key for storing values in cobra command context.
 type contextKey string
 
@@ -81,7 +78,7 @@ Examples:
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			return initClient(cmd, args, flags)
 		},
-		Version: version,
+		Version: versionInfo(),
 	}
 
 	registerGlobalFlags(rootCmd, flags)

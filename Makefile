@@ -5,7 +5,8 @@ endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
 sonarqube_version := 26.2.0.119303-community
-version := dev
+version := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+build_time := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
 # target can be: all (default), sdk, cli
 target := all
@@ -49,11 +50,11 @@ e2e: setup.sonar
 	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1; }
 	SONAR_TOKEN= SONAR_URL=${endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
-# Build the CLI binary to ./bin/sonar-cli
-# This supports passing -ldflags "-X main.version=1.2.3" to set the version at build time
+# Build the CLI binary to ./bin/sonar-cli.
+# Version defaults to the latest git tag/commit. Override with: make build version=1.2.3
+# Build time is stamped automatically at build time.
 build:
-	@mkdir -p bin
-	go build -o bin/sonar-cli -ldflags "-X github.com/boxboxjason/sonarqube-client-go/internal/cli.version=$(version)" ./cmd/sonar-cli
+	go build -o bin/sonar-cli -ldflags "-X github.com/boxboxjason/sonarqube-client-go/internal/cli.version=$(version) -X github.com/boxboxjason/sonarqube-client-go/internal/cli.buildTime=$(build_time)" ./cmd/sonar-cli
 
 # Generate changelog using git-cliff
 changelog:
