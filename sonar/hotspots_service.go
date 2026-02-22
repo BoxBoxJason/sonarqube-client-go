@@ -400,6 +400,9 @@ type HotspotsSearchOption struct {
 	// Casa is a comma-separated list of CASA categories.
 	// This field is optional. Since: 10.7.
 	Casa []string `url:"casa,omitempty,comma"`
+	// ComplianceStandards is a list of compliance standards.
+	// This field is optional. Since: 2025.6.
+	ComplianceStandards []string `url:"complianceStandards,omitempty,comma"`
 	// Cwe is a comma-separated list of CWE numbers.
 	// This field is optional. Since: 8.8.
 	Cwe []string `url:"cwe,omitempty,comma"`

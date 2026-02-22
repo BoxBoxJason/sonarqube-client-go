@@ -3,7 +3,7 @@ target_dir := sonar
 endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
-sonarqube_version := 26.1.0.118079-community
+sonarqube_version := 26.2.0.119303-community
 
 # Automatically detect container engine (docker or podman)
 ifeq ($(shell command -v docker 2>/dev/null),)
