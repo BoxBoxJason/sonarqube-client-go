@@ -115,7 +115,7 @@ sonar-cli projects search
 sonar-cli issues search --projects my-project --severities CRITICAL,MAJOR
 
 # Get quality gate status
-sonar-cli qualitygates get-project-status --project-key my-project
+sonar-cli qualitygates project-status --project-key my-project
 
 # Create a user token
 sonar-cli user-tokens generate --login john --name "ci-token"
