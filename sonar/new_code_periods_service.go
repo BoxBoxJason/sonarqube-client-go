@@ -201,7 +201,7 @@ func (s *NewCodePeriodsService) List(opt *NewCodePeriodsListOption) (*NewCodePer
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "new_code_periods/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "new_code_periods/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -233,7 +233,7 @@ func (s *NewCodePeriodsService) Set(opt *NewCodePeriodsSetOption) (*http.Respons
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "new_code_periods/set", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "new_code_periods/set", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -262,7 +262,7 @@ func (s *NewCodePeriodsService) Show(opt *NewCodePeriodsShowOption) (*NewCodePer
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "new_code_periods/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "new_code_periods/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -292,7 +292,7 @@ func (s *NewCodePeriodsService) Unset(opt *NewCodePeriodsUnsetOption) (*http.Res
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "new_code_periods/unset", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "new_code_periods/unset", opt)
 	if err != nil {
 		return nil, err
 	}

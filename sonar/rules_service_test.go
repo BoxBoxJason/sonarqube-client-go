@@ -11,7 +11,7 @@ import (
 )
 
 func TestRules_App(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "GET", "/rules/app", 200, `{"canWrite":true,"languages":{"java":"Java"}}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/app", 200, `{"canWrite":true,"languages":{"java":"Java"}}`))
 	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Rules.App()
@@ -22,7 +22,7 @@ func TestRules_App(t *testing.T) {
 }
 
 func TestRules_Create(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "POST", "/rules/create", 200, `{"rule":{"key":"java:MyRule","name":"My Rule"}}`))
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/rules/create", 200, `{"rule":{"key":"java:MyRule","name":"My Rule"}}`))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesCreateOption{
@@ -39,7 +39,7 @@ func TestRules_Create(t *testing.T) {
 }
 
 func TestRules_Delete(t *testing.T) {
-	server := newTestServer(t, mockEmptyHandler(t, "POST", "/rules/delete", 204))
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/rules/delete", 204))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesDeleteOption{Key: "java:MyRule"}
@@ -49,7 +49,7 @@ func TestRules_Delete(t *testing.T) {
 }
 
 func TestRules_Search(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "GET", "/rules/search", 200, `{"paging":{"total":0},"rules":[],"actives":{}}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/search", 200, `{"paging":{"total":0},"rules":[],"actives":{}}`))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesSearchOption{Languages: []string{"java"}}
@@ -95,7 +95,7 @@ func TestRulesSearchResponse_DynamicActives(t *testing.T) {
 }
 
 func TestRules_Show(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "GET", "/rules/show", 200, `{"rule":{"key":"java:S1067","name":"Test Rule"}}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/show", 200, `{"rule":{"key":"java:S1067","name":"Test Rule"}}`))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesShowOption{Key: "java:S1067"}
@@ -107,7 +107,7 @@ func TestRules_Show(t *testing.T) {
 }
 
 func TestRules_Tags(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "GET", "/rules/tags", 200, `{"tags":["security","bug"]}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/tags", 200, `{"tags":["security","bug"]}`))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesTagsOption{PageSize: 100}
@@ -119,7 +119,7 @@ func TestRules_Tags(t *testing.T) {
 }
 
 func TestRules_Update(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "POST", "/rules/update", 200, `{"rule":{"key":"java:MyRule","name":"Updated Rule"}}`))
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/rules/update", 200, `{"rule":{"key":"java:MyRule","name":"Updated Rule"}}`))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesUpdateOption{Key: "java:MyRule", Name: "Updated Rule"}
@@ -150,7 +150,7 @@ func TestRules_UpdateClearTags(t *testing.T) {
 }
 
 func TestRules_Repositories(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "GET", "/rules/repositories", 200, `{"repositories":[{"key":"java","language":"java","name":"SonarAnalyzer"}]}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/repositories", 200, `{"repositories":[{"key":"java","language":"java","name":"SonarAnalyzer"}]}`))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesRepositoriesOption{}
@@ -162,7 +162,7 @@ func TestRules_Repositories(t *testing.T) {
 }
 
 func TestRules_List(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, "GET", "/rules/list", 200, `{"rules":[]}`))
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/list", 200, `{"rules":[]}`))
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesListOption{

@@ -1,9 +1,12 @@
 package sonar
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -74,6 +77,27 @@ type Client struct {
 	Users              *UsersService
 	Webhooks           *WebhooksService
 	Webservices        *WebservicesService
+
+	// V2 contains all V2 API services.
+	V2 *ServicesV2
+}
+
+// ServicesV2 groups all SonarQube V2 API services.
+type ServicesV2 struct {
+	// Analysis provides methods for the Analysis V2 API.
+	Analysis *AnalysisServiceV2
+	// Authorizations provides methods for the Authorizations V2 API.
+	Authorizations *AuthorizationsServiceV2
+	// CleanCodePolicy provides methods for the Clean Code Policy V2 API.
+	CleanCodePolicy *CleanCodePolicyServiceV2
+	// DopTranslation provides methods for the Dop Translation V2 API.
+	DopTranslation *DopTranslationServiceV2
+	// Marketplace provides methods for the Marketplace V2 API.
+	Marketplace *MarketplaceServiceV2
+	// System provides methods for the System V2 API.
+	System *SystemServiceV2
+	// UsersManagement provides methods for the Users Management V2 API.
+	UsersManagement *UsersManagementServiceV2
 }
 
 // ClientCreateOption contains options for creating a new Client.
@@ -352,48 +376,134 @@ func initServices(client *Client) {
 	client.Users = &UsersService{client: client}
 	client.Webhooks = &WebhooksService{client: client}
 	client.Webservices = &WebservicesService{client: client}
+
+	initServicesV2(client)
 }
 
-// NewRequest creates an API request. A relative URL path can be provided in
-// path, in which case it is resolved relative to the base URL of the Client.
-// Relative URL paths should always be specified without a preceding slash.
-// If opt is non-nil, it is encoded as URL query parameters using go-querystring
-// and appended to the request URL. The request body is not populated.
-func (c *Client) NewRequest(method, path string, opt any) (*http.Request, error) {
-	baseURLCopy := *c.baseURL
-	baseURLCopy.Path = c.baseURL.Path + path
+// initServicesV2 initializes all V2 service instances for the client.
+func initServicesV2(client *Client) {
+	client.V2 = &ServicesV2{
+		Analysis:        &AnalysisServiceV2{client: client},
+		Authorizations:  &AuthorizationsServiceV2{client: client},
+		CleanCodePolicy: &CleanCodePolicyServiceV2{client: client},
+		DopTranslation:  &DopTranslationServiceV2{client: client},
+		Marketplace:     &MarketplaceServiceV2{client: client},
+		System:          &SystemServiceV2{client: client},
+		UsersManagement: &UsersManagementServiceV2{client: client},
+	}
+}
 
-	if opt != nil {
-		queryValues, err := query.Values(opt)
-		if err != nil {
-			return nil, fmt.Errorf("failed to encode query values: %w", err)
-		}
+// SonarAPIRequestParameters contains parameters for making a SonarQube API
+// request. This struct is the unified way to provide parameters to
+// NewSonarQubeAPIRequest. For most use cases, prefer the version-specific
+// helpers NewSonarQubeV1APIRequest and NewSonarQubeV2APIRequest which handle
+// query encoding and path prefixing automatically.
+//
+//nolint:govet // fieldalignment: keeping logical field grouping for readability
+type SonarAPIRequestParameters struct {
+	// Method is the HTTP method to use for the request (e.g. http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodDelete).
+	// Defaults to http.MethodGet if empty.
+	Method string
+	// Path is the URL path for the API endpoint, relative to the base URL
+	// (e.g. "components/search" for V1 or "v2/system/health" for V2).
+	// This field is required.
+	Path string
+	// RawQuery contains pre-encoded URL query parameters to include in the
+	// request URL. Use the version-specific helpers which encode query structs
+	// automatically based on the appropriate struct tag convention.
+	RawQuery url.Values
+	// Headers is a map of additional HTTP headers to include in the request.
+	// Default is no additional headers beyond the standard Accept, Content-Type,
+	// authentication and User-Agent headers.
+	Headers map[string]string
+	// Body is the request body to include in the API request. It will be
+	// JSON-encoded if not nil.
+	Body any
+}
 
-		baseURLCopy.RawQuery = queryValues.Encode()
+// NewSonarQubeAPIRequest creates a new API request based on the provided
+// SonarAPIRequestParameters. It applies default values for any missing
+// parameters, sets authentication and standard headers, and returns an
+// http.Request ready to be sent.
+//
+// For most use cases, prefer the version-specific helpers:
+//   - NewSonarQubeV1APIRequest for V1 API endpoints (go-querystring encoding).
+//   - NewSonarQubeV2APIRequest for V2 API endpoints (JSON-tag encoding, body support).
+func (c *Client) NewSonarQubeAPIRequest(params SonarAPIRequestParameters) (*http.Request, error) {
+	method := http.MethodGet
+	if params.Method != "" {
+		method = params.Method
 	}
 
-	req, err := http.NewRequestWithContext(context.Background(), method, baseURLCopy.String(), nil)
+	if params.Path == "" {
+		return nil, errors.New("path is required in SonarAPIRequestParameters")
+	}
+
+	requestURL := c.buildRequestURL(params)
+
+	bodyReader, err := marshalBody(params.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequestWithContext(context.Background(), method, requestURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	if method == http.MethodPost || method == http.MethodPut {
-		// SonarQube uses RawQuery even when method is POST
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	req.Header.Set("Accept", "application/json")
-
-	switch c.authType {
-	case basicAuth, oAuthToken:
-		req.SetBasicAuth(c.username, c.password)
-	case privateToken:
-		req.SetBasicAuth(c.token, "")
-	}
-
-	req.Header.Set("User-Agent", c.userAgent)
+	c.setRequestHeaders(req, method, params.Headers)
 
 	return req, nil
+}
+
+// NewSonarQubeV1APIRequest creates a V1 API request. The path is resolved
+// relative to the client base URL. If opt is non-nil, it is encoded as URL
+// query parameters using go-querystring struct tags and appended to the
+// request URL.
+func (c *Client) NewSonarQubeV1APIRequest(method, path string, opt any) (*http.Request, error) {
+	var rawQuery url.Values
+
+	if opt != nil {
+		var err error
+
+		rawQuery, err = query.Values(opt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to encode query values: %w", err)
+		}
+	}
+
+	//nolint:exhaustruct // Headers and Body intentionally unset for V1 requests
+	return c.NewSonarQubeAPIRequest(SonarAPIRequestParameters{
+		Method:   method,
+		Path:     path,
+		RawQuery: rawQuery,
+	})
+}
+
+// NewSonarQubeV2APIRequest creates a V2 API request. The path is resolved
+// relative to the client base URL with the "v2/" prefix automatically
+// prepended. If queryOpt is non-nil, it is encoded as URL query parameters
+// using JSON struct tags. If body is non-nil, it is JSON-marshaled and used
+// as the request body.
+func (c *Client) NewSonarQubeV2APIRequest(method, path string, queryOpt any, body any) (*http.Request, error) {
+	var rawQuery url.Values
+
+	if queryOpt != nil {
+		var err error
+
+		rawQuery, err = jsonStructToQueryValues(queryOpt)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	//nolint:exhaustruct // Headers intentionally unset for V2 requests
+	return c.NewSonarQubeAPIRequest(SonarAPIRequestParameters{
+		Method:   method,
+		Path:     v2BasePath + path,
+		RawQuery: rawQuery,
+		Body:     body,
+	})
 }
 
 // Do sends an API request and returns the API response. The API response is
@@ -403,4 +513,66 @@ func (c *Client) NewRequest(method, path string, opt any) (*http.Request, error)
 // first decode it.
 func (c *Client) Do(req *http.Request, dest any) (*http.Response, error) {
 	return Do(c.httpClient, req, dest)
+}
+
+// =============================================
+// UNEXPORTED HELPERS
+// =============================================
+
+// buildRequestURL constructs the full URL from the base URL, path and query
+// parameters provided in the request parameters.
+func (c *Client) buildRequestURL(params SonarAPIRequestParameters) string {
+	baseURLCopy := *c.baseURL
+	baseURLCopy.Path = c.baseURL.Path + params.Path
+
+	if params.RawQuery != nil {
+		baseURLCopy.RawQuery = params.RawQuery.Encode()
+	}
+
+	return baseURLCopy.String()
+}
+
+// marshalBody JSON-encodes the request body if non-nil. Returns http.NoBody
+// when body is nil.
+func marshalBody(body any) (io.Reader, error) {
+	if body == nil {
+		return http.NoBody, nil
+	}
+
+	data, err := json.Marshal(body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	return bytes.NewReader(data), nil
+}
+
+// setRequestHeaders applies Content-Type, Accept, authentication and
+// User-Agent headers to the request. Custom headers are applied last so
+// callers can override defaults.
+func (c *Client) setRequestHeaders(req *http.Request, method string, extraHeaders map[string]string) {
+	// Set Content-Type based on HTTP method.
+	switch method {
+	case http.MethodPatch:
+		req.Header.Set("Content-Type", "application/merge-patch+json")
+	case http.MethodPost, http.MethodPut:
+		req.Header.Set("Content-Type", "application/json")
+	}
+
+	req.Header.Set("Accept", "application/json")
+
+	// Set authentication headers.
+	switch c.authType {
+	case basicAuth, oAuthToken:
+		req.SetBasicAuth(c.username, c.password)
+	case privateToken:
+		req.SetBasicAuth(c.token, "")
+	}
+
+	req.Header.Set("User-Agent", c.userAgent)
+
+	// Apply any additional custom headers.
+	for key, value := range extraHeaders {
+		req.Header.Set(key, value)
+	}
 }

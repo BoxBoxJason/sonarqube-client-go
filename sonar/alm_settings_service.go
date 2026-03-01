@@ -966,7 +966,7 @@ func (s *AlmSettingsService) CountBinding(opt *AlmSettingsCountBindingOption) (*
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_settings/count_binding", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/count_binding", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -992,7 +992,7 @@ func (s *AlmSettingsService) CreateAzure(opt *AlmSettingsCreateAzureOption) (*ht
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/create_azure", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_azure", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1016,7 +1016,7 @@ func (s *AlmSettingsService) CreateBitbucket(opt *AlmSettingsCreateBitbucketOpti
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/create_bitbucket", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_bitbucket", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1040,7 +1040,7 @@ func (s *AlmSettingsService) CreateBitbucketCloud(opt *AlmSettingsCreateBitbucke
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/create_bitbucketcloud", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_bitbucketcloud", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1064,7 +1064,7 @@ func (s *AlmSettingsService) CreateGithub(opt *AlmSettingsCreateGithubOption) (*
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/create_github", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_github", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1088,7 +1088,7 @@ func (s *AlmSettingsService) CreateGitlab(opt *AlmSettingsCreateGitlabOption) (*
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/create_gitlab", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_gitlab", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1112,7 +1112,7 @@ func (s *AlmSettingsService) Delete(opt *AlmSettingsDeleteOption) (*http.Respons
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1136,7 +1136,7 @@ func (s *AlmSettingsService) GetBinding(opt *AlmSettingsGetBindingOption) (*AlmS
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_settings/get_binding", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/get_binding", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1163,7 +1163,7 @@ func (s *AlmSettingsService) List(opt *AlmSettingsListOption) (*AlmSettingsList,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_settings/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1184,7 +1184,7 @@ func (s *AlmSettingsService) List(opt *AlmSettingsListOption) (*AlmSettingsList,
 // API endpoint: GET /api/alm_settings/list_definitions.
 // Since: 8.1.
 func (s *AlmSettingsService) ListDefinitions() (*AlmSettingsListDefinitions, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "alm_settings/list_definitions", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/list_definitions", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1210,7 +1210,7 @@ func (s *AlmSettingsService) UpdateAzure(opt *AlmSettingsUpdateAzureOption) (*ht
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/update_azure", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_azure", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1234,7 +1234,7 @@ func (s *AlmSettingsService) UpdateBitbucket(opt *AlmSettingsUpdateBitbucketOpti
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/update_bitbucket", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_bitbucket", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1258,7 +1258,7 @@ func (s *AlmSettingsService) UpdateBitbucketCloud(opt *AlmSettingsUpdateBitbucke
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/update_bitbucketcloud", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_bitbucketcloud", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1282,7 +1282,7 @@ func (s *AlmSettingsService) UpdateGithub(opt *AlmSettingsUpdateGithubOption) (*
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/update_github", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_github", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1306,7 +1306,7 @@ func (s *AlmSettingsService) UpdateGitlab(opt *AlmSettingsUpdateGitlabOption) (*
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_settings/update_gitlab", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_gitlab", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1330,7 +1330,7 @@ func (s *AlmSettingsService) Validate(opt *AlmSettingsValidateOption) (*AlmSetti
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_settings/validate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/validate", opt)
 	if err != nil {
 		return nil, nil, err
 	}

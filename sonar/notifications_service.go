@@ -133,7 +133,7 @@ func (s *NotificationsService) Add(opt *NotificationsAddOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "notifications/add", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "notifications/add", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +158,7 @@ func (s *NotificationsService) List(opt *NotificationsListOption) (*Notification
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "notifications/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "notifications/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -185,7 +185,7 @@ func (s *NotificationsService) Remove(opt *NotificationsRemoveOption) (*http.Res
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "notifications/remove", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "notifications/remove", opt)
 	if err != nil {
 		return nil, err
 	}

@@ -1,5 +1,10 @@
 package sonar
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 const (
 	// defaultBaseURL is the default base URL for the SonarQube API.
 	defaultBaseURL = "http://localhost:9000/api/"
@@ -230,6 +235,22 @@ var (
 		"MAIN": {},
 		"TEST": {},
 	}
+
+	// allowedRuleStatuses is the set of supported rule status values.
+	allowedRuleStatuses = map[string]struct{}{
+		"BETA":       {},
+		"DEPRECATED": {},
+		"READY":      {},
+		"REMOVED":    {},
+	}
+
+	// allowedRuleTypes is the set of supported rule type values.
+	allowedRuleTypes = map[string]struct{}{
+		"CODE_SMELL":       {},
+		"BUG":              {},
+		"VULNERABILITY":    {},
+		"SECURITY_HOTSPOT": {},
+	}
 )
 
 // Paging is used in many APIs.
@@ -250,4 +271,70 @@ type PaginationArgs struct {
 // Validate validates the pagination arguments.
 func (p *PaginationArgs) Validate() error {
 	return ValidatePagination(p.Page, p.PageSize)
+}
+
+// =============================================
+// V2 API COMMON TYPES
+// =============================================
+
+const (
+	// v2BasePath is the base path segment for V2 API endpoints, appended to the
+	// client base URL (e.g. "http://localhost:9000/api/" + "v2/" →
+	// "http://localhost:9000/api/v2/").
+	v2BasePath = "v2/"
+)
+
+// PageResponseV2 represents the pagination information returned by V2 API endpoints.
+type PageResponseV2 struct {
+	// PageIndex is the 1-based page index.
+	PageIndex int32 `json:"pageIndex,omitempty"`
+	// PageSize is the number of items per page.
+	PageSize int32 `json:"pageSize,omitempty"`
+	// Total is the total number of items.
+	Total int32 `json:"total,omitempty"`
+}
+
+// PaginationParamsV2 contains common pagination query parameters for V2 API requests.
+type PaginationParamsV2 struct {
+	// PageIndex is the 1-based page index. Default is 1.
+	PageIndex int32 `json:"pageIndex,omitempty"`
+	// PageSize is the number of results per page. A value of 0 will only return
+	// pagination information. Default is 50.
+	PageSize int32 `json:"pageSize,omitempty"`
+}
+
+// Validate validates the V2 pagination parameters.
+func (p *PaginationParamsV2) Validate() error {
+	if p.PageIndex != 0 && p.PageIndex < 1 {
+		return NewValidationError("PageIndex", "must be greater than 0", ErrOutOfRange)
+	}
+
+	if p.PageSize != 0 && (p.PageSize < 0 || p.PageSize > MaxPageSize) {
+		return NewValidationError("PageSize", fmt.Sprintf("must be between 0 and %d", MaxPageSize), ErrOutOfRange)
+	}
+
+	return nil
+}
+
+// UpdateFieldListStringV2 represents a field that can be explicitly set or cleared
+// in a V2 PATCH request. When used as a pointer field with omitempty, a nil pointer
+// means the field is not included in the request (no change). A non-nil pointer
+// serializes the Value slice directly as a JSON array (or null if Value is nil).
+type UpdateFieldListStringV2 struct {
+	// Value is the list of string values.
+	Value []string
+	// Defined indicates whether this field has been explicitly set.
+	Defined bool
+}
+
+// MarshalJSON implements the json.Marshaler interface. It serializes the
+// UpdateFieldListStringV2 as the bare Value slice so that merge-patch+json
+// requests send `"field":["a","b"]` instead of `"field":{"value":...,"defined":...}`.
+func (u UpdateFieldListStringV2) MarshalJSON() ([]byte, error) {
+	data, err := json.Marshal(u.Value)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal UpdateFieldListStringV2 value: %w", err)
+	}
+
+	return data, nil
 }

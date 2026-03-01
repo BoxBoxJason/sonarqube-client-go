@@ -67,7 +67,7 @@ func (s *LanguagesService) List(opt *LanguagesListOption) (*LanguagesList, *http
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "languages/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "languages/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -160,7 +160,7 @@ func (s *ProjectLinksService) Create(opt *ProjectLinksCreateOption) (*ProjectLin
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_links/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_links/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -186,7 +186,7 @@ func (s *ProjectLinksService) Delete(opt *ProjectLinksDeleteOption) (*http.Respo
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_links/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_links/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +214,7 @@ func (s *ProjectLinksService) Search(opt *ProjectLinksSearchOption) (*ProjectLin
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_links/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_links/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}

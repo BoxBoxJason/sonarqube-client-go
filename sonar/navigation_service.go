@@ -233,7 +233,7 @@ func (s *NavigationService) Component(opt *NavigationComponentOption) (*Navigati
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "navigation/component", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/component", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -254,7 +254,7 @@ func (s *NavigationService) Component(opt *NavigationComponentOption) (*Navigati
 // Since: 5.2.
 // Internal: true.
 func (s *NavigationService) Global() (*NavigationGlobal, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "navigation/global", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/global", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -276,7 +276,7 @@ func (s *NavigationService) Global() (*NavigationGlobal, *http.Response, error) 
 // Since: 7.2.
 // Internal: true.
 func (s *NavigationService) Marketplace() (*NavigationMarketplace, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "navigation/marketplace", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/marketplace", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -298,7 +298,7 @@ func (s *NavigationService) Marketplace() (*NavigationMarketplace, *http.Respons
 // Since: 5.2.
 // Internal: true.
 func (s *NavigationService) Settings() (*NavigationSettings, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "navigation/settings", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/settings", nil)
 	if err != nil {
 		return nil, nil, err
 	}

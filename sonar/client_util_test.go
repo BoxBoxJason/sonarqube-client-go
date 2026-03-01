@@ -19,7 +19,7 @@ import (
 // newRequest is an internal helper that creates an API request with custom semantics.
 // For POST/PUT requests, it marshals opt into a JSON body. For GET requests, it encodes
 // opt as URL query parameters. This is kept for internal testing purposes only.
-// Use (*Client).NewRequest for production code.
+// Use (*Client).NewSonarQubeV1APIRequest or (*Client).NewSonarQubeV2APIRequest for production code.
 //
 //nolint:unused // Used in test files only
 func newRequest(method, path string, baseURL *url.URL, username, password string, opt any) (*http.Request, error) {

@@ -703,7 +703,7 @@ func (s *ComponentsService) App(opt *ComponentsAppOption) (*ComponentsApp, *http
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "components/app", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/app", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -727,7 +727,7 @@ func (s *ComponentsService) Search(opt *ComponentsSearchOption) (*ComponentsSear
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "components/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -753,7 +753,7 @@ func (s *ComponentsService) SearchProjects(opt *ComponentsSearchProjectsOption) 
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "components/search_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/search_projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -779,7 +779,7 @@ func (s *ComponentsService) Show(opt *ComponentsShowOption) (*ComponentsShow, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "components/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -808,7 +808,7 @@ func (s *ComponentsService) Suggestions(opt *ComponentsSuggestionsOption) (*Comp
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "components/suggestions", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/suggestions", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -834,7 +834,7 @@ func (s *ComponentsService) Tree(opt *ComponentsTreeOption) (*ComponentsTree, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "components/tree", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/tree", opt)
 	if err != nil {
 		return nil, nil, err
 	}

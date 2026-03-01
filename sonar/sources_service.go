@@ -236,7 +236,7 @@ func (s *SourcesService) Index(opt *SourcesIndexOption) (*SourcesIndex, *http.Re
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "sources/index", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/index", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -262,7 +262,7 @@ func (s *SourcesService) IssueSnippets(opt *SourcesIssueSnippetsOption) (*Source
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "sources/issue_snippets", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/issue_snippets", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -288,7 +288,7 @@ func (s *SourcesService) Lines(opt *SourcesLinesOption) (*SourcesLines, *http.Re
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "sources/lines", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/lines", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -314,7 +314,7 @@ func (s *SourcesService) Raw(opt *SourcesRawOption) (string, *http.Response, err
 		return "", nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "sources/raw", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/raw", opt)
 	if err != nil {
 		return "", nil, err
 	}
@@ -340,7 +340,7 @@ func (s *SourcesService) Scm(opt *SourcesScmOption) (*SourcesScm, *http.Response
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "sources/scm", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/scm", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -365,7 +365,7 @@ func (s *SourcesService) Show(opt *SourcesShowOption) (*SourcesShow, *http.Respo
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "sources/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -220,7 +220,7 @@ func (s *ProjectBranchesService) Delete(opt *ProjectBranchesDeleteOption) (*http
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_branches/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func (s *ProjectBranchesService) List(opt *ProjectBranchesListOption) (*ProjectB
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_branches/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_branches/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -270,7 +270,7 @@ func (s *ProjectBranchesService) Rename(opt *ProjectBranchesRenameOption) (*http
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_branches/rename", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/rename", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -295,7 +295,7 @@ func (s *ProjectBranchesService) SetAutomaticDeletionProtection(opt *ProjectBran
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_branches/set_automatic_deletion_protection", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/set_automatic_deletion_protection", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -320,7 +320,7 @@ func (s *ProjectBranchesService) SetMain(opt *ProjectBranchesSetMainOption) (*ht
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_branches/set_main", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/set_main", opt)
 	if err != nil {
 		return nil, err
 	}

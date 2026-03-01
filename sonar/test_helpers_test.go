@@ -150,3 +150,84 @@ func newLocalhostClient(t *testing.T) *Client {
 
 	return client
 }
+
+// mockJSONBodyHandler creates a handler that validates method, path, and JSON
+// request body, then returns a JSON response. It decodes the request body into
+// the same type as expectedBody and compares them.
+func mockJSONBodyHandler(t *testing.T, method, path string, statusCode int, expectedBody any, response any) http.HandlerFunc {
+	t.Helper()
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, method, r.Method, "unexpected HTTP method")
+		assert.Equal(t, path, r.URL.Path, "unexpected URL path")
+
+		if expectedBody != nil {
+			var actual map[string]any
+
+			err := json.NewDecoder(r.Body).Decode(&actual)
+			assert.NoError(t, err, "failed to decode request body")
+
+			expectedJSON, _ := json.Marshal(expectedBody)
+
+			var expected map[string]any
+			_ = json.Unmarshal(expectedJSON, &expected)
+
+			assert.Equal(t, expected, actual, "unexpected request body")
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusCode)
+
+		if response != nil {
+			_ = json.NewEncoder(w).Encode(response)
+		}
+	}
+}
+
+// mockPatchHandler creates a handler that validates method, path, Content-Type
+// header (application/merge-patch+json), and JSON request body, then returns a
+// JSON response.
+func mockPatchHandler(t *testing.T, path string, statusCode int, expectedBody any, response any) http.HandlerFunc {
+	t.Helper()
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPatch, r.Method, "unexpected HTTP method")
+		assert.Equal(t, path, r.URL.Path, "unexpected URL path")
+		assert.Equal(t, "application/merge-patch+json", r.Header.Get("Content-Type"), "unexpected Content-Type for PATCH")
+
+		if expectedBody != nil {
+			var actual map[string]any
+
+			err := json.NewDecoder(r.Body).Decode(&actual)
+			assert.NoError(t, err, "failed to decode request body")
+
+			expectedJSON, _ := json.Marshal(expectedBody)
+
+			var expected map[string]any
+			_ = json.Unmarshal(expectedJSON, &expected)
+
+			assert.Equal(t, expected, actual, "unexpected request body")
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusCode)
+
+		if response != nil {
+			_ = json.NewEncoder(w).Encode(response)
+		}
+	}
+}
+
+// mockTextHandler creates a handler that returns a plain text response.
+func mockTextHandler(t *testing.T, method, path string, statusCode int, text string) http.HandlerFunc {
+	t.Helper()
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, method, r.Method, "unexpected HTTP method")
+		assert.Equal(t, path, r.URL.Path, "unexpected URL path")
+
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(statusCode)
+		_, _ = w.Write([]byte(text))
+	}
+}

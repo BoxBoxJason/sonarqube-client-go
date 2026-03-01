@@ -100,7 +100,7 @@ func (s *DismissMessageService) Check(opt *DismissMessageCheckOption) (*DismissM
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "dismiss_message/check", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "dismiss_message/check", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -125,7 +125,7 @@ func (s *DismissMessageService) Dismiss(opt *DismissMessageDismissOption) (*http
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "dismiss_message/dismiss", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "dismiss_message/dismiss", opt)
 	if err != nil {
 		return nil, err
 	}

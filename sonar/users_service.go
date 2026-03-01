@@ -717,7 +717,7 @@ func (s *UsersService) Anonymize(opt *UsersAnonymizeOption) (*http.Response, err
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/anonymize", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/anonymize", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -743,7 +743,7 @@ func (s *UsersService) ChangePassword(opt *UsersChangePasswordOption) (*http.Res
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/change_password", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/change_password", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -769,7 +769,7 @@ func (s *UsersService) Create(opt *UsersCreateOption) (*UsersCreate, *http.Respo
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -789,7 +789,7 @@ func (s *UsersService) Create(opt *UsersCreateOption) (*UsersCreate, *http.Respo
 // API endpoint: GET /api/users/current.
 // Since: 5.2.
 func (s *UsersService) Current() (*UsersCurrent, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "users/current", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/current", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -816,7 +816,7 @@ func (s *UsersService) Deactivate(opt *UsersDeactivateOption) (*UsersDeactivate,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/deactivate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/deactivate", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -842,7 +842,7 @@ func (s *UsersService) DismissNotice(opt *UsersDismissNoticeOption) (*http.Respo
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/dismiss_notice", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/dismiss_notice", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -867,7 +867,7 @@ func (s *UsersService) Groups(opt *UsersGroupsOption) (*UsersGroups, *http.Respo
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "users/groups", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/groups", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -887,7 +887,7 @@ func (s *UsersService) Groups(opt *UsersGroupsOption) (*UsersGroups, *http.Respo
 // API endpoint: GET /api/users/identity_providers.
 // Since: 5.5.
 func (s *UsersService) IdentityProviders() (*UsersIdentityProviders, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "users/identity_providers", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/identity_providers", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -918,7 +918,7 @@ func (s *UsersService) Search(opt *UsersSearchOption) (*UsersSearch, *http.Respo
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "users/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -944,7 +944,7 @@ func (s *UsersService) SetHomepage(opt *UsersSetHomepageOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/set_homepage", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/set_homepage", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -969,7 +969,7 @@ func (s *UsersService) Update(opt *UsersUpdateOption) (*UsersUpdate, *http.Respo
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/update", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -999,7 +999,7 @@ func (s *UsersService) UpdateIdentityProvider(opt *UsersUpdateIdentityProviderOp
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/update_identity_provider", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/update_identity_provider", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1025,7 +1025,7 @@ func (s *UsersService) UpdateLogin(opt *UsersUpdateLoginOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "users/update_login", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/update_login", opt)
 	if err != nil {
 		return nil, err
 	}

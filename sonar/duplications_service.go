@@ -102,7 +102,7 @@ func (s *DuplicationsService) Show(opt *DuplicationsShowOption) (*DuplicationsSh
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "duplications/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "duplications/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}

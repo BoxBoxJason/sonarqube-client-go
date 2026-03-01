@@ -486,7 +486,7 @@ func (s *QualitygatesService) AddGroup(opt *QualitygatesAddGroupOption) (resp *h
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/add_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/add_group", opt)
 	if err != nil {
 		return
 	}
@@ -509,7 +509,7 @@ func (s *QualitygatesService) AddUser(opt *QualitygatesAddUserOption) (resp *htt
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/add_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/add_user", opt)
 	if err != nil {
 		return
 	}
@@ -530,7 +530,7 @@ func (s *QualitygatesService) Copy(opt *QualitygatesCopyOption) (resp *http.Resp
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/copy", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/copy", opt)
 	if err != nil {
 		return
 	}
@@ -551,7 +551,7 @@ func (s *QualitygatesService) Create(opt *QualitygatesCreateOption) (v *Qualityg
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/create", opt)
 	if err != nil {
 		return
 	}
@@ -574,7 +574,7 @@ func (s *QualitygatesService) CreateCondition(opt *QualitygatesCreateConditionOp
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/create_condition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/create_condition", opt)
 	if err != nil {
 		return
 	}
@@ -597,7 +597,7 @@ func (s *QualitygatesService) DeleteCondition(opt *QualitygatesDeleteConditionOp
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/delete_condition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/delete_condition", opt)
 	if err != nil {
 		return
 	}
@@ -620,7 +620,7 @@ func (s *QualitygatesService) Deselect(opt *QualitygatesDeselectOption) (resp *h
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/deselect", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/deselect", opt)
 	if err != nil {
 		return
 	}
@@ -641,7 +641,7 @@ func (s *QualitygatesService) Destroy(opt *QualitygatesDestroyOption) (resp *htt
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/destroy", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/destroy", opt)
 	if err != nil {
 		return
 	}
@@ -665,7 +665,7 @@ func (s *QualitygatesService) GetByProject(opt *QualitygatesGetByProjectOption) 
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "qualitygates/get_by_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/get_by_project", opt)
 	if err != nil {
 		return
 	}
@@ -682,7 +682,7 @@ func (s *QualitygatesService) GetByProject(opt *QualitygatesGetByProjectOption) 
 
 // List gets a list of quality gates.
 func (s *QualitygatesService) List() (v *QualitygatesList, resp *http.Response, err error) {
-	req, err := s.client.NewRequest(http.MethodGet, "qualitygates/list", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/list", nil)
 	if err != nil {
 		return
 	}
@@ -712,7 +712,7 @@ func (s *QualitygatesService) ProjectStatus(opt *QualitygatesProjectStatusOption
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "qualitygates/project_status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/project_status", opt)
 	if err != nil {
 		return
 	}
@@ -737,7 +737,7 @@ func (s *QualitygatesService) RemoveGroup(opt *QualitygatesRemoveGroupOption) (r
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/remove_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/remove_group", opt)
 	if err != nil {
 		return
 	}
@@ -760,7 +760,7 @@ func (s *QualitygatesService) RemoveUser(opt *QualitygatesRemoveUserOption) (res
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/remove_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/remove_user", opt)
 	if err != nil {
 		return
 	}
@@ -781,7 +781,7 @@ func (s *QualitygatesService) Rename(opt *QualitygatesRenameOption) (resp *http.
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/rename", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/rename", opt)
 	if err != nil {
 		return
 	}
@@ -802,7 +802,7 @@ func (s *QualitygatesService) Search(opt *QualitygatesSearchOption) (v *Qualityg
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "qualitygates/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/search", opt)
 	if err != nil {
 		return
 	}
@@ -827,7 +827,7 @@ func (s *QualitygatesService) SearchGroups(opt *QualitygatesSearchGroupsOption) 
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "qualitygates/search_groups", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/search_groups", opt)
 	if err != nil {
 		return
 	}
@@ -852,7 +852,7 @@ func (s *QualitygatesService) SearchUsers(opt *QualitygatesSearchUsersOption) (v
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "qualitygates/search_users", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/search_users", opt)
 	if err != nil {
 		return
 	}
@@ -877,7 +877,7 @@ func (s *QualitygatesService) Select(opt *QualitygatesSelectOption) (resp *http.
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/select", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/select", opt)
 	if err != nil {
 		return
 	}
@@ -898,7 +898,7 @@ func (s *QualitygatesService) SetAsDefault(opt *QualitygatesSetAsDefaultOption) 
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/set_as_default", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/set_as_default", opt)
 	if err != nil {
 		return
 	}
@@ -918,7 +918,7 @@ func (s *QualitygatesService) Show(opt *QualitygatesShowOption) (v *Qualitygates
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "qualitygates/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/show", opt)
 	if err != nil {
 		return
 	}
@@ -941,7 +941,7 @@ func (s *QualitygatesService) UpdateCondition(opt *QualitygatesUpdateConditionOp
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "qualitygates/update_condition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/update_condition", opt)
 	if err != nil {
 		return
 	}

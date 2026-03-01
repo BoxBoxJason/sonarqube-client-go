@@ -91,7 +91,7 @@ func (s *MetricsService) Search(opt *MetricsSearchOption) (*MetricsSearch, *http
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "metrics/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "metrics/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -111,7 +111,7 @@ func (s *MetricsService) Search(opt *MetricsSearchOption) (*MetricsSearch, *http
 // API endpoint: GET /api/metrics/types.
 // Since: 2.6.
 func (s *MetricsService) Types() (*MetricsTypes, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "metrics/types", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "metrics/types", nil)
 	if err != nil {
 		return nil, nil, err
 	}

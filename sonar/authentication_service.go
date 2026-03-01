@@ -70,7 +70,7 @@ func (s *AuthenticationService) Login(opt *AuthenticationLoginOption) (*http.Res
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "authentication/login", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "authentication/login", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (s *AuthenticationService) Login(opt *AuthenticationLoginOption) (*http.Res
 //
 // API endpoint: POST /api/authentication/logout.
 func (s *AuthenticationService) Logout() (*http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "authentication/logout", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "authentication/logout", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (s *AuthenticationService) Logout() (*http.Response, error) {
 //
 // API endpoint: GET /api/authentication/validate.
 func (s *AuthenticationService) Validate() (*AuthenticationValidation, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "authentication/validate", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "authentication/validate", nil)
 	if err != nil {
 		return nil, nil, err
 	}

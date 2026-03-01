@@ -63,7 +63,7 @@ type JitStatus struct {
 // API endpoint: POST /api/github_provisioning/check.
 // WARNING: This is an internal API and may change without notice.
 func (s *GithubProvisioningService) Check() (*GithubProvisioningCheck, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "github_provisioning/check", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "github_provisioning/check", nil)
 	if err != nil {
 		return nil, nil, err
 	}

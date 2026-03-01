@@ -30,7 +30,7 @@ type AnalysisReportsQueueStatus struct {
 // API endpoint: GET /api/analysis_reports/is_queue_empty.
 // WARNING: this is an internal API and may change without notice.
 func (s *AnalysisReportsService) IsQueueEmpty() (*AnalysisReportsQueueStatus, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "analysis_reports/is_queue_empty", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "analysis_reports/is_queue_empty", nil)
 	if err != nil {
 		return nil, nil, err
 	}

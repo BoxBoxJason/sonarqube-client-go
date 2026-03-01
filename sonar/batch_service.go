@@ -62,7 +62,7 @@ func (s *BatchService) File(opt *BatchFileOption) (v []byte, resp *http.Response
 		return
 	}
 
-	req, err := s.client.NewRequest("GET", "batch/file", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "batch/file", opt)
 	if err != nil {
 		return
 	}
@@ -82,7 +82,7 @@ func (s *BatchService) File(opt *BatchFileOption) (v []byte, resp *http.Response
 // Index lists the JAR files to be downloaded by scanners.
 // Returns a list of JAR file names and their hashes.
 func (s *BatchService) Index() (v *string, resp *http.Response, err error) {
-	req, err := s.client.NewRequest("GET", "batch/index", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "batch/index", nil)
 	if err != nil {
 		return
 	}
@@ -105,7 +105,7 @@ func (s *BatchService) Project(opt *BatchProjectOption) (v *BatchProject, resp *
 		return
 	}
 
-	req, err := s.client.NewRequest("GET", "batch/project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "batch/project", opt)
 	if err != nil {
 		return
 	}

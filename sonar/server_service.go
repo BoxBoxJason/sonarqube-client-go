@@ -10,7 +10,7 @@ type ServerService struct {
 
 // Version returns the SonarQube server version.
 func (s *ServerService) Version() (v *string, resp *http.Response, err error) {
-	req, err := s.client.NewRequest(http.MethodGet, "server/version", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "server/version", nil)
 	if err != nil {
 		return nil, nil, err
 	}

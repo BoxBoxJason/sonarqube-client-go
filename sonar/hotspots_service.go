@@ -737,7 +737,7 @@ func (s *HotspotsService) AddComment(opt *HotspotsAddCommentOption) (*http.Respo
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "hotspots/add_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "hotspots/add_comment", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -762,7 +762,7 @@ func (s *HotspotsService) Assign(opt *HotspotsAssignOption) (*http.Response, err
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "hotspots/assign", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "hotspots/assign", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -786,7 +786,7 @@ func (s *HotspotsService) ChangeStatus(opt *HotspotsChangeStatusOption) (*http.R
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "hotspots/change_status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "hotspots/change_status", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -811,7 +811,7 @@ func (s *HotspotsService) DeleteComment(opt *HotspotsDeleteCommentOption) (*http
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "hotspots/delete_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "hotspots/delete_comment", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -836,7 +836,7 @@ func (s *HotspotsService) EditComment(opt *HotspotsEditCommentOption) (*Hotspots
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "hotspots/edit_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "hotspots/edit_comment", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -867,7 +867,7 @@ func (s *HotspotsService) List(opt *HotspotsListOption) (*HotspotsList, *http.Re
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "hotspots/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "hotspots/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -895,7 +895,7 @@ func (s *HotspotsService) Pull(opt *HotspotsPullOption) ([]byte, *http.Response,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "hotspots/pull", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "hotspots/pull", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -923,7 +923,7 @@ func (s *HotspotsService) Search(opt *HotspotsSearchOption) (*HotspotsSearch, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "hotspots/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "hotspots/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -948,7 +948,7 @@ func (s *HotspotsService) Show(opt *HotspotsShowOption) (*HotspotsShow, *http.Re
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "hotspots/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "hotspots/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}

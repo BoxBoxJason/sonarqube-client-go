@@ -84,7 +84,7 @@ func (s *DevelopersService) SearchEvents(opt *DevelopersSearchEventsOption) (*De
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "developers/search_events", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "developers/search_events", opt)
 	if err != nil {
 		return nil, nil, err
 	}

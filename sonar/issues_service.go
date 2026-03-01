@@ -741,7 +741,7 @@ func (s *IssuesService) AddComment(opt *IssuesAddCommentOption) (v *IssuesAddCom
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/add_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/add_comment", opt)
 	if err != nil {
 		return
 	}
@@ -766,7 +766,7 @@ func (s *IssuesService) AnticipatedTransitions(opt *IssuesAnticipatedTransitions
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/anticipated_transitions", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/anticipated_transitions", opt)
 	if err != nil {
 		return
 	}
@@ -787,7 +787,7 @@ func (s *IssuesService) Assign(opt *IssuesAssignOption) (v *IssuesAssign, resp *
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/assign", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/assign", opt)
 	if err != nil {
 		return
 	}
@@ -810,7 +810,7 @@ func (s *IssuesService) Authors(opt *IssuesAuthorsOption) (v *IssuesAuthors, res
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/authors", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/authors", opt)
 	if err != nil {
 		return
 	}
@@ -833,7 +833,7 @@ func (s *IssuesService) BulkChange(opt *IssuesBulkChangeOption) (v *IssuesBulkCh
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/bulk_change", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/bulk_change", opt)
 	if err != nil {
 		return
 	}
@@ -856,7 +856,7 @@ func (s *IssuesService) Changelog(opt *IssuesChangelogOption) (v *IssuesChangelo
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/changelog", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/changelog", opt)
 	if err != nil {
 		return
 	}
@@ -879,7 +879,7 @@ func (s *IssuesService) ComponentTags(opt *IssuesComponentTagsOption) (v *Issues
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/component_tags", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/component_tags", opt)
 	if err != nil {
 		return
 	}
@@ -902,7 +902,7 @@ func (s *IssuesService) DeleteComment(opt *IssuesDeleteCommentOption) (v *Issues
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/delete_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/delete_comment", opt)
 	if err != nil {
 		return
 	}
@@ -927,7 +927,7 @@ func (s *IssuesService) DoTransition(opt *IssuesDoTransitionOption) (v *IssuesDo
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/do_transition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/do_transition", opt)
 	if err != nil {
 		return
 	}
@@ -950,7 +950,7 @@ func (s *IssuesService) EditComment(opt *IssuesEditCommentOption) (v *IssuesEdit
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/edit_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/edit_comment", opt)
 	if err != nil {
 		return
 	}
@@ -974,7 +974,7 @@ func (s *IssuesService) List(opt *IssuesListOption) (v *IssuesList, resp *http.R
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/list", opt)
 	if err != nil {
 		return
 	}
@@ -998,7 +998,7 @@ func (s *IssuesService) Pull(opt *IssuesPullOption) (v []byte, resp *http.Respon
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/pull", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/pull", opt)
 	if err != nil {
 		return
 	}
@@ -1020,7 +1020,7 @@ func (s *IssuesService) PullTaint(opt *IssuesPullTaintOption) (v []byte, resp *h
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/pull_taint", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/pull_taint", opt)
 	if err != nil {
 		return
 	}
@@ -1041,7 +1041,7 @@ func (s *IssuesService) Reindex(opt *IssuesReindexOption) (resp *http.Response, 
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/reindex", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/reindex", opt)
 	if err != nil {
 		return
 	}
@@ -1064,7 +1064,7 @@ func (s *IssuesService) Search(opt *IssuesSearchOption) (v *IssuesSearch, resp *
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/search", opt)
 	if err != nil {
 		return
 	}
@@ -1087,7 +1087,7 @@ func (s *IssuesService) SetSeverity(opt *IssuesSetSeverityOption) (v *IssuesSetS
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/set_severity", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/set_severity", opt)
 	if err != nil {
 		return
 	}
@@ -1110,7 +1110,7 @@ func (s *IssuesService) SetTags(opt *IssuesSetTagsOption) (v *IssuesSetTags, res
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/set_tags", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/set_tags", opt)
 	if err != nil {
 		return
 	}
@@ -1133,7 +1133,7 @@ func (s *IssuesService) SetType(opt *IssuesSetTypeOption) (v *IssuesSetType, res
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "issues/set_type", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/set_type", opt)
 	if err != nil {
 		return
 	}
@@ -1155,7 +1155,7 @@ func (s *IssuesService) Tags(opt *IssuesTagsOption) (v *IssuesTags, resp *http.R
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "issues/tags", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/tags", opt)
 	if err != nil {
 		return
 	}

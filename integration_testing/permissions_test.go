@@ -664,7 +664,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			result, resp, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOption{
 				Name:              templateName,
 				Description:       "Template with pattern",
-				ProjectKeyPattern: "e2e-.*",
+				ProjectKeyPattern: "e2e-tpl-pattern-.*",
 			})
 
 			Expect(err).NotTo(HaveOccurred())
@@ -678,7 +678,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
-			Expect(result.PermissionTemplate.ProjectKeyPattern).To(Equal("e2e-.*"))
+			Expect(result.PermissionTemplate.ProjectKeyPattern).To(Equal("e2e-tpl-pattern-.*"))
 		})
 
 		Context("parameter validation", func() {
