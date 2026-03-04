@@ -1,12 +1,14 @@
 package sonar
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -155,4 +157,59 @@ func assignPtrIfNotNil[T any](dest **T, src *T) {
 	if src != nil {
 		*dest = src
 	}
+}
+
+// jsonStructToQueryValues marshals a struct using its json tags and converts the
+// resulting flat JSON object into url.Values suitable for use as URL query
+// parameters. Fields tagged with json:"-" are excluded. Fields with
+// omitempty that hold zero values are omitted. Arrays of primitives, numbers
+// and booleans are supported. Nested objects are rejected with an error.
+func jsonStructToQueryValues(v any) (url.Values, error) {
+	if v == nil {
+		return url.Values{}, nil
+	}
+
+	data, err := json.Marshal(v)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode query values: %w", err)
+	}
+
+	var decodedMap map[string]any
+
+	dec := json.NewDecoder(bytes.NewReader(data))
+	dec.UseNumber()
+
+	err = dec.Decode(&decodedMap)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode query values: %w", err)
+	}
+
+	return mapToQueryValues(decodedMap)
+}
+
+// mapToQueryValues converts a flat JSON-decoded map into url.Values.
+// Returns an error if any value is a nested object.
+func mapToQueryValues(decodedMap map[string]any) (url.Values, error) {
+	vals := url.Values{}
+
+	for key, val := range decodedMap {
+		switch typedVal := val.(type) {
+		case json.Number:
+			vals.Set(key, typedVal.String())
+		case string:
+			vals.Set(key, typedVal)
+		case bool:
+			vals.Set(key, strconv.FormatBool(typedVal))
+		case []any:
+			for _, item := range typedVal {
+				vals.Add(key, fmt.Sprint(item))
+			}
+		case nil:
+			// Skip null values
+		case map[string]any:
+			return nil, fmt.Errorf("nested objects are not supported as query parameters (field %q)", key)
+		}
+	}
+
+	return vals, nil
 }

@@ -65,7 +65,7 @@ func (s *EmailsService) Send(opt *EmailsSendOption) (*http.Response, error) {
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "emails/send", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "emails/send", opt)
 	if err != nil {
 		return nil, err
 	}

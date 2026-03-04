@@ -425,7 +425,7 @@ func (s *ProjectsService) BulkDelete(opt *ProjectsBulkDeleteOption) (*http.Respo
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "projects/bulk_delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/bulk_delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -448,7 +448,7 @@ func (s *ProjectsService) Create(opt *ProjectsCreateOption) (*ProjectsCreate, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "projects/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -473,7 +473,7 @@ func (s *ProjectsService) Delete(opt *ProjectsDeleteOption) (*http.Response, err
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "projects/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -496,7 +496,7 @@ func (s *ProjectsService) Search(opt *ProjectsSearchOption) (*ProjectsSearch, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "projects/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "projects/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -521,7 +521,7 @@ func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOption) 
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "projects/search_my_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "projects/search_my_projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -541,7 +541,7 @@ func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOption) 
 //
 // Since: 9.5.
 func (s *ProjectsService) SearchMyScannableProjects(opt *ProjectsSearchMyScannableProjectsOption) (*ProjectsSearchMyScannableProjects, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "projects/search_my_scannable_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "projects/search_my_scannable_projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -566,7 +566,7 @@ func (s *ProjectsService) UpdateDefaultVisibility(opt *ProjectsUpdateDefaultVisi
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "projects/update_default_visibility", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/update_default_visibility", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -589,7 +589,7 @@ func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOption) (*http.Respons
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "projects/update_key", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/update_key", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -612,7 +612,7 @@ func (s *ProjectsService) UpdateVisibility(opt *ProjectsUpdateVisibilityOption) 
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "projects/update_visibility", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/update_visibility", opt)
 	if err != nil {
 		return nil, err
 	}

@@ -189,7 +189,7 @@ func (s *UserTokensService) Generate(opt *UserTokensGenerateOption) (*UserTokens
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "user_tokens/generate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_tokens/generate", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -216,7 +216,7 @@ func (s *UserTokensService) Revoke(opt *UserTokensRevokeOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "user_tokens/revoke", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_tokens/revoke", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func (s *UserTokensService) Search(opt *UserTokensSearchOption) (*UserTokensSear
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "user_tokens/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "user_tokens/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -487,7 +487,7 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/check_pat", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/check_pat", opt)
 	if err != nil {
 		return
 	}
@@ -510,7 +510,7 @@ func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithub
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/get_github_client_id", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/get_github_client_id", opt)
 	if err != nil {
 		return
 	}
@@ -536,7 +536,7 @@ func (s *AlmIntegrationsService) ImportAzureProject(opt *AlmIntegrationsImportAz
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_integrations/import_azure_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_azure_project", opt)
 	if err != nil {
 		return
 	}
@@ -560,7 +560,7 @@ func (s *AlmIntegrationsService) ImportBitbucketCloudRepo(opt *AlmIntegrationsIm
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_integrations/import_bitbucketcloud_repo", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_bitbucketcloud_repo", opt)
 	if err != nil {
 		return
 	}
@@ -584,7 +584,7 @@ func (s *AlmIntegrationsService) ImportBitbucketServerProject(opt *AlmIntegratio
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_integrations/import_bitbucketserver_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_bitbucketserver_project", opt)
 	if err != nil {
 		return
 	}
@@ -609,7 +609,7 @@ func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportG
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_integrations/import_github_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_github_project", opt)
 	if err != nil {
 		return
 	}
@@ -632,7 +632,7 @@ func (s *AlmIntegrationsService) ImportGitlabProject(opt *AlmIntegrationsImportG
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_integrations/import_gitlab_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_gitlab_project", opt)
 	if err != nil {
 		return
 	}
@@ -653,7 +653,7 @@ func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzure
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/list_azure_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_azure_projects", opt)
 	if err != nil {
 		return
 	}
@@ -676,7 +676,7 @@ func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegration
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/list_bitbucketserver_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_bitbucketserver_projects", opt)
 	if err != nil {
 		return
 	}
@@ -699,7 +699,7 @@ func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsLis
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/list_github_organizations", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_github_organizations", opt)
 	if err != nil {
 		return
 	}
@@ -722,7 +722,7 @@ func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsList
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/list_github_repositories", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_github_repositories", opt)
 	if err != nil {
 		return
 	}
@@ -745,7 +745,7 @@ func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzur
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/search_azure_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_azure_repos", opt)
 	if err != nil {
 		return
 	}
@@ -768,7 +768,7 @@ func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsS
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/search_bitbucketcloud_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_bitbucketcloud_repos", opt)
 	if err != nil {
 		return
 	}
@@ -791,7 +791,7 @@ func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrations
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/search_bitbucketserver_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_bitbucketserver_repos", opt)
 	if err != nil {
 		return
 	}
@@ -814,7 +814,7 @@ func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGit
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "alm_integrations/search_gitlab_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_gitlab_repos", opt)
 	if err != nil {
 		return
 	}
@@ -837,7 +837,7 @@ func (s *AlmIntegrationsService) SetPat(opt *AlmIntegrationsSetPatOption) (resp 
 		return
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "alm_integrations/set_pat", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/set_pat", opt)
 	if err != nil {
 		return
 	}

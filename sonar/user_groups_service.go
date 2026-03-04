@@ -311,7 +311,7 @@ func (s *UserGroupsService) AddUser(opt *UserGroupsAddUserOption) (*http.Respons
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "user_groups/add_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/add_user", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -336,7 +336,7 @@ func (s *UserGroupsService) Create(opt *UserGroupsCreateOption) (*UserGroupsCrea
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "user_groups/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -364,7 +364,7 @@ func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "user_groups/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -390,7 +390,7 @@ func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOption) (*http.R
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "user_groups/remove_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/remove_user", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -415,7 +415,7 @@ func (s *UserGroupsService) Search(opt *UserGroupsSearchOption) (*UserGroupsSear
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "user_groups/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "user_groups/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -442,7 +442,7 @@ func (s *UserGroupsService) Update(opt *UserGroupsUpdateOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "user_groups/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/update", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -467,7 +467,7 @@ func (s *UserGroupsService) Users(opt *UserGroupsUsersOption) (*UserGroupsUsers,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "user_groups/users", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "user_groups/users", opt)
 	if err != nil {
 		return nil, nil, err
 	}

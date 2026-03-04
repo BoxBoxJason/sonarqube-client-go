@@ -180,7 +180,7 @@ func (s *ProjectBadgesService) Measure(opt *ProjectBadgesMeasureOption) (*string
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_badges/measure", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_badges/measure", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -206,7 +206,7 @@ func (s *ProjectBadgesService) QualityGate(opt *ProjectBadgesQualityGateOption) 
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_badges/quality_gate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_badges/quality_gate", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -233,7 +233,7 @@ func (s *ProjectBadgesService) RenewToken(opt *ProjectBadgesRenewTokenOption) (*
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_badges/renew_token", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_badges/renew_token", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +258,7 @@ func (s *ProjectBadgesService) Token(opt *ProjectBadgesTokenOption) (*ProjectBad
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_badges/token", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_badges/token", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -22,7 +22,7 @@ type MonitoringService struct {
 // API endpoint: GET /api/monitoring/metrics.
 // Since: 9.3.
 func (s *MonitoringService) Metrics() (*string, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "monitoring/metrics", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "monitoring/metrics", nil)
 	if err != nil {
 		return nil, nil, err
 	}

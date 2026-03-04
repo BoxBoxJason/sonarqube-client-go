@@ -75,7 +75,7 @@ func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (*http.Res
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "push/sonarlint_events", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "push/sonarlint_events", opt)
 	if err != nil {
 		return nil, err
 	}

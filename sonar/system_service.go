@@ -573,7 +573,7 @@ func (s *SystemService) ChangeLogLevel(opt *SystemChangeLogLevelOption) (*http.R
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "system/change_log_level", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "system/change_log_level", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -599,7 +599,7 @@ func (s *SystemService) ChangeLogLevel(opt *SystemChangeLogLevelOption) (*http.R
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/db_migration_status
 func (s *SystemService) DbMigrationStatus() (*SystemDbMigrationStatus, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "system/db_migration_status", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/db_migration_status", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -628,7 +628,7 @@ func (s *SystemService) DbMigrationStatus() (*SystemDbMigrationStatus, *http.Res
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/health
 func (s *SystemService) Health() (*SystemHealth, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "system/health", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/health", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -648,7 +648,7 @@ func (s *SystemService) Health() (*SystemHealth, *http.Response, error) {
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/info
 func (s *SystemService) Info() (*SystemInfo, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "system/info", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/info", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -677,7 +677,7 @@ func (s *SystemService) Info() (*SystemInfo, *http.Response, error) {
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/liveness
 func (s *SystemService) Liveness() (*SystemLiveness, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "system/liveness", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/liveness", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -706,7 +706,7 @@ func (s *SystemService) Logs(opt *SystemLogsOption) (*string, *http.Response, er
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "system/logs", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/logs", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -734,7 +734,7 @@ func (s *SystemService) Logs(opt *SystemLogsOption) (*string, *http.Response, er
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/migrate_db
 func (s *SystemService) MigrateDb() (*SystemMigrateDb, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "system/migrate_db", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "system/migrate_db", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -754,7 +754,7 @@ func (s *SystemService) MigrateDb() (*SystemMigrateDb, *http.Response, error) {
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/ping
 func (s *SystemService) Ping() (*string, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "system/ping", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/ping", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -776,7 +776,7 @@ func (s *SystemService) Ping() (*string, *http.Response, error) {
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/restart
 func (s *SystemService) Restart() (*http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "system/restart", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "system/restart", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -801,7 +801,7 @@ func (s *SystemService) Restart() (*http.Response, error) {
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/status
 func (s *SystemService) Status() (*SystemStatus, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "system/status", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/status", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -822,7 +822,7 @@ func (s *SystemService) Status() (*SystemStatus, *http.Response, error) {
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/upgrades
 func (s *SystemService) Upgrades() (*SystemUpgrades, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "system/upgrades", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/upgrades", nil)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -164,7 +164,7 @@ func (s *WebservicesService) List(opt *WebservicesListOption) (*WebservicesList,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "webservices/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webservices/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -190,7 +190,7 @@ func (s *WebservicesService) ResponseExample(opt *WebservicesResponseExampleOpti
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "webservices/response_example", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webservices/response_example", opt)
 	if err != nil {
 		return nil, nil, err
 	}

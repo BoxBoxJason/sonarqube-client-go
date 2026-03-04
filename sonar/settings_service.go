@@ -266,7 +266,7 @@ func (s *SettingsService) ValidateValuesOpt(opt *SettingsValuesOption) error {
 //
 // Since: 6.1.
 func (s *SettingsService) CheckSecretKey() (*SettingsCheckSecretKey, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "settings/check_secret_key", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/check_secret_key", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -291,7 +291,7 @@ func (s *SettingsService) Encrypt(opt *SettingsEncryptOption) (*SettingsEncrypt,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "settings/encrypt", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "settings/encrypt", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -311,7 +311,7 @@ func (s *SettingsService) Encrypt(opt *SettingsEncryptOption) (*SettingsEncrypt,
 //
 // Since: 6.1.
 func (s *SettingsService) GenerateSecretKey() (*SettingsGenerateSecretKey, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "settings/generate_secret_key", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/generate_secret_key", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -341,7 +341,7 @@ func (s *SettingsService) ListDefinitions(opt *SettingsListDefinitionsOption) (*
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "settings/list_definitions", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/list_definitions", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -360,7 +360,7 @@ func (s *SettingsService) ListDefinitions(opt *SettingsListDefinitionsOption) (*
 //
 // Since: 9.8.
 func (s *SettingsService) LoginMessage() (*SettingsLoginMessage, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "settings/login_message", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/login_message", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -388,7 +388,7 @@ func (s *SettingsService) Reset(opt *SettingsResetOption) (*http.Response, error
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "settings/reset", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "settings/reset", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -417,7 +417,7 @@ func (s *SettingsService) Set(opt *SettingsSetOption) (*http.Response, error) {
 
 	// For SettingsSetOption, we need custom encoding due to FieldValues
 	// being a map[string]any that needs to be JSON-encoded
-	req, err := s.client.NewRequest(http.MethodPost, "settings/set", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "settings/set", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -443,7 +443,7 @@ func (s *SettingsService) Values(opt *SettingsValuesOption) (*SettingsValues, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "settings/values", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/values", opt)
 	if err != nil {
 		return nil, nil, err
 	}

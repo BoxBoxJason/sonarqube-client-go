@@ -381,7 +381,7 @@ func (s *MeasuresService) Component(opt *MeasuresComponentOption) (*MeasuresComp
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "measures/component", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/component", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -408,7 +408,7 @@ func (s *MeasuresService) ComponentTree(opt *MeasuresComponentTreeOption) (*Meas
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "measures/component_tree", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/component_tree", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -434,7 +434,7 @@ func (s *MeasuresService) Search(opt *MeasuresSearchOption) (*MeasuresSearch, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "measures/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -460,7 +460,7 @@ func (s *MeasuresService) SearchHistory(opt *MeasuresSearchHistoryOption) (*Meas
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "measures/search_history", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/search_history", opt)
 	if err != nil {
 		return nil, nil, err
 	}

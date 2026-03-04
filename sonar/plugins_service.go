@@ -374,7 +374,7 @@ func (s *PluginsService) ValidateUpdateOpt(opt *PluginsUpdateOption) error {
 // API endpoint: GET /api/plugins/available.
 // Since: 5.2.
 func (s *PluginsService) Available() (*PluginsAvailable, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "plugins/available", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "plugins/available", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -395,7 +395,7 @@ func (s *PluginsService) Available() (*PluginsAvailable, *http.Response, error) 
 // API endpoint: POST /api/plugins/cancel_all.
 // Since: 5.2.
 func (s *PluginsService) CancelAll() (*http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodPost, "plugins/cancel_all", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "plugins/cancel_all", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -419,7 +419,7 @@ func (s *PluginsService) Download(opt *PluginsDownloadOption) (*string, *http.Re
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "plugins/download", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "plugins/download", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -447,7 +447,7 @@ func (s *PluginsService) Install(opt *PluginsInstallOption) (*http.Response, err
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "plugins/install", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "plugins/install", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -471,7 +471,7 @@ func (s *PluginsService) Installed(opt *PluginsInstalledOption) (*PluginsInstall
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "plugins/installed", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "plugins/installed", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -492,7 +492,7 @@ func (s *PluginsService) Installed(opt *PluginsInstalledOption) (*PluginsInstall
 // API endpoint: GET /api/plugins/pending.
 // Since: 5.2.
 func (s *PluginsService) Pending() (*PluginsPending, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "plugins/pending", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "plugins/pending", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -518,7 +518,7 @@ func (s *PluginsService) Uninstall(opt *PluginsUninstallOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "plugins/uninstall", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "plugins/uninstall", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -543,7 +543,7 @@ func (s *PluginsService) Update(opt *PluginsUpdateOption) (*http.Response, error
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "plugins/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "plugins/update", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -563,7 +563,7 @@ func (s *PluginsService) Update(opt *PluginsUpdateOption) (*http.Response, error
 // API endpoint: GET /api/plugins/updates.
 // Since: 5.2.
 func (s *PluginsService) Updates() (*PluginsUpdates, *http.Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "plugins/updates", nil)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "plugins/updates", nil)
 	if err != nil {
 		return nil, nil, err
 	}

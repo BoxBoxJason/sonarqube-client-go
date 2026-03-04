@@ -114,7 +114,7 @@ func (s *FavoritesService) Add(opt *FavoritesAddOption) (*http.Response, error) 
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "favorites/add", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "favorites/add", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -138,7 +138,7 @@ func (s *FavoritesService) Remove(opt *FavoritesRemoveOption) (*http.Response, e
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "favorites/remove", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "favorites/remove", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func (s *FavoritesService) Search(opt *FavoritesSearchOption) (*FavoritesSearch,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "favorites/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "favorites/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}

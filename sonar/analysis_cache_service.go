@@ -80,7 +80,7 @@ func (s *AnalysisCacheService) Clear(opt *AnalysisCacheClearOption) (*http.Respo
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "analysis_cache/clear", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "analysis_cache/clear", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (*http.Response,
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "analysis_cache/get", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "analysis_cache/get", opt)
 	if err != nil {
 		return nil, err
 	}

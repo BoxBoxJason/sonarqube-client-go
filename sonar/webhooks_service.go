@@ -331,7 +331,7 @@ func (s *WebhooksService) Create(opt *WebhooksCreateOption) (*WebhooksCreate, *h
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "webhooks/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "webhooks/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -356,7 +356,7 @@ func (s *WebhooksService) Delete(opt *WebhooksDeleteOption) (*http.Response, err
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "webhooks/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "webhooks/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -380,7 +380,7 @@ func (s *WebhooksService) Deliveries(opt *WebhooksDeliveriesOption) (*WebhooksDe
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "webhooks/deliveries", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webhooks/deliveries", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -405,7 +405,7 @@ func (s *WebhooksService) Delivery(opt *WebhooksDeliveryOption) (*WebhooksDelive
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "webhooks/delivery", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webhooks/delivery", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -431,7 +431,7 @@ func (s *WebhooksService) List(opt *WebhooksListOption) (*WebhooksList, *http.Re
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "webhooks/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webhooks/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -456,7 +456,7 @@ func (s *WebhooksService) Update(opt *WebhooksUpdateOption) (*http.Response, err
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "webhooks/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "webhooks/update", opt)
 	if err != nil {
 		return nil, err
 	}

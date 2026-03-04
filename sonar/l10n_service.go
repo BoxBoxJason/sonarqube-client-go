@@ -60,7 +60,7 @@ func (s *L10NService) Index(opt *L10NIndexOption) (*L10NIndex, *http.Response, e
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "l10n/index", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "l10n/index", opt)
 	if err != nil {
 		return nil, nil, err
 	}

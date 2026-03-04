@@ -333,7 +333,7 @@ func (s *ProjectAnalysesService) CreateEvent(opt *ProjectAnalysesCreateEventOpti
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_analyses/create_event", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/create_event", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -359,7 +359,7 @@ func (s *ProjectAnalysesService) Delete(opt *ProjectAnalysesDeleteOption) (*http
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_analyses/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +384,7 @@ func (s *ProjectAnalysesService) DeleteEvent(opt *ProjectAnalysesDeleteEventOpti
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_analyses/delete_event", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/delete_event", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -408,7 +408,7 @@ func (s *ProjectAnalysesService) Search(opt *ProjectAnalysesSearchOption) (*Proj
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_analyses/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_analyses/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -469,7 +469,7 @@ func (s *ProjectAnalysesService) UpdateEvent(opt *ProjectAnalysesUpdateEventOpti
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_analyses/update_event", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/update_event", opt)
 	if err != nil {
 		return nil, nil, err
 	}

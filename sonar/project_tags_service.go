@@ -90,7 +90,7 @@ func (s *ProjectTagsService) Search(opt *ProjectTagsSearchOption) (*ProjectTagsS
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_tags/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_tags/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -116,7 +116,7 @@ func (s *ProjectTagsService) Set(opt *ProjectTagsSetOption) (*http.Response, err
 		return nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_tags/set", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_tags/set", opt)
 	if err != nil {
 		return nil, err
 	}

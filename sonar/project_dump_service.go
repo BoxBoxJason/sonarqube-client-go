@@ -106,7 +106,7 @@ func (s *ProjectDumpService) Export(opt *ProjectDumpExportOption) (*ProjectDumpE
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodPost, "project_dump/export", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_dump/export", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -132,7 +132,7 @@ func (s *ProjectDumpService) Status(opt *ProjectDumpStatusOption) (*ProjectDumpS
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest(http.MethodGet, "project_dump/status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_dump/status", opt)
 	if err != nil {
 		return nil, nil, err
 	}

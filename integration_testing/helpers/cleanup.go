@@ -78,8 +78,14 @@ func (cm *CleanupManager) Cleanup() []error {
 
 // CleanupOrphanedResources cleans up any orphaned e2e resources older than maxAge.
 func CleanupOrphanedResources(client *sonar.Client, maxAge time.Duration) error {
+	// Clean up orphaned permission templates first (they can block project creation/operations)
+	err := cleanupOrphanedTemplates(client, maxAge)
+	if err != nil {
+		return fmt.Errorf("failed to cleanup orphaned templates: %w", err)
+	}
+
 	// Clean up orphaned projects
-	err := cleanupOrphanedProjects(client, maxAge)
+	err = cleanupOrphanedProjects(client, maxAge)
 	if err != nil {
 		return fmt.Errorf("failed to cleanup orphaned projects: %w", err)
 	}
@@ -94,6 +100,27 @@ func CleanupOrphanedResources(client *sonar.Client, maxAge time.Duration) error 
 	err = cleanupOrphanedGroups(client, maxAge)
 	if err != nil {
 		return fmt.Errorf("failed to cleanup orphaned groups: %w", err)
+	}
+
+	return nil
+}
+
+func cleanupOrphanedTemplates(client *sonar.Client, _ time.Duration) error {
+	templates, _, err := client.Permissions.SearchTemplates(nil)
+	if err != nil {
+		return fmt.Errorf("failed to search templates: %w", err)
+	}
+
+	if templates == nil || len(templates.PermissionTemplates) == 0 {
+		return nil
+	}
+
+	for _, t := range templates.PermissionTemplates {
+		if strings.HasPrefix(t.Name, E2EResourcePrefix) {
+			_, _ = client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOption{
+				TemplateName: t.Name,
+			})
+		}
 	}
 
 	return nil
