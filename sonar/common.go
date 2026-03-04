@@ -235,6 +235,22 @@ var (
 		"MAIN": {},
 		"TEST": {},
 	}
+
+	// allowedRuleStatuses is the set of supported rule status values.
+	allowedRuleStatuses = map[string]struct{}{
+		"BETA":       {},
+		"DEPRECATED": {},
+		"READY":      {},
+		"REMOVED":    {},
+	}
+
+	// allowedRuleTypes is the set of supported rule type values.
+	allowedRuleTypes = map[string]struct{}{
+		"CODE_SMELL":       {},
+		"BUG":              {},
+		"VULNERABILITY":    {},
+		"SECURITY_HOTSPOT": {},
+	}
 )
 
 // Paging is used in many APIs.
