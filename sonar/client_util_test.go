@@ -127,3 +127,79 @@ func TestNewRequest_BasicAuth(t *testing.T) {
 	assert.Equal(t, "user", username)
 	assert.Equal(t, "pass", password)
 }
+
+func TestJsonStructToQueryValues(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   any
+		want    url.Values
+		wantErr bool
+	}{
+		{
+			name:  "nil input",
+			input: nil,
+			want:  url.Values{},
+		},
+		{
+			name: "flat struct with primitives",
+			input: struct {
+				Name    string `json:"name"`
+				Count   int    `json:"count"`
+				Enabled bool   `json:"enabled"`
+			}{
+				Name:    "test",
+				Count:   42,
+				Enabled: true,
+			},
+			want: url.Values{
+				"name":    []string{"test"},
+				"count":   []string{"42"},
+				"enabled": []string{"true"},
+			},
+		},
+		{
+			name: "omitempty zero value omitted",
+			input: struct {
+				Name  string `json:"name,omitempty"`
+				Count int    `json:"count,omitempty"`
+			}{
+				Name: "only-name",
+			},
+			want: url.Values{
+				"name": []string{"only-name"},
+			},
+		},
+		{
+			name: "string slice",
+			input: struct {
+				Tags []string `json:"tags"`
+			}{
+				Tags: []string{"a", "b"},
+			},
+			want: url.Values{
+				"tags": []string{"a", "b"},
+			},
+		},
+		{
+			name: "nested object rejected",
+			input: struct {
+				Nested map[string]string `json:"nested"`
+			}{
+				Nested: map[string]string{"key": "val"},
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := jsonStructToQueryValues(tc.input)
+			if tc.wantErr {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+			assert.Equal(t, tc.want, got)
+		})
+	}
+}

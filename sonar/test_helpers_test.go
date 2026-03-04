@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // testServer wraps httptest.Server for testing.
@@ -165,12 +166,13 @@ func mockJSONBodyHandler(t *testing.T, method, path string, statusCode int, expe
 			var actual map[string]any
 
 			err := json.NewDecoder(r.Body).Decode(&actual)
-			assert.NoError(t, err, "failed to decode request body")
+			require.NoError(t, err, "failed to decode request body")
 
-			expectedJSON, _ := json.Marshal(expectedBody)
+			expectedJSON, err := json.Marshal(expectedBody)
+			require.NoError(t, err, "failed to marshal expected body")
 
 			var expected map[string]any
-			_ = json.Unmarshal(expectedJSON, &expected)
+			require.NoError(t, json.Unmarshal(expectedJSON, &expected), "failed to unmarshal expected body")
 
 			assert.Equal(t, expected, actual, "unexpected request body")
 		}
@@ -199,12 +201,13 @@ func mockPatchHandler(t *testing.T, path string, statusCode int, expectedBody an
 			var actual map[string]any
 
 			err := json.NewDecoder(r.Body).Decode(&actual)
-			assert.NoError(t, err, "failed to decode request body")
+			require.NoError(t, err, "failed to decode request body")
 
-			expectedJSON, _ := json.Marshal(expectedBody)
+			expectedJSON, err := json.Marshal(expectedBody)
+			require.NoError(t, err, "failed to marshal expected body")
 
 			var expected map[string]any
-			_ = json.Unmarshal(expectedJSON, &expected)
+			require.NoError(t, json.Unmarshal(expectedJSON, &expected), "failed to unmarshal expected body")
 
 			assert.Equal(t, expected, actual, "unexpected request body")
 		}

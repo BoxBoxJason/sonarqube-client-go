@@ -162,8 +162,8 @@ func assignPtrIfNotNil[T any](dest **T, src *T) {
 // jsonStructToQueryValues marshals a struct using its json tags and converts the
 // resulting flat JSON object into url.Values suitable for use as URL query
 // parameters. Fields tagged with json:"-" are excluded. Fields with
-// omitempty that hold zero values are omitted. Nested objects, arrays of
-// primitives, numbers and booleans are all handled.
+// omitempty that hold zero values are omitted. Arrays of primitives, numbers
+// and booleans are supported. Nested objects are rejected with an error.
 func jsonStructToQueryValues(v any) (url.Values, error) {
 	if v == nil {
 		return url.Values{}, nil
@@ -184,11 +184,12 @@ func jsonStructToQueryValues(v any) (url.Values, error) {
 		return nil, fmt.Errorf("failed to decode query values: %w", err)
 	}
 
-	return mapToQueryValues(decodedMap), nil
+	return mapToQueryValues(decodedMap)
 }
 
-// mapToQueryValues converts a JSON-decoded map into url.Values.
-func mapToQueryValues(decodedMap map[string]any) url.Values {
+// mapToQueryValues converts a flat JSON-decoded map into url.Values.
+// Returns an error if any value is a nested object.
+func mapToQueryValues(decodedMap map[string]any) (url.Values, error) {
 	vals := url.Values{}
 
 	for key, val := range decodedMap {
@@ -205,10 +206,10 @@ func mapToQueryValues(decodedMap map[string]any) url.Values {
 			}
 		case nil:
 			// Skip null values
-		default:
-			vals.Set(key, fmt.Sprint(typedVal))
+		case map[string]any:
+			return nil, fmt.Errorf("nested objects are not supported as query parameters (field %q)", key)
 		}
 	}
 
-	return vals
+	return vals, nil
 }
