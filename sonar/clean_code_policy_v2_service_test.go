@@ -14,7 +14,7 @@ import (
 // =============================================================================
 
 func TestCleanCodePolicyV2_CreateRule(t *testing.T) {
-	request := &CleanCodePolicyCreateRuleRequestV2{
+	request := &CleanCodePolicyCreateRuleOptions{
 		Key:                 "custom:my_rule",
 		TemplateKey:         "java:S100",
 		Name:                "My Custom Rule",
@@ -60,7 +60,7 @@ func TestCleanCodePolicyV2_CreateRule(t *testing.T) {
 }
 
 func TestCleanCodePolicyV2_CreateRule_MinimalRequest(t *testing.T) {
-	request := &CleanCodePolicyCreateRuleRequestV2{
+	request := &CleanCodePolicyCreateRuleOptions{
 		Key:                 "custom:min_rule",
 		TemplateKey:         "java:S100",
 		Name:                "Minimal Rule",
@@ -88,7 +88,7 @@ func TestCleanCodePolicyV2_CreateRule_MinimalRequest(t *testing.T) {
 }
 
 func TestCleanCodePolicyV2_CreateRule_MultipleImpacts(t *testing.T) {
-	request := &CleanCodePolicyCreateRuleRequestV2{
+	request := &CleanCodePolicyCreateRuleOptions{
 		Key:                 "custom:multi_impact",
 		TemplateKey:         "java:S100",
 		Name:                "Multi Impact Rule",
@@ -118,7 +118,7 @@ func TestCleanCodePolicyV2_CreateRule_MultipleImpacts(t *testing.T) {
 }
 
 func TestCleanCodePolicyV2_CreateRule_WithParameters(t *testing.T) {
-	request := &CleanCodePolicyCreateRuleRequestV2{
+	request := &CleanCodePolicyCreateRuleOptions{
 		Key:                 "custom:params_rule",
 		TemplateKey:         "java:S100",
 		Name:                "Parameterized Rule",
@@ -159,68 +159,68 @@ func TestCleanCodePolicyV2_CreateRule_Validation(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *CleanCodePolicyCreateRuleRequestV2
+		opt  *CleanCodePolicyCreateRuleOptions
 	}{
 		{"nil opt", nil},
-		{"missing key", &CleanCodePolicyCreateRuleRequestV2{
+		{"missing key", &CleanCodePolicyCreateRuleOptions{
 			TemplateKey:         "java:S100",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 		}},
-		{"missing template key", &CleanCodePolicyCreateRuleRequestV2{
+		{"missing template key", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 		}},
-		{"missing name", &CleanCodePolicyCreateRuleRequestV2{
+		{"missing name", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 		}},
-		{"missing markdown description", &CleanCodePolicyCreateRuleRequestV2{
+		{"missing markdown description", &CleanCodePolicyCreateRuleOptions{
 			Key:         "custom:test",
 			TemplateKey: "java:S100",
 			Name:        "Test",
 			Impacts:     []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 		}},
-		{"missing impacts", &CleanCodePolicyCreateRuleRequestV2{
+		{"missing impacts", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 		}},
-		{"empty impacts", &CleanCodePolicyCreateRuleRequestV2{
+		{"empty impacts", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{},
 		}},
-		{"key too long", &CleanCodePolicyCreateRuleRequestV2{
+		{"key too long", &CleanCodePolicyCreateRuleOptions{
 			Key:                 strings.Repeat("a", MaxRuleKeyLengthV2+1),
 			TemplateKey:         "java:S100",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 		}},
-		{"template key too long", &CleanCodePolicyCreateRuleRequestV2{
+		{"template key too long", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         strings.Repeat("a", MaxTemplateKeyLengthV2+1),
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 		}},
-		{"name too long", &CleanCodePolicyCreateRuleRequestV2{
+		{"name too long", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                strings.Repeat("a", MaxRuleNameLengthV2+1),
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 		}},
-		{"invalid status", &CleanCodePolicyCreateRuleRequestV2{
+		{"invalid status", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
@@ -228,7 +228,7 @@ func TestCleanCodePolicyV2_CreateRule_Validation(t *testing.T) {
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 			Status:              "INVALID",
 		}},
-		{"invalid clean code attribute", &CleanCodePolicyCreateRuleRequestV2{
+		{"invalid clean code attribute", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
@@ -236,7 +236,7 @@ func TestCleanCodePolicyV2_CreateRule_Validation(t *testing.T) {
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 			CleanCodeAttribute:  "INVALID",
 		}},
-		{"invalid type", &CleanCodePolicyCreateRuleRequestV2{
+		{"invalid type", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
@@ -244,28 +244,28 @@ func TestCleanCodePolicyV2_CreateRule_Validation(t *testing.T) {
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "HIGH"}},
 			Type:                "INVALID",
 		}},
-		{"invalid impact software quality", &CleanCodePolicyCreateRuleRequestV2{
+		{"invalid impact software quality", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "INVALID", Severity: "HIGH"}},
 		}},
-		{"invalid impact severity", &CleanCodePolicyCreateRuleRequestV2{
+		{"invalid impact severity", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{SoftwareQuality: "MAINTAINABILITY", Severity: "INVALID"}},
 		}},
-		{"missing impact software quality", &CleanCodePolicyCreateRuleRequestV2{
+		{"missing impact software quality", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
 			MarkdownDescription: "desc",
 			Impacts:             []RuleImpact{{Severity: "HIGH"}},
 		}},
-		{"missing impact severity", &CleanCodePolicyCreateRuleRequestV2{
+		{"missing impact severity", &CleanCodePolicyCreateRuleOptions{
 			Key:                 "custom:test",
 			TemplateKey:         "java:S100",
 			Name:                "Test",
@@ -297,7 +297,7 @@ func TestCleanCodePolicyV2_CreateRule_AllCleanCodeAttributes(t *testing.T) {
 
 	for _, attr := range validAttributes {
 		t.Run(attr, func(t *testing.T) {
-			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleRequestV2{
+			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleOptions{
 				Key:                 "custom:test",
 				TemplateKey:         "java:S100",
 				Name:                "Test",
@@ -317,7 +317,7 @@ func TestCleanCodePolicyV2_CreateRule_AllImpactSeverities(t *testing.T) {
 
 	for _, sev := range validSeverities {
 		t.Run(sev, func(t *testing.T) {
-			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleRequestV2{
+			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleOptions{
 				Key:                 "custom:test",
 				TemplateKey:         "java:S100",
 				Name:                "Test",
@@ -336,7 +336,7 @@ func TestCleanCodePolicyV2_CreateRule_AllRuleStatuses(t *testing.T) {
 
 	for _, status := range validStatuses {
 		t.Run(status, func(t *testing.T) {
-			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleRequestV2{
+			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleOptions{
 				Key:                 "custom:test",
 				TemplateKey:         "java:S100",
 				Name:                "Test",
@@ -356,7 +356,7 @@ func TestCleanCodePolicyV2_CreateRule_AllRuleTypes(t *testing.T) {
 
 	for _, ruleType := range validTypes {
 		t.Run(ruleType, func(t *testing.T) {
-			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleRequestV2{
+			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleOptions{
 				Key:                 "custom:test",
 				TemplateKey:         "java:S100",
 				Name:                "Test",
@@ -376,7 +376,7 @@ func TestCleanCodePolicyV2_CreateRule_AllSoftwareQualities(t *testing.T) {
 
 	for _, quality := range validQualities {
 		t.Run(quality, func(t *testing.T) {
-			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleRequestV2{
+			err := client.V2.CleanCodePolicy.ValidateCreateRuleRequest(&CleanCodePolicyCreateRuleOptions{
 				Key:                 "custom:test",
 				TemplateKey:         "java:S100",
 				Name:                "Test",

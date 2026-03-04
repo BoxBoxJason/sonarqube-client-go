@@ -44,7 +44,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 			})
 
 			It("should fail with missing key", func() {
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
 					MarkdownDescription: "Test description",
@@ -56,7 +56,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 			})
 
 			It("should fail with missing template key", func() {
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					Key:                 "custom:test_rule",
 					Name:                "Test Rule",
 					MarkdownDescription: "Test description",
@@ -68,7 +68,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 			})
 
 			It("should fail with missing name", func() {
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					Key:                 "custom:test_rule",
 					TemplateKey:         "java:S100",
 					MarkdownDescription: "Test description",
@@ -80,7 +80,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 			})
 
 			It("should fail with missing markdown description", func() {
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					Key:         "custom:test_rule",
 					TemplateKey: "java:S100",
 					Name:        "Test Rule",
@@ -92,7 +92,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 			})
 
 			It("should fail with empty impacts", func() {
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					Key:                 "custom:test_rule",
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
@@ -105,7 +105,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 			})
 
 			It("should fail with invalid clean code attribute", func() {
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					Key:                 "custom:test_rule",
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
@@ -119,7 +119,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 			})
 
 			It("should fail with invalid impact severity", func() {
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					Key:                 "custom:test_rule",
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
@@ -153,7 +153,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 				customKey := helpers.UniqueResourceName("rule")
 				ruleKey := templateRule.Repo + ":" + customKey
 
-				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleRequestV2{
+				result, resp, err := client.V2.CleanCodePolicy.CreateRule(&sonar.CleanCodePolicyCreateRuleOptions{
 					Key:                 ruleKey,
 					TemplateKey:         templateRule.Key,
 					Name:                "E2E V2 Test Rule " + customKey,

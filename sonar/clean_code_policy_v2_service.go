@@ -103,11 +103,11 @@ type RuleV2 struct {
 // Request Types
 // -----------------------------------------------------------------------------
 
-// CleanCodePolicyCreateRuleRequestV2 contains parameters for creating a custom rule
+// CleanCodePolicyCreateRuleOptions contains parameters for creating a custom rule
 // via the V2 API.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type CleanCodePolicyCreateRuleRequestV2 struct {
+type CleanCodePolicyCreateRuleOptions struct {
 	// Key is the key of the custom rule to create (must include the repository).
 	// This field is required. Maximum 200 characters.
 	Key string `json:"key"`
@@ -180,7 +180,7 @@ func validateRuleImpacts(impacts []RuleImpact) error {
 }
 
 // validateRuleRequiredFields validates the required string fields of a create rule request.
-func validateRuleRequiredFields(opt *CleanCodePolicyCreateRuleRequestV2) error {
+func validateRuleRequiredFields(opt *CleanCodePolicyCreateRuleOptions) error {
 	err := ValidateRequired(opt.Key, "Key")
 	if err != nil {
 		return err
@@ -214,8 +214,8 @@ func validateRuleRequiredFields(opt *CleanCodePolicyCreateRuleRequestV2) error {
 	return ValidateRequired(opt.MarkdownDescription, "MarkdownDescription")
 }
 
-// ValidateCreateRuleRequest validates the CleanCodePolicyCreateRuleRequestV2.
-func (s *CleanCodePolicyServiceV2) ValidateCreateRuleRequest(opt *CleanCodePolicyCreateRuleRequestV2) error {
+// ValidateCreateRuleRequest validates the CleanCodePolicyCreateRuleOptions.
+func (s *CleanCodePolicyServiceV2) ValidateCreateRuleRequest(opt *CleanCodePolicyCreateRuleOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "must not be nil", ErrMissingRequired)
 	}
@@ -254,7 +254,7 @@ func (s *CleanCodePolicyServiceV2) ValidateCreateRuleRequest(opt *CleanCodePolic
 
 // CreateRule creates a custom rule based on a template.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *CleanCodePolicyServiceV2) CreateRule(opt *CleanCodePolicyCreateRuleRequestV2) (*RuleV2, *http.Response, error) {
+func (s *CleanCodePolicyServiceV2) CreateRule(opt *CleanCodePolicyCreateRuleOptions) (*RuleV2, *http.Response, error) {
 	err := s.ValidateCreateRuleRequest(opt)
 	if err != nil {
 		return nil, nil, err
