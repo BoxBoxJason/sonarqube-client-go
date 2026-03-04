@@ -230,7 +230,12 @@ func (s *CleanCodePolicyServiceV2) ValidateCreateRuleRequest(opt *CleanCodePolic
 		return err
 	}
 
-	err = IsValueAuthorized(opt.Status, allowedRuleStatuses, "Status")
+	err = IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
+	if err != nil {
+		return err
+	}
+
+	err = IsValueAuthorized(opt.Status, allowedRulesStatuses, "Status")
 	if err != nil {
 		return err
 	}
@@ -240,7 +245,7 @@ func (s *CleanCodePolicyServiceV2) ValidateCreateRuleRequest(opt *CleanCodePolic
 		return err
 	}
 
-	return IsValueAuthorized(opt.Type, allowedRuleTypes, "Type")
+	return IsValueAuthorized(opt.Type, allowedRulesTypes, "Type")
 }
 
 // -----------------------------------------------------------------------------
