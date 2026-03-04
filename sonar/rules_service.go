@@ -195,55 +195,55 @@ type FacetItem struct {
 
 // RuleDetails contains comprehensive information about a rule.
 type RuleDetails struct {
-	Name                       string               `json:"name,omitempty"`
-	Key                        string               `json:"key,omitempty"`
-	CreatedAt                  string               `json:"createdAt,omitempty"`
-	UpdatedAt                  string               `json:"updatedAt,omitempty"`
-	RemFnType                  string               `json:"remFnType,omitempty"`
-	HTMLDesc                   string               `json:"htmlDesc,omitempty"`
-	HTMLNote                   string               `json:"htmlNote,omitempty"`
-	MdNote                     string               `json:"mdNote,omitempty"`
-	NoteLogin                  string               `json:"noteLogin,omitempty"`
-	CleanCodeAttribute         string               `json:"cleanCodeAttribute,omitempty"`
-	InternalKey                string               `json:"internalKey,omitempty"`
-	RemFnGapMultiplier         string               `json:"remFnGapMultiplier,omitempty"`
-	RemFnBaseEffort            string               `json:"remFnBaseEffort,omitempty"`
-	DefaultRemFnBaseEffort     string               `json:"defaultRemFnBaseEffort,omitempty"`
-	Lang                       string               `json:"lang,omitempty"`
-	LangName                   string               `json:"langName,omitempty"`
-	CleanCodeAttributeCategory string               `json:"cleanCodeAttributeCategory,omitempty"`
-	GapDescription             string               `json:"gapDescription,omitempty"`
-	Repo                       string               `json:"repo,omitempty"`
-	Scope                      string               `json:"scope,omitempty"`
-	Severity                   string               `json:"severity,omitempty"`
-	Status                     string               `json:"status,omitempty"`
-	DefaultRemFnType           string               `json:"defaultRemFnType,omitempty"`
-	DefaultRemFnGapMultiplier  string               `json:"defaultRemFnGapMultiplier,omitempty"`
-	TemplateKey                string               `json:"templateKey,omitempty"`
-	Type                       string               `json:"type,omitempty"`
-	Impacts                    []RuleImpact         `json:"impacts,omitempty"`
-	Tags                       []any                `json:"tags,omitempty"`
-	SysTags                    []string             `json:"sysTags,omitempty"`
-	Params                     []RuleParam          `json:"params,omitempty"`
-	DescriptionSections        []DescriptionSection `json:"descriptionSections,omitempty"`
-	IsTemplate                 bool                 `json:"isTemplate,omitempty"`
-	IsExternal                 bool                 `json:"isExternal,omitempty"`
-	RemFnOverloaded            bool                 `json:"remFnOverloaded,omitempty"`
-	Template                   bool                 `json:"template,omitempty"`
+	Name                       string                   `json:"name,omitempty"`
+	Key                        string                   `json:"key,omitempty"`
+	CreatedAt                  string                   `json:"createdAt,omitempty"`
+	UpdatedAt                  string                   `json:"updatedAt,omitempty"`
+	RemFnType                  string                   `json:"remFnType,omitempty"`
+	HTMLDesc                   string                   `json:"htmlDesc,omitempty"`
+	HTMLNote                   string                   `json:"htmlNote,omitempty"`
+	MdNote                     string                   `json:"mdNote,omitempty"`
+	NoteLogin                  string                   `json:"noteLogin,omitempty"`
+	CleanCodeAttribute         string                   `json:"cleanCodeAttribute,omitempty"`
+	InternalKey                string                   `json:"internalKey,omitempty"`
+	RemFnGapMultiplier         string                   `json:"remFnGapMultiplier,omitempty"`
+	RemFnBaseEffort            string                   `json:"remFnBaseEffort,omitempty"`
+	DefaultRemFnBaseEffort     string                   `json:"defaultRemFnBaseEffort,omitempty"`
+	Lang                       string                   `json:"lang,omitempty"`
+	LangName                   string                   `json:"langName,omitempty"`
+	CleanCodeAttributeCategory string                   `json:"cleanCodeAttributeCategory,omitempty"`
+	GapDescription             string                   `json:"gapDescription,omitempty"`
+	Repo                       string                   `json:"repo,omitempty"`
+	Scope                      string                   `json:"scope,omitempty"`
+	Severity                   string                   `json:"severity,omitempty"`
+	Status                     string                   `json:"status,omitempty"`
+	DefaultRemFnType           string                   `json:"defaultRemFnType,omitempty"`
+	DefaultRemFnGapMultiplier  string                   `json:"defaultRemFnGapMultiplier,omitempty"`
+	TemplateKey                string                   `json:"templateKey,omitempty"`
+	Type                       string                   `json:"type,omitempty"`
+	Impacts                    []RuleImpact             `json:"impacts,omitempty"`
+	Tags                       []any                    `json:"tags,omitempty"`
+	SysTags                    []string                 `json:"sysTags,omitempty"`
+	Params                     []RuleParam              `json:"params,omitempty"`
+	DescriptionSections        []RuleDescriptionSection `json:"descriptionSections,omitempty"`
+	IsTemplate                 bool                     `json:"isTemplate,omitempty"`
+	IsExternal                 bool                     `json:"isExternal,omitempty"`
+	RemFnOverloaded            bool                     `json:"remFnOverloaded,omitempty"`
+	Template                   bool                     `json:"template,omitempty"`
 }
 
-// DescriptionSection represents a section of a rule's description.
-type DescriptionSection struct {
+// RuleDescriptionSection represents a section of a rule's description.
+type RuleDescriptionSection struct {
 	// Content is the HTML content of the section.
 	Content string `json:"content,omitempty"`
 	// Context provides additional context for the section.
-	Context DescriptionContext `json:"context,omitzero"`
+	Context RuleDescriptionSectionContext `json:"context,omitzero"`
 	// Key is the unique identifier of the section.
 	Key string `json:"key,omitempty"`
 }
 
-// DescriptionContext provides context for a description section.
-type DescriptionContext struct {
+// RuleDescriptionSectionContext provides context for a description section.
+type RuleDescriptionSectionContext struct {
 	// DisplayName is the human-readable name of the context.
 	DisplayName string `json:"displayName,omitempty"`
 	// Key is the unique identifier of the context.

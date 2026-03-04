@@ -139,7 +139,10 @@ func TestBindFlags_MapField(t *testing.T) {
 	require.NoError(t, cmd.Flags().Set("params", "KEY1=VAL1,KEY2=VAL2"))
 	// After Set(), the StringMapValue writes to its own map pointer.
 	// We verify the flag was accepted without error (the value is stored in the pflag.Value).
-	assert.Equal(t, "KEY1=VAL1,KEY2=VAL2", f.Value.String())
+	// Map iteration order is non-deterministic, so check both possible orderings.
+	got := f.Value.String()
+	assert.True(t, got == "KEY1=VAL1,KEY2=VAL2" || got == "KEY2=VAL2,KEY1=VAL1",
+		"unexpected map string representation: %s", got)
 }
 
 // TestBindFlags_SkipsUntaggedFields verifies fields without url tag are not bound.
