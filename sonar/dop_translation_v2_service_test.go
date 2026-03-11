@@ -111,8 +111,8 @@ func TestDopTranslationV2_CreateBoundProject_Validation(t *testing.T) {
 func TestDopTranslationV2_FetchAllDopSettings(t *testing.T) {
 	response := DopTranslationDopSettings{
 		DopSettings: []DopSetting{
-			{Id: "1", Type: "github", Key: "gh-setting", Url: "https://github.com", AppId: "app-1"},
-			{Id: "2", Type: "gitlab", Key: "gl-setting", Url: "https://gitlab.com"},
+			{Id: "1", Type: "github", Key: "gh-setting", URL: "https://github.com", AppID: "app-1"},
+			{Id: "2", Type: "gitlab", Key: "gl-setting", URL: "https://gitlab.com"},
 		},
 		Page: PageResponseV2{PageIndex: 1, PageSize: 50, Total: 2},
 	}

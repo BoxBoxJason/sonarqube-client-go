@@ -124,7 +124,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 					RepositoryIdentifier:    repoIdentifier,
 				})
 				Expect(err).NotTo(HaveOccurred())
-				Expect(resp.StatusCode).To(Equal(http.StatusOK))
+				Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 				Expect(result).NotTo(BeNil())
 				Expect(result.ProjectId).NotTo(BeEmpty())
 				Expect(result.NewProjectCreated).To(BeTrue())

@@ -18,16 +18,16 @@ type DopTranslationServiceV2 struct {
 
 // DopSetting represents a DevOps Platform integration setting.
 type DopSetting struct {
-	// AppId is the application ID of the DevOps Platform setting.
-	AppId string `json:"appId,omitempty"`
+	// AppID is the application ID of the DevOps Platform setting.
+	AppID string `json:"appId,omitempty"`
 	// Id is the unique identifier of the DevOps Platform setting.
 	Id string `json:"id,omitempty"`
 	// Key is the key of the DevOps Platform setting.
 	Key string `json:"key,omitempty"`
 	// Type is the type of DevOps Platform (github, gitlab, azure, bitbucketcloud, bitbucket_server).
 	Type string `json:"type,omitempty"`
-	// Url is the URL of the DevOps Platform instance.
-	Url string `json:"url,omitempty"`
+	// URL is the URL of the DevOps Platform instance.
+	URL string `json:"url,omitempty"`
 }
 
 // -----------------------------------------------------------------------------
