@@ -345,8 +345,8 @@ type UsersGroupsOption struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
-	// Q is a limit search to group names that contain the supplied string.
-	Q string `url:"q,omitempty"`
+	// Query is a limit search to group names that contain the supplied string.
+	Query string `url:"q,omitempty"`
 	// Selected filters the selection status.
 	// Allowed values: all, selected, deselected.
 	Selected string `url:"selected,omitempty"`
@@ -372,8 +372,8 @@ type UsersSearchOption struct {
 	// Managed returns managed or non-managed users.
 	// Only available for managed instances.
 	Managed bool `url:"managed,omitempty"`
-	// Q filters on login, name and email (partial match, case insensitive).
-	Q string `url:"q,omitempty"`
+	// Query filters on login, name and email (partial match, case insensitive).
+	Query string `url:"q,omitempty"`
 	// SlLastConnectedAfter filters users who connected via SonarLint at or after this date.
 	// Format: ISO 8601 datetime (YYYY-MM-DDThh:mm:ss±hhmm).
 	SlLastConnectedAfter string `url:"slLastConnectedAfter,omitempty"`

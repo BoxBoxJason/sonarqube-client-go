@@ -384,7 +384,7 @@ func TestUsers_Groups_WithFilter(t *testing.T) {
 
 	opt := &UsersGroupsOption{
 		Login:    "myuser",
-		Q:        "admin",
+		Query:    "admin",
 		Selected: "selected",
 	}
 
@@ -520,7 +520,7 @@ func TestUsers_Search_WithFilters(t *testing.T) {
 
 	opt := &UsersSearchOption{
 		Deactivated: true,
-		Q:           "test",
+		Query:       "test",
 		PaginationArgs: PaginationArgs{
 			Page:     1,
 			PageSize: 25,

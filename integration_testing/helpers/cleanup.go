@@ -165,7 +165,7 @@ func cleanupOrphanedUsers(client *sonar.Client, _ time.Duration) error {
 		LastConnectedAfter:    "",
 		LastConnectedBefore:   "",
 		Managed:               false,
-		Q:                     E2EResourcePrefix,
+		Query:                 E2EResourcePrefix,
 		SlLastConnectedAfter:  "",
 		SlLastConnectedBefore: "",
 	})

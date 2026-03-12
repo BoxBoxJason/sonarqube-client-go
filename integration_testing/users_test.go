@@ -82,7 +82,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			It("should filter users by query", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
 				result, resp, err := client.Users.Search(&sonar.UsersSearchOption{
-					Q: "admin",
+					Query: "admin",
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -101,7 +101,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			It("should return empty list for non-matching query", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
 				result, resp, err := client.Users.Search(&sonar.UsersSearchOption{
-					Q: "nonexistentuserxyz123",
+					Query: "nonexistentuserxyz123",
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -533,7 +533,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			// Verify new login exists
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, _, err := client.Users.Search(&sonar.UsersSearchOption{
-				Q: newLogin,
+				Query: newLogin,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			found := false
@@ -601,7 +601,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, resp, err := client.Users.Groups(&sonar.UsersGroupsOption{
 				Login: "admin",
-				Q:     "sonar",
+				Query: "sonar",
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -776,7 +776,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			// Verify user is deactivated
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			searchResult, _, err := client.Users.Search(&sonar.UsersSearchOption{
-				Q:           login,
+				Query:       login,
 				Deactivated: true,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -943,7 +943,7 @@ var _ = Describe("Users Service", Ordered, func() {
 			// Step 2: Search and verify
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			searchResult, _, err := client.Users.Search(&sonar.UsersSearchOption{
-				Q: login,
+				Query: login,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			found := false

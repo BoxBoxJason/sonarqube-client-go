@@ -359,7 +359,7 @@ func TestComponents_Suggestions(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Results, 1)
-	assert.Equal(t, "TRK", result.Results[0].Q)
+	assert.Equal(t, "TRK", result.Results[0].Query)
 	assert.Len(t, result.Results[0].Items, 1)
 }
 

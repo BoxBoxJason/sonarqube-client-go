@@ -280,8 +280,8 @@ type ComponentSuggestionGroup struct {
 	Items []ComponentSuggestionItem `json:"items,omitempty"`
 	// More is the count of additional results available.
 	More int64 `json:"more,omitempty"`
-	// Q is the qualifier for this group.
-	Q string `json:"q,omitempty"`
+	// Query is the qualifier for this group.
+	Query string `json:"q,omitempty"`
 }
 
 // ComponentTreeBase represents the base component in tree results.
@@ -341,8 +341,8 @@ type ComponentsApp struct {
 	Project string `json:"project,omitempty"`
 	// ProjectName is the project name.
 	ProjectName string `json:"projectName,omitempty"`
-	// Q is the component qualifier.
-	Q string `json:"q,omitempty"`
+	// Query is the component qualifier.
+	Query string `json:"q,omitempty"`
 	// UUID is the component UUID.
 	UUID string `json:"uuid,omitempty"`
 }
