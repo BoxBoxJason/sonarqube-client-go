@@ -31,9 +31,8 @@ var _ = Describe("V2 Marketplace Service", Ordered, func() {
 			if err != nil {
 				// Expected in non-Azure environments: verify we got a server
 				// error response rather than a client-side failure
-				if resp != nil {
-					Expect(resp.StatusCode).To(BeNumerically(">=", 400))
-				}
+				Expect(resp).NotTo(BeNil(), "expected a server response, got client-side error: %v", err)
+				Expect(resp.StatusCode).To(BeNumerically(">=", 400))
 			} else {
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(BeNumerically(">=", 200))
