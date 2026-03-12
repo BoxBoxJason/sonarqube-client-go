@@ -170,6 +170,25 @@ func (s *UsersManagementServiceV2) ValidateSearchOpt(opt *UsersSearchOptionV2) e
 	return opt.Validate()
 }
 
+// validateUsersV2LocalPassword validates the relationship between Local and Password fields.
+func validateUsersV2LocalPassword(opt *UsersCreateOptionsV2) error {
+	// In V2, Local defaults to true when nil:
+	// - when Local is nil or true, a Password is required;
+	// - when Local is explicitly false, Password must be empty.
+	if opt.Local == nil || (opt.Local != nil && *opt.Local) {
+		// Local is nil or true - password is required
+		err := ValidateRequired(opt.Password, "Password")
+		if err != nil {
+			return err
+		}
+	} else if opt.Password != "" {
+		// Local is explicitly false - password must be empty
+		return NewValidationError("Password", "must be empty when Local is false", nil)
+	}
+
+	return nil
+}
+
 // ValidateCreateRequest validates the UsersCreateOptionsV2.
 func (s *UsersManagementServiceV2) ValidateCreateRequest(opt *UsersCreateOptionsV2) error {
 	if opt == nil {
@@ -206,7 +225,7 @@ func (s *UsersManagementServiceV2) ValidateCreateRequest(opt *UsersCreateOptions
 		return err
 	}
 
-	return nil
+	return validateUsersV2LocalPassword(opt)
 }
 
 // ValidateDeactivateOpt validates the UsersDeactivateOptionsV2.

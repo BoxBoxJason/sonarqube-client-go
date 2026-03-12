@@ -321,8 +321,8 @@ fmt.Printf("Quality Gate: %s\n", status.ProjectStatus.Status)
 **User management:**
 
 ```go
-users, _, err := client.Users.Search(ctx, &sonar.UsersSearchOption{
- Query: sonar.String("john"),
+users, _, err := client.Users.Search(&sonar.UsersSearchOption{
+ Query: "john",
 })
 for _, user := range users.Users {
  fmt.Printf("User: %s (%s)\n", user.Name, user.Login)

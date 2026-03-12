@@ -351,8 +351,7 @@ var _ = Describe("V2 Users Management Service", Ordered, func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
-				Expect(resp.StatusCode).To(BeNumerically(">=", 200))
-				Expect(resp.StatusCode).To(BeNumerically("<", 300))
+				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				fetched, resp, err := client.V2.UsersManagement.Fetch(created.Id)
 				Expect(err).NotTo(HaveOccurred())
@@ -378,8 +377,7 @@ var _ = Describe("V2 Users Management Service", Ordered, func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
-				Expect(resp.StatusCode).To(BeNumerically(">=", 200))
-				Expect(resp.StatusCode).To(BeNumerically("<", 300))
+				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 			})
 		})
 
