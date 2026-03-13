@@ -99,8 +99,8 @@ type AnalysisJresOptions struct {
 	Os string `json:"os,omitempty"`
 }
 
-// AnalysisActiveRuleV2sOptions contains query parameters for the GetActiveRules method.
-type AnalysisActiveRuleV2sOptions struct {
+// AnalysisActiveRuleOptions contains query parameters for the GetActiveRules method.
+type AnalysisActiveRuleOptions struct {
 	// ProjectKey is the project key. This field is required.
 	ProjectKey string `json:"projectKey"`
 }
@@ -109,13 +109,22 @@ type AnalysisActiveRuleV2sOptions struct {
 // Validation
 // -----------------------------------------------------------------------------
 
-// ValidateActiveRulesOpt validates the AnalysisActiveRuleV2sOptions.
-func (s *AnalysisService) ValidateActiveRulesOpt(opt *AnalysisActiveRuleV2sOptions) error {
+// ValidateActiveRulesOpt validates the AnalysisActiveRuleOptions.
+func (s *AnalysisService) ValidateActiveRulesOpt(opt *AnalysisActiveRuleOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "must not be nil", ErrMissingRequired)
 	}
 
 	return ValidateRequired(opt.ProjectKey, "ProjectKey")
+}
+
+// validateAnalysisWriter validates that a writer argument is provided.
+func validateAnalysisWriter(writer io.Writer) error {
+	if writer == nil {
+		return NewValidationError("writer", "must not be nil", ErrMissingRequired)
+	}
+
+	return nil
 }
 
 // -----------------------------------------------------------------------------
@@ -165,6 +174,11 @@ func (s *AnalysisService) DownloadJre(jreID string, writer io.Writer) (*http.Res
 		return nil, err
 	}
 
+	err = validateAnalysisWriter(writer)
+	if err != nil {
+		return nil, err
+	}
+
 	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/jres/"+jreID, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
@@ -204,6 +218,11 @@ func (s *AnalysisService) GetJreMetadata(jreID string) (*AnalysisJre, *http.Resp
 
 // DownloadScannerEngine downloads the Scanner Engine binary into the provided writer.
 func (s *AnalysisService) DownloadScannerEngine(writer io.Writer) (*http.Response, error) {
+	err := validateAnalysisWriter(writer)
+	if err != nil {
+		return nil, err
+	}
+
 	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/engine", nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
@@ -238,7 +257,7 @@ func (s *AnalysisService) GetScannerEngineMetadata() (*AnalysisEngineInfo, *http
 
 // GetActiveRules returns all active rules for a specific project.
 // Used by the scanner-engine.
-func (s *AnalysisService) GetActiveRules(opt *AnalysisActiveRuleV2sOptions) ([]AnalysisActiveRule, *http.Response, error) {
+func (s *AnalysisService) GetActiveRules(opt *AnalysisActiveRuleOptions) ([]AnalysisActiveRule, *http.Response, error) {
 	err := s.ValidateActiveRulesOpt(opt)
 	if err != nil {
 		return nil, nil, err

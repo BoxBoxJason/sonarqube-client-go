@@ -214,7 +214,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		Context("with valid project key", func() {
 			It("should return active rules for the project", func() {
-				rules, resp, err := client.V2.Analysis.GetActiveRules(&sonar.AnalysisActiveRuleV2sOptions{
+				rules, resp, err := client.V2.Analysis.GetActiveRules(&sonar.AnalysisActiveRuleOptions{
 					ProjectKey: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -232,7 +232,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 			})
 
 			It("should fail with empty project key", func() {
-				rules, resp, err := client.V2.Analysis.GetActiveRules(&sonar.AnalysisActiveRuleV2sOptions{})
+				rules, resp, err := client.V2.Analysis.GetActiveRules(&sonar.AnalysisActiveRuleOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(rules).To(BeNil())
