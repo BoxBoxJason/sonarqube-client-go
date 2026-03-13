@@ -271,9 +271,9 @@ type CeActivityOption struct {
 	MinSubmittedAt string `url:"minSubmittedAt,omitempty"`
 	// OnlyCurrents filters on the last tasks (only the most recent finished task by project).
 	OnlyCurrents bool `url:"onlyCurrents,omitempty"`
-	// Q limits search to component names containing the string, component keys matching exactly,
+	// Query limits search to component names containing the string, component keys matching exactly,
 	// or task IDs matching exactly.
-	Q string `url:"q,omitempty"`
+	Query string `url:"q,omitempty"`
 	// Statuses filters by task statuses.
 	// Allowed values: SUCCESS, FAILED, CANCELED, PENDING, IN_PROGRESS.
 	Statuses []string `url:"status,omitempty,comma"`

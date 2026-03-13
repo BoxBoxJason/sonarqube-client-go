@@ -480,7 +480,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result.Name).NotTo(BeEmpty())
-			Expect(result.Q).To(Equal("TRK"))
+			Expect(result.Query).To(Equal("TRK"))
 		})
 
 		Context("parameter validation", func() {

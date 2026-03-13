@@ -110,7 +110,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 			It("should search CE tasks by query", func() {
 				result, resp, err := client.Ce.Activity(&sonar.CeActivityOption{
-					Q: testProject.Project.Key,
+					Query: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
