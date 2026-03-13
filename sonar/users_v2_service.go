@@ -14,9 +14,9 @@ const (
 	MaxExternalIdLengthV2 = 255
 )
 
-// UsersManagementServiceV2 handles communication with the Users Management
+// UsersManagementService handles communication with the Users Management
 // related methods of the SonarQube V2 API.
-type UsersManagementServiceV2 struct {
+type UsersManagementService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
 }
@@ -162,7 +162,7 @@ type UsersUpdateOptionsV2 struct {
 // -----------------------------------------------------------------------------
 
 // ValidateSearchOpt validates the UsersSearchOptionV2.
-func (s *UsersManagementServiceV2) ValidateSearchOpt(opt *UsersSearchOptionV2) error {
+func (s *UsersManagementService) ValidateSearchOpt(opt *UsersSearchOptionV2) error {
 	if opt == nil {
 		return nil
 	}
@@ -190,7 +190,7 @@ func validateUsersV2LocalPassword(opt *UsersCreateOptionsV2) error {
 }
 
 // ValidateCreateRequest validates the UsersCreateOptionsV2.
-func (s *UsersManagementServiceV2) ValidateCreateRequest(opt *UsersCreateOptionsV2) error {
+func (s *UsersManagementService) ValidateCreateRequest(opt *UsersCreateOptionsV2) error {
 	if opt == nil {
 		return NewValidationError("opt", "must not be nil", ErrMissingRequired)
 	}
@@ -229,7 +229,7 @@ func (s *UsersManagementServiceV2) ValidateCreateRequest(opt *UsersCreateOptions
 }
 
 // ValidateDeactivateOpt validates the UsersDeactivateOptionsV2.
-func (s *UsersManagementServiceV2) ValidateDeactivateOpt(opt *UsersDeactivateOptionsV2) error {
+func (s *UsersManagementService) ValidateDeactivateOpt(opt *UsersDeactivateOptionsV2) error {
 	if opt == nil {
 		return NewValidationError("opt", "must not be nil", ErrMissingRequired)
 	}
@@ -238,7 +238,7 @@ func (s *UsersManagementServiceV2) ValidateDeactivateOpt(opt *UsersDeactivateOpt
 }
 
 // ValidateUpdateRequest validates the UsersUpdateOptionsV2.
-func (s *UsersManagementServiceV2) ValidateUpdateRequest(userID string, opt *UsersUpdateOptionsV2) error {
+func (s *UsersManagementService) ValidateUpdateRequest(userID string, opt *UsersUpdateOptionsV2) error {
 	err := ValidateRequired(userID, "Id")
 	if err != nil {
 		return err
@@ -302,7 +302,7 @@ func validateUsersV2ExternalFields(opt *UsersUpdateOptionsV2) error {
 
 // Search returns a list of users matching the search criteria.
 // By default, only active users are returned.
-func (s *UsersManagementServiceV2) Search(opt *UsersSearchOptionV2) (*UsersSearchV2, *http.Response, error) {
+func (s *UsersManagementService) Search(opt *UsersSearchOptionV2) (*UsersSearchV2, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -326,7 +326,7 @@ func (s *UsersManagementServiceV2) Search(opt *UsersSearchOptionV2) (*UsersSearc
 // Create creates a new user. If a deactivated user account exists with the
 // given login, it will be reactivated.
 // Requires Administer System permission.
-func (s *UsersManagementServiceV2) Create(opt *UsersCreateOptionsV2) (*UserV2, *http.Response, error) {
+func (s *UsersManagementService) Create(opt *UsersCreateOptionsV2) (*UserV2, *http.Response, error) {
 	err := s.ValidateCreateRequest(opt)
 	if err != nil {
 		return nil, nil, err
@@ -348,7 +348,7 @@ func (s *UsersManagementServiceV2) Create(opt *UsersCreateOptionsV2) (*UserV2, *
 }
 
 // Fetch retrieves a single user by ID.
-func (s *UsersManagementServiceV2) Fetch(userID string) (*UserV2, *http.Response, error) {
+func (s *UsersManagementService) Fetch(userID string) (*UserV2, *http.Response, error) {
 	err := ValidateRequired(userID, "Id")
 	if err != nil {
 		return nil, nil, err
@@ -371,7 +371,7 @@ func (s *UsersManagementServiceV2) Fetch(userID string) (*UserV2, *http.Response
 
 // Deactivate deactivates a user.
 // Requires Administer System permission.
-func (s *UsersManagementServiceV2) Deactivate(opt *UsersDeactivateOptionsV2) (*http.Response, error) {
+func (s *UsersManagementService) Deactivate(opt *UsersDeactivateOptionsV2) (*http.Response, error) {
 	err := s.ValidateDeactivateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -391,7 +391,7 @@ func (s *UsersManagementServiceV2) Deactivate(opt *UsersDeactivateOptionsV2) (*h
 }
 
 // Update updates a user's attributes.
-func (s *UsersManagementServiceV2) Update(userID string, opt *UsersUpdateOptionsV2) (*UserV2, *http.Response, error) {
+func (s *UsersManagementService) Update(userID string, opt *UsersUpdateOptionsV2) (*UserV2, *http.Response, error) {
 	err := s.ValidateUpdateRequest(userID, opt)
 	if err != nil {
 		return nil, nil, err

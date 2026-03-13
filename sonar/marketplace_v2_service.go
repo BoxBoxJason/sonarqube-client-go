@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-// MarketplaceServiceV2 handles communication with the Marketplace related
+// MarketplaceService handles communication with the Marketplace related
 // methods of the SonarQube V2 API.
-type MarketplaceServiceV2 struct {
+type MarketplaceService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
 }
@@ -30,7 +30,7 @@ type MarketplaceAzureBillingV2 struct {
 
 // BillAzureAccount bills the user's Azure account with the cost of the
 // SonarQube Server license. Used by admins.
-func (s *MarketplaceServiceV2) BillAzureAccount() (*MarketplaceAzureBillingV2, *http.Response, error) {
+func (s *MarketplaceService) BillAzureAccount() (*MarketplaceAzureBillingV2, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPost, "marketplace/azure/billing", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)

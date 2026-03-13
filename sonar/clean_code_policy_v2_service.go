@@ -14,9 +14,9 @@ const (
 	MaxTemplateKeyLengthV2 = 200
 )
 
-// CleanCodePolicyServiceV2 handles communication with the Clean Code Policy
+// CleanCodePolicyService handles communication with the Clean Code Policy
 // related methods of the SonarQube V2 API.
-type CleanCodePolicyServiceV2 struct {
+type CleanCodePolicyService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
 }
@@ -215,7 +215,7 @@ func validateRuleRequiredFields(opt *CleanCodePolicyCreateRuleOptions) error {
 }
 
 // ValidateCreateRuleRequest validates the CleanCodePolicyCreateRuleOptions.
-func (s *CleanCodePolicyServiceV2) ValidateCreateRuleRequest(opt *CleanCodePolicyCreateRuleOptions) error {
+func (s *CleanCodePolicyService) ValidateCreateRuleRequest(opt *CleanCodePolicyCreateRuleOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "must not be nil", ErrMissingRequired)
 	}
@@ -254,7 +254,7 @@ func (s *CleanCodePolicyServiceV2) ValidateCreateRuleRequest(opt *CleanCodePolic
 
 // CreateRule creates a custom rule based on a template.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *CleanCodePolicyServiceV2) CreateRule(opt *CleanCodePolicyCreateRuleOptions) (*RuleV2, *http.Response, error) {
+func (s *CleanCodePolicyService) CreateRule(opt *CleanCodePolicyCreateRuleOptions) (*RuleV2, *http.Response, error) {
 	err := s.ValidateCreateRuleRequest(opt)
 	if err != nil {
 		return nil, nil, err
