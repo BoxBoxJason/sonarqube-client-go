@@ -85,19 +85,19 @@ type Client struct {
 // ServicesV2 groups all SonarQube V2 API services.
 type ServicesV2 struct {
 	// Analysis provides methods for the Analysis V2 API.
-	Analysis *AnalysisServiceV2
+	Analysis *AnalysisService
 	// Authorizations provides methods for the Authorizations V2 API.
-	Authorizations *AuthorizationsServiceV2
+	Authorizations *AuthorizationsService
 	// CleanCodePolicy provides methods for the Clean Code Policy V2 API.
-	CleanCodePolicy *CleanCodePolicyServiceV2
+	CleanCodePolicy *CleanCodePolicyService
 	// DopTranslation provides methods for the Dop Translation V2 API.
-	DopTranslation *DopTranslationServiceV2
+	DopTranslation *DopTranslationService
 	// Marketplace provides methods for the Marketplace V2 API.
-	Marketplace *MarketplaceServiceV2
+	Marketplace *MarketplaceService
 	// System provides methods for the System V2 API.
 	System *SystemServiceV2
 	// UsersManagement provides methods for the Users Management V2 API.
-	UsersManagement *UsersManagementServiceV2
+	UsersManagement *UsersManagementService
 }
 
 // ClientCreateOption contains options for creating a new Client.
@@ -383,13 +383,13 @@ func initServices(client *Client) {
 // initServicesV2 initializes all V2 service instances for the client.
 func initServicesV2(client *Client) {
 	client.V2 = &ServicesV2{
-		Analysis:        &AnalysisServiceV2{client: client},
-		Authorizations:  &AuthorizationsServiceV2{client: client},
-		CleanCodePolicy: &CleanCodePolicyServiceV2{client: client},
-		DopTranslation:  &DopTranslationServiceV2{client: client},
-		Marketplace:     &MarketplaceServiceV2{client: client},
+		Analysis:        &AnalysisService{client: client},
+		Authorizations:  &AuthorizationsService{client: client},
+		CleanCodePolicy: &CleanCodePolicyService{client: client},
+		DopTranslation:  &DopTranslationService{client: client},
+		Marketplace:     &MarketplaceService{client: client},
 		System:          &SystemServiceV2{client: client},
-		UsersManagement: &UsersManagementServiceV2{client: client},
+		UsersManagement: &UsersManagementService{client: client},
 	}
 }
 

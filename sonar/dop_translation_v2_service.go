@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-// DopTranslationServiceV2 handles communication with the DevOps Platform
+// DopTranslationService handles communication with the DevOps Platform
 // Translation related methods of the SonarQube V2 API.
-type DopTranslationServiceV2 struct {
+type DopTranslationService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
 }
@@ -92,7 +92,7 @@ type DopTranslationBoundProjectOptions struct {
 // -----------------------------------------------------------------------------
 
 // ValidateCreateBoundProjectRequest validates the DopTranslationBoundProjectOptions.
-func (s *DopTranslationServiceV2) ValidateCreateBoundProjectRequest(opt *DopTranslationBoundProjectOptions) error {
+func (s *DopTranslationService) ValidateCreateBoundProjectRequest(opt *DopTranslationBoundProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "must not be nil", ErrMissingRequired)
 	}
@@ -128,7 +128,7 @@ func (s *DopTranslationServiceV2) ValidateCreateBoundProjectRequest(opt *DopTran
 // repository, or updates the binding if the project already exists.
 // This is an idempotent operation.
 // Requires the 'Create Projects' permission and a configured Personal Access Token.
-func (s *DopTranslationServiceV2) CreateOrUpdateBoundProject(opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
+func (s *DopTranslationService) CreateOrUpdateBoundProject(opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
 	err := s.ValidateCreateBoundProjectRequest(opt)
 	if err != nil {
 		return nil, nil, err
@@ -152,7 +152,7 @@ func (s *DopTranslationServiceV2) CreateOrUpdateBoundProject(opt *DopTranslation
 // CreateBoundProject creates a SonarQube project with the information from the
 // provided DevOps platform project.
 // Requires the 'Create Projects' permission and a configured Personal Access Token.
-func (s *DopTranslationServiceV2) CreateBoundProject(opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
+func (s *DopTranslationService) CreateBoundProject(opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
 	err := s.ValidateCreateBoundProjectRequest(opt)
 	if err != nil {
 		return nil, nil, err
@@ -175,7 +175,7 @@ func (s *DopTranslationServiceV2) CreateBoundProject(opt *DopTranslationBoundPro
 
 // FetchAllDopSettings lists all DevOps Platform Integration settings.
 // Requires the 'Create Projects' permission.
-func (s *DopTranslationServiceV2) FetchAllDopSettings() (*DopTranslationDopSettings, *http.Response, error) {
+func (s *DopTranslationService) FetchAllDopSettings() (*DopTranslationDopSettings, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "dop-translation/dop-settings", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
