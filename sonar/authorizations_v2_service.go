@@ -110,7 +110,8 @@ type AuthorizationsCreateGroupOptions struct {
 // All fields are optional (PATCH merge semantics).
 type AuthorizationsUpdateGroupOptions struct {
 	// Description is the group description. Maximum 200 characters.
-	Description string `json:"description,omitempty"`
+	// Use nil to leave unchanged, or a pointer to an empty string to clear it.
+	Description *string `json:"description,omitempty"`
 	// Name is the group name. Must be between 1 and 255 characters.
 	Name string `json:"name,omitempty"`
 }
@@ -190,9 +191,11 @@ func (s *AuthorizationsService) ValidateUpdateGroupRequest(groupID string, opt *
 		return err
 	}
 
-	err = ValidateMaxLength(opt.Description, MaxGroupDescriptionLength, "Description")
-	if err != nil {
-		return err
+	if opt.Description != nil {
+		err = ValidateMaxLength(*opt.Description, MaxGroupDescriptionLength, "Description")
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

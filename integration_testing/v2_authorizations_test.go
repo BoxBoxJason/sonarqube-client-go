@@ -227,8 +227,9 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			})
 
 			It("should update group description", func() {
+				description := "Updated description"
 				updated, resp, err := client.V2.Authorizations.UpdateGroup(createdGroup.Id, &sonar.AuthorizationsUpdateGroupOptions{
-					Description: "Updated description",
+					Description: &description,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))

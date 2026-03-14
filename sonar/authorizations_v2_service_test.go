@@ -9,6 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func stringPtr(v string) *string {
+	return &v
+}
+
 // =============================================================================
 // SearchGroups
 // =============================================================================
@@ -31,6 +35,34 @@ func TestAuthorizationsV2_SearchGroups(t *testing.T) {
 	assert.Equal(t, "admins", result.Groups[0].Name)
 }
 
+func TestAuthorizationsV2_SearchGroups_WithOptions(t *testing.T) {
+	managed := true
+	response := AuthorizationsGroupsSearch{
+		Groups: []Group{{Id: "g1", Name: "admins", Managed: true}},
+		Page:   PageResponseV2{PageIndex: 2, PageSize: 10, Total: 1},
+	}
+	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/v2/authorizations/groups", http.StatusOK,
+		map[string]string{
+			"q":         "admins",
+			"managed":   "true",
+			"pageSize":  "10",
+			"pageIndex": "2",
+			"userId":    "u1",
+		},
+		response))
+	client := newTestClient(t, server.url())
+
+	result, resp, err := client.V2.Authorizations.SearchGroups(&AuthorizationsSearchGroupsOptions{
+		PaginationParamsV2: PaginationParamsV2{PageIndex: 2, PageSize: 10},
+		Managed:            &managed,
+		Query:              "admins",
+		UserId:             "u1",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Len(t, result.Groups, 1)
+}
+
 func TestAuthorizationsV2_SearchGroups_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
@@ -50,7 +82,7 @@ func TestAuthorizationsV2_CreateGroup(t *testing.T) {
 		Name:        "new-group",
 		Description: "A new group",
 	}
-	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/authorizations/groups", http.StatusOK,
+	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/authorizations/groups", http.StatusCreated,
 		&AuthorizationsCreateGroupOptions{
 			Name:        "new-group",
 			Description: "A new group",
@@ -62,7 +94,7 @@ func TestAuthorizationsV2_CreateGroup(t *testing.T) {
 		Description: "A new group",
 	})
 	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, "new-group", result.Name)
 }
 
@@ -145,13 +177,13 @@ func TestAuthorizationsV2_UpdateGroup(t *testing.T) {
 	server := newTestServer(t, mockPatchHandler(t, "/v2/authorizations/groups/g1", http.StatusOK,
 		&AuthorizationsUpdateGroupOptions{
 			Name:        "renamed-group",
-			Description: "Updated description",
+			Description: stringPtr("Updated description"),
 		}, response))
 	client := newTestClient(t, server.url())
 
 	result, resp, err := client.V2.Authorizations.UpdateGroup("g1", &AuthorizationsUpdateGroupOptions{
 		Name:        "renamed-group",
-		Description: "Updated description",
+		Description: stringPtr("Updated description"),
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -169,7 +201,7 @@ func TestAuthorizationsV2_UpdateGroup_Validation(t *testing.T) {
 		{"missing id", "", &AuthorizationsUpdateGroupOptions{Name: "ok"}},
 		{"nil opt", "g1", nil},
 		{"name too long", "g1", &AuthorizationsUpdateGroupOptions{Name: strings.Repeat("a", MaxGroupNameLength+1)}},
-		{"description too long", "g1", &AuthorizationsUpdateGroupOptions{Description: strings.Repeat("a", MaxGroupDescriptionLength+1)}},
+		{"description too long", "g1", &AuthorizationsUpdateGroupOptions{Description: stringPtr(strings.Repeat("a", MaxGroupDescriptionLength+1))}},
 	}
 
 	for _, tt := range tests {
@@ -201,6 +233,31 @@ func TestAuthorizationsV2_SearchGroupMemberships(t *testing.T) {
 	assert.Equal(t, "g1", result.GroupMemberships[0].GroupId)
 }
 
+func TestAuthorizationsV2_SearchGroupMemberships_WithOptions(t *testing.T) {
+	response := AuthorizationsGroupMembershipsSearch{
+		GroupMemberships: []GroupMembership{{Id: "m1", GroupId: "g1", UserId: "u1"}},
+		Page:             PageResponseV2{PageIndex: 2, PageSize: 10, Total: 1},
+	}
+	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/v2/authorizations/group-memberships", http.StatusOK,
+		map[string]string{
+			"groupId":   "g1",
+			"userId":    "u1",
+			"pageSize":  "10",
+			"pageIndex": "2",
+		},
+		response))
+	client := newTestClient(t, server.url())
+
+	result, resp, err := client.V2.Authorizations.SearchGroupMemberships(&AuthorizationsSearchGroupMembershipsOptions{
+		PaginationParamsV2: PaginationParamsV2{PageIndex: 2, PageSize: 10},
+		GroupId:            "g1",
+		UserId:             "u1",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Len(t, result.GroupMemberships, 1)
+}
+
 func TestAuthorizationsV2_SearchGroupMemberships_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
@@ -220,7 +277,7 @@ func TestAuthorizationsV2_CreateGroupMembership(t *testing.T) {
 		GroupId: "g1",
 		UserId:  "u1",
 	}
-	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/authorizations/group-memberships", http.StatusOK,
+	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/authorizations/group-memberships", http.StatusCreated,
 		&AuthorizationsCreateGroupMembershipOptions{
 			GroupId: "g1",
 			UserId:  "u1",
@@ -232,7 +289,7 @@ func TestAuthorizationsV2_CreateGroupMembership(t *testing.T) {
 		UserId:  "u1",
 	})
 	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, "g1", result.GroupId)
 	assert.Equal(t, "u1", result.UserId)
 }
