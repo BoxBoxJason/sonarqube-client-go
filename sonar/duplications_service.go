@@ -56,8 +56,8 @@ type DuplicatedFile struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// DuplicationsShowOption contains parameters for the Show method.
-type DuplicationsShowOption struct {
+// DuplicationsShowOptions contains parameters for the Show method.
+type DuplicationsShowOptions struct {
 	// Branch key.
 	// WARNING: This parameter is internal and may change without notice.
 	Branch string `url:"branch,omitempty"`
@@ -74,7 +74,7 @@ type DuplicationsShowOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateShowOpt validates the options for the Show method.
-func (s *DuplicationsService) ValidateShowOpt(opt *DuplicationsShowOption) error {
+func (s *DuplicationsService) ValidateShowOpt(opt *DuplicationsShowOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -96,7 +96,7 @@ func (s *DuplicationsService) ValidateShowOpt(opt *DuplicationsShowOption) error
 //
 // API endpoint: GET /api/duplications/show.
 // Since: 4.4.
-func (s *DuplicationsService) Show(opt *DuplicationsShowOption) (*DuplicationsShow, *http.Response, error) {
+func (s *DuplicationsService) Show(opt *DuplicationsShowOptions) (*DuplicationsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err

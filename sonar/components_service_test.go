@@ -40,7 +40,7 @@ func TestComponents_App(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.App(&ComponentsAppOption{
+	result, resp, err := client.Components.App(&ComponentsAppOptions{
 		Component: "my_project:src/file.go",
 		Branch:    "feature/my_branch",
 	})
@@ -55,7 +55,7 @@ func TestComponents_App_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *ComponentsAppOption
+		opt  *ComponentsAppOptions
 	}{
 		{
 			name: "nil option",
@@ -63,11 +63,11 @@ func TestComponents_App_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing component",
-			opt:  &ComponentsAppOption{Branch: "main"},
+			opt:  &ComponentsAppOptions{Branch: "main"},
 		},
 		{
 			name: "branch and pullRequest both set",
-			opt: &ComponentsAppOption{
+			opt: &ComponentsAppOptions{
 				Component:   "my_project",
 				Branch:      "main",
 				PullRequest: "123",
@@ -111,7 +111,7 @@ func TestComponents_Search(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Search(&ComponentsSearchOption{
+	result, resp, err := client.Components.Search(&ComponentsSearchOptions{
 		Qualifiers: []string{"TRK"},
 		Query:      "sonar",
 	})
@@ -126,7 +126,7 @@ func TestComponents_Search_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *ComponentsSearchOption
+		opt  *ComponentsSearchOptions
 	}{
 		{
 			name: "nil option",
@@ -134,19 +134,19 @@ func TestComponents_Search_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing qualifiers",
-			opt:  &ComponentsSearchOption{Query: "test"},
+			opt:  &ComponentsSearchOptions{Query: "test"},
 		},
 		{
 			name: "empty qualifiers slice",
-			opt:  &ComponentsSearchOption{Qualifiers: []string{}},
+			opt:  &ComponentsSearchOptions{Qualifiers: []string{}},
 		},
 		{
 			name: "invalid qualifier",
-			opt:  &ComponentsSearchOption{Qualifiers: []string{"INVALID"}},
+			opt:  &ComponentsSearchOptions{Qualifiers: []string{"INVALID"}},
 		},
 		{
 			name: "query too short",
-			opt: &ComponentsSearchOption{
+			opt: &ComponentsSearchOptions{
 				Qualifiers: []string{"TRK"},
 				Query:      "a",
 			},
@@ -201,7 +201,7 @@ func TestComponents_SearchProjects(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.SearchProjects(&ComponentsSearchProjectsOption{
+	result, resp, err := client.Components.SearchProjects(&ComponentsSearchProjectsOptions{
 		Facets: []string{"alert_status"},
 		Filter: "coverage >= 80",
 	})
@@ -217,7 +217,7 @@ func TestComponents_SearchProjects_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *ComponentsSearchProjectsOption
+		opt  *ComponentsSearchProjectsOptions
 	}{
 		{
 			name: "nil option",
@@ -225,19 +225,19 @@ func TestComponents_SearchProjects_ValidationError(t *testing.T) {
 		},
 		{
 			name: "invalid field",
-			opt:  &ComponentsSearchProjectsOption{Fields: []string{"invalid_field"}},
+			opt:  &ComponentsSearchProjectsOptions{Fields: []string{"invalid_field"}},
 		},
 		{
 			name: "invalid facet",
-			opt:  &ComponentsSearchProjectsOption{Facets: []string{"invalid_facet"}},
+			opt:  &ComponentsSearchProjectsOptions{Facets: []string{"invalid_facet"}},
 		},
 		{
 			name: "invalid sort field",
-			opt:  &ComponentsSearchProjectsOption{Sort: "invalid_sort"},
+			opt:  &ComponentsSearchProjectsOptions{Sort: "invalid_sort"},
 		},
 		{
 			name: "filter too short",
-			opt:  &ComponentsSearchProjectsOption{Filter: "a"},
+			opt:  &ComponentsSearchProjectsOptions{Filter: "a"},
 		},
 	}
 
@@ -286,7 +286,7 @@ func TestComponents_Show(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Show(&ComponentsShowOption{
+	result, resp, err := client.Components.Show(&ComponentsShowOptions{
 		Component: "my_project:src/file.go",
 	})
 	require.NoError(t, err)
@@ -301,7 +301,7 @@ func TestComponents_Show_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *ComponentsShowOption
+		opt  *ComponentsShowOptions
 	}{
 		{
 			name: "nil option",
@@ -309,7 +309,7 @@ func TestComponents_Show_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing component",
-			opt:  &ComponentsShowOption{Branch: "main"},
+			opt:  &ComponentsShowOptions{Branch: "main"},
 		},
 	}
 
@@ -353,7 +353,7 @@ func TestComponents_Suggestions(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Suggestions(&ComponentsSuggestionsOption{
+	result, resp, err := client.Components.Suggestions(&ComponentsSuggestionsOptions{
 		Search: "sonar",
 	})
 	require.NoError(t, err)
@@ -368,7 +368,7 @@ func TestComponents_Suggestions_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *ComponentsSuggestionsOption
+		opt  *ComponentsSuggestionsOptions
 	}{
 		{
 			name: "nil option",
@@ -376,15 +376,15 @@ func TestComponents_Suggestions_ValidationError(t *testing.T) {
 		},
 		{
 			name: "invalid more value",
-			opt:  &ComponentsSuggestionsOption{More: "INVALID"},
+			opt:  &ComponentsSuggestionsOptions{More: "INVALID"},
 		},
 		{
 			name: "search too short",
-			opt:  &ComponentsSuggestionsOption{Search: "a"},
+			opt:  &ComponentsSuggestionsOptions{Search: "a"},
 		},
 		{
 			name: "too many recently browsed items",
-			opt: &ComponentsSuggestionsOption{
+			opt: &ComponentsSuggestionsOptions{
 				RecentlyBrowsed: make([]string, MaxRecentlyBrowsedItems+1),
 			},
 		},
@@ -442,7 +442,7 @@ func TestComponents_Tree(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Tree(&ComponentsTreeOption{
+	result, resp, err := client.Components.Tree(&ComponentsTreeOptions{
 		Component: "my_project",
 		Strategy:  "children",
 	})
@@ -470,7 +470,7 @@ func TestComponents_Tree_WithQualifiers(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	_, resp, err := client.Components.Tree(&ComponentsTreeOption{
+	_, resp, err := client.Components.Tree(&ComponentsTreeOptions{
 		Component:  "my_project",
 		Qualifiers: []string{"FIL", "UTS"},
 		Sort:       []string{"name", "path"},
@@ -484,7 +484,7 @@ func TestComponents_Tree_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *ComponentsTreeOption
+		opt  *ComponentsTreeOptions
 	}{
 		{
 			name: "nil option",
@@ -492,32 +492,32 @@ func TestComponents_Tree_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing component",
-			opt:  &ComponentsTreeOption{Strategy: "all"},
+			opt:  &ComponentsTreeOptions{Strategy: "all"},
 		},
 		{
 			name: "query too short",
-			opt: &ComponentsTreeOption{
+			opt: &ComponentsTreeOptions{
 				Component: "my_project",
 				Query:     "ab",
 			},
 		},
 		{
 			name: "invalid qualifier",
-			opt: &ComponentsTreeOption{
+			opt: &ComponentsTreeOptions{
 				Component:  "my_project",
 				Qualifiers: []string{"INVALID"},
 			},
 		},
 		{
 			name: "invalid sort field",
-			opt: &ComponentsTreeOption{
+			opt: &ComponentsTreeOptions{
 				Component: "my_project",
 				Sort:      []string{"invalid"},
 			},
 		},
 		{
 			name: "invalid strategy",
-			opt: &ComponentsTreeOption{
+			opt: &ComponentsTreeOptions{
 				Component: "my_project",
 				Strategy:  "invalid",
 			},
@@ -551,7 +551,7 @@ func TestComponents_Search_WithPagination(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, _, err := client.Components.Search(&ComponentsSearchOption{
+	result, _, err := client.Components.Search(&ComponentsSearchOptions{
 		Qualifiers: []string{"TRK"},
 		PaginationArgs: PaginationArgs{
 			Page:     2,
@@ -571,7 +571,7 @@ func TestComponents_Tree_AllowedQualifiers(t *testing.T) {
 
 	validQualifiers := []string{"UTS", "FIL", "DIR", "TRK"}
 	for _, q := range validQualifiers {
-		opt := &ComponentsTreeOption{
+		opt := &ComponentsTreeOptions{
 			Component:  "my_project",
 			Qualifiers: []string{q},
 		}
@@ -585,7 +585,7 @@ func TestComponents_Tree_AllowedStrategies(t *testing.T) {
 
 	validStrategies := []string{"all", "children", "leaves"}
 	for _, s := range validStrategies {
-		opt := &ComponentsTreeOption{
+		opt := &ComponentsTreeOptions{
 			Component: "my_project",
 			Strategy:  s,
 		}
@@ -599,7 +599,7 @@ func TestComponents_Tree_AllowedSortFields(t *testing.T) {
 
 	validSortFields := []string{"name", "path", "qualifier"}
 	for _, s := range validSortFields {
-		opt := &ComponentsTreeOption{
+		opt := &ComponentsTreeOptions{
 			Component: "my_project",
 			Sort:      []string{s},
 		}
@@ -613,7 +613,7 @@ func TestComponents_Suggestions_AllowedMore(t *testing.T) {
 
 	validMoreValues := []string{"VW", "SVW", "APP", "TRK"}
 	for _, m := range validMoreValues {
-		opt := &ComponentsSuggestionsOption{
+		opt := &ComponentsSuggestionsOptions{
 			More: m,
 		}
 		err := client.Components.ValidateSuggestionsOpt(opt)
@@ -626,7 +626,7 @@ func TestComponents_SearchProjects_AllowedFields(t *testing.T) {
 
 	validFields := []string{"analysisDate", "leakPeriodDate", "_all"}
 	for _, f := range validFields {
-		opt := &ComponentsSearchProjectsOption{
+		opt := &ComponentsSearchProjectsOptions{
 			Fields: []string{f},
 		}
 		err := client.Components.ValidateSearchProjectsOpt(opt)

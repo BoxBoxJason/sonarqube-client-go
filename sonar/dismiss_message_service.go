@@ -24,8 +24,8 @@ type DismissMessageCheck struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// DismissMessageCheckOption contains parameters for the Check method.
-type DismissMessageCheckOption struct {
+// DismissMessageCheckOptions contains parameters for the Check method.
+type DismissMessageCheckOptions struct {
 	// MessageType is the type of the message to check.
 	// This field is required.
 	MessageType string `url:"messageType"`
@@ -34,8 +34,8 @@ type DismissMessageCheckOption struct {
 	ProjectKey string `url:"projectKey"`
 }
 
-// DismissMessageDismissOption contains parameters for the Dismiss method.
-type DismissMessageDismissOption struct {
+// DismissMessageDismissOptions contains parameters for the Dismiss method.
+type DismissMessageDismissOptions struct {
 	// MessageType is the type of the message to dismiss.
 	// This field is required.
 	MessageType string `url:"messageType"`
@@ -49,7 +49,7 @@ type DismissMessageDismissOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateCheckOpt validates the options for the Check method.
-func (s *DismissMessageService) ValidateCheckOpt(opt *DismissMessageCheckOption) error {
+func (s *DismissMessageService) ValidateCheckOpt(opt *DismissMessageCheckOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -68,7 +68,7 @@ func (s *DismissMessageService) ValidateCheckOpt(opt *DismissMessageCheckOption)
 }
 
 // ValidateDismissOpt validates the options for the Dismiss method.
-func (s *DismissMessageService) ValidateDismissOpt(opt *DismissMessageDismissOption) error {
+func (s *DismissMessageService) ValidateDismissOpt(opt *DismissMessageDismissOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -94,7 +94,7 @@ func (s *DismissMessageService) ValidateDismissOpt(opt *DismissMessageDismissOpt
 //
 // API endpoint: GET /api/dismiss_message/check.
 // Since: 10.2.
-func (s *DismissMessageService) Check(opt *DismissMessageCheckOption) (*DismissMessageCheck, *http.Response, error) {
+func (s *DismissMessageService) Check(opt *DismissMessageCheckOptions) (*DismissMessageCheck, *http.Response, error) {
 	err := s.ValidateCheckOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -119,7 +119,7 @@ func (s *DismissMessageService) Check(opt *DismissMessageCheckOption) (*DismissM
 //
 // API endpoint: POST /api/dismiss_message/dismiss.
 // Since: 10.2.
-func (s *DismissMessageService) Dismiss(opt *DismissMessageDismissOption) (*http.Response, error) {
+func (s *DismissMessageService) Dismiss(opt *DismissMessageDismissOptions) (*http.Response, error) {
 	err := s.ValidateDismissOpt(opt)
 	if err != nil {
 		return nil, err

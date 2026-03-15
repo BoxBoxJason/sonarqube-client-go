@@ -14,7 +14,7 @@ func TestQualityGates_AddGroup(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/add_group", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesAddGroupOption{
+	opt := &QualitygatesAddGroupOptions{
 		GateName:  "SonarSource Way",
 		GroupName: "sonar-administrators",
 	}
@@ -32,19 +32,19 @@ func TestQualityGates_AddGroup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing GateName
-	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOption{
+	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOptions{
 		GroupName: "group",
 	})
 	assert.Error(t, err)
 
 	// Test missing GroupName
-	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOption{
+	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOptions{
 		GateName: "gate",
 	})
 	assert.Error(t, err)
 
 	// Test GateName too long
-	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOption{
+	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOptions{
 		GateName:  strings.Repeat("a", MaxQualityGateNameLength+1),
 		GroupName: "group",
 	})
@@ -55,7 +55,7 @@ func TestQualityGates_AddUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/add_user", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesAddUserOption{
+	opt := &QualitygatesAddUserOptions{
 		GateName: "SonarSource Way",
 		Login:    "john.doe",
 	}
@@ -69,7 +69,7 @@ func TestQualityGates_Copy(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/copy", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesCopyOption{
+	opt := &QualitygatesCopyOptions{
 		Name:       "My New Quality Gate",
 		SourceName: "SonarSource Way",
 	}
@@ -83,7 +83,7 @@ func TestQualityGates_Create(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/qualitygates/create", http.StatusOK, `{"name":"My Quality Gate"}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesCreateOption{
+	opt := &QualitygatesCreateOptions{
 		Name: "My Quality Gate",
 	}
 
@@ -98,7 +98,7 @@ func TestQualityGates_CreateCondition(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/qualitygates/create_condition", http.StatusOK, `{"id":"1","metric":"coverage","op":"LT","error":"80"}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesCreateConditionOption{
+	opt := &QualitygatesCreateConditionOptions{
 		Error:    "80",
 		GateName: "My Quality Gate",
 		Metric:   "coverage",
@@ -116,7 +116,7 @@ func TestQualityGates_CreateCondition_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test invalid Op value
-	_, _, err := client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOption{
+	_, _, err := client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOptions{
 		Error:    "80",
 		GateName: "gate",
 		Metric:   "coverage",
@@ -125,7 +125,7 @@ func TestQualityGates_CreateCondition_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing required fields
-	_, _, err = client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOption{
+	_, _, err = client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOptions{
 		GateName: "gate",
 		Metric:   "coverage",
 	})
@@ -136,7 +136,7 @@ func TestQualityGates_DeleteCondition(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/delete_condition", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesDeleteConditionOption{
+	opt := &QualitygatesDeleteConditionOptions{
 		ID: "1",
 	}
 
@@ -149,7 +149,7 @@ func TestQualityGates_Deselect(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/deselect", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesDeselectOption{
+	opt := &QualitygatesDeselectOptions{
 		ProjectKey: "my_project",
 	}
 
@@ -162,7 +162,7 @@ func TestQualityGates_Destroy(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/destroy", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesDestroyOption{
+	opt := &QualitygatesDestroyOptions{
 		Name: "My Quality Gate",
 	}
 
@@ -175,7 +175,7 @@ func TestQualityGates_GetByProject(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/get_by_project", http.StatusOK, `{"qualityGate":{"name":"SonarSource Way","default":true}}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesGetByProjectOption{
+	opt := &QualitygatesGetByProjectOptions{
 		Project: "my_project",
 	}
 
@@ -221,7 +221,7 @@ func TestQualityGates_ProjectStatus(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/project_status", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesProjectStatusOption{
+	opt := &QualitygatesProjectStatusOptions{
 		ProjectKey: "my_project",
 	}
 
@@ -242,7 +242,7 @@ func TestQualityGates_ProjectStatus_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing all required fields
-	_, _, err = client.Qualitygates.ProjectStatus(&QualitygatesProjectStatusOption{})
+	_, _, err = client.Qualitygates.ProjectStatus(&QualitygatesProjectStatusOptions{})
 	assert.Error(t, err)
 }
 
@@ -250,7 +250,7 @@ func TestQualityGates_RemoveGroup(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/remove_group", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesRemoveGroupOption{
+	opt := &QualitygatesRemoveGroupOptions{
 		GateName:  "SonarSource Way",
 		GroupName: "sonar-administrators",
 	}
@@ -264,7 +264,7 @@ func TestQualityGates_RemoveUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/remove_user", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesRemoveUserOption{
+	opt := &QualitygatesRemoveUserOptions{
 		GateName: "SonarSource Way",
 		Login:    "john.doe",
 	}
@@ -278,7 +278,7 @@ func TestQualityGates_Rename(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/rename", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesRenameOption{
+	opt := &QualitygatesRenameOptions{
 		CurrentName: "Old Name",
 		Name:        "New Name",
 	}
@@ -299,7 +299,7 @@ func TestQualityGates_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesSearchOption{
+	opt := &QualitygatesSearchOptions{
 		GateName: "SonarSource Way",
 	}
 
@@ -315,7 +315,7 @@ func TestQualityGates_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test invalid Selected value
-	_, _, err := client.Qualitygates.Search(&QualitygatesSearchOption{
+	_, _, err := client.Qualitygates.Search(&QualitygatesSearchOptions{
 		GateName: "gate",
 		Selected: "invalid",
 	})
@@ -332,7 +332,7 @@ func TestQualityGates_SearchGroups(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/search_groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesSearchGroupsOption{
+	opt := &QualitygatesSearchGroupsOptions{
 		GateName: "SonarSource Way",
 	}
 
@@ -354,7 +354,7 @@ func TestQualityGates_SearchUsers(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/search_users", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesSearchUsersOption{
+	opt := &QualitygatesSearchUsersOptions{
 		GateName: "SonarSource Way",
 	}
 
@@ -370,7 +370,7 @@ func TestQualityGates_Select(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/select", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesSelectOption{
+	opt := &QualitygatesSelectOptions{
 		GateName:   "SonarSource Way",
 		ProjectKey: "my_project",
 	}
@@ -384,7 +384,7 @@ func TestQualityGates_SetAsDefault(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/set_as_default", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesSetAsDefaultOption{
+	opt := &QualitygatesSetAsDefaultOptions{
 		Name: "SonarSource Way",
 	}
 
@@ -411,7 +411,7 @@ func TestQualityGates_Show(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/show", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesShowOption{
+	opt := &QualitygatesShowOptions{
 		Name: "SonarSource Way",
 	}
 
@@ -431,7 +431,7 @@ func TestQualityGates_UpdateCondition(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/update_condition", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesUpdateConditionOption{
+	opt := &QualitygatesUpdateConditionOptions{
 		Error:  "85",
 		ID:     "1",
 		Metric: "coverage",
@@ -451,7 +451,7 @@ func TestQualityGates_UpdateCondition_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid Op value
-	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOption{
+	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOptions{
 		Error:  "80",
 		ID:     "1",
 		Metric: "coverage",
@@ -460,7 +460,7 @@ func TestQualityGates_UpdateCondition_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing required fields
-	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOption{
+	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOptions{
 		ID:     "1",
 		Metric: "coverage",
 	})
@@ -597,7 +597,7 @@ func TestValidation_EdgeCases(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test Copy validation - missing name
-	err := client.Qualitygates.ValidateCopyOpt(&QualitygatesCopyOption{
+	err := client.Qualitygates.ValidateCopyOpt(&QualitygatesCopyOptions{
 		SourceName: "source",
 	})
 	assert.Error(t, err)
@@ -607,7 +607,7 @@ func TestValidation_EdgeCases(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test Rename - both names too long
-	err = client.Qualitygates.ValidateRenameOpt(&QualitygatesRenameOption{
+	err = client.Qualitygates.ValidateRenameOpt(&QualitygatesRenameOptions{
 		CurrentName: strings.Repeat("a", MaxQualityGateNameLength+1),
 		Name:        "new",
 	})
@@ -618,14 +618,14 @@ func TestValidation_EdgeCases(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test Search groups - invalid selected
-	err = client.Qualitygates.ValidateSearchGroupsOpt(&QualitygatesSearchGroupsOption{
+	err = client.Qualitygates.ValidateSearchGroupsOpt(&QualitygatesSearchGroupsOptions{
 		GateName: "gate",
 		Selected: "invalid",
 	})
 	assert.Error(t, err)
 
 	// Test Search users - invalid selected
-	err = client.Qualitygates.ValidateSearchUsersOpt(&QualitygatesSearchUsersOption{
+	err = client.Qualitygates.ValidateSearchUsersOpt(&QualitygatesSearchUsersOptions{
 		GateName: "gate",
 		Selected: "invalid",
 	})
@@ -664,7 +664,7 @@ func TestValidation_EdgeCases(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test CreateCondition - Error too long
-	err = client.Qualitygates.ValidateCreateConditionOpt(&QualitygatesCreateConditionOption{
+	err = client.Qualitygates.ValidateCreateConditionOpt(&QualitygatesCreateConditionOptions{
 		Error:    strings.Repeat("a", MaxConditionErrorLength+1),
 		GateName: "gate",
 		Metric:   "coverage",

@@ -100,8 +100,8 @@ type WebhooksList struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// WebhooksCreateOption represents options for creating a webhook.
-type WebhooksCreateOption struct {
+// WebhooksCreateOptions represents options for creating a webhook.
+type WebhooksCreateOptions struct {
 	// Name is the display name of the webhook (required).
 	// Maximum length: 100 characters.
 	Name string `url:"name,omitempty"`
@@ -120,17 +120,17 @@ type WebhooksCreateOption struct {
 	URL string `url:"url,omitempty"`
 }
 
-// WebhooksDeleteOption represents options for deleting a webhook.
-type WebhooksDeleteOption struct {
+// WebhooksDeleteOptions represents options for deleting a webhook.
+type WebhooksDeleteOptions struct {
 	// Webhook is the key of the webhook to delete (required).
 	// Maximum length: 40 characters.
 	Webhook string `url:"webhook,omitempty"`
 }
 
-// WebhooksDeliveriesOption represents options for listing webhook deliveries.
+// WebhooksDeliveriesOptions represents options for listing webhook deliveries.
 //
 //nolint:govet // Embedded PaginationArgs makes optimal alignment impractical
-type WebhooksDeliveriesOption struct {
+type WebhooksDeliveriesOptions struct {
 	PaginationArgs
 
 	// CeTaskID filters deliveries by Compute Engine task ID.
@@ -145,21 +145,21 @@ type WebhooksDeliveriesOption struct {
 	Webhook string `url:"webhook,omitempty"`
 }
 
-// WebhooksDeliveryOption represents options for getting a single delivery.
-type WebhooksDeliveryOption struct {
+// WebhooksDeliveryOptions represents options for getting a single delivery.
+type WebhooksDeliveryOptions struct {
 	// DeliveryID is the unique identifier of the delivery (required).
 	DeliveryID string `url:"deliveryId,omitempty"`
 }
 
-// WebhooksListOption represents options for listing webhooks.
-type WebhooksListOption struct {
+// WebhooksListOptions represents options for listing webhooks.
+type WebhooksListOptions struct {
 	// Project filters webhooks by project key (optional).
 	// If not provided, returns global webhooks.
 	Project string `url:"project,omitempty"`
 }
 
-// WebhooksUpdateOption represents options for updating a webhook.
-type WebhooksUpdateOption struct {
+// WebhooksUpdateOptions represents options for updating a webhook.
+type WebhooksUpdateOptions struct {
 	// Name is the new name for the webhook (required).
 	// Maximum length: 100 characters.
 	Name string `url:"name,omitempty"`
@@ -195,7 +195,7 @@ func validateWebhookSecret(secret string) error {
 }
 
 // ValidateCreateOpt validates the options for Create.
-func (s *WebhooksService) ValidateCreateOpt(opt *WebhooksCreateOption) error {
+func (s *WebhooksService) ValidateCreateOpt(opt *WebhooksCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -231,7 +231,7 @@ func (s *WebhooksService) ValidateCreateOpt(opt *WebhooksCreateOption) error {
 }
 
 // ValidateDeleteOpt validates the options for Delete.
-func (s *WebhooksService) ValidateDeleteOpt(opt *WebhooksDeleteOption) error {
+func (s *WebhooksService) ValidateDeleteOpt(opt *WebhooksDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -245,7 +245,7 @@ func (s *WebhooksService) ValidateDeleteOpt(opt *WebhooksDeleteOption) error {
 }
 
 // ValidateDeliveriesOpt validates the options for Deliveries.
-func (s *WebhooksService) ValidateDeliveriesOpt(opt *WebhooksDeliveriesOption) error {
+func (s *WebhooksService) ValidateDeliveriesOpt(opt *WebhooksDeliveriesOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -254,7 +254,7 @@ func (s *WebhooksService) ValidateDeliveriesOpt(opt *WebhooksDeliveriesOption) e
 }
 
 // ValidateDeliveryOpt validates the options for Delivery.
-func (s *WebhooksService) ValidateDeliveryOpt(opt *WebhooksDeliveryOption) error {
+func (s *WebhooksService) ValidateDeliveryOpt(opt *WebhooksDeliveryOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -263,7 +263,7 @@ func (s *WebhooksService) ValidateDeliveryOpt(opt *WebhooksDeliveryOption) error
 }
 
 // ValidateListOpt validates the options for List.
-func (s *WebhooksService) ValidateListOpt(opt *WebhooksListOption) error {
+func (s *WebhooksService) ValidateListOpt(opt *WebhooksListOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -272,7 +272,7 @@ func (s *WebhooksService) ValidateListOpt(opt *WebhooksListOption) error {
 }
 
 // ValidateUpdateOpt validates the options for Update.
-func (s *WebhooksService) ValidateUpdateOpt(opt *WebhooksUpdateOption) error {
+func (s *WebhooksService) ValidateUpdateOpt(opt *WebhooksUpdateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -325,7 +325,7 @@ func (s *WebhooksService) ValidateUpdateOpt(opt *WebhooksUpdateOption) error {
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) Create(opt *WebhooksCreateOption) (*WebhooksCreate, *http.Response, error) {
+func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*WebhooksCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -350,7 +350,7 @@ func (s *WebhooksService) Create(opt *WebhooksCreateOption) (*WebhooksCreate, *h
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) Delete(opt *WebhooksDeleteOption) (*http.Response, error) {
+func (s *WebhooksService) Delete(opt *WebhooksDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -374,7 +374,7 @@ func (s *WebhooksService) Delete(opt *WebhooksDeleteOption) (*http.Response, err
 // Note that additional information is returned by api/webhooks/delivery.
 //
 // Since: 6.2.
-func (s *WebhooksService) Deliveries(opt *WebhooksDeliveriesOption) (*WebhooksDeliveries, *http.Response, error) {
+func (s *WebhooksService) Deliveries(opt *WebhooksDeliveriesOptions) (*WebhooksDeliveries, *http.Response, error) {
 	err := s.ValidateDeliveriesOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -399,7 +399,7 @@ func (s *WebhooksService) Deliveries(opt *WebhooksDeliveriesOption) (*WebhooksDe
 // Requires 'Administer System' permission.
 //
 // Since: 6.2.
-func (s *WebhooksService) Delivery(opt *WebhooksDeliveryOption) (*WebhooksDelivery, *http.Response, error) {
+func (s *WebhooksService) Delivery(opt *WebhooksDeliveryOptions) (*WebhooksDelivery, *http.Response, error) {
 	err := s.ValidateDeliveryOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -425,7 +425,7 @@ func (s *WebhooksService) Delivery(opt *WebhooksDeliveryOption) (*WebhooksDelive
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) List(opt *WebhooksListOption) (*WebhooksList, *http.Response, error) {
+func (s *WebhooksService) List(opt *WebhooksListOptions) (*WebhooksList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -450,7 +450,7 @@ func (s *WebhooksService) List(opt *WebhooksListOption) (*WebhooksList, *http.Re
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) Update(opt *WebhooksUpdateOption) (*http.Response, error) {
+func (s *WebhooksService) Update(opt *WebhooksUpdateOptions) (*http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, err

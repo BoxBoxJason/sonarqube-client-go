@@ -61,7 +61,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Download", func() {
 		Context("Functional Tests", func() {
 			It("should attempt to download a plugin", func() {
-				_, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOption{
+				_, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOptions{
 					Plugin: "java",
 				})
 				// Skip if API not available - this is internal API
@@ -76,7 +76,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing plugin key", func() {
-				result, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOption{})
+				result, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -97,7 +97,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Install", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Install(&sonar.PluginsInstallOption{})
+				resp, err := client.Plugins.Install(&sonar.PluginsInstallOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -109,7 +109,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Install(&sonar.PluginsInstallOption{
+				resp, err := client.Plugins.Install(&sonar.PluginsInstallOptions{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available
@@ -142,7 +142,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list installed plugins with category field", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
 					Fields: []string{"category"},
 				})
 				// Skip if API not available
@@ -155,7 +155,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list bundled plugins only", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
 					Type: "BUNDLED",
 				})
 				// Skip if API not available
@@ -168,7 +168,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list external plugins only", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
 					Type: "EXTERNAL",
 				})
 				// Skip if API not available
@@ -183,7 +183,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with invalid type", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
 					Type: "INVALID",
 				})
 				Expect(err).To(HaveOccurred())
@@ -192,7 +192,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with invalid field", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOption{
+				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
 					Fields: []string{"invalid_field"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -226,7 +226,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Uninstall", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOption{})
+				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -238,7 +238,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOption{
+				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOptions{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available
@@ -259,7 +259,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Update", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOption{})
+				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -271,7 +271,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOption{
+				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOptions{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available

@@ -162,14 +162,14 @@ var _ = Describe("System Service", Ordered, func() {
 
 			AfterEach(func() {
 				// Restore original log level
-				_, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
+				_, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOptions{
 					Level: originalLevel,
 				})
 				Expect(err).NotTo(HaveOccurred())
 			})
 
 			It("should change log level to DEBUG", func() {
-				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOptions{
 					Level: "DEBUG",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -177,7 +177,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should change log level to TRACE", func() {
-				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOptions{
 					Level: "TRACE",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -185,7 +185,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should change log level to INFO", func() {
-				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOptions{
 					Level: "INFO",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -193,7 +193,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should reject invalid log levels", func() {
-				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOption{
+				resp, err := client.System.ChangeLogLevel(&sonar.SystemChangeLogLevelOptions{
 					Level: "INVALID_LEVEL",
 				})
 				// This should fail with validation error
@@ -204,7 +204,7 @@ var _ = Describe("System Service", Ordered, func() {
 
 		Describe("Logs", func() {
 			It("should retrieve app logs", func() {
-				logs, resp, err := client.System.Logs(&sonar.SystemLogsOption{
+				logs, resp, err := client.System.Logs(&sonar.SystemLogsOptions{
 					Name: "app",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -214,7 +214,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should retrieve web logs", func() {
-				logs, resp, err := client.System.Logs(&sonar.SystemLogsOption{
+				logs, resp, err := client.System.Logs(&sonar.SystemLogsOptions{
 					Name: "web",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -223,7 +223,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should retrieve ce logs", func() {
-				logs, resp, err := client.System.Logs(&sonar.SystemLogsOption{
+				logs, resp, err := client.System.Logs(&sonar.SystemLogsOptions{
 					Name: "ce",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -232,7 +232,7 @@ var _ = Describe("System Service", Ordered, func() {
 			})
 
 			It("should reject invalid log names", func() {
-				_, resp, err := client.System.Logs(&sonar.SystemLogsOption{
+				_, resp, err := client.System.Logs(&sonar.SystemLogsOptions{
 					Name: "invalid_log_name",
 				})
 				// This should fail with validation error

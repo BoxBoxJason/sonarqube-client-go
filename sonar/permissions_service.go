@@ -251,8 +251,8 @@ type PermissionsUsers struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// PermissionsAddGroupOption contains parameters for the AddGroup method.
-type PermissionsAddGroupOption struct {
+// PermissionsAddGroupOptions contains parameters for the AddGroup method.
+type PermissionsAddGroupOptions struct {
 	// GroupName is the group name or 'anyone' (case insensitive).
 	// This field is required.
 	GroupName string `url:"groupName"`
@@ -267,8 +267,8 @@ type PermissionsAddGroupOption struct {
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// PermissionsAddGroupToTemplateOption contains parameters for the AddGroupToTemplate method.
-type PermissionsAddGroupToTemplateOption struct {
+// PermissionsAddGroupToTemplateOptions contains parameters for the AddGroupToTemplate method.
+type PermissionsAddGroupToTemplateOptions struct {
 	// GroupName is the group name or 'anyone' (case insensitive).
 	// This field is required.
 	GroupName string `url:"groupName"`
@@ -282,8 +282,8 @@ type PermissionsAddGroupToTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsAddProjectCreatorToTemplateOption contains parameters for the AddProjectCreatorToTemplate method.
-type PermissionsAddProjectCreatorToTemplateOption struct {
+// PermissionsAddProjectCreatorToTemplateOptions contains parameters for the AddProjectCreatorToTemplate method.
+type PermissionsAddProjectCreatorToTemplateOptions struct {
 	// Permission is the permission to grant to the project creator.
 	// This field is required.
 	// Allowed values: admin, codeviewer, issueadmin, securityhotspotadmin, scan, user.
@@ -294,8 +294,8 @@ type PermissionsAddProjectCreatorToTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsAddUserOption contains parameters for the AddUser method.
-type PermissionsAddUserOption struct {
+// PermissionsAddUserOptions contains parameters for the AddUser method.
+type PermissionsAddUserOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
@@ -310,8 +310,8 @@ type PermissionsAddUserOption struct {
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// PermissionsAddUserToTemplateOption contains parameters for the AddUserToTemplate method.
-type PermissionsAddUserToTemplateOption struct {
+// PermissionsAddUserToTemplateOptions contains parameters for the AddUserToTemplate method.
+type PermissionsAddUserToTemplateOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
@@ -325,8 +325,8 @@ type PermissionsAddUserToTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsApplyTemplateOption contains parameters for the ApplyTemplate method.
-type PermissionsApplyTemplateOption struct {
+// PermissionsApplyTemplateOptions contains parameters for the ApplyTemplate method.
+type PermissionsApplyTemplateOptions struct {
 	// ProjectID is the project id. Use either ProjectID or ProjectKey.
 	ProjectID string `url:"projectId,omitempty"`
 	// ProjectKey is the project key. Use either ProjectID or ProjectKey.
@@ -337,10 +337,10 @@ type PermissionsApplyTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsBulkApplyTemplateOption contains parameters for the BulkApplyTemplate method.
+// PermissionsBulkApplyTemplateOptions contains parameters for the BulkApplyTemplate method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type PermissionsBulkApplyTemplateOption struct {
+type PermissionsBulkApplyTemplateOptions struct {
 	// AnalyzedBefore filters projects for which last analysis is older than the given date.
 	// Either a date (server timezone) or datetime can be provided.
 	AnalyzedBefore string `url:"analyzedBefore,omitempty"`
@@ -359,8 +359,8 @@ type PermissionsBulkApplyTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsCreateTemplateOption contains parameters for the CreateTemplate method.
-type PermissionsCreateTemplateOption struct {
+// PermissionsCreateTemplateOptions contains parameters for the CreateTemplate method.
+type PermissionsCreateTemplateOptions struct {
 	// Description is the template description.
 	Description string `url:"description,omitempty"`
 	// Name is the template name.
@@ -370,18 +370,18 @@ type PermissionsCreateTemplateOption struct {
 	ProjectKeyPattern string `url:"projectKeyPattern,omitempty"`
 }
 
-// PermissionsDeleteTemplateOption contains parameters for the DeleteTemplate method.
-type PermissionsDeleteTemplateOption struct {
+// PermissionsDeleteTemplateOptions contains parameters for the DeleteTemplate method.
+type PermissionsDeleteTemplateOptions struct {
 	// TemplateID is the template id. Use either TemplateID or TemplateName.
 	TemplateID string `url:"templateId,omitempty"`
 	// TemplateName is the template name. Use either TemplateID or TemplateName.
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsGroupsOption contains parameters for the Groups method.
+// PermissionsGroupsOptions contains parameters for the Groups method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type PermissionsGroupsOption struct {
+type PermissionsGroupsOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs
 
@@ -397,8 +397,8 @@ type PermissionsGroupsOption struct {
 	Query string `url:"q,omitempty"`
 }
 
-// PermissionsRemoveGroupOption contains parameters for the RemoveGroup method.
-type PermissionsRemoveGroupOption struct {
+// PermissionsRemoveGroupOptions contains parameters for the RemoveGroup method.
+type PermissionsRemoveGroupOptions struct {
 	// GroupName is the group name or 'anyone' (case insensitive).
 	// This field is required.
 	GroupName string `url:"groupName"`
@@ -413,8 +413,8 @@ type PermissionsRemoveGroupOption struct {
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// PermissionsRemoveGroupFromTemplateOption contains parameters for the RemoveGroupFromTemplate method.
-type PermissionsRemoveGroupFromTemplateOption struct {
+// PermissionsRemoveGroupFromTemplateOptions contains parameters for the RemoveGroupFromTemplate method.
+type PermissionsRemoveGroupFromTemplateOptions struct {
 	// GroupName is the group name or 'anyone' (case insensitive).
 	// This field is required.
 	GroupName string `url:"groupName"`
@@ -428,8 +428,8 @@ type PermissionsRemoveGroupFromTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsRemoveProjectCreatorFromTemplateOption contains parameters for the RemoveProjectCreatorFromTemplate method.
-type PermissionsRemoveProjectCreatorFromTemplateOption struct {
+// PermissionsRemoveProjectCreatorFromTemplateOptions contains parameters for the RemoveProjectCreatorFromTemplate method.
+type PermissionsRemoveProjectCreatorFromTemplateOptions struct {
 	// Permission is the permission to revoke from the project creator.
 	// This field is required.
 	// Allowed values: admin, codeviewer, issueadmin, securityhotspotadmin, scan, user.
@@ -440,8 +440,8 @@ type PermissionsRemoveProjectCreatorFromTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsRemoveUserOption contains parameters for the RemoveUser method.
-type PermissionsRemoveUserOption struct {
+// PermissionsRemoveUserOptions contains parameters for the RemoveUser method.
+type PermissionsRemoveUserOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
@@ -456,8 +456,8 @@ type PermissionsRemoveUserOption struct {
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// PermissionsRemoveUserFromTemplateOption contains parameters for the RemoveUserFromTemplate method.
-type PermissionsRemoveUserFromTemplateOption struct {
+// PermissionsRemoveUserFromTemplateOptions contains parameters for the RemoveUserFromTemplate method.
+type PermissionsRemoveUserFromTemplateOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
@@ -471,14 +471,14 @@ type PermissionsRemoveUserFromTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsSearchTemplatesOption contains parameters for the SearchTemplates method.
-type PermissionsSearchTemplatesOption struct {
+// PermissionsSearchTemplatesOptions contains parameters for the SearchTemplates method.
+type PermissionsSearchTemplatesOptions struct {
 	// Query limits search to permission template names containing the supplied string.
 	Query string `url:"q,omitempty"`
 }
 
-// PermissionsSetDefaultTemplateOption contains parameters for the SetDefaultTemplate method.
-type PermissionsSetDefaultTemplateOption struct {
+// PermissionsSetDefaultTemplateOptions contains parameters for the SetDefaultTemplate method.
+type PermissionsSetDefaultTemplateOptions struct {
 	// Qualifier is the project qualifier. Default is TRK (projects).
 	Qualifier string `url:"qualifier,omitempty"`
 	// TemplateID is the template id. Use either TemplateID or TemplateName.
@@ -487,10 +487,10 @@ type PermissionsSetDefaultTemplateOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsTemplateGroupsOption contains parameters for the TemplateGroups method.
+// PermissionsTemplateGroupsOptions contains parameters for the TemplateGroups method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type PermissionsTemplateGroupsOption struct {
+type PermissionsTemplateGroupsOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs
 
@@ -505,10 +505,10 @@ type PermissionsTemplateGroupsOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsTemplateUsersOption contains parameters for the TemplateUsers method.
+// PermissionsTemplateUsersOptions contains parameters for the TemplateUsers method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type PermissionsTemplateUsersOption struct {
+type PermissionsTemplateUsersOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs
 
@@ -523,8 +523,8 @@ type PermissionsTemplateUsersOption struct {
 	TemplateName string `url:"templateName,omitempty"`
 }
 
-// PermissionsUpdateTemplateOption contains parameters for the UpdateTemplate method.
-type PermissionsUpdateTemplateOption struct {
+// PermissionsUpdateTemplateOptions contains parameters for the UpdateTemplate method.
+type PermissionsUpdateTemplateOptions struct {
 	// Description is the template description.
 	Description string `url:"description,omitempty"`
 	// ID is the template id.
@@ -536,10 +536,10 @@ type PermissionsUpdateTemplateOption struct {
 	ProjectKeyPattern string `url:"projectKeyPattern,omitempty"`
 }
 
-// PermissionsUsersOption contains parameters for the Users method.
+// PermissionsUsersOptions contains parameters for the Users method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type PermissionsUsersOption struct {
+type PermissionsUsersOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs
 
@@ -568,7 +568,7 @@ func isValidPermission(permission string) bool {
 }
 
 // ValidateAddGroupOpt validates the options for the AddGroup method.
-func (s *PermissionsService) ValidateAddGroupOpt(opt *PermissionsAddGroupOption) error {
+func (s *PermissionsService) ValidateAddGroupOpt(opt *PermissionsAddGroupOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -591,7 +591,7 @@ func (s *PermissionsService) ValidateAddGroupOpt(opt *PermissionsAddGroupOption)
 }
 
 // ValidateAddGroupToTemplateOpt validates the options for the AddGroupToTemplate method.
-func (s *PermissionsService) ValidateAddGroupToTemplateOpt(opt *PermissionsAddGroupToTemplateOption) error {
+func (s *PermissionsService) ValidateAddGroupToTemplateOpt(opt *PermissionsAddGroupToTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -620,7 +620,7 @@ func (s *PermissionsService) ValidateAddGroupToTemplateOpt(opt *PermissionsAddGr
 }
 
 // ValidateAddProjectCreatorToTemplateOpt validates the options for the AddProjectCreatorToTemplate method.
-func (s *PermissionsService) ValidateAddProjectCreatorToTemplateOpt(opt *PermissionsAddProjectCreatorToTemplateOption) error {
+func (s *PermissionsService) ValidateAddProjectCreatorToTemplateOpt(opt *PermissionsAddProjectCreatorToTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -644,7 +644,7 @@ func (s *PermissionsService) ValidateAddProjectCreatorToTemplateOpt(opt *Permiss
 }
 
 // ValidateAddUserOpt validates the options for the AddUser method.
-func (s *PermissionsService) ValidateAddUserOpt(opt *PermissionsAddUserOption) error {
+func (s *PermissionsService) ValidateAddUserOpt(opt *PermissionsAddUserOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -667,7 +667,7 @@ func (s *PermissionsService) ValidateAddUserOpt(opt *PermissionsAddUserOption) e
 }
 
 // ValidateAddUserToTemplateOpt validates the options for the AddUserToTemplate method.
-func (s *PermissionsService) ValidateAddUserToTemplateOpt(opt *PermissionsAddUserToTemplateOption) error {
+func (s *PermissionsService) ValidateAddUserToTemplateOpt(opt *PermissionsAddUserToTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -696,7 +696,7 @@ func (s *PermissionsService) ValidateAddUserToTemplateOpt(opt *PermissionsAddUse
 }
 
 // ValidateApplyTemplateOpt validates the options for the ApplyTemplate method.
-func (s *PermissionsService) ValidateApplyTemplateOpt(opt *PermissionsApplyTemplateOption) error {
+func (s *PermissionsService) ValidateApplyTemplateOpt(opt *PermissionsApplyTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -715,7 +715,7 @@ func (s *PermissionsService) ValidateApplyTemplateOpt(opt *PermissionsApplyTempl
 }
 
 // ValidateBulkApplyTemplateOpt validates the options for the BulkApplyTemplate method.
-func (s *PermissionsService) ValidateBulkApplyTemplateOpt(opt *PermissionsBulkApplyTemplateOption) error {
+func (s *PermissionsService) ValidateBulkApplyTemplateOpt(opt *PermissionsBulkApplyTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -737,7 +737,7 @@ func (s *PermissionsService) ValidateBulkApplyTemplateOpt(opt *PermissionsBulkAp
 }
 
 // ValidateCreateTemplateOpt validates the options for the CreateTemplate method.
-func (s *PermissionsService) ValidateCreateTemplateOpt(opt *PermissionsCreateTemplateOption) error {
+func (s *PermissionsService) ValidateCreateTemplateOpt(opt *PermissionsCreateTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -751,7 +751,7 @@ func (s *PermissionsService) ValidateCreateTemplateOpt(opt *PermissionsCreateTem
 }
 
 // ValidateDeleteTemplateOpt validates the options for the DeleteTemplate method.
-func (s *PermissionsService) ValidateDeleteTemplateOpt(opt *PermissionsDeleteTemplateOption) error {
+func (s *PermissionsService) ValidateDeleteTemplateOpt(opt *PermissionsDeleteTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -765,7 +765,7 @@ func (s *PermissionsService) ValidateDeleteTemplateOpt(opt *PermissionsDeleteTem
 }
 
 // ValidateGroupsOpt validates the options for the Groups method.
-func (s *PermissionsService) ValidateGroupsOpt(opt *PermissionsGroupsOption) error {
+func (s *PermissionsService) ValidateGroupsOpt(opt *PermissionsGroupsOptions) error {
 	// Options are optional
 	if opt == nil {
 		return nil
@@ -793,7 +793,7 @@ func (s *PermissionsService) ValidateGroupsOpt(opt *PermissionsGroupsOption) err
 }
 
 // ValidateRemoveGroupOpt validates the options for the RemoveGroup method.
-func (s *PermissionsService) ValidateRemoveGroupOpt(opt *PermissionsRemoveGroupOption) error {
+func (s *PermissionsService) ValidateRemoveGroupOpt(opt *PermissionsRemoveGroupOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -816,7 +816,7 @@ func (s *PermissionsService) ValidateRemoveGroupOpt(opt *PermissionsRemoveGroupO
 }
 
 // ValidateRemoveGroupFromTemplateOpt validates the options for the RemoveGroupFromTemplate method.
-func (s *PermissionsService) ValidateRemoveGroupFromTemplateOpt(opt *PermissionsRemoveGroupFromTemplateOption) error {
+func (s *PermissionsService) ValidateRemoveGroupFromTemplateOpt(opt *PermissionsRemoveGroupFromTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -845,7 +845,7 @@ func (s *PermissionsService) ValidateRemoveGroupFromTemplateOpt(opt *Permissions
 }
 
 // ValidateRemoveProjectCreatorFromTemplateOpt validates the options for the RemoveProjectCreatorFromTemplate method.
-func (s *PermissionsService) ValidateRemoveProjectCreatorFromTemplateOpt(opt *PermissionsRemoveProjectCreatorFromTemplateOption) error {
+func (s *PermissionsService) ValidateRemoveProjectCreatorFromTemplateOpt(opt *PermissionsRemoveProjectCreatorFromTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -869,7 +869,7 @@ func (s *PermissionsService) ValidateRemoveProjectCreatorFromTemplateOpt(opt *Pe
 }
 
 // ValidateRemoveUserOpt validates the options for the RemoveUser method.
-func (s *PermissionsService) ValidateRemoveUserOpt(opt *PermissionsRemoveUserOption) error {
+func (s *PermissionsService) ValidateRemoveUserOpt(opt *PermissionsRemoveUserOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -892,7 +892,7 @@ func (s *PermissionsService) ValidateRemoveUserOpt(opt *PermissionsRemoveUserOpt
 }
 
 // ValidateRemoveUserFromTemplateOpt validates the options for the RemoveUserFromTemplate method.
-func (s *PermissionsService) ValidateRemoveUserFromTemplateOpt(opt *PermissionsRemoveUserFromTemplateOption) error {
+func (s *PermissionsService) ValidateRemoveUserFromTemplateOpt(opt *PermissionsRemoveUserFromTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -921,13 +921,13 @@ func (s *PermissionsService) ValidateRemoveUserFromTemplateOpt(opt *PermissionsR
 }
 
 // ValidateSearchTemplatesOpt validates the options for the SearchTemplates method.
-func (s *PermissionsService) ValidateSearchTemplatesOpt(opt *PermissionsSearchTemplatesOption) error {
+func (s *PermissionsService) ValidateSearchTemplatesOpt(opt *PermissionsSearchTemplatesOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
 
 // ValidateSetDefaultTemplateOpt validates the options for the SetDefaultTemplate method.
-func (s *PermissionsService) ValidateSetDefaultTemplateOpt(opt *PermissionsSetDefaultTemplateOption) error {
+func (s *PermissionsService) ValidateSetDefaultTemplateOpt(opt *PermissionsSetDefaultTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -949,7 +949,7 @@ func (s *PermissionsService) ValidateSetDefaultTemplateOpt(opt *PermissionsSetDe
 }
 
 // ValidateTemplateGroupsOpt validates the options for the TemplateGroups method.
-func (s *PermissionsService) ValidateTemplateGroupsOpt(opt *PermissionsTemplateGroupsOption) error {
+func (s *PermissionsService) ValidateTemplateGroupsOpt(opt *PermissionsTemplateGroupsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -984,7 +984,7 @@ func (s *PermissionsService) ValidateTemplateGroupsOpt(opt *PermissionsTemplateG
 }
 
 // ValidateTemplateUsersOpt validates the options for the TemplateUsers method.
-func (s *PermissionsService) ValidateTemplateUsersOpt(opt *PermissionsTemplateUsersOption) error {
+func (s *PermissionsService) ValidateTemplateUsersOpt(opt *PermissionsTemplateUsersOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -1019,7 +1019,7 @@ func (s *PermissionsService) ValidateTemplateUsersOpt(opt *PermissionsTemplateUs
 }
 
 // ValidateUpdateTemplateOpt validates the options for the UpdateTemplate method.
-func (s *PermissionsService) ValidateUpdateTemplateOpt(opt *PermissionsUpdateTemplateOption) error {
+func (s *PermissionsService) ValidateUpdateTemplateOpt(opt *PermissionsUpdateTemplateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -1033,7 +1033,7 @@ func (s *PermissionsService) ValidateUpdateTemplateOpt(opt *PermissionsUpdateTem
 }
 
 // ValidateUsersOpt validates the options for the Users method.
-func (s *PermissionsService) ValidateUsersOpt(opt *PermissionsUsersOption) error {
+func (s *PermissionsService) ValidateUsersOpt(opt *PermissionsUsersOptions) error {
 	// Options are optional
 	if opt == nil {
 		return nil
@@ -1073,7 +1073,7 @@ func (s *PermissionsService) ValidateUsersOpt(opt *PermissionsUsersOption) error
 //
 // API endpoint: POST /api/permissions/add_group.
 // Since: 5.2.
-func (s *PermissionsService) AddGroup(opt *PermissionsAddGroupOption) (*http.Response, error) {
+func (s *PermissionsService) AddGroup(opt *PermissionsAddGroupOptions) (*http.Response, error) {
 	err := s.ValidateAddGroupOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1098,7 +1098,7 @@ func (s *PermissionsService) AddGroup(opt *PermissionsAddGroupOption) (*http.Res
 //
 // API endpoint: POST /api/permissions/add_group_to_template.
 // Since: 5.2.
-func (s *PermissionsService) AddGroupToTemplate(opt *PermissionsAddGroupToTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) AddGroupToTemplate(opt *PermissionsAddGroupToTemplateOptions) (*http.Response, error) {
 	err := s.ValidateAddGroupToTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1122,7 +1122,7 @@ func (s *PermissionsService) AddGroupToTemplate(opt *PermissionsAddGroupToTempla
 //
 // API endpoint: POST /api/permissions/add_project_creator_to_template.
 // Since: 6.0.
-func (s *PermissionsService) AddProjectCreatorToTemplate(opt *PermissionsAddProjectCreatorToTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) AddProjectCreatorToTemplate(opt *PermissionsAddProjectCreatorToTemplateOptions) (*http.Response, error) {
 	err := s.ValidateAddProjectCreatorToTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1150,7 +1150,7 @@ func (s *PermissionsService) AddProjectCreatorToTemplate(opt *PermissionsAddProj
 //
 // API endpoint: POST /api/permissions/add_user.
 // Since: 5.2.
-func (s *PermissionsService) AddUser(opt *PermissionsAddUserOption) (*http.Response, error) {
+func (s *PermissionsService) AddUser(opt *PermissionsAddUserOptions) (*http.Response, error) {
 	err := s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1174,7 +1174,7 @@ func (s *PermissionsService) AddUser(opt *PermissionsAddUserOption) (*http.Respo
 //
 // API endpoint: POST /api/permissions/add_user_to_template.
 // Since: 5.2.
-func (s *PermissionsService) AddUserToTemplate(opt *PermissionsAddUserToTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) AddUserToTemplate(opt *PermissionsAddUserToTemplateOptions) (*http.Response, error) {
 	err := s.ValidateAddUserToTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1200,7 +1200,7 @@ func (s *PermissionsService) AddUserToTemplate(opt *PermissionsAddUserToTemplate
 //
 // API endpoint: POST /api/permissions/apply_template.
 // Since: 5.2.
-func (s *PermissionsService) ApplyTemplate(opt *PermissionsApplyTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) ApplyTemplate(opt *PermissionsApplyTemplateOptions) (*http.Response, error) {
 	err := s.ValidateApplyTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1226,7 +1226,7 @@ func (s *PermissionsService) ApplyTemplate(opt *PermissionsApplyTemplateOption) 
 //
 // API endpoint: POST /api/permissions/bulk_apply_template.
 // Since: 5.5.
-func (s *PermissionsService) BulkApplyTemplate(opt *PermissionsBulkApplyTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) BulkApplyTemplate(opt *PermissionsBulkApplyTemplateOptions) (*http.Response, error) {
 	err := s.ValidateBulkApplyTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1250,7 +1250,7 @@ func (s *PermissionsService) BulkApplyTemplate(opt *PermissionsBulkApplyTemplate
 //
 // API endpoint: POST /api/permissions/create_template.
 // Since: 5.2.
-func (s *PermissionsService) CreateTemplate(opt *PermissionsCreateTemplateOption) (*PermissionsCreateTemplate, *http.Response, error) {
+func (s *PermissionsService) CreateTemplate(opt *PermissionsCreateTemplateOptions) (*PermissionsCreateTemplate, *http.Response, error) {
 	err := s.ValidateCreateTemplateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1276,7 +1276,7 @@ func (s *PermissionsService) CreateTemplate(opt *PermissionsCreateTemplateOption
 //
 // API endpoint: POST /api/permissions/delete_template.
 // Since: 5.2.
-func (s *PermissionsService) DeleteTemplate(opt *PermissionsDeleteTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) DeleteTemplate(opt *PermissionsDeleteTemplateOptions) (*http.Response, error) {
 	err := s.ValidateDeleteTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1308,7 +1308,7 @@ func (s *PermissionsService) DeleteTemplate(opt *PermissionsDeleteTemplateOption
 //
 // API endpoint: GET /api/permissions/groups.
 // Since: 5.2.
-func (s *PermissionsService) Groups(opt *PermissionsGroupsOption) (*PermissionsGroups, *http.Response, error) {
+func (s *PermissionsService) Groups(opt *PermissionsGroupsOptions) (*PermissionsGroups, *http.Response, error) {
 	err := s.ValidateGroupsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1339,7 +1339,7 @@ func (s *PermissionsService) Groups(opt *PermissionsGroupsOption) (*PermissionsG
 //
 // API endpoint: POST /api/permissions/remove_group.
 // Since: 5.2.
-func (s *PermissionsService) RemoveGroup(opt *PermissionsRemoveGroupOption) (*http.Response, error) {
+func (s *PermissionsService) RemoveGroup(opt *PermissionsRemoveGroupOptions) (*http.Response, error) {
 	err := s.ValidateRemoveGroupOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1364,7 +1364,7 @@ func (s *PermissionsService) RemoveGroup(opt *PermissionsRemoveGroupOption) (*ht
 //
 // API endpoint: POST /api/permissions/remove_group_from_template.
 // Since: 5.2.
-func (s *PermissionsService) RemoveGroupFromTemplate(opt *PermissionsRemoveGroupFromTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) RemoveGroupFromTemplate(opt *PermissionsRemoveGroupFromTemplateOptions) (*http.Response, error) {
 	err := s.ValidateRemoveGroupFromTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1388,7 +1388,7 @@ func (s *PermissionsService) RemoveGroupFromTemplate(opt *PermissionsRemoveGroup
 //
 // API endpoint: POST /api/permissions/remove_project_creator_from_template.
 // Since: 6.0.
-func (s *PermissionsService) RemoveProjectCreatorFromTemplate(opt *PermissionsRemoveProjectCreatorFromTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) RemoveProjectCreatorFromTemplate(opt *PermissionsRemoveProjectCreatorFromTemplateOptions) (*http.Response, error) {
 	err := s.ValidateRemoveProjectCreatorFromTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1416,7 +1416,7 @@ func (s *PermissionsService) RemoveProjectCreatorFromTemplate(opt *PermissionsRe
 //
 // API endpoint: POST /api/permissions/remove_user.
 // Since: 5.2.
-func (s *PermissionsService) RemoveUser(opt *PermissionsRemoveUserOption) (*http.Response, error) {
+func (s *PermissionsService) RemoveUser(opt *PermissionsRemoveUserOptions) (*http.Response, error) {
 	err := s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1440,7 +1440,7 @@ func (s *PermissionsService) RemoveUser(opt *PermissionsRemoveUserOption) (*http
 //
 // API endpoint: POST /api/permissions/remove_user_from_template.
 // Since: 5.2.
-func (s *PermissionsService) RemoveUserFromTemplate(opt *PermissionsRemoveUserFromTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) RemoveUserFromTemplate(opt *PermissionsRemoveUserFromTemplateOptions) (*http.Response, error) {
 	err := s.ValidateRemoveUserFromTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1464,7 +1464,7 @@ func (s *PermissionsService) RemoveUserFromTemplate(opt *PermissionsRemoveUserFr
 //
 // API endpoint: GET /api/permissions/search_templates.
 // Since: 5.2.
-func (s *PermissionsService) SearchTemplates(opt *PermissionsSearchTemplatesOption) (*PermissionsSearchTemplates, *http.Response, error) {
+func (s *PermissionsService) SearchTemplates(opt *PermissionsSearchTemplatesOptions) (*PermissionsSearchTemplates, *http.Response, error) {
 	err := s.ValidateSearchTemplatesOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1490,7 +1490,7 @@ func (s *PermissionsService) SearchTemplates(opt *PermissionsSearchTemplatesOpti
 //
 // API endpoint: POST /api/permissions/set_default_template.
 // Since: 5.2.
-func (s *PermissionsService) SetDefaultTemplate(opt *PermissionsSetDefaultTemplateOption) (*http.Response, error) {
+func (s *PermissionsService) SetDefaultTemplate(opt *PermissionsSetDefaultTemplateOptions) (*http.Response, error) {
 	err := s.ValidateSetDefaultTemplateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1519,7 +1519,7 @@ func (s *PermissionsService) SetDefaultTemplate(opt *PermissionsSetDefaultTempla
 //
 // API endpoint: GET /api/permissions/template_groups.
 // Since: 5.2.
-func (s *PermissionsService) TemplateGroups(opt *PermissionsTemplateGroupsOption) (*PermissionsTemplateGroups, *http.Response, error) {
+func (s *PermissionsService) TemplateGroups(opt *PermissionsTemplateGroupsOptions) (*PermissionsTemplateGroups, *http.Response, error) {
 	err := s.ValidateTemplateGroupsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1550,7 +1550,7 @@ func (s *PermissionsService) TemplateGroups(opt *PermissionsTemplateGroupsOption
 //
 // API endpoint: GET /api/permissions/template_users.
 // Since: 5.2.
-func (s *PermissionsService) TemplateUsers(opt *PermissionsTemplateUsersOption) (*PermissionsTemplateUsers, *http.Response, error) {
+func (s *PermissionsService) TemplateUsers(opt *PermissionsTemplateUsersOptions) (*PermissionsTemplateUsers, *http.Response, error) {
 	err := s.ValidateTemplateUsersOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1576,7 +1576,7 @@ func (s *PermissionsService) TemplateUsers(opt *PermissionsTemplateUsersOption) 
 //
 // API endpoint: POST /api/permissions/update_template.
 // Since: 5.2.
-func (s *PermissionsService) UpdateTemplate(opt *PermissionsUpdateTemplateOption) (*PermissionsUpdateTemplate, *http.Response, error) {
+func (s *PermissionsService) UpdateTemplate(opt *PermissionsUpdateTemplateOptions) (*PermissionsUpdateTemplate, *http.Response, error) {
 	err := s.ValidateUpdateTemplateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1611,7 +1611,7 @@ func (s *PermissionsService) UpdateTemplate(opt *PermissionsUpdateTemplateOption
 //
 // API endpoint: GET /api/permissions/users.
 // Since: 5.2.
-func (s *PermissionsService) Users(opt *PermissionsUsersOption) (*PermissionsUsers, *http.Response, error) {
+func (s *PermissionsService) Users(opt *PermissionsUsersOptions) (*PermissionsUsers, *http.Response, error) {
 	err := s.ValidateUsersOpt(opt)
 	if err != nil {
 		return nil, nil, err

@@ -17,7 +17,7 @@ func TestSystem_ChangeLogLevel(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &SystemChangeLogLevelOption{Level: "INFO"}
+	opt := &SystemChangeLogLevelOptions{Level: "INFO"}
 	resp, err := client.System.ChangeLogLevel(opt)
 
 	require.NoError(t, err)
@@ -29,11 +29,11 @@ func TestSystem_ChangeLogLevel_ValidationErrors(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *SystemChangeLogLevelOption
+		opt  *SystemChangeLogLevelOptions
 	}{
 		{"nil options", nil},
-		{"missing level", &SystemChangeLogLevelOption{}},
-		{"invalid level", &SystemChangeLogLevelOption{Level: "INVALID"}},
+		{"missing level", &SystemChangeLogLevelOptions{}},
+		{"invalid level", &SystemChangeLogLevelOptions{Level: "INVALID"}},
 	}
 
 	for _, tc := range tests {
@@ -127,7 +127,7 @@ func TestSystem_Logs(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &SystemLogsOption{Name: "app"}
+	opt := &SystemLogsOptions{Name: "app"}
 	result, resp, err := client.System.Logs(opt)
 
 	require.NoError(t, err)
@@ -152,7 +152,7 @@ func TestSystem_Logs_NilOption(t *testing.T) {
 func TestSystem_Logs_ValidationErrors(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	opt := &SystemLogsOption{Name: "invalid_log"}
+	opt := &SystemLogsOptions{Name: "invalid_log"}
 	_, _, err := client.System.Logs(opt)
 
 	assert.Error(t, err, "expected validation error for invalid log name")
@@ -269,7 +269,7 @@ func TestValidateChangeLogLevelOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *SystemChangeLogLevelOption
+		opt     *SystemChangeLogLevelOptions
 		wantErr bool
 	}{
 		{
@@ -279,27 +279,27 @@ func TestValidateChangeLogLevelOpt(t *testing.T) {
 		},
 		{
 			name:    "missing level",
-			opt:     &SystemChangeLogLevelOption{},
+			opt:     &SystemChangeLogLevelOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "invalid level",
-			opt:     &SystemChangeLogLevelOption{Level: "VERBOSE"},
+			opt:     &SystemChangeLogLevelOptions{Level: "VERBOSE"},
 			wantErr: true,
 		},
 		{
 			name:    "valid TRACE",
-			opt:     &SystemChangeLogLevelOption{Level: "TRACE"},
+			opt:     &SystemChangeLogLevelOptions{Level: "TRACE"},
 			wantErr: false,
 		},
 		{
 			name:    "valid DEBUG",
-			opt:     &SystemChangeLogLevelOption{Level: "DEBUG"},
+			opt:     &SystemChangeLogLevelOptions{Level: "DEBUG"},
 			wantErr: false,
 		},
 		{
 			name:    "valid INFO",
-			opt:     &SystemChangeLogLevelOption{Level: "INFO"},
+			opt:     &SystemChangeLogLevelOptions{Level: "INFO"},
 			wantErr: false,
 		},
 	}
@@ -321,7 +321,7 @@ func TestValidateLogsOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *SystemLogsOption
+		opt     *SystemLogsOptions
 		wantErr bool
 	}{
 		{
@@ -331,42 +331,42 @@ func TestValidateLogsOpt(t *testing.T) {
 		},
 		{
 			name:    "empty name (allowed, uses default)",
-			opt:     &SystemLogsOption{},
+			opt:     &SystemLogsOptions{},
 			wantErr: false,
 		},
 		{
 			name:    "invalid name",
-			opt:     &SystemLogsOption{Name: "invalid_log_type"},
+			opt:     &SystemLogsOptions{Name: "invalid_log_type"},
 			wantErr: true,
 		},
 		{
 			name:    "valid access",
-			opt:     &SystemLogsOption{Name: "access"},
+			opt:     &SystemLogsOptions{Name: "access"},
 			wantErr: false,
 		},
 		{
 			name:    "valid app",
-			opt:     &SystemLogsOption{Name: "app"},
+			opt:     &SystemLogsOptions{Name: "app"},
 			wantErr: false,
 		},
 		{
 			name:    "valid ce",
-			opt:     &SystemLogsOption{Name: "ce"},
+			opt:     &SystemLogsOptions{Name: "ce"},
 			wantErr: false,
 		},
 		{
 			name:    "valid deprecation",
-			opt:     &SystemLogsOption{Name: "deprecation"},
+			opt:     &SystemLogsOptions{Name: "deprecation"},
 			wantErr: false,
 		},
 		{
 			name:    "valid es",
-			opt:     &SystemLogsOption{Name: "es"},
+			opt:     &SystemLogsOptions{Name: "es"},
 			wantErr: false,
 		},
 		{
 			name:    "valid web",
-			opt:     &SystemLogsOption{Name: "web"},
+			opt:     &SystemLogsOptions{Name: "web"},
 			wantErr: false,
 		},
 	}

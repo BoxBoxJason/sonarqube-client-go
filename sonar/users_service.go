@@ -274,15 +274,15 @@ type UsersUpdate struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// UsersAnonymizeOption contains parameters for the Anonymize method.
-type UsersAnonymizeOption struct {
+// UsersAnonymizeOptions contains parameters for the Anonymize method.
+type UsersAnonymizeOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
 }
 
-// UsersChangePasswordOption contains parameters for the ChangePassword method.
-type UsersChangePasswordOption struct {
+// UsersChangePasswordOptions contains parameters for the ChangePassword method.
+type UsersChangePasswordOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
@@ -293,10 +293,10 @@ type UsersChangePasswordOption struct {
 	PreviousPassword string `url:"previousPassword,omitempty"`
 }
 
-// UsersCreateOption contains parameters for the Create method.
+// UsersCreateOptions contains parameters for the Create method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type UsersCreateOption struct {
+type UsersCreateOptions struct {
 	// Email is the user email address.
 	Email string `url:"email,omitempty"`
 	// Local specifies if the user should be authenticated from SonarQube server.
@@ -316,8 +316,8 @@ type UsersCreateOption struct {
 	ScmAccounts []string `url:"scmAccount,omitempty"`
 }
 
-// UsersDeactivateOption contains parameters for the Deactivate method.
-type UsersDeactivateOption struct {
+// UsersDeactivateOptions contains parameters for the Deactivate method.
+type UsersDeactivateOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
@@ -325,8 +325,8 @@ type UsersDeactivateOption struct {
 	Anonymize bool `url:"anonymize,omitempty"`
 }
 
-// UsersDismissNoticeOption contains parameters for the DismissNotice method.
-type UsersDismissNoticeOption struct {
+// UsersDismissNoticeOptions contains parameters for the DismissNotice method.
+type UsersDismissNoticeOptions struct {
 	// Notice is the notice key to dismiss.
 	// This field is required.
 	// Allowed values: educationPrinciples, sonarlintAd, showDesignAndArchitectureBanner,
@@ -336,10 +336,10 @@ type UsersDismissNoticeOption struct {
 	Notice string `url:"notice"`
 }
 
-// UsersGroupsOption contains parameters for the Groups method.
+// UsersGroupsOptions contains parameters for the Groups method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type UsersGroupsOption struct {
+type UsersGroupsOptions struct {
 	PaginationArgs
 
 	// Login is the user login.
@@ -352,10 +352,10 @@ type UsersGroupsOption struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// UsersSearchOption contains parameters for the Search method.
+// UsersSearchOptions contains parameters for the Search method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type UsersSearchOption struct {
+type UsersSearchOptions struct {
 	PaginationArgs
 
 	// Deactivated returns deactivated users instead of active users when true.
@@ -382,8 +382,8 @@ type UsersSearchOption struct {
 	SlLastConnectedBefore string `url:"slLastConnectedBefore,omitempty"`
 }
 
-// UsersSetHomepageOption contains parameters for the SetHomepage method.
-type UsersSetHomepageOption struct {
+// UsersSetHomepageOptions contains parameters for the SetHomepage method.
+type UsersSetHomepageOptions struct {
 	// Branch is the branch key. Only used when Type is PROJECT.
 	Branch string `url:"branch,omitempty"`
 	// Component is the project key. Only used when Type is PROJECT.
@@ -394,8 +394,8 @@ type UsersSetHomepageOption struct {
 	Type string `url:"type"`
 }
 
-// UsersUpdateOption contains parameters for the Update method.
-type UsersUpdateOption struct {
+// UsersUpdateOptions contains parameters for the Update method.
+type UsersUpdateOptions struct {
 	// Email is the user's new email address.
 	Email string `url:"email,omitempty"`
 	// Login is the user login.
@@ -407,8 +407,8 @@ type UsersUpdateOption struct {
 	ScmAccounts []string `url:"scmAccount,omitempty"`
 }
 
-// UsersUpdateIdentityProviderOption contains parameters for the UpdateIdentityProvider method.
-type UsersUpdateIdentityProviderOption struct {
+// UsersUpdateIdentityProviderOptions contains parameters for the UpdateIdentityProvider method.
+type UsersUpdateIdentityProviderOptions struct {
 	// Login is the user login.
 	// This field is required.
 	Login string `url:"login"`
@@ -420,8 +420,8 @@ type UsersUpdateIdentityProviderOption struct {
 	NewExternalProvider string `url:"newExternalProvider"`
 }
 
-// UsersUpdateLoginOption contains parameters for the UpdateLogin method.
-type UsersUpdateLoginOption struct {
+// UsersUpdateLoginOptions contains parameters for the UpdateLogin method.
+type UsersUpdateLoginOptions struct {
 	// Login is the current login (case-sensitive).
 	// This field is required.
 	Login string `url:"login"`
@@ -435,7 +435,7 @@ type UsersUpdateLoginOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateAnonymizeOpt validates the options for the Anonymize method.
-func (s *UsersService) ValidateAnonymizeOpt(opt *UsersAnonymizeOption) error {
+func (s *UsersService) ValidateAnonymizeOpt(opt *UsersAnonymizeOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -449,7 +449,7 @@ func (s *UsersService) ValidateAnonymizeOpt(opt *UsersAnonymizeOption) error {
 }
 
 // ValidateChangePasswordOpt validates the options for the ChangePassword method.
-func (s *UsersService) ValidateChangePasswordOpt(opt *UsersChangePasswordOption) error {
+func (s *UsersService) ValidateChangePasswordOpt(opt *UsersChangePasswordOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -502,7 +502,7 @@ func validateUserPassword(password string, isLocal bool) error {
 }
 
 // ValidateCreateOpt validates the options for the Create method.
-func (s *UsersService) ValidateCreateOpt(opt *UsersCreateOption) error {
+func (s *UsersService) ValidateCreateOpt(opt *UsersCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -533,7 +533,7 @@ func (s *UsersService) ValidateCreateOpt(opt *UsersCreateOption) error {
 }
 
 // ValidateDeactivateOpt validates the options for the Deactivate method.
-func (s *UsersService) ValidateDeactivateOpt(opt *UsersDeactivateOption) error {
+func (s *UsersService) ValidateDeactivateOpt(opt *UsersDeactivateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -547,7 +547,7 @@ func (s *UsersService) ValidateDeactivateOpt(opt *UsersDeactivateOption) error {
 }
 
 // ValidateDismissNoticeOpt validates the options for the DismissNotice method.
-func (s *UsersService) ValidateDismissNoticeOpt(opt *UsersDismissNoticeOption) error {
+func (s *UsersService) ValidateDismissNoticeOpt(opt *UsersDismissNoticeOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -566,7 +566,7 @@ func (s *UsersService) ValidateDismissNoticeOpt(opt *UsersDismissNoticeOption) e
 }
 
 // ValidateGroupsOpt validates the options for the Groups method.
-func (s *UsersService) ValidateGroupsOpt(opt *UsersGroupsOption) error {
+func (s *UsersService) ValidateGroupsOpt(opt *UsersGroupsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -592,7 +592,7 @@ func (s *UsersService) ValidateGroupsOpt(opt *UsersGroupsOption) error {
 }
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *UsersService) ValidateSearchOpt(opt *UsersSearchOption) error {
+func (s *UsersService) ValidateSearchOpt(opt *UsersSearchOptions) error {
 	if opt == nil {
 		// Search with no options is valid
 		return nil
@@ -607,7 +607,7 @@ func (s *UsersService) ValidateSearchOpt(opt *UsersSearchOption) error {
 }
 
 // ValidateSetHomepageOpt validates the options for the SetHomepage method.
-func (s *UsersService) ValidateSetHomepageOpt(opt *UsersSetHomepageOption) error {
+func (s *UsersService) ValidateSetHomepageOpt(opt *UsersSetHomepageOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -626,7 +626,7 @@ func (s *UsersService) ValidateSetHomepageOpt(opt *UsersSetHomepageOption) error
 }
 
 // ValidateUpdateOpt validates the options for the Update method.
-func (s *UsersService) ValidateUpdateOpt(opt *UsersUpdateOption) error {
+func (s *UsersService) ValidateUpdateOpt(opt *UsersUpdateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -654,7 +654,7 @@ func (s *UsersService) ValidateUpdateOpt(opt *UsersUpdateOption) error {
 }
 
 // ValidateUpdateIdentityProviderOpt validates the options for the UpdateIdentityProvider method.
-func (s *UsersService) ValidateUpdateIdentityProviderOpt(opt *UsersUpdateIdentityProviderOption) error {
+func (s *UsersService) ValidateUpdateIdentityProviderOpt(opt *UsersUpdateIdentityProviderOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -673,7 +673,7 @@ func (s *UsersService) ValidateUpdateIdentityProviderOpt(opt *UsersUpdateIdentit
 }
 
 // ValidateUpdateLoginOpt validates the options for the UpdateLogin method.
-func (s *UsersService) ValidateUpdateLoginOpt(opt *UsersUpdateLoginOption) error {
+func (s *UsersService) ValidateUpdateLoginOpt(opt *UsersUpdateLoginOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -711,7 +711,7 @@ func (s *UsersService) ValidateUpdateLoginOpt(opt *UsersUpdateLoginOption) error
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/anonymize.
 // Since: 9.7.
-func (s *UsersService) Anonymize(opt *UsersAnonymizeOption) (*http.Response, error) {
+func (s *UsersService) Anonymize(opt *UsersAnonymizeOptions) (*http.Response, error) {
 	err := s.ValidateAnonymizeOpt(opt)
 	if err != nil {
 		return nil, err
@@ -737,7 +737,7 @@ func (s *UsersService) Anonymize(opt *UsersAnonymizeOption) (*http.Response, err
 //
 // API endpoint: POST /api/users/change_password.
 // Since: 5.2.
-func (s *UsersService) ChangePassword(opt *UsersChangePasswordOption) (*http.Response, error) {
+func (s *UsersService) ChangePassword(opt *UsersChangePasswordOptions) (*http.Response, error) {
 	err := s.ValidateChangePasswordOpt(opt)
 	if err != nil {
 		return nil, err
@@ -763,7 +763,7 @@ func (s *UsersService) ChangePassword(opt *UsersChangePasswordOption) (*http.Res
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/create.
 // Since: 3.7.
-func (s *UsersService) Create(opt *UsersCreateOption) (*UsersCreate, *http.Response, error) {
+func (s *UsersService) Create(opt *UsersCreateOptions) (*UsersCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -810,7 +810,7 @@ func (s *UsersService) Current() (*UsersCurrent, *http.Response, error) {
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/deactivate.
 // Since: 3.7.
-func (s *UsersService) Deactivate(opt *UsersDeactivateOption) (*UsersDeactivate, *http.Response, error) {
+func (s *UsersService) Deactivate(opt *UsersDeactivateOptions) (*UsersDeactivate, *http.Response, error) {
 	err := s.ValidateDeactivateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -836,7 +836,7 @@ func (s *UsersService) Deactivate(opt *UsersDeactivateOption) (*UsersDeactivate,
 //
 // API endpoint: POST /api/users/dismiss_notice.
 // Since: 9.6.
-func (s *UsersService) DismissNotice(opt *UsersDismissNoticeOption) (*http.Response, error) {
+func (s *UsersService) DismissNotice(opt *UsersDismissNoticeOptions) (*http.Response, error) {
 	err := s.ValidateDismissNoticeOpt(opt)
 	if err != nil {
 		return nil, err
@@ -861,7 +861,7 @@ func (s *UsersService) DismissNotice(opt *UsersDismissNoticeOption) (*http.Respo
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: GET /api/users/groups.
 // Since: 5.2.
-func (s *UsersService) Groups(opt *UsersGroupsOption) (*UsersGroups, *http.Response, error) {
+func (s *UsersService) Groups(opt *UsersGroupsOptions) (*UsersGroups, *http.Response, error) {
 	err := s.ValidateGroupsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -912,7 +912,7 @@ func (s *UsersService) IdentityProviders() (*UsersIdentityProviders, *http.Respo
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: GET /api/users/search.
 // Since: 3.6.
-func (s *UsersService) Search(opt *UsersSearchOption) (*UsersSearch, *http.Response, error) {
+func (s *UsersService) Search(opt *UsersSearchOptions) (*UsersSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -938,7 +938,7 @@ func (s *UsersService) Search(opt *UsersSearchOption) (*UsersSearch, *http.Respo
 //
 // API endpoint: POST /api/users/set_homepage.
 // Since: 7.0.
-func (s *UsersService) SetHomepage(opt *UsersSetHomepageOption) (*http.Response, error) {
+func (s *UsersService) SetHomepage(opt *UsersSetHomepageOptions) (*http.Response, error) {
 	err := s.ValidateSetHomepageOpt(opt)
 	if err != nil {
 		return nil, err
@@ -963,7 +963,7 @@ func (s *UsersService) SetHomepage(opt *UsersSetHomepageOption) (*http.Response,
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/update.
 // Since: 3.7.
-func (s *UsersService) Update(opt *UsersUpdateOption) (*UsersUpdate, *http.Response, error) {
+func (s *UsersService) Update(opt *UsersUpdateOptions) (*UsersUpdate, *http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -993,7 +993,7 @@ func (s *UsersService) Update(opt *UsersUpdateOption) (*UsersUpdate, *http.Respo
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/update_identity_provider.
 // Since: 8.7.
-func (s *UsersService) UpdateIdentityProvider(opt *UsersUpdateIdentityProviderOption) (*http.Response, error) {
+func (s *UsersService) UpdateIdentityProvider(opt *UsersUpdateIdentityProviderOptions) (*http.Response, error) {
 	err := s.ValidateUpdateIdentityProviderOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1019,7 +1019,7 @@ func (s *UsersService) UpdateIdentityProvider(opt *UsersUpdateIdentityProviderOp
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/update_login.
 // Since: 7.6.
-func (s *UsersService) UpdateLogin(opt *UsersUpdateLoginOption) (*http.Response, error) {
+func (s *UsersService) UpdateLogin(opt *UsersUpdateLoginOptions) (*http.Response, error) {
 	err := s.ValidateUpdateLoginOpt(opt)
 	if err != nil {
 		return nil, err

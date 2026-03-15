@@ -192,8 +192,8 @@ type NavigationSettingsExtension struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// NavigationComponentOption represents options for getting component navigation.
-type NavigationComponentOption struct {
+// NavigationComponentOptions represents options for getting component navigation.
+type NavigationComponentOptions struct {
 	// Branch is the branch key (optional).
 	Branch string `url:"branch,omitempty"`
 	// Component is the component key (optional).
@@ -207,7 +207,7 @@ type NavigationComponentOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateComponentOpt validates the options for the Component method.
-func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOption) error {
+func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -227,7 +227,7 @@ func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOption)
 // API endpoint: GET /api/navigation/component.
 // Since: 5.2.
 // Internal: true.
-func (s *NavigationService) Component(opt *NavigationComponentOption) (*NavigationComponent, *http.Response, error) {
+func (s *NavigationService) Component(opt *NavigationComponentOptions) (*NavigationComponent, *http.Response, error) {
 	err := s.ValidateComponentOpt(opt)
 	if err != nil {
 		return nil, nil, err

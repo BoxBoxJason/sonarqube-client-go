@@ -114,7 +114,7 @@ func initClient(cmd *cobra.Command, args []string, globalFlags *globalFlags) err
 		return nil
 	}
 
-	opts := &sonar.ClientCreateOption{} //nolint:exhaustruct // fields set conditionally below
+	opts := &sonar.ClientCreateOptions{} //nolint:exhaustruct // fields set conditionally below
 
 	if globalFlags.url == "" {
 		err := errors.New("server URL must be provided via --url flag or SONAR_CLI_URL env var")
@@ -174,7 +174,7 @@ func isCompletionDirective(args []string) bool {
 }
 
 // setClientOptionalFields sets optional authentication fields on the client options.
-func setClientOptionalFields(opts *sonar.ClientCreateOption, globalFlags *globalFlags) {
+func setClientOptionalFields(opts *sonar.ClientCreateOptions, globalFlags *globalFlags) {
 	if globalFlags.token != "" {
 		opts.Token = &globalFlags.token
 	}

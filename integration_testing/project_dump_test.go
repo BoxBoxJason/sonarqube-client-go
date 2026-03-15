@@ -42,7 +42,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 			})
 
 			It("should fail without required key", func() {
-				result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOption{})
+				result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(resp).To(BeNil())
@@ -52,7 +52,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 
 		Context("Functional Tests", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOption{
+				result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOptions{
 					Key: "non-existent-project-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -64,7 +64,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 			It("should successfully trigger export for existing project", func() {
 				// Create a project for testing
 				projectKey := helpers.UniqueResourceName("dump-export")
-				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
+				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 					Name:    projectKey,
 					Project: projectKey,
 				})
@@ -72,12 +72,12 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{Project: projectKey})
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{Project: projectKey})
 					return err
 				})
 
 				// Trigger export
-				result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOption{
+				result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOptions{
 					Key: projectKey,
 				})
 
@@ -109,7 +109,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 			})
 
 			It("should fail without id or key", func() {
-				result, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOption{})
+				result, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("ID or Key"))
 				Expect(resp).To(BeNil())
@@ -119,7 +119,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 
 		Context("Functional Tests", func() {
 			It("should fail for non-existent project by key", func() {
-				result, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOption{
+				result, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOptions{
 					Key: "non-existent-project-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -131,7 +131,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 			It("should get status for existing project by key", func() {
 				// Create a project for testing
 				projectKey := helpers.UniqueResourceName("dump-status")
-				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
+				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 					Name:    projectKey,
 					Project: projectKey,
 				})
@@ -139,12 +139,12 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{Project: projectKey})
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{Project: projectKey})
 					return err
 				})
 
 				// Get status
-				result, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOption{
+				result, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOptions{
 					Key: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -163,7 +163,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 			It("should handle project dump status workflow", func() {
 				// Create a project
 				projectKey := helpers.UniqueResourceName("dump-workflow")
-				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
+				_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 					Name:    projectKey,
 					Project: projectKey,
 				})
@@ -171,12 +171,12 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{Project: projectKey})
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{Project: projectKey})
 					return err
 				})
 
 				// Check initial status
-				status, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOption{
+				status, resp, err := client.ProjectDump.Status(&sonar.ProjectDumpStatusOptions{
 					Key: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -185,7 +185,7 @@ var _ = Describe("ProjectDump Service", Ordered, func() {
 
 				// If export is available, try to trigger it
 				if status.CanBeExported {
-					result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOption{
+					result, resp, err := client.ProjectDump.Export(&sonar.ProjectDumpExportOptions{
 						Key: projectKey,
 					})
 					if err == nil {

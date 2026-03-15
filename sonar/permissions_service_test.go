@@ -16,7 +16,7 @@ func TestPermissions_AddGroup(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_group", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsAddGroupOption{
+	opt := &PermissionsAddGroupOptions{
 		GroupName:  "developers",
 		Permission: "admin",
 	}
@@ -30,7 +30,7 @@ func TestPermissions_AddGroup_WithProject(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_group", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsAddGroupOption{
+	opt := &PermissionsAddGroupOptions{
 		GroupName:  "developers",
 		Permission: "user",
 		ProjectKey: "my-project",
@@ -49,19 +49,19 @@ func TestPermissions_AddGroup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOption{
+	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOption{
+	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOptions{
 		GroupName: "developers",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOption{
+	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOptions{
 		GroupName:  "developers",
 		Permission: "invalid",
 	})
@@ -76,7 +76,7 @@ func TestPermissions_AddGroupToTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_group_to_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsAddGroupToTemplateOption{
+	opt := &PermissionsAddGroupToTemplateOptions{
 		GroupName:    "developers",
 		Permission:   "admin",
 		TemplateName: "my-template",
@@ -95,21 +95,21 @@ func TestPermissions_AddGroupToTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
+	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
+	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
 		GroupName:    "developers",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
+	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
 		GroupName:    "developers",
 		Permission:   "gateadmin", // Not a project permission
 		TemplateName: "my-template",
@@ -117,7 +117,7 @@ func TestPermissions_AddGroupToTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOption{
+	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
 		GroupName:  "developers",
 		Permission: "admin",
 	})
@@ -132,7 +132,7 @@ func TestPermissions_AddProjectCreatorToTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_project_creator_to_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsAddProjectCreatorToTemplateOption{
+	opt := &PermissionsAddProjectCreatorToTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	}
@@ -150,20 +150,20 @@ func TestPermissions_AddProjectCreatorToTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOption{
+	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOptions{
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOption{
+	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOptions{
 		Permission:   "provisioning", // Not a project permission
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOption{
+	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
@@ -177,7 +177,7 @@ func TestPermissions_AddUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_user", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsAddUserOption{
+	opt := &PermissionsAddUserOptions{
 		Login:      "john.doe",
 		Permission: "admin",
 	}
@@ -195,19 +195,19 @@ func TestPermissions_AddUser_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.AddUser(&PermissionsAddUserOption{
+	_, err = client.Permissions.AddUser(&PermissionsAddUserOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddUser(&PermissionsAddUserOption{
+	_, err = client.Permissions.AddUser(&PermissionsAddUserOptions{
 		Login: "john.doe",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddUser(&PermissionsAddUserOption{
+	_, err = client.Permissions.AddUser(&PermissionsAddUserOptions{
 		Login:      "john.doe",
 		Permission: "invalid",
 	})
@@ -222,7 +222,7 @@ func TestPermissions_AddUserToTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/add_user_to_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsAddUserToTemplateOption{
+	opt := &PermissionsAddUserToTemplateOptions{
 		Login:        "john.doe",
 		Permission:   "admin",
 		TemplateName: "my-template",
@@ -241,21 +241,21 @@ func TestPermissions_AddUserToTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
+	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
+	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
 		Login:        "john.doe",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
+	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
 		Login:        "john.doe",
 		Permission:   "profileadmin", // Not a project permission
 		TemplateName: "my-template",
@@ -263,7 +263,7 @@ func TestPermissions_AddUserToTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOption{
+	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
 		Login:      "john.doe",
 		Permission: "admin",
 	})
@@ -278,7 +278,7 @@ func TestPermissions_ApplyTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/apply_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsApplyTemplateOption{
+	opt := &PermissionsApplyTemplateOptions{
 		ProjectKey:   "my-project",
 		TemplateName: "my-template",
 	}
@@ -296,13 +296,13 @@ func TestPermissions_ApplyTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing ProjectID and ProjectKey should fail validation.
-	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOption{
+	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOptions{
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOption{
+	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOptions{
 		ProjectKey: "my-project",
 	})
 	assert.Error(t, err)
@@ -316,7 +316,7 @@ func TestPermissions_BulkApplyTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/bulk_apply_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsBulkApplyTemplateOption{
+	opt := &PermissionsBulkApplyTemplateOptions{
 		TemplateName: "my-template",
 	}
 
@@ -329,7 +329,7 @@ func TestPermissions_BulkApplyTemplate_WithProjects(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/bulk_apply_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsBulkApplyTemplateOption{
+	opt := &PermissionsBulkApplyTemplateOptions{
 		TemplateName: "my-template",
 		Projects:     []string{"project1", "project2"},
 	}
@@ -347,11 +347,11 @@ func TestPermissions_BulkApplyTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOption{})
+	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOptions{})
 	assert.Error(t, err)
 
 	// Invalid qualifier should fail validation.
-	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOption{
+	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOptions{
 		TemplateName: "my-template",
 		Qualifiers:   "INVALID",
 	})
@@ -373,7 +373,7 @@ func TestPermissions_CreateTemplate(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/permissions/create_template", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsCreateTemplateOption{
+	opt := &PermissionsCreateTemplateOptions{
 		Name:              "my-template",
 		Description:       "Template for my projects",
 		ProjectKeyPattern: "my-.*",
@@ -394,7 +394,7 @@ func TestPermissions_CreateTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, _, err = client.Permissions.CreateTemplate(&PermissionsCreateTemplateOption{})
+	_, _, err = client.Permissions.CreateTemplate(&PermissionsCreateTemplateOptions{})
 	assert.Error(t, err)
 }
 
@@ -406,7 +406,7 @@ func TestPermissions_DeleteTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/delete_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsDeleteTemplateOption{
+	opt := &PermissionsDeleteTemplateOptions{
 		TemplateName: "my-template",
 	}
 
@@ -423,7 +423,7 @@ func TestPermissions_DeleteTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.DeleteTemplate(&PermissionsDeleteTemplateOption{})
+	_, err = client.Permissions.DeleteTemplate(&PermissionsDeleteTemplateOptions{})
 	assert.Error(t, err)
 }
 
@@ -475,7 +475,7 @@ func TestPermissions_Groups_WithOptions(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsGroupsOption{
+	opt := &PermissionsGroupsOptions{
 		ProjectKey: "my-project",
 		Permission: "admin",
 	}
@@ -489,13 +489,13 @@ func TestPermissions_Groups_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Invalid permission should fail validation.
-	_, _, err := client.Permissions.Groups(&PermissionsGroupsOption{
+	_, _, err := client.Permissions.Groups(&PermissionsGroupsOptions{
 		Permission: "invalid",
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.Groups(&PermissionsGroupsOption{
+	_, _, err = client.Permissions.Groups(&PermissionsGroupsOptions{
 		Query: "ab",
 	})
 	assert.Error(t, err)
@@ -509,7 +509,7 @@ func TestPermissions_RemoveGroup(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_group", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsRemoveGroupOption{
+	opt := &PermissionsRemoveGroupOptions{
 		GroupName:  "developers",
 		Permission: "admin",
 	}
@@ -527,13 +527,13 @@ func TestPermissions_RemoveGroup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOption{
+	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOption{
+	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOptions{
 		GroupName: "developers",
 	})
 	assert.Error(t, err)
@@ -547,7 +547,7 @@ func TestPermissions_RemoveGroupFromTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_group_from_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsRemoveGroupFromTemplateOption{
+	opt := &PermissionsRemoveGroupFromTemplateOptions{
 		GroupName:    "developers",
 		Permission:   "admin",
 		TemplateName: "my-template",
@@ -566,21 +566,21 @@ func TestPermissions_RemoveGroupFromTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
+	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
+	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOptions{
 		GroupName:    "developers",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOption{
+	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOptions{
 		GroupName:  "developers",
 		Permission: "admin",
 	})
@@ -595,7 +595,7 @@ func TestPermissions_RemoveProjectCreatorFromTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_project_creator_from_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsRemoveProjectCreatorFromTemplateOption{
+	opt := &PermissionsRemoveProjectCreatorFromTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	}
@@ -613,13 +613,13 @@ func TestPermissions_RemoveProjectCreatorFromTemplate_ValidationError(t *testing
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOption{
+	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOptions{
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOption{
+	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
@@ -633,7 +633,7 @@ func TestPermissions_RemoveUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_user", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsRemoveUserOption{
+	opt := &PermissionsRemoveUserOptions{
 		Login:      "john.doe",
 		Permission: "admin",
 	}
@@ -651,13 +651,13 @@ func TestPermissions_RemoveUser_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOption{
+	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOption{
+	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOptions{
 		Login: "john.doe",
 	})
 	assert.Error(t, err)
@@ -671,7 +671,7 @@ func TestPermissions_RemoveUserFromTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/remove_user_from_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsRemoveUserFromTemplateOption{
+	opt := &PermissionsRemoveUserFromTemplateOptions{
 		Login:        "john.doe",
 		Permission:   "admin",
 		TemplateName: "my-template",
@@ -690,21 +690,21 @@ func TestPermissions_RemoveUserFromTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOption{
+	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOption{
+	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOptions{
 		Login:        "john.doe",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOption{
+	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOptions{
 		Login:      "john.doe",
 		Permission: "admin",
 	})
@@ -754,7 +754,7 @@ func TestPermissions_SetDefaultTemplate(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/permissions/set_default_template", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsSetDefaultTemplateOption{
+	opt := &PermissionsSetDefaultTemplateOptions{
 		TemplateName: "my-template",
 	}
 
@@ -771,11 +771,11 @@ func TestPermissions_SetDefaultTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOption{})
+	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOptions{})
 	assert.Error(t, err)
 
 	// Invalid qualifier should fail validation.
-	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOption{
+	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOptions{
 		TemplateName: "my-template",
 		Qualifier:    "INVALID",
 	})
@@ -804,7 +804,7 @@ func TestPermissions_TemplateGroups(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/template_groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsTemplateGroupsOption{
+	opt := &PermissionsTemplateGroupsOptions{
 		TemplateName: "my-template",
 	}
 
@@ -824,18 +824,18 @@ func TestPermissions_TemplateGroups_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOption{})
+	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOptions{})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOption{
+	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOptions{
 		TemplateName: "my-template",
 		Permission:   "gateadmin", // Not a project permission
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOption{
+	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOptions{
 		TemplateName: "my-template",
 		Query:        "ab",
 	})
@@ -865,7 +865,7 @@ func TestPermissions_TemplateUsers(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/template_users", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsTemplateUsersOption{
+	opt := &PermissionsTemplateUsersOptions{
 		TemplateName: "my-template",
 	}
 
@@ -885,18 +885,18 @@ func TestPermissions_TemplateUsers_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOption{})
+	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOptions{})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOption{
+	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOptions{
 		TemplateName: "my-template",
 		Permission:   "provisioning", // Not a project permission
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOption{
+	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOptions{
 		TemplateName: "my-template",
 		Query:        "ab",
 	})
@@ -917,7 +917,7 @@ func TestPermissions_UpdateTemplate(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/permissions/update_template", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsUpdateTemplateOption{
+	opt := &PermissionsUpdateTemplateOptions{
 		ID:                "template-1",
 		Name:              "new-template-name",
 		Description:       "Updated description",
@@ -939,7 +939,7 @@ func TestPermissions_UpdateTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing ID should fail validation.
-	_, _, err = client.Permissions.UpdateTemplate(&PermissionsUpdateTemplateOption{
+	_, _, err = client.Permissions.UpdateTemplate(&PermissionsUpdateTemplateOptions{
 		Name: "new-name",
 	})
 	assert.Error(t, err)
@@ -998,7 +998,7 @@ func TestPermissions_Users_WithOptions(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/users", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &PermissionsUsersOption{
+	opt := &PermissionsUsersOptions{
 		ProjectKey: "my-project",
 		Permission: "admin",
 	}
@@ -1012,13 +1012,13 @@ func TestPermissions_Users_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Invalid permission should fail validation.
-	_, _, err := client.Permissions.Users(&PermissionsUsersOption{
+	_, _, err := client.Permissions.Users(&PermissionsUsersOptions{
 		Permission: "invalid",
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.Users(&PermissionsUsersOption{
+	_, _, err = client.Permissions.Users(&PermissionsUsersOptions{
 		Query: "ab",
 	})
 	assert.Error(t, err)

@@ -283,8 +283,8 @@ type HotspotsShow struct {
 // Option Types
 // =============================================================================
 
-// HotspotsAddCommentOption contains parameters for the AddComment method.
-type HotspotsAddCommentOption struct {
+// HotspotsAddCommentOptions contains parameters for the AddComment method.
+type HotspotsAddCommentOptions struct {
 	// Comment is the comment text.
 	// This field is required. Maximum length: 1000 characters.
 	Comment string `url:"comment"`
@@ -293,8 +293,8 @@ type HotspotsAddCommentOption struct {
 	Hotspot string `url:"hotspot"`
 }
 
-// HotspotsAssignOption contains parameters for the Assign method.
-type HotspotsAssignOption struct {
+// HotspotsAssignOptions contains parameters for the Assign method.
+type HotspotsAssignOptions struct {
 	// Assignee is the login of the assignee with 'Browse' project permission.
 	// This field is optional (since 8.9).
 	Assignee string `url:"assignee,omitempty"`
@@ -306,8 +306,8 @@ type HotspotsAssignOption struct {
 	Hotspot string `url:"hotspot"`
 }
 
-// HotspotsChangeStatusOption contains parameters for the ChangeStatus method.
-type HotspotsChangeStatusOption struct {
+// HotspotsChangeStatusOptions contains parameters for the ChangeStatus method.
+type HotspotsChangeStatusOptions struct {
 	// Comment is optional comment text.
 	// This field is optional.
 	Comment string `url:"comment,omitempty"`
@@ -324,15 +324,15 @@ type HotspotsChangeStatusOption struct {
 	Status string `url:"status"`
 }
 
-// HotspotsDeleteCommentOption contains parameters for the DeleteComment method.
-type HotspotsDeleteCommentOption struct {
+// HotspotsDeleteCommentOptions contains parameters for the DeleteComment method.
+type HotspotsDeleteCommentOptions struct {
 	// Comment is the key of the comment to delete.
 	// This field is required.
 	Comment string `url:"comment"`
 }
 
-// HotspotsEditCommentOption contains parameters for the EditComment method.
-type HotspotsEditCommentOption struct {
+// HotspotsEditCommentOptions contains parameters for the EditComment method.
+type HotspotsEditCommentOptions struct {
 	// Comment is the key of the comment to edit.
 	// This field is required.
 	Comment string `url:"comment"`
@@ -341,10 +341,10 @@ type HotspotsEditCommentOption struct {
 	Text string `url:"text"`
 }
 
-// HotspotsListOption contains parameters for the List method.
+// HotspotsListOptions contains parameters for the List method.
 //
 //nolint:govet // Field order maintained for API parameter consistency
-type HotspotsListOption struct {
+type HotspotsListOptions struct {
 	// PaginationArgs contains the pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -370,10 +370,10 @@ type HotspotsListOption struct {
 	InNewCodePeriod bool `url:"inNewCodePeriod,omitempty"`
 }
 
-// HotspotsPullOption contains parameters for the Pull method.
+// HotspotsPullOptions contains parameters for the Pull method.
 //
 //nolint:govet // Field order maintained for API parameter consistency
-type HotspotsPullOption struct {
+type HotspotsPullOptions struct {
 	// Languages is a comma-separated list of languages.
 	// If not present, all hotspots regardless of their language are returned.
 	// This field is optional.
@@ -390,10 +390,10 @@ type HotspotsPullOption struct {
 	ChangedSince int64 `url:"changedSince,omitempty"`
 }
 
-// HotspotsSearchOption contains parameters for the Search method.
+// HotspotsSearchOptions contains parameters for the Search method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type HotspotsSearchOption struct {
+type HotspotsSearchOptions struct {
 	// PaginationArgs contains the pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -469,8 +469,8 @@ type HotspotsSearchOption struct {
 	OnlyMine bool `url:"onlyMine,omitempty"`
 }
 
-// HotspotsShowOption contains parameters for the Show method.
-type HotspotsShowOption struct {
+// HotspotsShowOptions contains parameters for the Show method.
+type HotspotsShowOptions struct {
 	// Hotspot is the key of the Security Hotspot.
 	// This field is required.
 	Hotspot string `url:"hotspot"`
@@ -481,7 +481,7 @@ type HotspotsShowOption struct {
 // =============================================================================
 
 // ValidateAddCommentOpt validates the options for the AddComment method.
-func (s *HotspotsService) ValidateAddCommentOpt(opt *HotspotsAddCommentOption) error {
+func (s *HotspotsService) ValidateAddCommentOpt(opt *HotspotsAddCommentOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -505,7 +505,7 @@ func (s *HotspotsService) ValidateAddCommentOpt(opt *HotspotsAddCommentOption) e
 }
 
 // ValidateAssignOpt validates the options for the Assign method.
-func (s *HotspotsService) ValidateAssignOpt(opt *HotspotsAssignOption) error {
+func (s *HotspotsService) ValidateAssignOpt(opt *HotspotsAssignOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -519,7 +519,7 @@ func (s *HotspotsService) ValidateAssignOpt(opt *HotspotsAssignOption) error {
 }
 
 // ValidateChangeStatusOpt validates the options for the ChangeStatus method.
-func (s *HotspotsService) ValidateChangeStatusOpt(opt *HotspotsChangeStatusOption) error {
+func (s *HotspotsService) ValidateChangeStatusOpt(opt *HotspotsChangeStatusOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -550,7 +550,7 @@ func (s *HotspotsService) ValidateChangeStatusOpt(opt *HotspotsChangeStatusOptio
 }
 
 // ValidateDeleteCommentOpt validates the options for the DeleteComment method.
-func (s *HotspotsService) ValidateDeleteCommentOpt(opt *HotspotsDeleteCommentOption) error {
+func (s *HotspotsService) ValidateDeleteCommentOpt(opt *HotspotsDeleteCommentOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -564,7 +564,7 @@ func (s *HotspotsService) ValidateDeleteCommentOpt(opt *HotspotsDeleteCommentOpt
 }
 
 // ValidateEditCommentOpt validates the options for the EditComment method.
-func (s *HotspotsService) ValidateEditCommentOpt(opt *HotspotsEditCommentOption) error {
+func (s *HotspotsService) ValidateEditCommentOpt(opt *HotspotsEditCommentOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -588,7 +588,7 @@ func (s *HotspotsService) ValidateEditCommentOpt(opt *HotspotsEditCommentOption)
 }
 
 // ValidateListOpt validates the options for the List method.
-func (s *HotspotsService) ValidateListOpt(opt *HotspotsListOption) error {
+func (s *HotspotsService) ValidateListOpt(opt *HotspotsListOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -626,7 +626,7 @@ func (s *HotspotsService) ValidateListOpt(opt *HotspotsListOption) error {
 }
 
 // ValidatePullOpt validates the options for the Pull method.
-func (s *HotspotsService) ValidatePullOpt(opt *HotspotsPullOption) error {
+func (s *HotspotsService) ValidatePullOpt(opt *HotspotsPullOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -647,7 +647,7 @@ func (s *HotspotsService) ValidatePullOpt(opt *HotspotsPullOption) error {
 // ValidateSearchOpt validates the options for the Search method.
 //
 //nolint:cyclop // Validation functions are naturally complex due to multiple checks
-func (s *HotspotsService) ValidateSearchOpt(opt *HotspotsSearchOption) error {
+func (s *HotspotsService) ValidateSearchOpt(opt *HotspotsSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -708,7 +708,7 @@ func (s *HotspotsService) ValidateSearchOpt(opt *HotspotsSearchOption) error {
 }
 
 // ValidateShowOpt validates the options for the Show method.
-func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOption) error {
+func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -731,7 +731,7 @@ func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOption) error {
 // API endpoint: POST /api/hotspots/add_comment.
 // Since: 8.1.
 // Internal: true.
-func (s *HotspotsService) AddComment(opt *HotspotsAddCommentOption) (*http.Response, error) {
+func (s *HotspotsService) AddComment(opt *HotspotsAddCommentOptions) (*http.Response, error) {
 	err := s.ValidateAddCommentOpt(opt)
 	if err != nil {
 		return nil, err
@@ -756,7 +756,7 @@ func (s *HotspotsService) AddComment(opt *HotspotsAddCommentOption) (*http.Respo
 // API endpoint: POST /api/hotspots/assign.
 // Since: 8.2.
 // Internal: true.
-func (s *HotspotsService) Assign(opt *HotspotsAssignOption) (*http.Response, error) {
+func (s *HotspotsService) Assign(opt *HotspotsAssignOptions) (*http.Response, error) {
 	err := s.ValidateAssignOpt(opt)
 	if err != nil {
 		return nil, err
@@ -780,7 +780,7 @@ func (s *HotspotsService) Assign(opt *HotspotsAssignOption) (*http.Response, err
 //
 // API endpoint: POST /api/hotspots/change_status.
 // Since: 8.1.
-func (s *HotspotsService) ChangeStatus(opt *HotspotsChangeStatusOption) (*http.Response, error) {
+func (s *HotspotsService) ChangeStatus(opt *HotspotsChangeStatusOptions) (*http.Response, error) {
 	err := s.ValidateChangeStatusOpt(opt)
 	if err != nil {
 		return nil, err
@@ -805,7 +805,7 @@ func (s *HotspotsService) ChangeStatus(opt *HotspotsChangeStatusOption) (*http.R
 // API endpoint: POST /api/hotspots/delete_comment.
 // Since: 8.2.
 // Internal: true.
-func (s *HotspotsService) DeleteComment(opt *HotspotsDeleteCommentOption) (*http.Response, error) {
+func (s *HotspotsService) DeleteComment(opt *HotspotsDeleteCommentOptions) (*http.Response, error) {
 	err := s.ValidateDeleteCommentOpt(opt)
 	if err != nil {
 		return nil, err
@@ -830,7 +830,7 @@ func (s *HotspotsService) DeleteComment(opt *HotspotsDeleteCommentOption) (*http
 // API endpoint: POST /api/hotspots/edit_comment.
 // Since: 8.2.
 // Internal: true.
-func (s *HotspotsService) EditComment(opt *HotspotsEditCommentOption) (*HotspotsEditComment, *http.Response, error) {
+func (s *HotspotsService) EditComment(opt *HotspotsEditCommentOptions) (*HotspotsEditComment, *http.Response, error) {
 	err := s.ValidateEditCommentOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -861,7 +861,7 @@ func (s *HotspotsService) EditComment(opt *HotspotsEditCommentOption) (*Hotspots
 // API endpoint: GET /api/hotspots/list.
 // Since: 10.2.
 // Internal: true.
-func (s *HotspotsService) List(opt *HotspotsListOption) (*HotspotsList, *http.Response, error) {
+func (s *HotspotsService) List(opt *HotspotsListOptions) (*HotspotsList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -889,7 +889,7 @@ func (s *HotspotsService) List(opt *HotspotsListOption) (*HotspotsList, *http.Re
 // API endpoint: GET /api/hotspots/pull.
 // Since: 10.1.
 // Internal: true.
-func (s *HotspotsService) Pull(opt *HotspotsPullOption) ([]byte, *http.Response, error) {
+func (s *HotspotsService) Pull(opt *HotspotsPullOptions) ([]byte, *http.Response, error) {
 	err := s.ValidatePullOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -917,7 +917,7 @@ func (s *HotspotsService) Pull(opt *HotspotsPullOption) ([]byte, *http.Response,
 //
 // API endpoint: GET /api/hotspots/search.
 // Since: 8.1.
-func (s *HotspotsService) Search(opt *HotspotsSearchOption) (*HotspotsSearch, *http.Response, error) {
+func (s *HotspotsService) Search(opt *HotspotsSearchOptions) (*HotspotsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -942,7 +942,7 @@ func (s *HotspotsService) Search(opt *HotspotsSearchOption) (*HotspotsSearch, *h
 //
 // API endpoint: GET /api/hotspots/show.
 // Since: 8.1.
-func (s *HotspotsService) Show(opt *HotspotsShowOption) (*HotspotsShow, *http.Response, error) {
+func (s *HotspotsService) Show(opt *HotspotsShowOptions) (*HotspotsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err

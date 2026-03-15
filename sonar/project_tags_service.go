@@ -24,18 +24,18 @@ type ProjectTagsSearch struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// ProjectTagsSearchOption contains parameters for the Search method.
+// ProjectTagsSearchOptions contains parameters for the Search method.
 //
 //nolint:govet // Field alignment is less important than logical grouping.
-type ProjectTagsSearchOption struct {
+type ProjectTagsSearchOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
 	Query string `url:"q,omitempty"`
 }
 
-// ProjectTagsSetOption contains parameters for the Set method.
-type ProjectTagsSetOption struct {
+// ProjectTagsSetOptions contains parameters for the Set method.
+type ProjectTagsSetOptions struct {
 	// Project is the project key.
 	// This field is required.
 	Project string `url:"project"`
@@ -48,7 +48,7 @@ type ProjectTagsSetOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *ProjectTagsService) ValidateSearchOpt(opt *ProjectTagsSearchOption) error {
+func (s *ProjectTagsService) ValidateSearchOpt(opt *ProjectTagsSearchOptions) error {
 	if opt == nil {
 		// Options are optional; nothing to validate.
 		return nil
@@ -63,7 +63,7 @@ func (s *ProjectTagsService) ValidateSearchOpt(opt *ProjectTagsSearchOption) err
 }
 
 // ValidateSetOpt validates the options for the Set method.
-func (s *ProjectTagsService) ValidateSetOpt(opt *ProjectTagsSetOption) error {
+func (s *ProjectTagsService) ValidateSetOpt(opt *ProjectTagsSetOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -84,7 +84,7 @@ func (s *ProjectTagsService) ValidateSetOpt(opt *ProjectTagsSetOption) error {
 //
 // API endpoint: GET /api/project_tags/search.
 // Since: 6.4.
-func (s *ProjectTagsService) Search(opt *ProjectTagsSearchOption) (*ProjectTagsSearch, *http.Response, error) {
+func (s *ProjectTagsService) Search(opt *ProjectTagsSearchOptions) (*ProjectTagsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -110,7 +110,7 @@ func (s *ProjectTagsService) Search(opt *ProjectTagsSearchOption) (*ProjectTagsS
 //
 // API endpoint: POST /api/project_tags/set.
 // Since: 6.4.
-func (s *ProjectTagsService) Set(opt *ProjectTagsSetOption) (*http.Response, error) {
+func (s *ProjectTagsService) Set(opt *ProjectTagsSetOptions) (*http.Response, error) {
 	err := s.ValidateSetOpt(opt)
 	if err != nil {
 		return nil, err

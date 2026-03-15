@@ -26,7 +26,7 @@ func TestDuplications_Show(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/duplications/show", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	opt := &DuplicationsShowOption{
+	opt := &DuplicationsShowOptions{
 		Key: "com.example:MyFile.java",
 	}
 
@@ -50,7 +50,7 @@ func TestDuplications_Show_WithBranch(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/duplications/show", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	opt := &DuplicationsShowOption{
+	opt := &DuplicationsShowOptions{
 		Key:    "com.example:MyFile.java",
 		Branch: "feature",
 	}
@@ -65,7 +65,7 @@ func TestDuplications_Show_WithPullRequest(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/duplications/show", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	opt := &DuplicationsShowOption{
+	opt := &DuplicationsShowOptions{
 		Key:         "com.example:MyFile.java",
 		PullRequest: "123",
 	}
@@ -80,7 +80,7 @@ func TestDuplications_Show_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *DuplicationsShowOption
+		opt  *DuplicationsShowOptions
 	}{
 		{
 			name: "nil option",
@@ -88,7 +88,7 @@ func TestDuplications_Show_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing Key",
-			opt:  &DuplicationsShowOption{},
+			opt:  &DuplicationsShowOptions{},
 		},
 	}
 
@@ -105,12 +105,12 @@ func TestDuplications_ValidateShowOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *DuplicationsShowOption
+		opt     *DuplicationsShowOptions
 		wantErr bool
 	}{
 		{
 			name: "valid option",
-			opt: &DuplicationsShowOption{
+			opt: &DuplicationsShowOptions{
 				Key: "com.example:MyFile.java",
 			},
 			wantErr: false,
@@ -122,7 +122,7 @@ func TestDuplications_ValidateShowOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Key",
-			opt:     &DuplicationsShowOption{},
+			opt:     &DuplicationsShowOptions{},
 			wantErr: true,
 		},
 	}

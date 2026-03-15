@@ -98,8 +98,8 @@ type SourcesShow struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// SourcesIndexOption represents options for getting source file lines.
-type SourcesIndexOption struct {
+// SourcesIndexOptions represents options for getting source file lines.
+type SourcesIndexOptions struct {
 	// Resource is the file key (API parameter: "resource", required).
 	Resource string `url:"resource,omitempty"`
 	// From is the starting line number (optional, default: 1).
@@ -108,14 +108,14 @@ type SourcesIndexOption struct {
 	To int64 `url:"to,omitempty"`
 }
 
-// SourcesIssueSnippetsOption represents options for getting issue snippets.
-type SourcesIssueSnippetsOption struct {
+// SourcesIssueSnippetsOptions represents options for getting issue snippets.
+type SourcesIssueSnippetsOptions struct {
 	// IssueKey is the issue key (required).
 	IssueKey string `url:"issueKey,omitempty"`
 }
 
-// SourcesLinesOption represents options for getting source file lines.
-type SourcesLinesOption struct {
+// SourcesLinesOptions represents options for getting source file lines.
+type SourcesLinesOptions struct {
 	// Key is the file key (required).
 	Key string `url:"key,omitempty"`
 	// Branch is the branch key (optional).
@@ -128,8 +128,8 @@ type SourcesLinesOption struct {
 	To int64 `url:"to,omitempty"`
 }
 
-// SourcesRawOption represents options for getting raw source file content.
-type SourcesRawOption struct {
+// SourcesRawOptions represents options for getting raw source file content.
+type SourcesRawOptions struct {
 	// Key is the file key (required).
 	Key string `url:"key,omitempty"`
 	// Branch is the branch key (optional).
@@ -138,8 +138,8 @@ type SourcesRawOption struct {
 	PullRequest string `url:"pullRequest,omitempty"`
 }
 
-// SourcesScmOption represents options for getting SCM data.
-type SourcesScmOption struct {
+// SourcesScmOptions represents options for getting SCM data.
+type SourcesScmOptions struct {
 	// Key is the file key (required).
 	Key string `url:"key,omitempty"`
 	// CommitsByLine indicates whether to group commits by line (optional, default: false).
@@ -150,8 +150,8 @@ type SourcesScmOption struct {
 	To int64 `url:"to,omitempty"`
 }
 
-// SourcesShowOption represents options for showing source file content.
-type SourcesShowOption struct {
+// SourcesShowOptions represents options for showing source file content.
+type SourcesShowOptions struct {
 	// Key is the file key (required).
 	Key string `url:"key,omitempty"`
 	// From is the starting line number (optional, default: 1).
@@ -165,7 +165,7 @@ type SourcesShowOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateIndexOpt validates the options for Index.
-func (s *SourcesService) ValidateIndexOpt(opt *SourcesIndexOption) error {
+func (s *SourcesService) ValidateIndexOpt(opt *SourcesIndexOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -174,7 +174,7 @@ func (s *SourcesService) ValidateIndexOpt(opt *SourcesIndexOption) error {
 }
 
 // ValidateIssueSnippetsOpt validates the options for IssueSnippets.
-func (s *SourcesService) ValidateIssueSnippetsOpt(opt *SourcesIssueSnippetsOption) error {
+func (s *SourcesService) ValidateIssueSnippetsOpt(opt *SourcesIssueSnippetsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -183,7 +183,7 @@ func (s *SourcesService) ValidateIssueSnippetsOpt(opt *SourcesIssueSnippetsOptio
 }
 
 // ValidateLinesOpt validates the options for Lines.
-func (s *SourcesService) ValidateLinesOpt(opt *SourcesLinesOption) error {
+func (s *SourcesService) ValidateLinesOpt(opt *SourcesLinesOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -192,7 +192,7 @@ func (s *SourcesService) ValidateLinesOpt(opt *SourcesLinesOption) error {
 }
 
 // ValidateRawOpt validates the options for Raw.
-func (s *SourcesService) ValidateRawOpt(opt *SourcesRawOption) error {
+func (s *SourcesService) ValidateRawOpt(opt *SourcesRawOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -201,7 +201,7 @@ func (s *SourcesService) ValidateRawOpt(opt *SourcesRawOption) error {
 }
 
 // ValidateScmOpt validates the options for Scm.
-func (s *SourcesService) ValidateScmOpt(opt *SourcesScmOption) error {
+func (s *SourcesService) ValidateScmOpt(opt *SourcesScmOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -210,7 +210,7 @@ func (s *SourcesService) ValidateScmOpt(opt *SourcesScmOption) error {
 }
 
 // ValidateShowOpt validates the options for Show.
-func (s *SourcesService) ValidateShowOpt(opt *SourcesShowOption) error {
+func (s *SourcesService) ValidateShowOpt(opt *SourcesShowOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -230,7 +230,7 @@ func (s *SourcesService) ValidateShowOpt(opt *SourcesShowOption) error {
 // Since: 5.0.
 //
 // Deprecated: This web service is deprecated since 5.1. Use api/sources/lines instead.
-func (s *SourcesService) Index(opt *SourcesIndexOption) (*SourcesIndex, *http.Response, error) {
+func (s *SourcesService) Index(opt *SourcesIndexOptions) (*SourcesIndex, *http.Response, error) {
 	err := s.ValidateIndexOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -256,7 +256,7 @@ func (s *SourcesService) Index(opt *SourcesIndexOption) (*SourcesIndex, *http.Re
 // Returns source code snippets relevant to the given issue.
 //
 // Since: 7.8.
-func (s *SourcesService) IssueSnippets(opt *SourcesIssueSnippetsOption) (*SourcesIssueSnippets, *http.Response, error) {
+func (s *SourcesService) IssueSnippets(opt *SourcesIssueSnippetsOptions) (*SourcesIssueSnippets, *http.Response, error) {
 	err := s.ValidateIssueSnippetsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -282,7 +282,7 @@ func (s *SourcesService) IssueSnippets(opt *SourcesIssueSnippetsOption) (*Source
 // Returns source code with additional info like SCM data, coverage, and duplications.
 //
 // Since: 5.0.
-func (s *SourcesService) Lines(opt *SourcesLinesOption) (*SourcesLines, *http.Response, error) {
+func (s *SourcesService) Lines(opt *SourcesLinesOptions) (*SourcesLines, *http.Response, error) {
 	err := s.ValidateLinesOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -308,7 +308,7 @@ func (s *SourcesService) Lines(opt *SourcesLinesOption) (*SourcesLines, *http.Re
 // Requires 'See Source Code' permission on file's project.
 //
 // Since: 5.0.
-func (s *SourcesService) Raw(opt *SourcesRawOption) (string, *http.Response, error) {
+func (s *SourcesService) Raw(opt *SourcesRawOptions) (string, *http.Response, error) {
 	err := s.ValidateRawOpt(opt)
 	if err != nil {
 		return "", nil, err
@@ -334,7 +334,7 @@ func (s *SourcesService) Raw(opt *SourcesRawOption) (string, *http.Response, err
 // Returns source code modification information.
 //
 // Since: 4.4.
-func (s *SourcesService) Scm(opt *SourcesScmOption) (*SourcesScm, *http.Response, error) {
+func (s *SourcesService) Scm(opt *SourcesScmOptions) (*SourcesScm, *http.Response, error) {
 	err := s.ValidateScmOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -359,7 +359,7 @@ func (s *SourcesService) Scm(opt *SourcesScmOption) (*SourcesScm, *http.Response
 // Requires 'See Source Code' permission on file's project.
 //
 // Since: 4.4.
-func (s *SourcesService) Show(opt *SourcesShowOption) (*SourcesShow, *http.Response, error) {
+func (s *SourcesService) Show(opt *SourcesShowOptions) (*SourcesShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err

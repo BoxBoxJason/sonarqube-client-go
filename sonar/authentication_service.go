@@ -24,8 +24,8 @@ type AuthenticationValidation struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// AuthenticationLoginOption contains parameters for the Login method.
-type AuthenticationLoginOption struct {
+// AuthenticationLoginOptions contains parameters for the Login method.
+type AuthenticationLoginOptions struct {
 	// Login is the login/username of the user.
 	// This field is required.
 	Login string `url:"login"`
@@ -39,7 +39,7 @@ type AuthenticationLoginOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateLoginOpt validates the options for the Login method.
-func (s *AuthenticationService) ValidateLoginOpt(opt *AuthenticationLoginOption) error {
+func (s *AuthenticationService) ValidateLoginOpt(opt *AuthenticationLoginOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -64,7 +64,7 @@ func (s *AuthenticationService) ValidateLoginOpt(opt *AuthenticationLoginOption)
 // Login authenticates a user.
 //
 // API endpoint: POST /api/authentication/login.
-func (s *AuthenticationService) Login(opt *AuthenticationLoginOption) (*http.Response, error) {
+func (s *AuthenticationService) Login(opt *AuthenticationLoginOptions) (*http.Response, error) {
 	err := s.ValidateLoginOpt(opt)
 	if err != nil {
 		return nil, err

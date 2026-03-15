@@ -14,8 +14,8 @@ type EmailsService struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// EmailsSendOption contains parameters for the Send method.
-type EmailsSendOption struct {
+// EmailsSendOptions contains parameters for the Send method.
+type EmailsSendOptions struct {
 	// Message is the content of the email.
 	// This field is required.
 	Message string `url:"message"`
@@ -32,7 +32,7 @@ type EmailsSendOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateSendOpt validates the options for the Send method.
-func (s *EmailsService) ValidateSendOpt(opt *EmailsSendOption) error {
+func (s *EmailsService) ValidateSendOpt(opt *EmailsSendOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -59,7 +59,7 @@ func (s *EmailsService) ValidateSendOpt(opt *EmailsSendOption) error {
 //
 // API endpoint: POST /api/emails/send.
 // WARNING: This is an internal API and may change without notice.
-func (s *EmailsService) Send(opt *EmailsSendOption) (*http.Response, error) {
+func (s *EmailsService) Send(opt *EmailsSendOptions) (*http.Response, error) {
 	err := s.ValidateSendOpt(opt)
 	if err != nil {
 		return nil, err

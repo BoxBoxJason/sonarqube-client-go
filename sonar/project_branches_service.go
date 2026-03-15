@@ -54,8 +54,8 @@ type ProjectBranchesList struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// ProjectBranchesDeleteOption contains parameters for the Delete method.
-type ProjectBranchesDeleteOption struct {
+// ProjectBranchesDeleteOptions contains parameters for the Delete method.
+type ProjectBranchesDeleteOptions struct {
 	// Branch is the branch key.
 	// This field is required.
 	Branch string `url:"branch"`
@@ -64,15 +64,15 @@ type ProjectBranchesDeleteOption struct {
 	Project string `url:"project"`
 }
 
-// ProjectBranchesListOption contains parameters for the List method.
-type ProjectBranchesListOption struct {
+// ProjectBranchesListOptions contains parameters for the List method.
+type ProjectBranchesListOptions struct {
 	// Project is the project key.
 	// This field is required.
 	Project string `url:"project"`
 }
 
-// ProjectBranchesRenameOption contains parameters for the Rename method.
-type ProjectBranchesRenameOption struct {
+// ProjectBranchesRenameOptions contains parameters for the Rename method.
+type ProjectBranchesRenameOptions struct {
 	// Name is the new name of the main branch.
 	// This field is required. Maximum length is 255 characters.
 	Name string `url:"name"`
@@ -81,8 +81,8 @@ type ProjectBranchesRenameOption struct {
 	Project string `url:"project"`
 }
 
-// ProjectBranchesSetAutomaticDeletionProtectionOption contains parameters for the SetAutomaticDeletionProtection method.
-type ProjectBranchesSetAutomaticDeletionProtectionOption struct {
+// ProjectBranchesSetAutomaticDeletionProtectionOptions contains parameters for the SetAutomaticDeletionProtection method.
+type ProjectBranchesSetAutomaticDeletionProtectionOptions struct {
 	// Branch is the branch key.
 	// This field is required.
 	Branch string `url:"branch"`
@@ -94,8 +94,8 @@ type ProjectBranchesSetAutomaticDeletionProtectionOption struct {
 	Value bool `url:"value"`
 }
 
-// ProjectBranchesSetMainOption contains parameters for the SetMain method.
-type ProjectBranchesSetMainOption struct {
+// ProjectBranchesSetMainOptions contains parameters for the SetMain method.
+type ProjectBranchesSetMainOptions struct {
 	// Branch is the branch key.
 	// This field is required.
 	Branch string `url:"branch"`
@@ -109,7 +109,7 @@ type ProjectBranchesSetMainOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateDeleteOpt validates the options for the Delete method.
-func (s *ProjectBranchesService) ValidateDeleteOpt(opt *ProjectBranchesDeleteOption) error {
+func (s *ProjectBranchesService) ValidateDeleteOpt(opt *ProjectBranchesDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -128,7 +128,7 @@ func (s *ProjectBranchesService) ValidateDeleteOpt(opt *ProjectBranchesDeleteOpt
 }
 
 // ValidateListOpt validates the options for the List method.
-func (s *ProjectBranchesService) ValidateListOpt(opt *ProjectBranchesListOption) error {
+func (s *ProjectBranchesService) ValidateListOpt(opt *ProjectBranchesListOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -142,7 +142,7 @@ func (s *ProjectBranchesService) ValidateListOpt(opt *ProjectBranchesListOption)
 }
 
 // ValidateRenameOpt validates the options for the Rename method.
-func (s *ProjectBranchesService) ValidateRenameOpt(opt *ProjectBranchesRenameOption) error {
+func (s *ProjectBranchesService) ValidateRenameOpt(opt *ProjectBranchesRenameOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -166,7 +166,7 @@ func (s *ProjectBranchesService) ValidateRenameOpt(opt *ProjectBranchesRenameOpt
 }
 
 // ValidateSetAutomaticDeletionProtectionOpt validates the options for the SetAutomaticDeletionProtection method.
-func (s *ProjectBranchesService) ValidateSetAutomaticDeletionProtectionOpt(opt *ProjectBranchesSetAutomaticDeletionProtectionOption) error {
+func (s *ProjectBranchesService) ValidateSetAutomaticDeletionProtectionOpt(opt *ProjectBranchesSetAutomaticDeletionProtectionOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -187,7 +187,7 @@ func (s *ProjectBranchesService) ValidateSetAutomaticDeletionProtectionOpt(opt *
 }
 
 // ValidateSetMainOpt validates the options for the SetMain method.
-func (s *ProjectBranchesService) ValidateSetMainOpt(opt *ProjectBranchesSetMainOption) error {
+func (s *ProjectBranchesService) ValidateSetMainOpt(opt *ProjectBranchesSetMainOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -214,7 +214,7 @@ func (s *ProjectBranchesService) ValidateSetMainOpt(opt *ProjectBranchesSetMainO
 //
 // API endpoint: POST /api/project_branches/delete.
 // Since: 6.6.
-func (s *ProjectBranchesService) Delete(opt *ProjectBranchesDeleteOption) (*http.Response, error) {
+func (s *ProjectBranchesService) Delete(opt *ProjectBranchesDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -238,7 +238,7 @@ func (s *ProjectBranchesService) Delete(opt *ProjectBranchesDeleteOption) (*http
 //
 // API endpoint: GET /api/project_branches/list.
 // Since: 6.6.
-func (s *ProjectBranchesService) List(opt *ProjectBranchesListOption) (*ProjectBranchesList, *http.Response, error) {
+func (s *ProjectBranchesService) List(opt *ProjectBranchesListOptions) (*ProjectBranchesList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -264,7 +264,7 @@ func (s *ProjectBranchesService) List(opt *ProjectBranchesListOption) (*ProjectB
 //
 // API endpoint: POST /api/project_branches/rename.
 // Since: 6.6.
-func (s *ProjectBranchesService) Rename(opt *ProjectBranchesRenameOption) (*http.Response, error) {
+func (s *ProjectBranchesService) Rename(opt *ProjectBranchesRenameOptions) (*http.Response, error) {
 	err := s.ValidateRenameOpt(opt)
 	if err != nil {
 		return nil, err
@@ -289,7 +289,7 @@ func (s *ProjectBranchesService) Rename(opt *ProjectBranchesRenameOption) (*http
 //
 // API endpoint: POST /api/project_branches/set_automatic_deletion_protection.
 // Since: 8.1.
-func (s *ProjectBranchesService) SetAutomaticDeletionProtection(opt *ProjectBranchesSetAutomaticDeletionProtectionOption) (*http.Response, error) {
+func (s *ProjectBranchesService) SetAutomaticDeletionProtection(opt *ProjectBranchesSetAutomaticDeletionProtectionOptions) (*http.Response, error) {
 	err := s.ValidateSetAutomaticDeletionProtectionOpt(opt)
 	if err != nil {
 		return nil, err
@@ -314,7 +314,7 @@ func (s *ProjectBranchesService) SetAutomaticDeletionProtection(opt *ProjectBran
 //
 // API endpoint: POST /api/project_branches/set_main.
 // Since: 10.2.
-func (s *ProjectBranchesService) SetMain(opt *ProjectBranchesSetMainOption) (*http.Response, error) {
+func (s *ProjectBranchesService) SetMain(opt *ProjectBranchesSetMainOptions) (*http.Response, error) {
 	err := s.ValidateSetMainOpt(opt)
 	if err != nil {
 		return nil, err

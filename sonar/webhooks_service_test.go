@@ -22,7 +22,7 @@ func TestWebhooks_Create(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/webhooks/create", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &WebhooksCreateOption{
+	opt := &WebhooksCreateOptions{
 		Name:   "My Webhook",
 		URL:    "https://example.com/webhook",
 		Secret: "my-secret-at-least-16",
@@ -42,33 +42,33 @@ func TestWebhooks_Create_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOption{
+	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
 		URL: "https://example.com",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOption{
+	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
 		Name: "My Webhook",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOption{
+	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
 		Name: strings.Repeat("a", MaxWebhookNameLength+1),
 		URL:  "https://example.com",
 	})
 	assert.Error(t, err)
 
 	// Test URL too long
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOption{
+	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
 		Name: "My Webhook",
 		URL:  strings.Repeat("a", MaxWebhookURLLength+1),
 	})
 	assert.Error(t, err)
 
 	// Test Secret too short
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOption{
+	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
 		Name:   "My Webhook",
 		URL:    "https://example.com",
 		Secret: "short",
@@ -80,7 +80,7 @@ func TestWebhooks_Delete(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/webhooks/delete", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &WebhooksDeleteOption{
+	opt := &WebhooksDeleteOptions{
 		Webhook: "my-webhook-key",
 	}
 
@@ -97,7 +97,7 @@ func TestWebhooks_Delete_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Webhook
-	_, err = client.Webhooks.Delete(&WebhooksDeleteOption{})
+	_, err = client.Webhooks.Delete(&WebhooksDeleteOptions{})
 	assert.Error(t, err)
 }
 
@@ -122,7 +122,7 @@ func TestWebhooks_Deliveries(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/webhooks/deliveries", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &WebhooksDeliveriesOption{
+	opt := &WebhooksDeliveriesOptions{
 		Webhook: "webhook-key",
 	}
 
@@ -155,7 +155,7 @@ func TestWebhooks_Delivery(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/webhooks/delivery", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &WebhooksDeliveryOption{
+	opt := &WebhooksDeliveryOptions{
 		DeliveryID: "delivery-1",
 	}
 
@@ -173,7 +173,7 @@ func TestWebhooks_Delivery_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing DeliveryID
-	_, _, err = client.Webhooks.Delivery(&WebhooksDeliveryOption{})
+	_, _, err = client.Webhooks.Delivery(&WebhooksDeliveryOptions{})
 	assert.Error(t, err)
 }
 
@@ -192,7 +192,7 @@ func TestWebhooks_List(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/webhooks/list", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &WebhooksListOption{}
+	opt := &WebhooksListOptions{}
 
 	result, resp, err := client.Webhooks.List(opt)
 	require.NoError(t, err)
@@ -212,7 +212,7 @@ func TestWebhooks_Update(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/webhooks/update", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &WebhooksUpdateOption{
+	opt := &WebhooksUpdateOptions{
 		Webhook: "webhook-1",
 		Name:    "Updated Webhook",
 		URL:     "https://example.com/updated",
@@ -231,21 +231,21 @@ func TestWebhooks_Update_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.Webhooks.Update(&WebhooksUpdateOption{
+	_, err = client.Webhooks.Update(&WebhooksUpdateOptions{
 		URL:     "https://example.com",
 		Webhook: "webhook-1",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.Webhooks.Update(&WebhooksUpdateOption{
+	_, err = client.Webhooks.Update(&WebhooksUpdateOptions{
 		Name:    "My Webhook",
 		Webhook: "webhook-1",
 	})
 	assert.Error(t, err)
 
 	// Test missing Webhook
-	_, err = client.Webhooks.Update(&WebhooksUpdateOption{
+	_, err = client.Webhooks.Update(&WebhooksUpdateOptions{
 		Name: "My Webhook",
 		URL:  "https://example.com",
 	})

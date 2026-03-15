@@ -26,14 +26,14 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		// Create a test project for measures-related operations
 		projectKey = helpers.UniqueResourceName("msr")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    "Measures Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -61,7 +61,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required component parameter", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					MetricKeys: []string{"ncloc"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -71,7 +71,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required metric keys", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					Component: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -83,7 +83,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get component measures for an existing project", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc", "complexity", "coverage"},
 				})
@@ -94,7 +94,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get measures with single metric", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"lines"},
 				})
@@ -105,7 +105,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get measures with additional fields", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					Component:        projectKey,
 					MetricKeys:       []string{"ncloc"},
 					AdditionalFields: []string{"metrics"},
@@ -118,7 +118,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("Non-Existent Component", func() {
 			It("should fail with non-existent component", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					Component:  "non-existent-project",
 					MetricKeys: []string{"ncloc"},
 				})
@@ -132,7 +132,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("With Branch", func() {
 			It("should fail for non-existent branch", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
 					Branch:     "non-existent-branch",
@@ -147,7 +147,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("With Pull Request", func() {
 			It("should fail for non-existent pull request", func() {
-				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOption{
+				result, resp, err := client.Measures.Component(&sonar.MeasuresComponentOptions{
 					Component:   projectKey,
 					MetricKeys:  []string{"ncloc"},
 					PullRequest: "99999",
@@ -175,7 +175,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required component parameter", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					MetricKeys: []string{"ncloc"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -185,7 +185,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required metric keys", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -195,7 +195,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail with invalid metric sort filter", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:        projectKey,
 					MetricKeys:       []string{"ncloc"},
 					MetricSortFilter: "invalid",
@@ -207,7 +207,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail with invalid strategy", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
 					Strategy:   "invalid",
@@ -221,7 +221,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get component tree measures for an existing project", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc", "complexity"},
 				})
@@ -232,7 +232,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get component tree with children strategy", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
 					Strategy:   "children",
@@ -243,7 +243,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get component tree with leaves strategy", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
 					Strategy:   "leaves",
@@ -254,7 +254,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get component tree with all strategy", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
 					Strategy:   "all",
@@ -265,7 +265,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get component tree with metric sort filter", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:        projectKey,
 					MetricKeys:       []string{"ncloc"},
 					MetricSortFilter: "withMeasuresOnly",
@@ -278,7 +278,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get component tree with pagination", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
 					PaginationArgs: sonar.PaginationArgs{
@@ -293,7 +293,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get component tree with qualifiers filter", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
 					Qualifiers: []string{"FIL"},
@@ -304,7 +304,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get component tree with additional fields", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:        projectKey,
 					MetricKeys:       []string{"ncloc"},
 					AdditionalFields: []string{"metrics"},
@@ -317,7 +317,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("Non-Existent Component", func() {
 			It("should fail with non-existent component", func() {
-				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOption{
+				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  "non-existent-project",
 					MetricKeys: []string{"ncloc"},
 				})
@@ -344,7 +344,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required metric keys", func() {
-				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOption{
+				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOptions{
 					ProjectKeys: []string{projectKey},
 				})
 				Expect(err).To(HaveOccurred())
@@ -354,7 +354,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required project keys", func() {
-				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOption{
+				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOptions{
 					MetricKeys: []string{"ncloc"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -366,7 +366,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should search measures for an existing project", func() {
-				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOption{
+				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOptions{
 					MetricKeys:  []string{"ncloc"},
 					ProjectKeys: []string{projectKey},
 				})
@@ -376,7 +376,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should search measures with multiple metrics", func() {
-				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOption{
+				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOptions{
 					MetricKeys:  []string{"ncloc", "complexity", "coverage"},
 					ProjectKeys: []string{projectKey},
 				})
@@ -391,14 +391,14 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 			BeforeAll(func() {
 				secondProjectKey = helpers.UniqueResourceName("msr2")
-				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOption{
+				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 					Name:    "Second Measures Test Project",
 					Project: secondProjectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", secondProjectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 						Project: secondProjectKey,
 					})
 					return err
@@ -406,7 +406,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should search measures for multiple projects", func() {
-				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOption{
+				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOptions{
 					MetricKeys:  []string{"ncloc"},
 					ProjectKeys: []string{projectKey, secondProjectKey},
 				})
@@ -419,7 +419,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 		Context("Non-Existent Project", func() {
 			It("should return empty measures for non-existent project", func() {
 				// The API doesn't fail for non-existent projects, it just returns empty measures
-				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOption{
+				result, resp, err := client.Measures.Search(&sonar.MeasuresSearchOptions{
 					MetricKeys:  []string{"ncloc"},
 					ProjectKeys: []string{"non-existent-project"},
 				})
@@ -446,7 +446,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required component parameter", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Metrics: []string{"ncloc"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -456,7 +456,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should fail without required metrics", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -468,7 +468,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get measure history for an existing project", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component: projectKey,
 					Metrics:   []string{"ncloc"},
 				})
@@ -478,7 +478,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get history with multiple metrics", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component: projectKey,
 					Metrics:   []string{"ncloc", "complexity", "coverage"},
 				})
@@ -488,7 +488,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get history with pagination", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component: projectKey,
 					Metrics:   []string{"ncloc"},
 					PaginationArgs: sonar.PaginationArgs{
@@ -503,7 +503,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 			})
 
 			It("should get history with date range", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component: projectKey,
 					Metrics:   []string{"ncloc"},
 					From:      "2020-01-01",
@@ -517,7 +517,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("Non-Existent Component", func() {
 			It("should fail with non-existent component", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component: "non-existent-project",
 					Metrics:   []string{"ncloc"},
 				})
@@ -531,7 +531,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("With Branch", func() {
 			It("should fail for non-existent branch", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component: projectKey,
 					Metrics:   []string{"ncloc"},
 					Branch:    "non-existent-branch",
@@ -546,7 +546,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 
 		Context("With Pull Request", func() {
 			It("should fail for non-existent pull request", func() {
-				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOption{
+				result, resp, err := client.Measures.SearchHistory(&sonar.MeasuresSearchHistoryOptions{
 					Component:   projectKey,
 					Metrics:     []string{"ncloc"},
 					PullRequest: "99999",

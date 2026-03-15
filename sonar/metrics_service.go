@@ -58,8 +58,8 @@ type MetricsTypes struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// MetricsSearchOption contains parameters for the Search method.
-type MetricsSearchOption struct {
+// MetricsSearchOptions contains parameters for the Search method.
+type MetricsSearchOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 }
@@ -69,7 +69,7 @@ type MetricsSearchOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *MetricsService) ValidateSearchOpt(opt *MetricsSearchOption) error {
+func (s *MetricsService) ValidateSearchOpt(opt *MetricsSearchOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -85,7 +85,7 @@ func (s *MetricsService) ValidateSearchOpt(opt *MetricsSearchOption) error {
 //
 // API endpoint: GET /api/metrics/search.
 // Since: 2.6.
-func (s *MetricsService) Search(opt *MetricsSearchOption) (*MetricsSearch, *http.Response, error) {
+func (s *MetricsService) Search(opt *MetricsSearchOptions) (*MetricsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err

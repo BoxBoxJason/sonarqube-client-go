@@ -62,7 +62,7 @@ func TestMetrics_Search_WithPagination(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &MetricsSearchOption{
+	opt := &MetricsSearchOptions{
 		PaginationArgs: PaginationArgs{
 			Page:     2,
 			PageSize: 50,
@@ -93,12 +93,12 @@ func TestMetrics_ValidateSearchOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *MetricsSearchOption
+		opt     *MetricsSearchOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &MetricsSearchOption{}, false},
-		{"valid pagination", &MetricsSearchOption{PaginationArgs: PaginationArgs{Page: 1, PageSize: 100}}, false},
+		{"empty option", &MetricsSearchOptions{}, false},
+		{"valid pagination", &MetricsSearchOptions{PaginationArgs: PaginationArgs{Page: 1, PageSize: 100}}, false},
 	}
 
 	for _, tt := range tests {

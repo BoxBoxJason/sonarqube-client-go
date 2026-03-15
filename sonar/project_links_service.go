@@ -46,8 +46,8 @@ type ProjectLinksSearch struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// ProjectLinksCreateOption contains parameters for the Create method.
-type ProjectLinksCreateOption struct {
+// ProjectLinksCreateOptions contains parameters for the Create method.
+type ProjectLinksCreateOptions struct {
 	// Name is the display name of the link.
 	// This field is required. Maximum length is 128 characters.
 	Name string `url:"name"`
@@ -62,15 +62,15 @@ type ProjectLinksCreateOption struct {
 	URL string `url:"url"`
 }
 
-// ProjectLinksDeleteOption contains parameters for the Delete method.
-type ProjectLinksDeleteOption struct {
+// ProjectLinksDeleteOptions contains parameters for the Delete method.
+type ProjectLinksDeleteOptions struct {
 	// ID is the unique identifier of the link to delete.
 	// This field is required.
 	ID string `url:"id"`
 }
 
-// ProjectLinksSearchOption contains parameters for the Search method.
-type ProjectLinksSearchOption struct {
+// ProjectLinksSearchOptions contains parameters for the Search method.
+type ProjectLinksSearchOptions struct {
 	// ProjectID is the project id.
 	// Either ProjectID or ProjectKey must be provided.
 	ProjectID string `url:"projectId,omitempty"`
@@ -84,7 +84,7 @@ type ProjectLinksSearchOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateCreateOpt validates the options for the Create method.
-func (s *ProjectLinksService) ValidateCreateOpt(opt *ProjectLinksCreateOption) error {
+func (s *ProjectLinksService) ValidateCreateOpt(opt *ProjectLinksCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -118,7 +118,7 @@ func (s *ProjectLinksService) ValidateCreateOpt(opt *ProjectLinksCreateOption) e
 }
 
 // ValidateDeleteOpt validates the options for the Delete method.
-func (s *ProjectLinksService) ValidateDeleteOpt(opt *ProjectLinksDeleteOption) error {
+func (s *ProjectLinksService) ValidateDeleteOpt(opt *ProjectLinksDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -132,7 +132,7 @@ func (s *ProjectLinksService) ValidateDeleteOpt(opt *ProjectLinksDeleteOption) e
 }
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *ProjectLinksService) ValidateSearchOpt(opt *ProjectLinksSearchOption) error {
+func (s *ProjectLinksService) ValidateSearchOpt(opt *ProjectLinksSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -154,7 +154,7 @@ func (s *ProjectLinksService) ValidateSearchOpt(opt *ProjectLinksSearchOption) e
 //
 // API endpoint: POST /api/project_links/create.
 // Since: 6.1.
-func (s *ProjectLinksService) Create(opt *ProjectLinksCreateOption) (*ProjectLinksCreate, *http.Response, error) {
+func (s *ProjectLinksService) Create(opt *ProjectLinksCreateOptions) (*ProjectLinksCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -180,7 +180,7 @@ func (s *ProjectLinksService) Create(opt *ProjectLinksCreateOption) (*ProjectLin
 //
 // API endpoint: POST /api/project_links/delete.
 // Since: 6.1.
-func (s *ProjectLinksService) Delete(opt *ProjectLinksDeleteOption) (*http.Response, error) {
+func (s *ProjectLinksService) Delete(opt *ProjectLinksDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -208,7 +208,7 @@ func (s *ProjectLinksService) Delete(opt *ProjectLinksDeleteOption) (*http.Respo
 //
 // API endpoint: GET /api/project_links/search.
 // Since: 6.1.
-func (s *ProjectLinksService) Search(opt *ProjectLinksSearchOption) (*ProjectLinksSearch, *http.Response, error) {
+func (s *ProjectLinksService) Search(opt *ProjectLinksSearchOptions) (*ProjectLinksSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err

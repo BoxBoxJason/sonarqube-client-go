@@ -182,10 +182,10 @@ type MeasurePeriod struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// MeasuresComponentOption represents options for getting component measures.
+// MeasuresComponentOptions represents options for getting component measures.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type MeasuresComponentOption struct {
+type MeasuresComponentOptions struct {
 	// Component is the component key (required).
 	Component string `url:"component,omitempty"`
 	// MetricKeys is the list of metric keys to fetch (required).
@@ -199,10 +199,10 @@ type MeasuresComponentOption struct {
 	PullRequest string `url:"pullRequest,omitempty"`
 }
 
-// MeasuresComponentTreeOption represents options for getting component tree measures.
+// MeasuresComponentTreeOptions represents options for getting component tree measures.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type MeasuresComponentTreeOption struct {
+type MeasuresComponentTreeOptions struct {
 	PaginationArgs
 
 	// Component is the base component key (required).
@@ -238,18 +238,18 @@ type MeasuresComponentTreeOption struct {
 	Strategy string `url:"strategy,omitempty"`
 }
 
-// MeasuresSearchOption represents options for searching measures.
-type MeasuresSearchOption struct {
+// MeasuresSearchOptions represents options for searching measures.
+type MeasuresSearchOptions struct {
 	// MetricKeys is the list of metric keys to fetch (required).
 	MetricKeys []string `url:"metricKeys,omitempty,comma"`
 	// ProjectKeys is the list of project keys (required).
 	ProjectKeys []string `url:"projectKeys,omitempty,comma"`
 }
 
-// MeasuresSearchHistoryOption represents options for getting measures history.
+// MeasuresSearchHistoryOptions represents options for getting measures history.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type MeasuresSearchHistoryOption struct {
+type MeasuresSearchHistoryOptions struct {
 	PaginationArgs
 
 	// Component is the component key (required).
@@ -273,7 +273,7 @@ type MeasuresSearchHistoryOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateComponentOpt validates the options for Component.
-func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOption) error {
+func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -291,7 +291,7 @@ func (s *MeasuresService) ValidateComponentOpt(opt *MeasuresComponentOption) err
 }
 
 // ValidateComponentTreeOpt validates the options for ComponentTree.
-func (s *MeasuresService) ValidateComponentTreeOpt(opt *MeasuresComponentTreeOption) error {
+func (s *MeasuresService) ValidateComponentTreeOpt(opt *MeasuresComponentTreeOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -328,7 +328,7 @@ func (s *MeasuresService) ValidateComponentTreeOpt(opt *MeasuresComponentTreeOpt
 }
 
 // ValidateSearchOpt validates the options for Search.
-func (s *MeasuresService) ValidateSearchOpt(opt *MeasuresSearchOption) error {
+func (s *MeasuresService) ValidateSearchOpt(opt *MeasuresSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -345,7 +345,7 @@ func (s *MeasuresService) ValidateSearchOpt(opt *MeasuresSearchOption) error {
 }
 
 // ValidateSearchHistoryOpt validates the options for SearchHistory.
-func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOption) error {
+func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -375,7 +375,7 @@ func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOpt
 // Requires the following permission: 'Browse' on the project of specified component.
 //
 // Since: 5.4.
-func (s *MeasuresService) Component(opt *MeasuresComponentOption) (*MeasuresComponent, *http.Response, error) {
+func (s *MeasuresService) Component(opt *MeasuresComponentOptions) (*MeasuresComponent, *http.Response, error) {
 	err := s.ValidateComponentOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -402,7 +402,7 @@ func (s *MeasuresService) Component(opt *MeasuresComponentOption) (*MeasuresComp
 // When limiting search with the q parameter, directories are not returned.
 //
 // Since: 5.4.
-func (s *MeasuresService) ComponentTree(opt *MeasuresComponentTreeOption) (*MeasuresComponentTree, *http.Response, error) {
+func (s *MeasuresService) ComponentTree(opt *MeasuresComponentTreeOptions) (*MeasuresComponentTree, *http.Response, error) {
 	err := s.ValidateComponentTreeOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -428,7 +428,7 @@ func (s *MeasuresService) ComponentTree(opt *MeasuresComponentTreeOption) (*Meas
 // At most 100 projects can be provided.
 //
 // Since: 6.2.
-func (s *MeasuresService) Search(opt *MeasuresSearchOption) (*MeasuresSearch, *http.Response, error) {
+func (s *MeasuresService) Search(opt *MeasuresSearchOptions) (*MeasuresSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -454,7 +454,7 @@ func (s *MeasuresService) Search(opt *MeasuresSearchOption) (*MeasuresSearch, *h
 // Requires the following permission: 'Browse' on the specified component.
 //
 // Since: 6.3.
-func (s *MeasuresService) SearchHistory(opt *MeasuresSearchHistoryOption) (*MeasuresSearchHistory, *http.Response, error) {
+func (s *MeasuresService) SearchHistory(opt *MeasuresSearchHistoryOptions) (*MeasuresSearchHistory, *http.Response, error) {
 	err := s.ValidateSearchHistoryOpt(opt)
 	if err != nil {
 		return nil, nil, err

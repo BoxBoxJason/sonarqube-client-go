@@ -23,7 +23,7 @@ func TestDevelopers_SearchEvents(t *testing.T) {
 
 	client := newTestClient(t, server.url())
 
-	opt := &DevelopersSearchEventsOption{
+	opt := &DevelopersSearchEventsOptions{
 		From:     []string{"2017-10-19T13:00:00+0200"},
 		Projects: []string{"my-project"},
 	}
@@ -42,7 +42,7 @@ func TestDevelopers_SearchEvents(t *testing.T) {
 func TestDevelopers_SearchEvents_ValidationErrors(t *testing.T) {
 	tests := []struct {
 		name      string
-		opt       *DevelopersSearchEventsOption
+		opt       *DevelopersSearchEventsOptions
 		wantField string
 	}{
 		{
@@ -52,14 +52,14 @@ func TestDevelopers_SearchEvents_ValidationErrors(t *testing.T) {
 		},
 		{
 			name: "missing from",
-			opt: &DevelopersSearchEventsOption{
+			opt: &DevelopersSearchEventsOptions{
 				Projects: []string{"my-project"},
 			},
 			wantField: "From",
 		},
 		{
 			name: "missing projects",
-			opt: &DevelopersSearchEventsOption{
+			opt: &DevelopersSearchEventsOptions{
 				From: []string{"2017-10-19T13:00:00+0200"},
 			},
 			wantField: "Projects",
@@ -83,7 +83,7 @@ func TestDevelopers_SearchEvents_ValidationErrors(t *testing.T) {
 func TestDevelopers_ValidateSearchEventsOpt(t *testing.T) {
 	tests := []struct {
 		name      string
-		opt       *DevelopersSearchEventsOption
+		opt       *DevelopersSearchEventsOptions
 		wantErr   bool
 		wantField string
 	}{
@@ -95,7 +95,7 @@ func TestDevelopers_ValidateSearchEventsOpt(t *testing.T) {
 		},
 		{
 			name: "missing from",
-			opt: &DevelopersSearchEventsOption{
+			opt: &DevelopersSearchEventsOptions{
 				Projects: []string{"my-project"},
 			},
 			wantErr:   true,
@@ -103,7 +103,7 @@ func TestDevelopers_ValidateSearchEventsOpt(t *testing.T) {
 		},
 		{
 			name: "missing projects",
-			opt: &DevelopersSearchEventsOption{
+			opt: &DevelopersSearchEventsOptions{
 				From: []string{"2017-10-19T13:00:00+0200"},
 			},
 			wantErr:   true,
@@ -111,7 +111,7 @@ func TestDevelopers_ValidateSearchEventsOpt(t *testing.T) {
 		},
 		{
 			name: "valid option",
-			opt: &DevelopersSearchEventsOption{
+			opt: &DevelopersSearchEventsOptions{
 				From:     []string{"2017-10-19T13:00:00+0200"},
 				Projects: []string{"my-project"},
 			},
@@ -119,7 +119,7 @@ func TestDevelopers_ValidateSearchEventsOpt(t *testing.T) {
 		},
 		{
 			name: "valid with multiple values",
-			opt: &DevelopersSearchEventsOption{
+			opt: &DevelopersSearchEventsOptions{
 				From:     []string{"2017-10-19T13:00:00+0200", "2017-10-20T13:00:00+0200"},
 				Projects: []string{"my-project", "other-project"},
 			},

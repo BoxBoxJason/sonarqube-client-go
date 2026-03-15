@@ -398,22 +398,22 @@ type IssuesTags struct {
 // Option Types
 // =============================================================================
 
-// IssuesAddCommentOption contains options for adding a comment to an issue.
-type IssuesAddCommentOption struct {
+// IssuesAddCommentOptions contains options for adding a comment to an issue.
+type IssuesAddCommentOptions struct {
 	// Issue is the key of the issue to comment on (required).
 	Issue string `url:"issue,omitempty"`
 	// Text is the comment text (required).
 	Text string `url:"text,omitempty"`
 }
 
-// IssuesAnticipatedTransitionsOption contains options for anticipated transitions.
-type IssuesAnticipatedTransitionsOption struct {
+// IssuesAnticipatedTransitionsOptions contains options for anticipated transitions.
+type IssuesAnticipatedTransitionsOptions struct {
 	// ProjectKey is the key of the project (required).
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// IssuesAssignOption contains options for assigning an issue.
-type IssuesAssignOption struct {
+// IssuesAssignOptions contains options for assigning an issue.
+type IssuesAssignOptions struct {
 	// Issue is the key of the issue to assign (required).
 	Issue string `url:"issue,omitempty"`
 	// Assignee is the login of the assignee. When not set, it will unassign the issue.
@@ -421,8 +421,8 @@ type IssuesAssignOption struct {
 	Assignee string `url:"assignee,omitempty"`
 }
 
-// IssuesAuthorsOption contains options for listing authors.
-type IssuesAuthorsOption struct {
+// IssuesAuthorsOptions contains options for listing authors.
+type IssuesAuthorsOptions struct {
 	// Project is the project key to limit the search.
 	Project string `url:"project,omitempty"`
 	// Query limits the search to authors that contain the supplied string.
@@ -431,10 +431,10 @@ type IssuesAuthorsOption struct {
 	PageSize int64 `url:"ps,omitempty"`
 }
 
-// IssuesBulkChangeOption contains options for bulk changing issues.
+// IssuesBulkChangeOptions contains options for bulk changing issues.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type IssuesBulkChangeOption struct {
+type IssuesBulkChangeOptions struct {
 	// Issues is the list of issue keys to change (required).
 	Issues []string `url:"issues,omitempty,comma"`
 	// AddTags is the list of tags to add.
@@ -458,14 +458,14 @@ type IssuesBulkChangeOption struct {
 	SendNotifications bool `url:"sendNotifications,omitempty"`
 }
 
-// IssuesChangelogOption contains options for retrieving issue changelog.
-type IssuesChangelogOption struct {
+// IssuesChangelogOptions contains options for retrieving issue changelog.
+type IssuesChangelogOptions struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 }
 
-// IssuesComponentTagsOption contains options for listing component tags.
-type IssuesComponentTagsOption struct {
+// IssuesComponentTagsOptions contains options for listing component tags.
+type IssuesComponentTagsOptions struct {
 	// ComponentUuid is the UUID of the component (required).
 	ComponentUuid string `url:"componentUuid,omitempty"`
 	// CreatedAfter filters issues created after the given date.
@@ -474,14 +474,14 @@ type IssuesComponentTagsOption struct {
 	PageSize int64 `url:"ps,omitempty"`
 }
 
-// IssuesDeleteCommentOption contains options for deleting a comment.
-type IssuesDeleteCommentOption struct {
+// IssuesDeleteCommentOptions contains options for deleting a comment.
+type IssuesDeleteCommentOptions struct {
 	// Comment is the key of the comment to delete (required).
 	Comment string `url:"comment,omitempty"`
 }
 
-// IssuesDoTransitionOption contains options for performing a transition.
-type IssuesDoTransitionOption struct {
+// IssuesDoTransitionOptions contains options for performing a transition.
+type IssuesDoTransitionOptions struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 	// Transition is the transition to perform (required).
@@ -489,18 +489,18 @@ type IssuesDoTransitionOption struct {
 	Transition string `url:"transition,omitempty"`
 }
 
-// IssuesEditCommentOption contains options for editing a comment.
-type IssuesEditCommentOption struct {
+// IssuesEditCommentOptions contains options for editing a comment.
+type IssuesEditCommentOptions struct {
 	// Comment is the key of the comment to edit (required).
 	Comment string `url:"comment,omitempty"`
 	// Text is the new comment text (required).
 	Text string `url:"text,omitempty"`
 }
 
-// IssuesListOption contains options for listing issues.
+// IssuesListOptions contains options for listing issues.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type IssuesListOption struct {
+type IssuesListOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -521,10 +521,10 @@ type IssuesListOption struct {
 	InNewCodePeriod bool `url:"inNewCodePeriod,omitempty"`
 }
 
-// IssuesPullOption contains options for pulling issues.
+// IssuesPullOptions contains options for pulling issues.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type IssuesPullOption struct {
+type IssuesPullOptions struct {
 	// ProjectKey is the project key (required).
 	ProjectKey string `url:"projectKey,omitempty"`
 	// BranchName is the branch name to fetch issues for.
@@ -539,10 +539,10 @@ type IssuesPullOption struct {
 	ResolvedOnly bool `url:"resolvedOnly,omitempty"`
 }
 
-// IssuesPullTaintOption contains options for pulling taint vulnerabilities.
+// IssuesPullTaintOptions contains options for pulling taint vulnerabilities.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type IssuesPullTaintOption struct {
+type IssuesPullTaintOptions struct {
 	// ProjectKey is the project key (required).
 	ProjectKey string `url:"projectKey,omitempty"`
 	// BranchName is the branch name to fetch taint vulnerabilities for.
@@ -553,16 +553,16 @@ type IssuesPullTaintOption struct {
 	ChangedSince string `url:"changedSince,omitempty"`
 }
 
-// IssuesReindexOption contains options for reindexing issues.
-type IssuesReindexOption struct {
+// IssuesReindexOptions contains options for reindexing issues.
+type IssuesReindexOptions struct {
 	// Project is the project key (required).
 	Project string `url:"project,omitempty"`
 }
 
-// IssuesSearchOption contains options for searching issues.
+// IssuesSearchOptions contains options for searching issues.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type IssuesSearchOption struct {
+type IssuesSearchOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -687,8 +687,8 @@ type IssuesSearchOption struct {
 	Asc bool `url:"asc,omitempty"`
 }
 
-// IssuesSetSeverityOption contains options for setting severity.
-type IssuesSetSeverityOption struct {
+// IssuesSetSeverityOptions contains options for setting severity.
+type IssuesSetSeverityOptions struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 	// Severity is the new severity level.
@@ -698,16 +698,16 @@ type IssuesSetSeverityOption struct {
 	Impact string `url:"impact,omitempty"`
 }
 
-// IssuesSetTagsOption contains options for setting tags.
-type IssuesSetTagsOption struct {
+// IssuesSetTagsOptions contains options for setting tags.
+type IssuesSetTagsOptions struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 	// Tags is the list of tags to set. Empty list removes all tags.
 	Tags []string `url:"tags,omitempty,comma"`
 }
 
-// IssuesSetTypeOption contains options for setting type.
-type IssuesSetTypeOption struct {
+// IssuesSetTypeOptions contains options for setting type.
+type IssuesSetTypeOptions struct {
 	// Issue is the key of the issue (required).
 	Issue string `url:"issue,omitempty"`
 	// Type is the new issue type (required).
@@ -715,8 +715,8 @@ type IssuesSetTypeOption struct {
 	Type string `url:"type,omitempty"`
 }
 
-// IssuesTagsOption contains options for listing tags.
-type IssuesTagsOption struct {
+// IssuesTagsOptions contains options for listing tags.
+type IssuesTagsOptions struct {
 	// Project is the project key.
 	Project string `url:"project,omitempty"`
 	// Branch is the branch key.
@@ -735,7 +735,7 @@ type IssuesTagsOption struct {
 
 // AddComment adds a comment to an issue.
 // Requires authentication and 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) AddComment(opt *IssuesAddCommentOption) (v *IssuesAddComment, resp *http.Response, err error) {
+func (s *IssuesService) AddComment(opt *IssuesAddCommentOptions) (v *IssuesAddComment, resp *http.Response, err error) {
 	err = s.ValidateAddCommentOpt(opt)
 	if err != nil {
 		return
@@ -760,7 +760,7 @@ func (s *IssuesService) AddComment(opt *IssuesAddCommentOption) (v *IssuesAddCom
 // Requires 'Administer Issues' permission on the specified project.
 // Only 'falsepositive', 'wontfix' and 'accept' transitions are supported.
 // Upon successful execution, the HTTP status code returned is 202 (Accepted).
-func (s *IssuesService) AnticipatedTransitions(opt *IssuesAnticipatedTransitionsOption) (resp *http.Response, err error) {
+func (s *IssuesService) AnticipatedTransitions(opt *IssuesAnticipatedTransitionsOptions) (resp *http.Response, err error) {
 	err = s.ValidateAnticipatedTransitionsOpt(opt)
 	if err != nil {
 		return
@@ -781,7 +781,7 @@ func (s *IssuesService) AnticipatedTransitions(opt *IssuesAnticipatedTransitions
 
 // Assign assigns or unassigns an issue.
 // Requires authentication and 'Browse' permission on the project.
-func (s *IssuesService) Assign(opt *IssuesAssignOption) (v *IssuesAssign, resp *http.Response, err error) {
+func (s *IssuesService) Assign(opt *IssuesAssignOptions) (v *IssuesAssign, resp *http.Response, err error) {
 	err = s.ValidateAssignOpt(opt)
 	if err != nil {
 		return
@@ -804,7 +804,7 @@ func (s *IssuesService) Assign(opt *IssuesAssignOption) (v *IssuesAssign, resp *
 
 // Authors searches SCM accounts which match a given query.
 // Requires authentication. Returns 503 when issue indexing is in progress.
-func (s *IssuesService) Authors(opt *IssuesAuthorsOption) (v *IssuesAuthors, resp *http.Response, err error) {
+func (s *IssuesService) Authors(opt *IssuesAuthorsOptions) (v *IssuesAuthors, resp *http.Response, err error) {
 	err = s.ValidateAuthorsOpt(opt)
 	if err != nil {
 		return
@@ -827,7 +827,7 @@ func (s *IssuesService) Authors(opt *IssuesAuthorsOption) (v *IssuesAuthors, res
 
 // BulkChange performs bulk changes on issues. Up to 500 issues can be updated.
 // Requires authentication.
-func (s *IssuesService) BulkChange(opt *IssuesBulkChangeOption) (v *IssuesBulkChange, resp *http.Response, err error) {
+func (s *IssuesService) BulkChange(opt *IssuesBulkChangeOptions) (v *IssuesBulkChange, resp *http.Response, err error) {
 	err = s.ValidateBulkChangeOpt(opt)
 	if err != nil {
 		return
@@ -850,7 +850,7 @@ func (s *IssuesService) BulkChange(opt *IssuesBulkChangeOption) (v *IssuesBulkCh
 
 // Changelog displays the changelog of an issue.
 // Requires 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) Changelog(opt *IssuesChangelogOption) (v *IssuesChangelog, resp *http.Response, err error) {
+func (s *IssuesService) Changelog(opt *IssuesChangelogOptions) (v *IssuesChangelog, resp *http.Response, err error) {
 	err = s.ValidateChangelogOpt(opt)
 	if err != nil {
 		return
@@ -873,7 +873,7 @@ func (s *IssuesService) Changelog(opt *IssuesChangelogOption) (v *IssuesChangelo
 
 // ComponentTags lists tags for issues under a given component.
 // Returns 503 when issue indexing is in progress.
-func (s *IssuesService) ComponentTags(opt *IssuesComponentTagsOption) (v *IssuesComponentTags, resp *http.Response, err error) {
+func (s *IssuesService) ComponentTags(opt *IssuesComponentTagsOptions) (v *IssuesComponentTags, resp *http.Response, err error) {
 	err = s.ValidateComponentTagsOpt(opt)
 	if err != nil {
 		return
@@ -896,7 +896,7 @@ func (s *IssuesService) ComponentTags(opt *IssuesComponentTagsOption) (v *Issues
 
 // DeleteComment deletes a comment.
 // Requires authentication and 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) DeleteComment(opt *IssuesDeleteCommentOption) (v *IssuesDeleteComment, resp *http.Response, err error) {
+func (s *IssuesService) DeleteComment(opt *IssuesDeleteCommentOptions) (v *IssuesDeleteComment, resp *http.Response, err error) {
 	err = s.ValidateDeleteCommentOpt(opt)
 	if err != nil {
 		return
@@ -921,7 +921,7 @@ func (s *IssuesService) DeleteComment(opt *IssuesDeleteCommentOption) (v *Issues
 // Requires authentication and 'Browse' permission on the project.
 // Transitions 'accept', 'wontfix', and 'falsepositive' require 'Administer Issues' permission.
 // Security hotspot transitions require 'Administer Security Hotspot' permission.
-func (s *IssuesService) DoTransition(opt *IssuesDoTransitionOption) (v *IssuesDoTransition, resp *http.Response, err error) {
+func (s *IssuesService) DoTransition(opt *IssuesDoTransitionOptions) (v *IssuesDoTransition, resp *http.Response, err error) {
 	err = s.ValidateDoTransitionOpt(opt)
 	if err != nil {
 		return
@@ -944,7 +944,7 @@ func (s *IssuesService) DoTransition(opt *IssuesDoTransitionOption) (v *IssuesDo
 
 // EditComment edits a comment.
 // Requires authentication and 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) EditComment(opt *IssuesEditCommentOption) (v *IssuesEditComment, resp *http.Response, err error) {
+func (s *IssuesService) EditComment(opt *IssuesEditCommentOptions) (v *IssuesEditComment, resp *http.Response, err error) {
 	err = s.ValidateEditCommentOpt(opt)
 	if err != nil {
 		return
@@ -968,7 +968,7 @@ func (s *IssuesService) EditComment(opt *IssuesEditCommentOption) (v *IssuesEdit
 // List lists issues in degraded mode when issue indexing is running.
 // Either 'project' or 'component' parameter is required.
 // Requires 'Browse' permission on the specified project.
-func (s *IssuesService) List(opt *IssuesListOption) (v *IssuesList, resp *http.Response, err error) {
+func (s *IssuesService) List(opt *IssuesListOptions) (v *IssuesList, resp *http.Response, err error) {
 	err = s.ValidateListOpt(opt)
 	if err != nil {
 		return
@@ -992,7 +992,7 @@ func (s *IssuesService) List(opt *IssuesListOption) (v *IssuesList, resp *http.R
 // Pull fetches all issues for a given branch.
 // The issues returned are not paginated, so the response size can be big.
 // Requires 'Browse' permission on the project.
-func (s *IssuesService) Pull(opt *IssuesPullOption) (v []byte, resp *http.Response, err error) {
+func (s *IssuesService) Pull(opt *IssuesPullOptions) (v []byte, resp *http.Response, err error) {
 	err = s.ValidatePullOpt(opt)
 	if err != nil {
 		return
@@ -1014,7 +1014,7 @@ func (s *IssuesService) Pull(opt *IssuesPullOption) (v []byte, resp *http.Respon
 // PullTaint fetches all taint vulnerabilities for a given branch.
 // The vulnerabilities returned are not paginated, so the response size can be big.
 // Requires 'Browse' permission on the project.
-func (s *IssuesService) PullTaint(opt *IssuesPullTaintOption) (v []byte, resp *http.Response, err error) {
+func (s *IssuesService) PullTaint(opt *IssuesPullTaintOptions) (v []byte, resp *http.Response, err error) {
 	err = s.ValidatePullTaintOpt(opt)
 	if err != nil {
 		return
@@ -1035,7 +1035,7 @@ func (s *IssuesService) PullTaint(opt *IssuesPullTaintOption) (v []byte, resp *h
 
 // Reindex triggers reindexing of issues for a project.
 // Requires 'Administer System' permission.
-func (s *IssuesService) Reindex(opt *IssuesReindexOption) (resp *http.Response, err error) {
+func (s *IssuesService) Reindex(opt *IssuesReindexOptions) (resp *http.Response, err error) {
 	err = s.ValidateReindexOpt(opt)
 	if err != nil {
 		return
@@ -1058,7 +1058,7 @@ func (s *IssuesService) Reindex(opt *IssuesReindexOption) (resp *http.Response, 
 // Requires 'Browse' permission on the specified project(s).
 // For applications, it also requires 'Browse' permission on child projects.
 // Returns 503 when issue indexing is in progress.
-func (s *IssuesService) Search(opt *IssuesSearchOption) (v *IssuesSearch, resp *http.Response, err error) {
+func (s *IssuesService) Search(opt *IssuesSearchOptions) (v *IssuesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
@@ -1081,7 +1081,7 @@ func (s *IssuesService) Search(opt *IssuesSearchOption) (v *IssuesSearch, resp *
 
 // SetSeverity changes the severity of an issue.
 // Requires authentication, 'Browse' and 'Administer Issues' permissions on the project.
-func (s *IssuesService) SetSeverity(opt *IssuesSetSeverityOption) (v *IssuesSetSeverity, resp *http.Response, err error) {
+func (s *IssuesService) SetSeverity(opt *IssuesSetSeverityOptions) (v *IssuesSetSeverity, resp *http.Response, err error) {
 	err = s.ValidateSetSeverityOpt(opt)
 	if err != nil {
 		return
@@ -1104,7 +1104,7 @@ func (s *IssuesService) SetSeverity(opt *IssuesSetSeverityOption) (v *IssuesSetS
 
 // SetTags sets tags on an issue.
 // Requires authentication and 'Browse' permission on the project.
-func (s *IssuesService) SetTags(opt *IssuesSetTagsOption) (v *IssuesSetTags, resp *http.Response, err error) {
+func (s *IssuesService) SetTags(opt *IssuesSetTagsOptions) (v *IssuesSetTags, resp *http.Response, err error) {
 	err = s.ValidateSetTagsOpt(opt)
 	if err != nil {
 		return
@@ -1127,7 +1127,7 @@ func (s *IssuesService) SetTags(opt *IssuesSetTagsOption) (v *IssuesSetTags, res
 
 // SetType changes the type of an issue.
 // Requires authentication, 'Browse' and 'Administer Issues' permissions on the project.
-func (s *IssuesService) SetType(opt *IssuesSetTypeOption) (v *IssuesSetType, resp *http.Response, err error) {
+func (s *IssuesService) SetType(opt *IssuesSetTypeOptions) (v *IssuesSetType, resp *http.Response, err error) {
 	err = s.ValidateSetTypeOpt(opt)
 	if err != nil {
 		return
@@ -1149,7 +1149,7 @@ func (s *IssuesService) SetType(opt *IssuesSetTypeOption) (v *IssuesSetType, res
 }
 
 // Tags lists tags matching a given query.
-func (s *IssuesService) Tags(opt *IssuesTagsOption) (v *IssuesTags, resp *http.Response, err error) {
+func (s *IssuesService) Tags(opt *IssuesTagsOptions) (v *IssuesTags, resp *http.Response, err error) {
 	err = s.ValidateTagsOpt(opt)
 	if err != nil {
 		return
@@ -1175,7 +1175,7 @@ func (s *IssuesService) Tags(opt *IssuesTagsOption) (v *IssuesTags, resp *http.R
 // =============================================================================
 
 // ValidateAddCommentOpt validates the options for adding a comment.
-func (s *IssuesService) ValidateAddCommentOpt(opt *IssuesAddCommentOption) error {
+func (s *IssuesService) ValidateAddCommentOpt(opt *IssuesAddCommentOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesAddCommentOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1194,7 +1194,7 @@ func (s *IssuesService) ValidateAddCommentOpt(opt *IssuesAddCommentOption) error
 }
 
 // ValidateAnticipatedTransitionsOpt validates the options for anticipated transitions.
-func (s *IssuesService) ValidateAnticipatedTransitionsOpt(opt *IssuesAnticipatedTransitionsOption) error {
+func (s *IssuesService) ValidateAnticipatedTransitionsOpt(opt *IssuesAnticipatedTransitionsOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesAnticipatedTransitionsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1208,7 +1208,7 @@ func (s *IssuesService) ValidateAnticipatedTransitionsOpt(opt *IssuesAnticipated
 }
 
 // ValidateAssignOpt validates the options for assigning an issue.
-func (s *IssuesService) ValidateAssignOpt(opt *IssuesAssignOption) error {
+func (s *IssuesService) ValidateAssignOpt(opt *IssuesAssignOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesAssignOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1222,7 +1222,7 @@ func (s *IssuesService) ValidateAssignOpt(opt *IssuesAssignOption) error {
 }
 
 // ValidateAuthorsOpt validates the options for listing authors.
-func (s *IssuesService) ValidateAuthorsOpt(opt *IssuesAuthorsOption) error {
+func (s *IssuesService) ValidateAuthorsOpt(opt *IssuesAuthorsOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -1241,7 +1241,7 @@ func (s *IssuesService) ValidateAuthorsOpt(opt *IssuesAuthorsOption) error {
 }
 
 // ValidateBulkChangeOpt validates the options for bulk change.
-func (s *IssuesService) ValidateBulkChangeOpt(opt *IssuesBulkChangeOption) error {
+func (s *IssuesService) ValidateBulkChangeOpt(opt *IssuesBulkChangeOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesBulkChangeOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1278,7 +1278,7 @@ func (s *IssuesService) ValidateBulkChangeOpt(opt *IssuesBulkChangeOption) error
 }
 
 // ValidateChangelogOpt validates the options for changelog.
-func (s *IssuesService) ValidateChangelogOpt(opt *IssuesChangelogOption) error {
+func (s *IssuesService) ValidateChangelogOpt(opt *IssuesChangelogOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesChangelogOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1292,7 +1292,7 @@ func (s *IssuesService) ValidateChangelogOpt(opt *IssuesChangelogOption) error {
 }
 
 // ValidateComponentTagsOpt validates the options for component tags.
-func (s *IssuesService) ValidateComponentTagsOpt(opt *IssuesComponentTagsOption) error {
+func (s *IssuesService) ValidateComponentTagsOpt(opt *IssuesComponentTagsOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesComponentTagsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1306,7 +1306,7 @@ func (s *IssuesService) ValidateComponentTagsOpt(opt *IssuesComponentTagsOption)
 }
 
 // ValidateDeleteCommentOpt validates the options for deleting a comment.
-func (s *IssuesService) ValidateDeleteCommentOpt(opt *IssuesDeleteCommentOption) error {
+func (s *IssuesService) ValidateDeleteCommentOpt(opt *IssuesDeleteCommentOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesDeleteCommentOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1320,7 +1320,7 @@ func (s *IssuesService) ValidateDeleteCommentOpt(opt *IssuesDeleteCommentOption)
 }
 
 // ValidateDoTransitionOpt validates the options for doing a transition.
-func (s *IssuesService) ValidateDoTransitionOpt(opt *IssuesDoTransitionOption) error {
+func (s *IssuesService) ValidateDoTransitionOpt(opt *IssuesDoTransitionOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesDoTransitionOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1344,7 +1344,7 @@ func (s *IssuesService) ValidateDoTransitionOpt(opt *IssuesDoTransitionOption) e
 }
 
 // ValidateEditCommentOpt validates the options for editing a comment.
-func (s *IssuesService) ValidateEditCommentOpt(opt *IssuesEditCommentOption) error {
+func (s *IssuesService) ValidateEditCommentOpt(opt *IssuesEditCommentOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesEditCommentOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1363,7 +1363,7 @@ func (s *IssuesService) ValidateEditCommentOpt(opt *IssuesEditCommentOption) err
 }
 
 // ValidateListOpt validates the options for listing issues.
-func (s *IssuesService) ValidateListOpt(opt *IssuesListOption) error {
+func (s *IssuesService) ValidateListOpt(opt *IssuesListOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesListOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1391,7 +1391,7 @@ func (s *IssuesService) ValidateListOpt(opt *IssuesListOption) error {
 }
 
 // ValidatePullOpt validates the options for pulling issues.
-func (s *IssuesService) ValidatePullOpt(opt *IssuesPullOption) error {
+func (s *IssuesService) ValidatePullOpt(opt *IssuesPullOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesPullOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1413,7 +1413,7 @@ func (s *IssuesService) ValidatePullOpt(opt *IssuesPullOption) error {
 }
 
 // ValidatePullTaintOpt validates the options for pulling taint vulnerabilities.
-func (s *IssuesService) ValidatePullTaintOpt(opt *IssuesPullTaintOption) error {
+func (s *IssuesService) ValidatePullTaintOpt(opt *IssuesPullTaintOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesPullTaintOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1435,7 +1435,7 @@ func (s *IssuesService) ValidatePullTaintOpt(opt *IssuesPullTaintOption) error {
 }
 
 // ValidateReindexOpt validates the options for reindexing.
-func (s *IssuesService) ValidateReindexOpt(opt *IssuesReindexOption) error {
+func (s *IssuesService) ValidateReindexOpt(opt *IssuesReindexOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesReindexOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1451,7 +1451,7 @@ func (s *IssuesService) ValidateReindexOpt(opt *IssuesReindexOption) error {
 // ValidateSearchOpt validates the options for searching issues.
 //
 //nolint:cyclop,funlen,gocognit,gocyclo // Validation functions are naturally complex due to multiple checks
-func (s *IssuesService) ValidateSearchOpt(opt *IssuesSearchOption) error {
+func (s *IssuesService) ValidateSearchOpt(opt *IssuesSearchOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -1578,7 +1578,7 @@ func (s *IssuesService) ValidateSearchOpt(opt *IssuesSearchOption) error {
 }
 
 // ValidateSetSeverityOpt validates the options for setting severity.
-func (s *IssuesService) ValidateSetSeverityOpt(opt *IssuesSetSeverityOption) error {
+func (s *IssuesService) ValidateSetSeverityOpt(opt *IssuesSetSeverityOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesSetSeverityOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1600,7 +1600,7 @@ func (s *IssuesService) ValidateSetSeverityOpt(opt *IssuesSetSeverityOption) err
 }
 
 // ValidateSetTagsOpt validates the options for setting tags.
-func (s *IssuesService) ValidateSetTagsOpt(opt *IssuesSetTagsOption) error {
+func (s *IssuesService) ValidateSetTagsOpt(opt *IssuesSetTagsOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesSetTagsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1614,7 +1614,7 @@ func (s *IssuesService) ValidateSetTagsOpt(opt *IssuesSetTagsOption) error {
 }
 
 // ValidateSetTypeOpt validates the options for setting type.
-func (s *IssuesService) ValidateSetTypeOpt(opt *IssuesSetTypeOption) error {
+func (s *IssuesService) ValidateSetTypeOpt(opt *IssuesSetTypeOptions) error {
 	if opt == nil {
 		return NewValidationError("IssuesSetTypeOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1638,7 +1638,7 @@ func (s *IssuesService) ValidateSetTypeOpt(opt *IssuesSetTypeOption) error {
 }
 
 // ValidateTagsOpt validates the options for listing tags.
-func (s *IssuesService) ValidateTagsOpt(opt *IssuesTagsOption) error {
+func (s *IssuesService) ValidateTagsOpt(opt *IssuesTagsOptions) error {
 	if opt == nil {
 		return nil
 	}

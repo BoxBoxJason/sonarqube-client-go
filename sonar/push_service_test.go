@@ -14,7 +14,7 @@ func TestPush_SonarlintEvents(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &PushSonarlintEventsOption{
+	opt := &PushSonarlintEventsOptions{
 		Languages:   []string{"java", "go"},
 		ProjectKeys: []string{"my-project"},
 	}
@@ -29,12 +29,12 @@ func TestPush_SonarlintEvents_Validation(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		opt       *PushSonarlintEventsOption
+		opt       *PushSonarlintEventsOptions
 		wantField string
 	}{
 		{"nil option", nil, "opt"},
-		{"missing languages", &PushSonarlintEventsOption{ProjectKeys: []string{"my-project"}}, "Languages"},
-		{"missing project keys", &PushSonarlintEventsOption{Languages: []string{"java"}}, "ProjectKeys"},
+		{"missing languages", &PushSonarlintEventsOptions{ProjectKeys: []string{"my-project"}}, "Languages"},
+		{"missing project keys", &PushSonarlintEventsOptions{Languages: []string{"java"}}, "ProjectKeys"},
 	}
 
 	for _, tt := range tests {
@@ -54,14 +54,14 @@ func TestPush_ValidateSonarlintEventsOpt(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		opt       *PushSonarlintEventsOption
+		opt       *PushSonarlintEventsOptions
 		wantErr   bool
 		wantField string
 	}{
 		{"nil option", nil, true, "opt"},
-		{"missing languages", &PushSonarlintEventsOption{ProjectKeys: []string{"my-project"}}, true, "Languages"},
-		{"missing project keys", &PushSonarlintEventsOption{Languages: []string{"java"}}, true, "ProjectKeys"},
-		{"valid option", &PushSonarlintEventsOption{Languages: []string{"java", "go"}, ProjectKeys: []string{"my-project"}}, false, ""},
+		{"missing languages", &PushSonarlintEventsOptions{ProjectKeys: []string{"my-project"}}, true, "Languages"},
+		{"missing project keys", &PushSonarlintEventsOptions{Languages: []string{"java"}}, true, "ProjectKeys"},
+		{"valid option", &PushSonarlintEventsOptions{Languages: []string{"java", "go"}, ProjectKeys: []string{"my-project"}}, false, ""},
 	}
 
 	for _, tt := range tests {

@@ -49,7 +49,7 @@ func TestCe_Activity(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeActivityOption{
+	opt := &CeActivityOptions{
 		Component: "my-project",
 		Statuses:  []string{"SUCCESS"},
 	}
@@ -85,7 +85,7 @@ func TestCe_Activity_WithPagination(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeActivityOption{
+	opt := &CeActivityOptions{
 		CePaginationArgs: CePaginationArgs{
 			Page:     2,
 			PageSize: 50,
@@ -119,27 +119,27 @@ func TestCe_Activity_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *CeActivityOption
+		opt  *CeActivityOptions
 	}{
 		{
 			name: "invalid status",
-			opt:  &CeActivityOption{Statuses: []string{"INVALID_STATUS"}},
+			opt:  &CeActivityOptions{Statuses: []string{"INVALID_STATUS"}},
 		},
 		{
 			name: "invalid type",
-			opt:  &CeActivityOption{Type: "INVALID_TYPE"},
+			opt:  &CeActivityOptions{Type: "INVALID_TYPE"},
 		},
 		{
 			name: "page size too large",
-			opt:  &CeActivityOption{CePaginationArgs: CePaginationArgs{PageSize: 1001}},
+			opt:  &CeActivityOptions{CePaginationArgs: CePaginationArgs{PageSize: 1001}},
 		},
 		{
 			name: "page size too small",
-			opt:  &CeActivityOption{CePaginationArgs: CePaginationArgs{PageSize: 0}},
+			opt:  &CeActivityOptions{CePaginationArgs: CePaginationArgs{PageSize: 0}},
 		},
 		{
 			name: "page too small",
-			opt:  &CeActivityOption{CePaginationArgs: CePaginationArgs{Page: 0}},
+			opt:  &CeActivityOptions{CePaginationArgs: CePaginationArgs{Page: 0}},
 		},
 	}
 
@@ -169,7 +169,7 @@ func TestCe_ActivityStatus(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeActivityStatusOption{
+	opt := &CeActivityStatusOptions{
 		Component: "my-project",
 	}
 
@@ -224,7 +224,7 @@ func TestCe_AnalysisStatus(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeAnalysisStatusOption{
+	opt := &CeAnalysisStatusOptions{
 		Component: "my-project",
 		Branch:    "main",
 	}
@@ -247,7 +247,7 @@ func TestCe_AnalysisStatus_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, _, err = client.Ce.AnalysisStatus(&CeAnalysisStatusOption{})
+	_, _, err = client.Ce.AnalysisStatus(&CeAnalysisStatusOptions{})
 	assert.Error(t, err)
 }
 
@@ -262,7 +262,7 @@ func TestCe_Cancel(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeCancelOption{
+	opt := &CeCancelOptions{
 		ID: "task-123",
 	}
 
@@ -279,7 +279,7 @@ func TestCe_Cancel_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing ID should fail validation.
-	_, err = client.Ce.Cancel(&CeCancelOption{})
+	_, err = client.Ce.Cancel(&CeCancelOptions{})
 	assert.Error(t, err)
 }
 
@@ -322,7 +322,7 @@ func TestCe_Component(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeComponentOption{
+	opt := &CeComponentOptions{
 		Component: "my-project",
 	}
 
@@ -345,7 +345,7 @@ func TestCe_Component_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, _, err = client.Ce.Component(&CeComponentOption{})
+	_, _, err = client.Ce.Component(&CeComponentOptions{})
 	assert.Error(t, err)
 }
 
@@ -361,7 +361,7 @@ func TestCe_DismissAnalysisWarning(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeDismissAnalysisWarningOption{
+	opt := &CeDismissAnalysisWarningOptions{
 		Component: "my-project",
 		Warning:   "warning-key-1",
 	}
@@ -376,7 +376,7 @@ func TestCe_DismissAnalysisWarning_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *CeDismissAnalysisWarningOption
+		opt  *CeDismissAnalysisWarningOptions
 	}{
 		{
 			name: "nil option",
@@ -384,11 +384,11 @@ func TestCe_DismissAnalysisWarning_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing component",
-			opt:  &CeDismissAnalysisWarningOption{Warning: "warning-key"},
+			opt:  &CeDismissAnalysisWarningOptions{Warning: "warning-key"},
 		},
 		{
 			name: "missing warning",
-			opt:  &CeDismissAnalysisWarningOption{Component: "my-project"},
+			opt:  &CeDismissAnalysisWarningOptions{Component: "my-project"},
 		},
 	}
 
@@ -472,7 +472,7 @@ func TestCe_Submit(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeSubmitOption{
+	opt := &CeSubmitOptions{
 		ProjectKey:  "my-project",
 		ProjectName: "My Project",
 		Report:      "base64-encoded-report",
@@ -491,7 +491,7 @@ func TestCe_Submit_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *CeSubmitOption
+		opt  *CeSubmitOptions
 	}{
 		{
 			name: "nil option",
@@ -499,15 +499,15 @@ func TestCe_Submit_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing project key",
-			opt:  &CeSubmitOption{Report: "report"},
+			opt:  &CeSubmitOptions{Report: "report"},
 		},
 		{
 			name: "missing report",
-			opt:  &CeSubmitOption{ProjectKey: "my-project"},
+			opt:  &CeSubmitOptions{ProjectKey: "my-project"},
 		},
 		{
 			name: "project key too long",
-			opt: &CeSubmitOption{
+			opt: &CeSubmitOptions{
 				ProjectKey: string(make([]byte, 401)),
 				Report:     "report",
 			},
@@ -550,7 +550,7 @@ func TestCe_Task(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &CeTaskOption{
+	opt := &CeTaskOptions{
 		ID:               "task-123",
 		AdditionalFields: []string{"stacktrace"},
 	}
@@ -572,7 +572,7 @@ func TestCe_Task_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *CeTaskOption
+		opt  *CeTaskOptions
 	}{
 		{
 			name: "nil option",
@@ -580,11 +580,11 @@ func TestCe_Task_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing id",
-			opt:  &CeTaskOption{},
+			opt:  &CeTaskOptions{},
 		},
 		{
 			name: "invalid additional field",
-			opt:  &CeTaskOption{ID: "task-123", AdditionalFields: []string{"invalid"}},
+			opt:  &CeTaskOptions{ID: "task-123", AdditionalFields: []string{"invalid"}},
 		},
 	}
 
@@ -686,7 +686,7 @@ func TestCe_ValidateActivityOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *CeActivityOption
+		opt     *CeActivityOptions
 		wantErr bool
 	}{
 		{
@@ -696,40 +696,40 @@ func TestCe_ValidateActivityOpt(t *testing.T) {
 		},
 		{
 			name:    "empty option is valid",
-			opt:     &CeActivityOption{},
+			opt:     &CeActivityOptions{},
 			wantErr: false,
 		},
 		{
 			name: "valid statuses",
-			opt: &CeActivityOption{
+			opt: &CeActivityOptions{
 				Statuses: []string{"SUCCESS", "FAILED"},
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid status",
-			opt: &CeActivityOption{
+			opt: &CeActivityOptions{
 				Statuses: []string{"SUCCESS", "INVALID"},
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid type",
-			opt: &CeActivityOption{
+			opt: &CeActivityOptions{
 				Type: "REPORT",
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid type",
-			opt: &CeActivityOption{
+			opt: &CeActivityOptions{
 				Type: "INVALID_TYPE",
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid all fields",
-			opt: &CeActivityOption{
+			opt: &CeActivityOptions{
 				Component:    "my-project",
 				Statuses:     []string{"SUCCESS", "FAILED", "PENDING"},
 				Type:         "REPORT",
@@ -760,7 +760,7 @@ func TestCe_ValidateTaskOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *CeTaskOption
+		opt     *CeTaskOptions
 		wantErr bool
 	}{
 		{
@@ -770,19 +770,19 @@ func TestCe_ValidateTaskOpt(t *testing.T) {
 		},
 		{
 			name:    "missing id is invalid",
-			opt:     &CeTaskOption{},
+			opt:     &CeTaskOptions{},
 			wantErr: true,
 		},
 		{
 			name: "valid with id only",
-			opt: &CeTaskOption{
+			opt: &CeTaskOptions{
 				ID: "task-123",
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid with all additional fields",
-			opt: &CeTaskOption{
+			opt: &CeTaskOptions{
 				ID:               "task-123",
 				AdditionalFields: []string{"stacktrace", "scannerContext", "warnings"},
 			},
@@ -790,7 +790,7 @@ func TestCe_ValidateTaskOpt(t *testing.T) {
 		},
 		{
 			name: "invalid additional field",
-			opt: &CeTaskOption{
+			opt: &CeTaskOptions{
 				ID:               "task-123",
 				AdditionalFields: []string{"invalid"},
 			},

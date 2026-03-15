@@ -237,7 +237,7 @@ func main() {
  url := "https://your-sonarqube-instance.com"
  token := "your-sonarqube-token"
 
- client, err := sonar.NewClient(&sonar.ClientCreateOption{
+ client, err := sonar.NewClient(&sonar.ClientCreateOptions{
   URL:   &url,
   Token: &token,
  })
@@ -246,7 +246,7 @@ func main() {
  }
 
  // Search for projects
- projects, _, err := client.Projects.Search(context.Background(), &sonar.ProjectsSearchOption{
+ projects, _, err := client.Projects.Search(context.Background(), &sonar.ProjectsSearchOptions{
   Ps: sonar.Int(10),
  })
  if err != nil {
@@ -259,7 +259,7 @@ func main() {
  }
 
  // Search for open issues
- issues, _, err := client.Issues.Search(context.Background(), &sonar.IssuesSearchOption{
+ issues, _, err := client.Issues.Search(context.Background(), &sonar.IssuesSearchOptions{
   Projects: sonar.String("my-project-key"),
   Statuses: sonar.String("OPEN,CONFIRMED"),
  })
@@ -276,7 +276,7 @@ func main() {
 **Token authentication (recommended):**
 
 ```go
-client, err := sonar.NewClient(&sonar.ClientCreateOption{
+client, err := sonar.NewClient(&sonar.ClientCreateOptions{
  URL:   &url,
  Token: &token,
 })
@@ -285,7 +285,7 @@ client, err := sonar.NewClient(&sonar.ClientCreateOption{
 **Username/password authentication:**
 
 ```go
-client, err := sonar.NewClient(&sonar.ClientCreateOption{
+client, err := sonar.NewClient(&sonar.ClientCreateOptions{
  URL:      &url,
  Username: &username,
  Password: &password,
@@ -302,7 +302,7 @@ import "time"
 
 httpClient := &http.Client{Timeout: 60 * time.Second}
 
-client, err := sonar.NewClient(&sonar.ClientCreateOption{
+client, err := sonar.NewClient(&sonar.ClientCreateOptions{
  URL:        &url,
  Token:      &token,
  HttpClient: httpClient,
@@ -312,7 +312,7 @@ client, err := sonar.NewClient(&sonar.ClientCreateOption{
 **Quality gate status:**
 
 ```go
-status, _, err := client.Qualitygates.ProjectStatus(ctx, &sonar.QualitygatesProjectStatusOption{
+status, _, err := client.Qualitygates.ProjectStatus(ctx, &sonar.QualitygatesProjectStatusOptions{
  ProjectKey: sonar.String("my-project"),
 })
 fmt.Printf("Quality Gate: %s\n", status.ProjectStatus.Status)
@@ -321,7 +321,7 @@ fmt.Printf("Quality Gate: %s\n", status.ProjectStatus.Status)
 **User management:**
 
 ```go
-users, _, err := client.Users.Search(&sonar.UsersSearchOption{
+users, _, err := client.Users.Search(&sonar.UsersSearchOptions{
  Query: "john",
 })
 for _, user := range users.Users {

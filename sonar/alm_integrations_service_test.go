@@ -18,7 +18,7 @@ func TestAlmIntegrations_CheckPat(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsCheckPatOption{
+	opt := &AlmIntegrationsCheckPatOptions{
 		AlmSetting: "my-azure-setting",
 	}
 
@@ -35,11 +35,11 @@ func TestAlmIntegrations_CheckPat_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.CheckPat(&AlmIntegrationsCheckPatOption{})
+	_, _, err = client.AlmIntegrations.CheckPat(&AlmIntegrationsCheckPatOptions{})
 	assert.Error(t, err)
 
 	// Test AlmSetting too long
-	_, _, err = client.AlmIntegrations.CheckPat(&AlmIntegrationsCheckPatOption{
+	_, _, err = client.AlmIntegrations.CheckPat(&AlmIntegrationsCheckPatOptions{
 		AlmSetting: strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
 	assert.Error(t, err)
@@ -54,7 +54,7 @@ func TestAlmIntegrations_GetGithubClientId(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsGetGithubClientIdOption{
+	opt := &AlmIntegrationsGetGithubClientIdOptions{
 		AlmSetting: "my-github-setting",
 	}
 
@@ -73,7 +73,7 @@ func TestAlmIntegrations_GetGithubClientId_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.GetGithubClientId(&AlmIntegrationsGetGithubClientIdOption{})
+	_, _, err = client.AlmIntegrations.GetGithubClientId(&AlmIntegrationsGetGithubClientIdOptions{})
 	assert.Error(t, err)
 }
 
@@ -86,7 +86,7 @@ func TestAlmIntegrations_ImportAzureProject(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsImportAzureProjectOption{
+	opt := &AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:    "my-azure-project",
 		RepositoryName: "my-azure-repo",
 	}
@@ -104,19 +104,19 @@ func TestAlmIntegrations_ImportAzureProject_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing ProjectName
-	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOption{
+	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOptions{
 		RepositoryName: "repo",
 	})
 	assert.Error(t, err)
 
 	// Test missing RepositoryName
-	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOption{
+	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOptions{
 		ProjectName: "project",
 	})
 	assert.Error(t, err)
 
 	// Test invalid NewCodeDefinitionType
-	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOption{
+	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:           "project",
 		RepositoryName:        "repo",
 		NewCodeDefinitionType: "INVALID_TYPE",
@@ -124,7 +124,7 @@ func TestAlmIntegrations_ImportAzureProject_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test NUMBER_OF_DAYS without value
-	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOption{
+	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:           "project",
 		RepositoryName:        "repo",
 		NewCodeDefinitionType: "NUMBER_OF_DAYS",
@@ -132,7 +132,7 @@ func TestAlmIntegrations_ImportAzureProject_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test PREVIOUS_VERSION with value
-	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOption{
+	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:            "project",
 		RepositoryName:         "repo",
 		NewCodeDefinitionType:  "PREVIOUS_VERSION",
@@ -147,7 +147,7 @@ func TestAlmIntegrations_ImportAzureProject_WithNewCodeDefinition(t *testing.T) 
 	client := newTestClient(t, server.url())
 
 	// Test with PREVIOUS_VERSION
-	opt := &AlmIntegrationsImportAzureProjectOption{
+	opt := &AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:           "project",
 		RepositoryName:        "repo",
 		NewCodeDefinitionType: "PREVIOUS_VERSION",
@@ -158,7 +158,7 @@ func TestAlmIntegrations_ImportAzureProject_WithNewCodeDefinition(t *testing.T) 
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 
 	// Test with NUMBER_OF_DAYS
-	opt = &AlmIntegrationsImportAzureProjectOption{
+	opt = &AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:            "project",
 		RepositoryName:         "repo",
 		NewCodeDefinitionType:  "NUMBER_OF_DAYS",
@@ -179,7 +179,7 @@ func TestAlmIntegrations_ImportBitbucketCloudRepo(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsImportBitbucketCloudRepoOption{
+	opt := &AlmIntegrationsImportBitbucketCloudRepoOptions{
 		RepositorySlug: "my-repo",
 	}
 
@@ -196,7 +196,7 @@ func TestAlmIntegrations_ImportBitbucketCloudRepo_ValidationError(t *testing.T) 
 	assert.Error(t, err)
 
 	// Test missing RepositorySlug
-	_, err = client.AlmIntegrations.ImportBitbucketCloudRepo(&AlmIntegrationsImportBitbucketCloudRepoOption{})
+	_, err = client.AlmIntegrations.ImportBitbucketCloudRepo(&AlmIntegrationsImportBitbucketCloudRepoOptions{})
 	assert.Error(t, err)
 }
 
@@ -209,7 +209,7 @@ func TestAlmIntegrations_ImportBitbucketServerProject(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsImportBitbucketServerProjectOption{
+	opt := &AlmIntegrationsImportBitbucketServerProjectOptions{
 		ProjectKey:     "PRJ",
 		RepositorySlug: "my-repo",
 	}
@@ -227,13 +227,13 @@ func TestAlmIntegrations_ImportBitbucketServerProject_ValidationError(t *testing
 	assert.Error(t, err)
 
 	// Test missing ProjectKey
-	_, err = client.AlmIntegrations.ImportBitbucketServerProject(&AlmIntegrationsImportBitbucketServerProjectOption{
+	_, err = client.AlmIntegrations.ImportBitbucketServerProject(&AlmIntegrationsImportBitbucketServerProjectOptions{
 		RepositorySlug: "repo",
 	})
 	assert.Error(t, err)
 
 	// Test missing RepositorySlug
-	_, err = client.AlmIntegrations.ImportBitbucketServerProject(&AlmIntegrationsImportBitbucketServerProjectOption{
+	_, err = client.AlmIntegrations.ImportBitbucketServerProject(&AlmIntegrationsImportBitbucketServerProjectOptions{
 		ProjectKey: "PRJ",
 	})
 	assert.Error(t, err)
@@ -248,7 +248,7 @@ func TestAlmIntegrations_ImportGithubProject(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsImportGithubProjectOption{
+	opt := &AlmIntegrationsImportGithubProjectOptions{
 		RepositoryKey: "octocat/hello-world",
 	}
 
@@ -265,11 +265,11 @@ func TestAlmIntegrations_ImportGithubProject_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing RepositoryKey
-	_, err = client.AlmIntegrations.ImportGithubProject(&AlmIntegrationsImportGithubProjectOption{})
+	_, err = client.AlmIntegrations.ImportGithubProject(&AlmIntegrationsImportGithubProjectOptions{})
 	assert.Error(t, err)
 
 	// Test RepositoryKey too long
-	_, err = client.AlmIntegrations.ImportGithubProject(&AlmIntegrationsImportGithubProjectOption{
+	_, err = client.AlmIntegrations.ImportGithubProject(&AlmIntegrationsImportGithubProjectOptions{
 		RepositoryKey: strings.Repeat("a", MaxGitHubRepoKeyLength+1),
 	})
 	assert.Error(t, err)
@@ -284,7 +284,7 @@ func TestAlmIntegrations_ImportGitlabProject(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsImportGitlabProjectOption{
+	opt := &AlmIntegrationsImportGitlabProjectOptions{
 		GitlabProjectId: "12345",
 	}
 
@@ -301,7 +301,7 @@ func TestAlmIntegrations_ImportGitlabProject_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing GitlabProjectId
-	_, err = client.AlmIntegrations.ImportGitlabProject(&AlmIntegrationsImportGitlabProjectOption{})
+	_, err = client.AlmIntegrations.ImportGitlabProject(&AlmIntegrationsImportGitlabProjectOptions{})
 	assert.Error(t, err)
 }
 
@@ -314,7 +314,7 @@ func TestAlmIntegrations_ListAzureProjects(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsListAzureProjectsOption{
+	opt := &AlmIntegrationsListAzureProjectsOptions{
 		AlmSetting: "my-azure-setting",
 	}
 
@@ -333,7 +333,7 @@ func TestAlmIntegrations_ListAzureProjects_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.ListAzureProjects(&AlmIntegrationsListAzureProjectsOption{})
+	_, _, err = client.AlmIntegrations.ListAzureProjects(&AlmIntegrationsListAzureProjectsOptions{})
 	assert.Error(t, err)
 }
 
@@ -346,7 +346,7 @@ func TestAlmIntegrations_ListBitbucketServerProjects(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsListBitbucketServerProjectsOption{
+	opt := &AlmIntegrationsListBitbucketServerProjectsOptions{
 		AlmSetting: "my-bitbucket-setting",
 		PageSize:   25,
 	}
@@ -366,11 +366,11 @@ func TestAlmIntegrations_ListBitbucketServerProjects_ValidationError(t *testing.
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.ListBitbucketServerProjects(&AlmIntegrationsListBitbucketServerProjectsOption{})
+	_, _, err = client.AlmIntegrations.ListBitbucketServerProjects(&AlmIntegrationsListBitbucketServerProjectsOptions{})
 	assert.Error(t, err)
 
 	// Test PageSize out of range
-	_, _, err = client.AlmIntegrations.ListBitbucketServerProjects(&AlmIntegrationsListBitbucketServerProjectsOption{
+	_, _, err = client.AlmIntegrations.ListBitbucketServerProjects(&AlmIntegrationsListBitbucketServerProjectsOptions{
 		AlmSetting: "setting",
 		PageSize:   MaxPageSizeAlmIntegrations + 1,
 	})
@@ -386,7 +386,7 @@ func TestAlmIntegrations_ListGithubOrganizations(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsListGithubOrganizationsOption{
+	opt := &AlmIntegrationsListGithubOrganizationsOptions{
 		AlmSetting: "my-github-setting",
 	}
 
@@ -405,11 +405,11 @@ func TestAlmIntegrations_ListGithubOrganizations_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.ListGithubOrganizations(&AlmIntegrationsListGithubOrganizationsOption{})
+	_, _, err = client.AlmIntegrations.ListGithubOrganizations(&AlmIntegrationsListGithubOrganizationsOptions{})
 	assert.Error(t, err)
 
 	// Test Token too long
-	_, _, err = client.AlmIntegrations.ListGithubOrganizations(&AlmIntegrationsListGithubOrganizationsOption{
+	_, _, err = client.AlmIntegrations.ListGithubOrganizations(&AlmIntegrationsListGithubOrganizationsOptions{
 		AlmSetting: "setting",
 		Token:      strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
@@ -425,7 +425,7 @@ func TestAlmIntegrations_ListGithubRepositories(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsListGithubRepositoriesOption{
+	opt := &AlmIntegrationsListGithubRepositoriesOptions{
 		AlmSetting:   "my-github-setting",
 		Organization: "octocat",
 	}
@@ -445,13 +445,13 @@ func TestAlmIntegrations_ListGithubRepositories_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.ListGithubRepositories(&AlmIntegrationsListGithubRepositoriesOption{
+	_, _, err = client.AlmIntegrations.ListGithubRepositories(&AlmIntegrationsListGithubRepositoriesOptions{
 		Organization: "octocat",
 	})
 	assert.Error(t, err)
 
 	// Test missing Organization
-	_, _, err = client.AlmIntegrations.ListGithubRepositories(&AlmIntegrationsListGithubRepositoriesOption{
+	_, _, err = client.AlmIntegrations.ListGithubRepositories(&AlmIntegrationsListGithubRepositoriesOptions{
 		AlmSetting: "setting",
 	})
 	assert.Error(t, err)
@@ -466,7 +466,7 @@ func TestAlmIntegrations_SearchAzureRepos(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsSearchAzureReposOption{
+	opt := &AlmIntegrationsSearchAzureReposOptions{
 		AlmSetting: "my-azure-setting",
 	}
 
@@ -485,18 +485,18 @@ func TestAlmIntegrations_SearchAzureRepos_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.SearchAzureRepos(&AlmIntegrationsSearchAzureReposOption{})
+	_, _, err = client.AlmIntegrations.SearchAzureRepos(&AlmIntegrationsSearchAzureReposOptions{})
 	assert.Error(t, err)
 
 	// Test ProjectName too long
-	_, _, err = client.AlmIntegrations.SearchAzureRepos(&AlmIntegrationsSearchAzureReposOption{
+	_, _, err = client.AlmIntegrations.SearchAzureRepos(&AlmIntegrationsSearchAzureReposOptions{
 		AlmSetting:  "setting",
 		ProjectName: strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
 	assert.Error(t, err)
 
 	// Test SearchQuery too long
-	_, _, err = client.AlmIntegrations.SearchAzureRepos(&AlmIntegrationsSearchAzureReposOption{
+	_, _, err = client.AlmIntegrations.SearchAzureRepos(&AlmIntegrationsSearchAzureReposOptions{
 		AlmSetting:  "setting",
 		SearchQuery: strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
@@ -512,7 +512,7 @@ func TestAlmIntegrations_SearchBitbucketCloudRepos(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsSearchBitbucketCloudReposOption{
+	opt := &AlmIntegrationsSearchBitbucketCloudReposOptions{
 		AlmSetting: "my-bitbucket-setting",
 	}
 
@@ -532,11 +532,11 @@ func TestAlmIntegrations_SearchBitbucketCloudRepos_ValidationError(t *testing.T)
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.SearchBitbucketCloudRepos(&AlmIntegrationsSearchBitbucketCloudReposOption{})
+	_, _, err = client.AlmIntegrations.SearchBitbucketCloudRepos(&AlmIntegrationsSearchBitbucketCloudReposOptions{})
 	assert.Error(t, err)
 
 	// Test PageSize out of range
-	_, _, err = client.AlmIntegrations.SearchBitbucketCloudRepos(&AlmIntegrationsSearchBitbucketCloudReposOption{
+	_, _, err = client.AlmIntegrations.SearchBitbucketCloudRepos(&AlmIntegrationsSearchBitbucketCloudReposOptions{
 		AlmSetting: "setting",
 		PaginationArgs: PaginationArgs{
 			PageSize: MaxPageSizeAlmIntegrations + 1,
@@ -545,7 +545,7 @@ func TestAlmIntegrations_SearchBitbucketCloudRepos_ValidationError(t *testing.T)
 	assert.Error(t, err)
 
 	// Test RepositoryName too long
-	_, _, err = client.AlmIntegrations.SearchBitbucketCloudRepos(&AlmIntegrationsSearchBitbucketCloudReposOption{
+	_, _, err = client.AlmIntegrations.SearchBitbucketCloudRepos(&AlmIntegrationsSearchBitbucketCloudReposOptions{
 		AlmSetting:     "setting",
 		RepositoryName: strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
@@ -561,7 +561,7 @@ func TestAlmIntegrations_SearchBitbucketServerRepos(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsSearchBitbucketServerReposOption{
+	opt := &AlmIntegrationsSearchBitbucketServerReposOptions{
 		AlmSetting: "my-bitbucket-setting",
 	}
 
@@ -580,25 +580,25 @@ func TestAlmIntegrations_SearchBitbucketServerRepos_ValidationError(t *testing.T
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOption{})
+	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOptions{})
 	assert.Error(t, err)
 
 	// Test PageSize out of range
-	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOption{
+	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOptions{
 		AlmSetting: "setting",
 		PageSize:   MaxPageSizeAlmIntegrations + 1,
 	})
 	assert.Error(t, err)
 
 	// Test ProjectName too long
-	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOption{
+	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOptions{
 		AlmSetting:  "setting",
 		ProjectName: strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
 	assert.Error(t, err)
 
 	// Test RepositoryName too long
-	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOption{
+	_, _, err = client.AlmIntegrations.SearchBitbucketServerRepos(&AlmIntegrationsSearchBitbucketServerReposOptions{
 		AlmSetting:     "setting",
 		RepositoryName: strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
@@ -614,7 +614,7 @@ func TestAlmIntegrations_SearchGitlabRepos(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsSearchGitlabReposOption{
+	opt := &AlmIntegrationsSearchGitlabReposOptions{
 		AlmSetting: "my-gitlab-setting",
 	}
 
@@ -633,11 +633,11 @@ func TestAlmIntegrations_SearchGitlabRepos_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.SearchGitlabRepos(&AlmIntegrationsSearchGitlabReposOption{})
+	_, _, err = client.AlmIntegrations.SearchGitlabRepos(&AlmIntegrationsSearchGitlabReposOptions{})
 	assert.Error(t, err)
 
 	// Test PageSize out of range
-	_, _, err = client.AlmIntegrations.SearchGitlabRepos(&AlmIntegrationsSearchGitlabReposOption{
+	_, _, err = client.AlmIntegrations.SearchGitlabRepos(&AlmIntegrationsSearchGitlabReposOptions{
 		AlmSetting: "setting",
 		PaginationArgs: PaginationArgs{
 			PageSize: MaxPageSizeAlmIntegrations + 1,
@@ -646,7 +646,7 @@ func TestAlmIntegrations_SearchGitlabRepos_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test ProjectName too long
-	_, _, err = client.AlmIntegrations.SearchGitlabRepos(&AlmIntegrationsSearchGitlabReposOption{
+	_, _, err = client.AlmIntegrations.SearchGitlabRepos(&AlmIntegrationsSearchGitlabReposOptions{
 		AlmSetting:  "setting",
 		ProjectName: strings.Repeat("a", MaxAlmSettingKeyLength+1),
 	})
@@ -662,7 +662,7 @@ func TestAlmIntegrations_SetPat(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsSetPatOption{
+	opt := &AlmIntegrationsSetPatOptions{
 		AlmSetting: "my-setting",
 		Pat:        "my-personal-access-token",
 	}
@@ -678,7 +678,7 @@ func TestAlmIntegrations_SetPat_WithUsername(t *testing.T) {
 	client := newTestClient(t, server.url())
 
 	// Test with username (for Bitbucket Cloud)
-	opt := &AlmIntegrationsSetPatOption{
+	opt := &AlmIntegrationsSetPatOptions{
 		AlmSetting: "my-bitbucket-cloud-setting",
 		Pat:        "my-app-password",
 		Username:   "my-username",
@@ -697,19 +697,19 @@ func TestAlmIntegrations_SetPat_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Pat
-	_, err = client.AlmIntegrations.SetPat(&AlmIntegrationsSetPatOption{
+	_, err = client.AlmIntegrations.SetPat(&AlmIntegrationsSetPatOptions{
 		AlmSetting: "setting",
 	})
 	assert.Error(t, err)
 
 	// Test Pat too long
-	_, err = client.AlmIntegrations.SetPat(&AlmIntegrationsSetPatOption{
+	_, err = client.AlmIntegrations.SetPat(&AlmIntegrationsSetPatOptions{
 		Pat: strings.Repeat("a", MaxPatLength+1),
 	})
 	assert.Error(t, err)
 
 	// Test Username too long
-	_, err = client.AlmIntegrations.SetPat(&AlmIntegrationsSetPatOption{
+	_, err = client.AlmIntegrations.SetPat(&AlmIntegrationsSetPatOptions{
 		Pat:      "token",
 		Username: strings.Repeat("a", MaxUsernameLength+1),
 	})

@@ -280,8 +280,8 @@ type RulesUpdate struct {
 	Rule Rule `json:"rule,omitzero"`
 }
 
-// RulesCreateOption contains options for creating a custom rule.
-type RulesCreateOption struct {
+// RulesCreateOptions contains options for creating a custom rule.
+type RulesCreateOptions struct {
 	// CleanCodeAttribute represents the Clean Code Attribute associated with the rule.
 	// Allowed values: CONVENTIONAL, FORMATTED, IDENTIFIABLE, CLEAR, COMPLETE, EFFICIENT,
 	// LOGICAL, DISTINCT, FOCUSED, MODULAR, TESTED, LAWFUL, RESPECTFUL, TRUSTWORTHY
@@ -317,17 +317,17 @@ type RulesCreateOption struct {
 	Type string `url:"type,omitempty"`
 }
 
-// RulesDeleteOption contains options for deleting a custom rule.
-type RulesDeleteOption struct {
+// RulesDeleteOptions contains options for deleting a custom rule.
+type RulesDeleteOptions struct {
 	// Key is the unique identifier of the rule to be deleted (required).
 	Key string `url:"key,omitempty"`
 }
 
-// RulesListOption contains options for listing rules.
+// RulesListOptions contains options for listing rules.
 // WARNING: Internal endpoint, may change without notice.
 //
 //nolint:govet // Field alignment is less important than logical grouping and readability
-type RulesListOption struct {
+type RulesListOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -343,8 +343,8 @@ type RulesListOption struct {
 	Asc bool `url:"asc,omitempty"`
 }
 
-// RulesRepositoriesOption contains options for listing rule repositories.
-type RulesRepositoriesOption struct {
+// RulesRepositoriesOptions contains options for listing rule repositories.
+type RulesRepositoriesOptions struct {
 	// Language filters repositories by programming language.
 	// If provided, only repositories for the given language will be returned.
 	Language string `url:"language,omitempty"`
@@ -352,10 +352,10 @@ type RulesRepositoriesOption struct {
 	Query string `url:"q,omitempty"`
 }
 
-// RulesSearchOption contains options for searching rules.
+// RulesSearchOptions contains options for searching rules.
 //
 //nolint:govet // Field alignment is less important than logical grouping and readability
-type RulesSearchOption struct {
+type RulesSearchOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -462,24 +462,24 @@ type RulesSearchOption struct {
 	Types []string `url:"types,omitempty,comma"`
 }
 
-// RulesShowOption contains options for showing a specific rule.
-type RulesShowOption struct {
+// RulesShowOptions contains options for showing a specific rule.
+type RulesShowOptions struct {
 	// Key is the unique identifier of the rule to be retrieved (required).
 	Key string `url:"key,omitempty"`
 	// Actives determines whether to include the list of quality profiles where the rule is active.
 	Actives bool `url:"actives,omitempty"`
 }
 
-// RulesTagsOption contains options for listing rule tags.
-type RulesTagsOption struct {
+// RulesTagsOptions contains options for listing rule tags.
+type RulesTagsOptions struct {
 	// Query limits the search to tags containing the supplied string.
 	Query string `url:"q,omitempty"`
 	// PageSize is the response page size (must be greater than 0 and less than or equal to 500).
 	PageSize int64 `url:"ps,omitempty"`
 }
 
-// RulesUpdateOption contains options for updating a rule.
-type RulesUpdateOption struct {
+// RulesUpdateOptions contains options for updating a rule.
+type RulesUpdateOptions struct {
 	// Impacts is a map of software quality to severity (e.g., MAINTAINABILITY: HIGH, SECURITY: LOW).
 	// Allowed keys: MAINTAINABILITY, RELIABILITY, SECURITY
 	// Allowed values: INFO, LOW, MEDIUM, HIGH, BLOCKER
@@ -537,7 +537,7 @@ func (s *RulesService) App() (v *RulesApp, resp *http.Response, err error) {
 
 // Create creates a custom rule.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *RulesService) Create(opt *RulesCreateOption) (v *RulesCreate, resp *http.Response, err error) {
+func (s *RulesService) Create(opt *RulesCreateOptions) (v *RulesCreate, resp *http.Response, err error) {
 	err = s.ValidateCreateOpt(opt)
 	if err != nil {
 		return
@@ -563,7 +563,7 @@ func (s *RulesService) Create(opt *RulesCreateOption) (v *RulesCreate, resp *htt
 
 // Delete deletes a custom rule.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *RulesService) Delete(opt *RulesDeleteOption) (resp *http.Response, err error) {
+func (s *RulesService) Delete(opt *RulesDeleteOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return
@@ -583,7 +583,7 @@ func (s *RulesService) Delete(opt *RulesDeleteOption) (resp *http.Response, err 
 }
 
 // List lists rules, excluding external rules and rules with status REMOVED.
-func (s *RulesService) List(opt *RulesListOption) (v *string, resp *http.Response, err error) {
+func (s *RulesService) List(opt *RulesListOptions) (v *string, resp *http.Response, err error) {
 	err = s.ValidateListOpt(opt)
 	if err != nil {
 		return
@@ -605,7 +605,7 @@ func (s *RulesService) List(opt *RulesListOption) (v *string, resp *http.Respons
 }
 
 // Repositories lists available rule repositories.
-func (s *RulesService) Repositories(opt *RulesRepositoriesOption) (v *RulesRepositories, resp *http.Response, err error) {
+func (s *RulesService) Repositories(opt *RulesRepositoriesOptions) (v *RulesRepositories, resp *http.Response, err error) {
 	err = s.ValidateRepositoriesOpt(opt)
 	if err != nil {
 		return
@@ -627,7 +627,7 @@ func (s *RulesService) Repositories(opt *RulesRepositoriesOption) (v *RulesRepos
 }
 
 // Search searches for a collection of relevant rules matching a specified query.
-func (s *RulesService) Search(opt *RulesSearchOption) (v *RulesSearch, resp *http.Response, err error) {
+func (s *RulesService) Search(opt *RulesSearchOptions) (v *RulesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
@@ -652,7 +652,7 @@ func (s *RulesService) Search(opt *RulesSearchOption) (v *RulesSearch, resp *htt
 }
 
 // Show retrieves detailed information about a specific rule.
-func (s *RulesService) Show(opt *RulesShowOption) (v *RulesShow, resp *http.Response, err error) {
+func (s *RulesService) Show(opt *RulesShowOptions) (v *RulesShow, resp *http.Response, err error) {
 	err = s.ValidateShowOpt(opt)
 	if err != nil {
 		return
@@ -674,7 +674,7 @@ func (s *RulesService) Show(opt *RulesShowOption) (v *RulesShow, resp *http.Resp
 }
 
 // Tags lists all available rule tags.
-func (s *RulesService) Tags(opt *RulesTagsOption) (v *RulesTags, resp *http.Response, err error) {
+func (s *RulesService) Tags(opt *RulesTagsOptions) (v *RulesTags, resp *http.Response, err error) {
 	err = s.ValidateTagsOpt(opt)
 	if err != nil {
 		return
@@ -697,7 +697,7 @@ func (s *RulesService) Tags(opt *RulesTagsOption) (v *RulesTags, resp *http.Resp
 
 // Update updates an existing rule.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *RulesService) Update(opt *RulesUpdateOption) (v *RulesUpdate, resp *http.Response, err error) {
+func (s *RulesService) Update(opt *RulesUpdateOptions) (v *RulesUpdate, resp *http.Response, err error) {
 	err = s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -735,7 +735,7 @@ func (s *RulesService) Update(opt *RulesUpdateOption) (v *RulesUpdate, resp *htt
 // ValidateCreateOpt validates the options for creating a custom rule.
 //
 //nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
-func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOption) error {
+func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("RulesCreateOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -818,7 +818,7 @@ func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOption) error {
 }
 
 // ValidateDeleteOpt validates the options for deleting a custom rule.
-func (s *RulesService) ValidateDeleteOpt(opt *RulesDeleteOption) error {
+func (s *RulesService) ValidateDeleteOpt(opt *RulesDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("RulesDeleteOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -832,7 +832,7 @@ func (s *RulesService) ValidateDeleteOpt(opt *RulesDeleteOption) error {
 }
 
 // ValidateListOpt validates the options for listing rules.
-func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
+func (s *RulesService) ValidateListOpt(opt *RulesListOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -855,7 +855,7 @@ func (s *RulesService) ValidateListOpt(opt *RulesListOption) error {
 }
 
 // ValidateRepositoriesOpt validates the options for listing rule repositories.
-func (s *RulesService) ValidateRepositoriesOpt(opt *RulesRepositoriesOption) error {
+func (s *RulesService) ValidateRepositoriesOpt(opt *RulesRepositoriesOptions) error {
 	// No specific validations needed for this endpoint
 	return nil
 }
@@ -863,7 +863,7 @@ func (s *RulesService) ValidateRepositoriesOpt(opt *RulesRepositoriesOption) err
 // ValidateSearchOpt validates the options for searching rules.
 //
 //nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
-func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOption) error {
+func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -968,7 +968,7 @@ func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOption) error {
 }
 
 // ValidateShowOpt validates the options for showing a specific rule.
-func (s *RulesService) ValidateShowOpt(opt *RulesShowOption) error {
+func (s *RulesService) ValidateShowOpt(opt *RulesShowOptions) error {
 	if opt == nil {
 		return NewValidationError("RulesShowOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -982,7 +982,7 @@ func (s *RulesService) ValidateShowOpt(opt *RulesShowOption) error {
 }
 
 // ValidateTagsOpt validates the options for listing rule tags.
-func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOption) error {
+func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -998,7 +998,7 @@ func (s *RulesService) ValidateTagsOpt(opt *RulesTagsOption) error {
 // ValidateUpdateOpt validates the options for updating a rule.
 //
 //nolint:cyclop // Validation functions are naturally complex due to multiple checks
-func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
+func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOptions) error {
 	if opt == nil {
 		return NewValidationError("RulesUpdateOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1058,10 +1058,10 @@ func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOption) error {
 	return nil
 }
 
-// convertCreateOptForURL converts RulesCreateOption to a URL-encodable format.
-func (s *RulesService) convertCreateOptForURL(opt *RulesCreateOption) *rulesCreateURLOption {
+// convertCreateOptForURL converts RulesCreateOptions to a URL-encodable format.
+func (s *RulesService) convertCreateOptForURL(opt *RulesCreateOptions) *rulesCreateURLOptions {
 	//nolint:exhaustruct // Only populate fields that have values
-	urlOpt := &rulesCreateURLOption{
+	urlOpt := &rulesCreateURLOptions{
 		CleanCodeAttribute:  opt.CleanCodeAttribute,
 		CustomKey:           opt.CustomKey,
 		MarkdownDescription: opt.MarkdownDescription,
@@ -1085,8 +1085,8 @@ func (s *RulesService) convertCreateOptForURL(opt *RulesCreateOption) *rulesCrea
 	return urlOpt
 }
 
-// rulesCreateURLOption is the URL-encodable version of RulesCreateOption.
-type rulesCreateURLOption struct {
+// rulesCreateURLOptions is the URL-encodable version of RulesCreateOption.
+type rulesCreateURLOptions struct {
 	CleanCodeAttribute  string `url:"cleanCodeAttribute,omitempty"`
 	CustomKey           string `url:"customKey,omitempty"`
 	Impacts             string `url:"impacts,omitempty"`
@@ -1100,10 +1100,10 @@ type rulesCreateURLOption struct {
 	Type                string `url:"type,omitempty"`
 }
 
-// convertUpdateOptForURL converts RulesUpdateOption to a URL-encodable format.
-func (s *RulesService) convertUpdateOptForURL(opt *RulesUpdateOption) *rulesUpdateURLOption {
+// convertUpdateOptForURL converts RulesUpdateOptions to a URL-encodable format.
+func (s *RulesService) convertUpdateOptForURL(opt *RulesUpdateOptions) *rulesUpdateURLOptions {
 	//nolint:exhaustruct // Only populate fields that have values
-	urlOpt := &rulesUpdateURLOption{
+	urlOpt := &rulesUpdateURLOptions{
 		Key:                        opt.Key,
 		MarkdownDescription:        opt.MarkdownDescription,
 		MarkdownNote:               opt.MarkdownNote,
@@ -1132,8 +1132,8 @@ func (s *RulesService) convertUpdateOptForURL(opt *RulesUpdateOption) *rulesUpda
 	return urlOpt
 }
 
-// rulesUpdateURLOption is the URL-encodable version of RulesUpdateOption.
-type rulesUpdateURLOption struct {
+// rulesUpdateURLOptions is the URL-encodable version of RulesUpdateOption.
+type rulesUpdateURLOptions struct {
 	Impacts                    string `url:"impacts,omitempty"`
 	Key                        string `url:"key,omitempty"`
 	MarkdownDescription        string `url:"markdownDescription,omitempty"`
@@ -1148,16 +1148,16 @@ type rulesUpdateURLOption struct {
 	Tags                       string `url:"tags,omitempty"`
 }
 
-// convertSearchOptForURL converts RulesSearchOption to a URL-encodable format.
+// convertSearchOptForURL converts RulesSearchOptions to a URL-encodable format.
 //
 //nolint:cyclop,funlen // Conversion functions need to handle many optional fields
-func (s *RulesService) convertSearchOptForURL(opt *RulesSearchOption) *rulesSearchURLOption {
+func (s *RulesService) convertSearchOptForURL(opt *RulesSearchOptions) *rulesSearchURLOptions {
 	if opt == nil {
 		return nil
 	}
 
 	//nolint:exhaustruct // Only populate fields that have values
-	urlOpt := &rulesSearchURLOption{
+	urlOpt := &rulesSearchURLOptions{
 		Page:             opt.Page,
 		PageSize:         opt.PageSize,
 		Activation:       opt.Activation,
@@ -1262,10 +1262,10 @@ func (s *RulesService) convertSearchOptForURL(opt *RulesSearchOption) *rulesSear
 	return urlOpt
 }
 
-// rulesSearchURLOption is the URL-encodable version of RulesSearchOption.
+// rulesSearchURLOptions is the URL-encodable version of RulesSearchOption.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order
-type rulesSearchURLOption struct {
+type rulesSearchURLOptions struct {
 	Page                         int64  `url:"p,omitempty"`
 	PageSize                     int64  `url:"ps,omitempty"`
 	Activation                   bool   `url:"activation,omitempty"`

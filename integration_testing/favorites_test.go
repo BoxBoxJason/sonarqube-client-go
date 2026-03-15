@@ -36,14 +36,14 @@ var _ = Describe("Favorites Service", Ordered, func() {
 
 		// Create a test project for favorites-related operations
 		projectKey = helpers.UniqueResourceName("fav")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    "Favorites Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -70,7 +70,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 			})
 
 			It("should search favorites with pagination", func() {
-				result, resp, err := client.Favorites.Search(&sonar.FavoritesSearchOption{
+				result, resp, err := client.Favorites.Search(&sonar.FavoritesSearchOptions{
 					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
 						Page:     1,
@@ -96,7 +96,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 			})
 
 			It("should fail without required component", func() {
-				resp, err := client.Favorites.Add(&sonar.FavoritesAddOption{})
+				resp, err := client.Favorites.Add(&sonar.FavoritesAddOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Component"))
 				Expect(resp).To(BeNil())
@@ -105,14 +105,14 @@ var _ = Describe("Favorites Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should add a project as favorite", func() {
-				resp, err := client.Favorites.Add(&sonar.FavoritesAddOption{
+				resp, err := client.Favorites.Add(&sonar.FavoritesAddOptions{
 					Component: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up: remove the favorite
-				_, _ = client.Favorites.Remove(&sonar.FavoritesRemoveOption{
+				_, _ = client.Favorites.Remove(&sonar.FavoritesRemoveOptions{
 					Component: projectKey,
 				})
 			})
@@ -120,7 +120,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 
 		Context("Non-Existent Component", func() {
 			It("should fail for non-existent component", func() {
-				resp, err := client.Favorites.Add(&sonar.FavoritesAddOption{
+				resp, err := client.Favorites.Add(&sonar.FavoritesAddOptions{
 					Component: "non-existent-component",
 				})
 				Expect(err).To(HaveOccurred())
@@ -144,7 +144,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 			})
 
 			It("should fail without required component", func() {
-				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOption{})
+				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Component"))
 				Expect(resp).To(BeNil())
@@ -154,13 +154,13 @@ var _ = Describe("Favorites Service", Ordered, func() {
 		Context("Valid Requests", func() {
 			It("should remove a project from favorites", func() {
 				// First add the project as favorite
-				_, err := client.Favorites.Add(&sonar.FavoritesAddOption{
+				_, err := client.Favorites.Add(&sonar.FavoritesAddOptions{
 					Component: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				// Now remove it
-				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOption{
+				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOptions{
 					Component: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -170,7 +170,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 
 		Context("Non-Existent Component", func() {
 			It("should fail for non-existent component", func() {
-				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOption{
+				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOptions{
 					Component: "non-existent-component",
 				})
 				Expect(err).To(HaveOccurred())
@@ -183,12 +183,12 @@ var _ = Describe("Favorites Service", Ordered, func() {
 		Context("Not Favorited Component", func() {
 			It("should fail when removing a component that is not favorited", func() {
 				// Ensure it's not favorited first
-				_, _ = client.Favorites.Remove(&sonar.FavoritesRemoveOption{
+				_, _ = client.Favorites.Remove(&sonar.FavoritesRemoveOptions{
 					Component: projectKey,
 				})
 
 				// Try to remove again
-				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOption{
+				resp, err := client.Favorites.Remove(&sonar.FavoritesRemoveOptions{
 					Component: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -205,7 +205,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 	Describe("Full Workflow", func() {
 		It("should add, verify, and remove a favorite", func() {
 			// Add favorite
-			resp, err := client.Favorites.Add(&sonar.FavoritesAddOption{
+			resp, err := client.Favorites.Add(&sonar.FavoritesAddOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -220,7 +220,7 @@ var _ = Describe("Favorites Service", Ordered, func() {
 			Expect(containsFavorite(searchResult.Favorites, projectKey)).To(BeTrue(), "Project should be in favorites")
 
 			// Remove favorite
-			resp, err = client.Favorites.Remove(&sonar.FavoritesRemoveOption{
+			resp, err = client.Favorites.Remove(&sonar.FavoritesRemoveOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())

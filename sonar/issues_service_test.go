@@ -29,7 +29,7 @@ func TestIssues_AddComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesAddCommentOption{
+	opt := &IssuesAddCommentOptions{
 		Issue: "AU-Tpxb--iU5OvuD2FLy",
 		Text:  "This is a comment",
 	}
@@ -44,7 +44,7 @@ func TestIssues_AddComment_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *IssuesAddCommentOption
+		opt  *IssuesAddCommentOptions
 	}{
 		{
 			name: "nil option",
@@ -52,11 +52,11 @@ func TestIssues_AddComment_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing Issue",
-			opt:  &IssuesAddCommentOption{Text: "test"},
+			opt:  &IssuesAddCommentOptions{Text: "test"},
 		},
 		{
 			name: "missing Text",
-			opt:  &IssuesAddCommentOption{Issue: "key"},
+			opt:  &IssuesAddCommentOptions{Issue: "key"},
 		},
 	}
 
@@ -89,7 +89,7 @@ func TestIssues_Assign(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesAssignOption{
+	opt := &IssuesAssignOptions{
 		Issue:    "test-key",
 		Assignee: "admin",
 	}
@@ -115,7 +115,7 @@ func TestIssues_Authors(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesAuthorsOption{
+	opt := &IssuesAuthorsOptions{
 		Project:  "my-project",
 		PageSize: 50,
 	}
@@ -128,7 +128,7 @@ func TestIssues_Authors(t *testing.T) {
 func TestIssues_Authors_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Issues.Authors(&IssuesAuthorsOption{PageSize: 150})
+	_, _, err := client.Issues.Authors(&IssuesAuthorsOptions{PageSize: 150})
 	assert.Error(t, err)
 }
 
@@ -148,7 +148,7 @@ func TestIssues_BulkChange(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesBulkChangeOption{
+	opt := &IssuesBulkChangeOptions{
 		Issues:      []string{"issue1", "issue2"},
 		SetSeverity: "MAJOR",
 		AddTags:     []string{"tag1", "tag2"},
@@ -164,7 +164,7 @@ func TestIssues_BulkChange_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *IssuesBulkChangeOption
+		opt  *IssuesBulkChangeOptions
 	}{
 		{
 			name: "nil option",
@@ -172,25 +172,25 @@ func TestIssues_BulkChange_ValidationError(t *testing.T) {
 		},
 		{
 			name: "empty issues",
-			opt:  &IssuesBulkChangeOption{},
+			opt:  &IssuesBulkChangeOptions{},
 		},
 		{
 			name: "invalid severity",
-			opt: &IssuesBulkChangeOption{
+			opt: &IssuesBulkChangeOptions{
 				Issues:      []string{"issue1"},
 				SetSeverity: "INVALID",
 			},
 		},
 		{
 			name: "invalid type",
-			opt: &IssuesBulkChangeOption{
+			opt: &IssuesBulkChangeOptions{
 				Issues:  []string{"issue1"},
 				SetType: "INVALID",
 			},
 		},
 		{
 			name: "invalid transition",
-			opt: &IssuesBulkChangeOption{
+			opt: &IssuesBulkChangeOptions{
 				Issues:       []string{"issue1"},
 				DoTransition: "invalid",
 			},
@@ -232,7 +232,7 @@ func TestIssues_Changelog(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesChangelogOption{Issue: "test-key"}
+	opt := &IssuesChangelogOptions{Issue: "test-key"}
 	result, resp, err := client.Issues.Changelog(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -255,7 +255,7 @@ func TestIssues_ComponentTags(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesComponentTagsOption{ComponentUuid: "uuid-123"}
+	opt := &IssuesComponentTagsOptions{ComponentUuid: "uuid-123"}
 	result, resp, err := client.Issues.ComponentTags(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -278,7 +278,7 @@ func TestIssues_DeleteComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesDeleteCommentOption{Comment: "comment-key"}
+	opt := &IssuesDeleteCommentOptions{Comment: "comment-key"}
 	result, resp, err := client.Issues.DeleteComment(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -301,7 +301,7 @@ func TestIssues_DoTransition(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesDoTransitionOption{
+	opt := &IssuesDoTransitionOptions{
 		Issue:      "test-key",
 		Transition: "confirm",
 	}
@@ -314,7 +314,7 @@ func TestIssues_DoTransition(t *testing.T) {
 func TestIssues_DoTransition_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Issues.DoTransition(&IssuesDoTransitionOption{
+	_, _, err := client.Issues.DoTransition(&IssuesDoTransitionOptions{
 		Issue:      "test-key",
 		Transition: "invalid",
 	})
@@ -337,7 +337,7 @@ func TestIssues_EditComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesEditCommentOption{
+	opt := &IssuesEditCommentOptions{
 		Comment: "comment-key",
 		Text:    "Updated comment",
 	}
@@ -367,7 +367,7 @@ func TestIssues_List(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesListOption{
+	opt := &IssuesListOptions{
 		Project: "my-project",
 	}
 	result, resp, err := client.Issues.List(opt)
@@ -381,7 +381,7 @@ func TestIssues_List_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *IssuesListOption
+		opt  *IssuesListOptions
 	}{
 		{
 			name: "nil option",
@@ -389,11 +389,11 @@ func TestIssues_List_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing project and component",
-			opt:  &IssuesListOption{},
+			opt:  &IssuesListOptions{},
 		},
 		{
 			name: "invalid type",
-			opt: &IssuesListOption{
+			opt: &IssuesListOptions{
 				Project: "my-project",
 				Types:   []string{"INVALID"},
 			},
@@ -431,7 +431,7 @@ func TestIssues_Search(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesSearchOption{
+	opt := &IssuesSearchOptions{
 		Projects:         []string{"my-project"},
 		Severities:       []string{"BLOCKER", "CRITICAL"},
 		Types:            []string{"BUG"},
@@ -448,35 +448,35 @@ func TestIssues_Search_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *IssuesSearchOption
+		opt  *IssuesSearchOptions
 	}{
 		{
 			name: "invalid severity",
-			opt: &IssuesSearchOption{
+			opt: &IssuesSearchOptions{
 				Severities: []string{"INVALID"},
 			},
 		},
 		{
 			name: "invalid type",
-			opt: &IssuesSearchOption{
+			opt: &IssuesSearchOptions{
 				Types: []string{"INVALID"},
 			},
 		},
 		{
 			name: "invalid impact severity",
-			opt: &IssuesSearchOption{
+			opt: &IssuesSearchOptions{
 				ImpactSeverities: []string{"INVALID"},
 			},
 		},
 		{
 			name: "invalid impact software quality",
-			opt: &IssuesSearchOption{
+			opt: &IssuesSearchOptions{
 				ImpactSoftwareQualities: []string{"INVALID"},
 			},
 		},
 		{
 			name: "invalid clean code attribute category",
-			opt: &IssuesSearchOption{
+			opt: &IssuesSearchOptions{
 				CleanCodeAttributeCategories: []string{"INVALID"},
 			},
 		},
@@ -506,7 +506,7 @@ func TestIssues_SetSeverity(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesSetSeverityOption{
+	opt := &IssuesSetSeverityOptions{
 		Issue:    "test-key",
 		Severity: "BLOCKER",
 	}
@@ -519,7 +519,7 @@ func TestIssues_SetSeverity(t *testing.T) {
 func TestIssues_SetSeverity_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Issues.SetSeverity(&IssuesSetSeverityOption{
+	_, _, err := client.Issues.SetSeverity(&IssuesSetSeverityOptions{
 		Issue:    "test-key",
 		Severity: "INVALID",
 	})
@@ -542,7 +542,7 @@ func TestIssues_SetTags(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesSetTagsOption{
+	opt := &IssuesSetTagsOptions{
 		Issue: "test-key",
 		Tags:  []string{"security", "cwe"},
 	}
@@ -568,7 +568,7 @@ func TestIssues_SetType(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesSetTypeOption{
+	opt := &IssuesSetTypeOptions{
 		Issue: "test-key",
 		Type:  "BUG",
 	}
@@ -583,19 +583,19 @@ func TestIssues_SetType_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *IssuesSetTypeOption
+		opt  *IssuesSetTypeOptions
 	}{
 		{
 			name: "missing issue",
-			opt:  &IssuesSetTypeOption{Type: "BUG"},
+			opt:  &IssuesSetTypeOptions{Type: "BUG"},
 		},
 		{
 			name: "missing type",
-			opt:  &IssuesSetTypeOption{Issue: "test-key"},
+			opt:  &IssuesSetTypeOptions{Issue: "test-key"},
 		},
 		{
 			name: "invalid type",
-			opt: &IssuesSetTypeOption{
+			opt: &IssuesSetTypeOptions{
 				Issue: "test-key",
 				Type:  "INVALID",
 			},
@@ -626,7 +626,7 @@ func TestIssues_Tags(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesTagsOption{
+	opt := &IssuesTagsOptions{
 		Project:  "my-project",
 		PageSize: 100,
 	}
@@ -652,7 +652,7 @@ func TestIssues_Pull(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesPullOption{
+	opt := &IssuesPullOptions{
 		ProjectKey: "my-project",
 		BranchName: "main",
 	}
@@ -667,7 +667,7 @@ func TestIssues_Pull_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *IssuesPullOption
+		opt  *IssuesPullOptions
 	}{
 		{
 			name: "nil option",
@@ -675,11 +675,11 @@ func TestIssues_Pull_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing project key",
-			opt:  &IssuesPullOption{},
+			opt:  &IssuesPullOptions{},
 		},
 		{
 			name: "invalid language",
-			opt: &IssuesPullOption{
+			opt: &IssuesPullOptions{
 				ProjectKey: "my-project",
 				Languages:  []string{"invalid-language"},
 			},
@@ -710,7 +710,7 @@ func TestIssues_PullTaint(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesPullTaintOption{
+	opt := &IssuesPullTaintOptions{
 		ProjectKey: "my-project",
 		BranchName: "main",
 	}
@@ -734,7 +734,7 @@ func TestIssues_Reindex(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesReindexOption{Project: "my-project"}
+	opt := &IssuesReindexOptions{Project: "my-project"}
 	resp, err := client.Issues.Reindex(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -754,7 +754,7 @@ func TestIssues_AnticipatedTransitions(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &IssuesAnticipatedTransitionsOption{ProjectKey: "my-project"}
+	opt := &IssuesAnticipatedTransitionsOptions{ProjectKey: "my-project"}
 	resp, err := client.Issues.AnticipatedTransitions(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
@@ -765,7 +765,7 @@ func TestIssues_AnticipatedTransitions_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *IssuesAnticipatedTransitionsOption
+		opt  *IssuesAnticipatedTransitionsOptions
 	}{
 		{
 			name: "nil option",
@@ -773,7 +773,7 @@ func TestIssues_AnticipatedTransitions_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing project key",
-			opt:  &IssuesAnticipatedTransitionsOption{},
+			opt:  &IssuesAnticipatedTransitionsOptions{},
 		},
 	}
 
@@ -794,7 +794,7 @@ func TestIssues_ValidateAssignOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesAssignOption
+		opt     *IssuesAssignOptions
 		wantErr bool
 	}{
 		{
@@ -804,12 +804,12 @@ func TestIssues_ValidateAssignOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Issue",
-			opt:     &IssuesAssignOption{},
+			opt:     &IssuesAssignOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesAssignOption{Issue: "issue-key"},
+			opt:     &IssuesAssignOptions{Issue: "issue-key"},
 			wantErr: false,
 		},
 	}
@@ -831,7 +831,7 @@ func TestIssues_ValidateChangelogOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesChangelogOption
+		opt     *IssuesChangelogOptions
 		wantErr bool
 	}{
 		{
@@ -841,12 +841,12 @@ func TestIssues_ValidateChangelogOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Issue",
-			opt:     &IssuesChangelogOption{},
+			opt:     &IssuesChangelogOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesChangelogOption{Issue: "issue-key"},
+			opt:     &IssuesChangelogOptions{Issue: "issue-key"},
 			wantErr: false,
 		},
 	}
@@ -868,7 +868,7 @@ func TestIssues_ValidateComponentTagsOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesComponentTagsOption
+		opt     *IssuesComponentTagsOptions
 		wantErr bool
 	}{
 		{
@@ -878,12 +878,12 @@ func TestIssues_ValidateComponentTagsOpt(t *testing.T) {
 		},
 		{
 			name:    "missing ComponentUuid",
-			opt:     &IssuesComponentTagsOption{},
+			opt:     &IssuesComponentTagsOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesComponentTagsOption{ComponentUuid: "uuid"},
+			opt:     &IssuesComponentTagsOptions{ComponentUuid: "uuid"},
 			wantErr: false,
 		},
 	}
@@ -905,7 +905,7 @@ func TestIssues_ValidateDeleteCommentOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesDeleteCommentOption
+		opt     *IssuesDeleteCommentOptions
 		wantErr bool
 	}{
 		{
@@ -915,12 +915,12 @@ func TestIssues_ValidateDeleteCommentOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Comment",
-			opt:     &IssuesDeleteCommentOption{},
+			opt:     &IssuesDeleteCommentOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesDeleteCommentOption{Comment: "comment-key"},
+			opt:     &IssuesDeleteCommentOptions{Comment: "comment-key"},
 			wantErr: false,
 		},
 	}
@@ -942,7 +942,7 @@ func TestIssues_ValidateEditCommentOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesEditCommentOption
+		opt     *IssuesEditCommentOptions
 		wantErr bool
 	}{
 		{
@@ -952,17 +952,17 @@ func TestIssues_ValidateEditCommentOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Comment",
-			opt:     &IssuesEditCommentOption{Text: "new text"},
+			opt:     &IssuesEditCommentOptions{Text: "new text"},
 			wantErr: true,
 		},
 		{
 			name:    "missing Text",
-			opt:     &IssuesEditCommentOption{Comment: "comment-key"},
+			opt:     &IssuesEditCommentOptions{Comment: "comment-key"},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesEditCommentOption{Comment: "comment-key", Text: "new text"},
+			opt:     &IssuesEditCommentOptions{Comment: "comment-key", Text: "new text"},
 			wantErr: false,
 		},
 	}
@@ -984,7 +984,7 @@ func TestIssues_ValidateReindexOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesReindexOption
+		opt     *IssuesReindexOptions
 		wantErr bool
 	}{
 		{
@@ -994,12 +994,12 @@ func TestIssues_ValidateReindexOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Project",
-			opt:     &IssuesReindexOption{},
+			opt:     &IssuesReindexOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesReindexOption{Project: "project-key"},
+			opt:     &IssuesReindexOptions{Project: "project-key"},
 			wantErr: false,
 		},
 	}
@@ -1021,7 +1021,7 @@ func TestIssues_ValidateSetTagsOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesSetTagsOption
+		opt     *IssuesSetTagsOptions
 		wantErr bool
 	}{
 		{
@@ -1031,12 +1031,12 @@ func TestIssues_ValidateSetTagsOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Issue",
-			opt:     &IssuesSetTagsOption{},
+			opt:     &IssuesSetTagsOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesSetTagsOption{Issue: "issue-key"},
+			opt:     &IssuesSetTagsOptions{Issue: "issue-key"},
 			wantErr: false,
 		},
 	}
@@ -1058,7 +1058,7 @@ func TestIssues_ValidatePullTaintOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesPullTaintOption
+		opt     *IssuesPullTaintOptions
 		wantErr bool
 	}{
 		{
@@ -1068,17 +1068,17 @@ func TestIssues_ValidatePullTaintOpt(t *testing.T) {
 		},
 		{
 			name:    "missing ProjectKey",
-			opt:     &IssuesPullTaintOption{},
+			opt:     &IssuesPullTaintOptions{},
 			wantErr: true,
 		},
 		{
 			name:    "invalid language",
-			opt:     &IssuesPullTaintOption{ProjectKey: "project", Languages: []string{"invalid"}},
+			opt:     &IssuesPullTaintOptions{ProjectKey: "project", Languages: []string{"invalid"}},
 			wantErr: true,
 		},
 		{
 			name:    "valid option",
-			opt:     &IssuesPullTaintOption{ProjectKey: "project", Languages: []string{"java"}},
+			opt:     &IssuesPullTaintOptions{ProjectKey: "project", Languages: []string{"java"}},
 			wantErr: false,
 		},
 	}
@@ -1100,7 +1100,7 @@ func TestIssues_ValidateTagsOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *IssuesTagsOption
+		opt     *IssuesTagsOptions
 		wantErr bool
 	}{
 		{
@@ -1110,17 +1110,17 @@ func TestIssues_ValidateTagsOpt(t *testing.T) {
 		},
 		{
 			name:    "PageSize 0 (valid)",
-			opt:     &IssuesTagsOption{PageSize: 0},
+			opt:     &IssuesTagsOptions{PageSize: 0},
 			wantErr: false,
 		},
 		{
 			name:    "PageSize 501 (invalid)",
-			opt:     &IssuesTagsOption{PageSize: 501},
+			opt:     &IssuesTagsOptions{PageSize: 501},
 			wantErr: true,
 		},
 		{
 			name:    "PageSize 100 (valid)",
-			opt:     &IssuesTagsOption{PageSize: 100},
+			opt:     &IssuesTagsOptions{PageSize: 100},
 			wantErr: false,
 		},
 	}

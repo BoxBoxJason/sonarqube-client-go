@@ -26,14 +26,14 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 
 		// Create a test project for dismiss message operations
 		projectKey = helpers.UniqueResourceName("dms")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    "DismissMessage Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -53,7 +53,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 	Describe("Check", func() {
 		Context("Valid Requests", func() {
 			It("should check message dismissal status", func() {
-				result, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
+				result, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOptions{
 					MessageType: "PROJECT_NCD_90",
 					ProjectKey:  projectKey,
 				})
@@ -69,14 +69,14 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing message type", func() {
-				_, _, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
+				_, _, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOptions{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing project key", func() {
-				_, _, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
+				_, _, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOptions{
 					MessageType: "PROJECT_NCD_90",
 				})
 				Expect(err).To(HaveOccurred())
@@ -95,7 +95,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 	Describe("Dismiss", func() {
 		Context("Valid Requests", func() {
 			It("should dismiss a message", func() {
-				resp, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
+				resp, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOptions{
 					MessageType: "PROJECT_NCD_90",
 					ProjectKey:  projectKey,
 				})
@@ -110,14 +110,14 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing message type", func() {
-				_, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
+				_, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOptions{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing project key", func() {
-				_, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
+				_, err := client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOptions{
 					MessageType: "PROJECT_NCD_90",
 				})
 				Expect(err).To(HaveOccurred())
@@ -136,7 +136,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 	Describe("Full Workflow", func() {
 		It("should verify message is dismissed after dismissal", func() {
 			// Check message is not dismissed initially
-			initialCheck, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
+			initialCheck, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOptions{
 				MessageType: "PROJECT_NCD_90",
 				ProjectKey:  projectKey,
 			})
@@ -149,7 +149,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 			Expect(initialCheck).NotTo(BeNil())
 
 			// Dismiss the message
-			resp, err = client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOption{
+			resp, err = client.DismissMessage.Dismiss(&sonar.DismissMessageDismissOptions{
 				MessageType: "PROJECT_NCD_90",
 				ProjectKey:  projectKey,
 			})
@@ -157,7 +157,7 @@ var _ = Describe("DismissMessage Service", Ordered, func() {
 			Expect(resp.StatusCode).To(SatisfyAny(Equal(http.StatusOK), Equal(http.StatusNoContent)))
 
 			// Check message is now dismissed
-			finalCheck, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOption{
+			finalCheck, resp, err := client.DismissMessage.Check(&sonar.DismissMessageCheckOptions{
 				MessageType: "PROJECT_NCD_90",
 				ProjectKey:  projectKey,
 			})

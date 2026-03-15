@@ -59,7 +59,7 @@ func TestWebservicesService_List(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Webservices.List(&WebservicesListOption{
+		_, _, err := client.Webservices.List(&WebservicesListOptions{
 			IncludeInternals: true,
 		})
 
@@ -71,7 +71,7 @@ func TestWebservicesService_List(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Webservices.List(&WebservicesListOption{})
+		_, _, err := client.Webservices.List(&WebservicesListOptions{})
 
 		require.NoError(t, err)
 	})
@@ -90,7 +90,7 @@ func TestWebservicesService_ResponseExample(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOption{
+		result, resp, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOptions{
 			Action:     "search",
 			Controller: "api/issues",
 		})
@@ -111,7 +111,7 @@ func TestWebservicesService_ResponseExample(t *testing.T) {
 	t.Run("missing action fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOption{
+		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOptions{
 			Controller: "api/issues",
 		})
 
@@ -121,7 +121,7 @@ func TestWebservicesService_ResponseExample(t *testing.T) {
 	t.Run("missing controller fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOption{
+		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOptions{
 			Action: "search",
 		})
 
@@ -134,12 +134,12 @@ func TestWebservicesService_ValidateListOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *WebservicesListOption
+		opt     *WebservicesListOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &WebservicesListOption{}, false},
-		{"with include internals", &WebservicesListOption{IncludeInternals: true}, false},
+		{"empty option", &WebservicesListOptions{}, false},
+		{"with include internals", &WebservicesListOptions{IncludeInternals: true}, false},
 	}
 
 	for _, tt := range tests {
@@ -159,14 +159,14 @@ func TestWebservicesService_ValidateResponseExampleOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *WebservicesResponseExampleOption
+		opt     *WebservicesResponseExampleOptions
 		wantErr bool
 	}{
-		{"valid", &WebservicesResponseExampleOption{Action: "search", Controller: "api/issues"}, false},
+		{"valid", &WebservicesResponseExampleOptions{Action: "search", Controller: "api/issues"}, false},
 		{"nil option", nil, true},
-		{"missing action", &WebservicesResponseExampleOption{Controller: "api/issues"}, true},
-		{"missing controller", &WebservicesResponseExampleOption{Action: "search"}, true},
-		{"empty both", &WebservicesResponseExampleOption{}, true},
+		{"missing action", &WebservicesResponseExampleOptions{Controller: "api/issues"}, true},
+		{"missing controller", &WebservicesResponseExampleOptions{Action: "search"}, true},
+		{"empty both", &WebservicesResponseExampleOptions{}, true},
 	}
 
 	for _, tt := range tests {

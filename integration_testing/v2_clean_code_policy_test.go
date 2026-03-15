@@ -137,7 +137,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 
 			BeforeAll(func() {
 				// Find a template rule to use for creating custom rules.
-				result, _, err := client.Rules.Search(&sonar.RulesSearchOption{
+				result, _, err := client.Rules.Search(&sonar.RulesSearchOptions{
 					IsTemplate: true,
 					Languages:  []string{"java"},
 					PaginationArgs: sonar.PaginationArgs{
@@ -173,7 +173,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 
 				// Register cleanup using V1 Rules.Delete.
 				cleanup.RegisterCleanup("rule", ruleKey, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOption{
+					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
 						Key: ruleKey,
 					})
 					return err

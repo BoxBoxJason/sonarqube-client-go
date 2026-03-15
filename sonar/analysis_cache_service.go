@@ -17,8 +17,8 @@ type AnalysisCacheService struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// AnalysisCacheClearOption contains parameters for the Clear method.
-type AnalysisCacheClearOption struct {
+// AnalysisCacheClearOptions contains parameters for the Clear method.
+type AnalysisCacheClearOptions struct {
 	// Branch filters which project's branch's cached data will be cleared.
 	// The 'Project' parameter must be set when using this.
 	Branch string `url:"branch,omitempty"`
@@ -26,8 +26,8 @@ type AnalysisCacheClearOption struct {
 	Project string `url:"project,omitempty"`
 }
 
-// AnalysisCacheGetOption contains parameters for the Get method.
-type AnalysisCacheGetOption struct {
+// AnalysisCacheGetOptions contains parameters for the Get method.
+type AnalysisCacheGetOptions struct {
 	// Branch key. If not provided, main branch will be used.
 	Branch string `url:"branch,omitempty"`
 	// Project key.
@@ -41,7 +41,7 @@ type AnalysisCacheGetOption struct {
 
 // ValidateClearOpt validates the options for the Clear method.
 // Currently, there are no required fields.
-func (s *AnalysisCacheService) ValidateClearOpt(opt *AnalysisCacheClearOption) error {
+func (s *AnalysisCacheService) ValidateClearOpt(opt *AnalysisCacheClearOptions) error {
 	// When filtering by branch, Project must be set as documented.
 	if opt != nil && opt.Branch != "" && opt.Project == "" {
 		return NewValidationError("Project", "Project must be set when Branch is specified", ErrMissingRequired)
@@ -51,7 +51,7 @@ func (s *AnalysisCacheService) ValidateClearOpt(opt *AnalysisCacheClearOption) e
 }
 
 // ValidateGetOpt validates the options for the Get method.
-func (s *AnalysisCacheService) ValidateGetOpt(opt *AnalysisCacheGetOption) error {
+func (s *AnalysisCacheService) ValidateGetOpt(opt *AnalysisCacheGetOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -74,7 +74,7 @@ func (s *AnalysisCacheService) ValidateGetOpt(opt *AnalysisCacheGetOption) error
 //
 // API endpoint: POST /api/analysis_cache/clear.
 // WARNING: This is an internal API and may change without notice.
-func (s *AnalysisCacheService) Clear(opt *AnalysisCacheClearOption) (*http.Response, error) {
+func (s *AnalysisCacheService) Clear(opt *AnalysisCacheClearOptions) (*http.Response, error) {
 	err := s.ValidateClearOpt(opt)
 	if err != nil {
 		return nil, err
@@ -99,7 +99,7 @@ func (s *AnalysisCacheService) Clear(opt *AnalysisCacheClearOption) (*http.Respo
 // The response body contains the raw binary data; the caller is responsible for reading and closing it.
 //
 // API endpoint: GET /api/analysis_cache/get.
-func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOption) (*http.Response, error) {
+func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOptions) (*http.Response, error) {
 	err := s.ValidateGetOpt(opt)
 	if err != nil {
 		return nil, err

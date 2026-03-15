@@ -14,7 +14,7 @@ func TestProjectBranches_Delete(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBranchesDeleteOption{
+	opt := &ProjectBranchesDeleteOptions{
 		Branch:  "feature-1",
 		Project: "my-project",
 	}
@@ -32,13 +32,13 @@ func TestProjectBranches_Delete_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Branch should fail validation.
-	_, err = client.ProjectBranches.Delete(&ProjectBranchesDeleteOption{
+	_, err = client.ProjectBranches.Delete(&ProjectBranchesDeleteOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.Delete(&ProjectBranchesDeleteOption{
+	_, err = client.ProjectBranches.Delete(&ProjectBranchesDeleteOptions{
 		Branch: "feature-1",
 	})
 	assert.Error(t, err)
@@ -70,7 +70,7 @@ func TestProjectBranches_List(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBranchesListOption{
+	opt := &ProjectBranchesListOptions{
 		Project: "my-project",
 	}
 
@@ -93,7 +93,7 @@ func TestProjectBranches_List_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBranches.List(&ProjectBranchesListOption{})
+	_, _, err = client.ProjectBranches.List(&ProjectBranchesListOptions{})
 	assert.Error(t, err)
 }
 
@@ -103,7 +103,7 @@ func TestProjectBranches_Rename(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBranchesRenameOption{
+	opt := &ProjectBranchesRenameOptions{
 		Name:    "main",
 		Project: "my-project",
 	}
@@ -121,13 +121,13 @@ func TestProjectBranches_Rename_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOption{
+	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOption{
+	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOptions{
 		Name: "main",
 	})
 	assert.Error(t, err)
@@ -137,7 +137,7 @@ func TestProjectBranches_Rename_ValidationError(t *testing.T) {
 	for i := 0; i < MaxBranchNameLength+1; i++ {
 		longName += "a"
 	}
-	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOption{
+	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOptions{
 		Name:    longName,
 		Project: "my-project",
 	})
@@ -150,7 +150,7 @@ func TestProjectBranches_SetAutomaticDeletionProtection(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBranchesSetAutomaticDeletionProtectionOption{
+	opt := &ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Branch:  "feature-1",
 		Project: "my-project",
 		Value:   true,
@@ -167,7 +167,7 @@ func TestProjectBranches_SetAutomaticDeletionProtection_False(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBranchesSetAutomaticDeletionProtectionOption{
+	opt := &ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Branch:  "feature-1",
 		Project: "my-project",
 		Value:   false,
@@ -186,14 +186,14 @@ func TestProjectBranches_SetAutomaticDeletionProtection_ValidationError(t *testi
 	assert.Error(t, err)
 
 	// Missing Branch should fail validation.
-	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(&ProjectBranchesSetAutomaticDeletionProtectionOption{
+	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(&ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Project: "my-project",
 		Value:   true,
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(&ProjectBranchesSetAutomaticDeletionProtectionOption{
+	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(&ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Branch: "feature-1",
 		Value:  true,
 	})
@@ -206,7 +206,7 @@ func TestProjectBranches_SetMain(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBranchesSetMainOption{
+	opt := &ProjectBranchesSetMainOptions{
 		Branch:  "main",
 		Project: "my-project",
 	}
@@ -224,13 +224,13 @@ func TestProjectBranches_SetMain_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Branch should fail validation.
-	_, err = client.ProjectBranches.SetMain(&ProjectBranchesSetMainOption{
+	_, err = client.ProjectBranches.SetMain(&ProjectBranchesSetMainOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.SetMain(&ProjectBranchesSetMainOption{
+	_, err = client.ProjectBranches.SetMain(&ProjectBranchesSetMainOptions{
 		Branch: "main",
 	})
 	assert.Error(t, err)
@@ -240,7 +240,7 @@ func TestProjectBranches_ValidateDeleteOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.ProjectBranches.ValidateDeleteOpt(&ProjectBranchesDeleteOption{
+	err := client.ProjectBranches.ValidateDeleteOpt(&ProjectBranchesDeleteOptions{
 		Branch:  "feature-1",
 		Project: "my-project",
 	})
@@ -251,7 +251,7 @@ func TestProjectBranches_ValidateListOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.ProjectBranches.ValidateListOpt(&ProjectBranchesListOption{
+	err := client.ProjectBranches.ValidateListOpt(&ProjectBranchesListOptions{
 		Project: "my-project",
 	})
 	assert.NoError(t, err)
@@ -261,7 +261,7 @@ func TestProjectBranches_ValidateRenameOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.ProjectBranches.ValidateRenameOpt(&ProjectBranchesRenameOption{
+	err := client.ProjectBranches.ValidateRenameOpt(&ProjectBranchesRenameOptions{
 		Name:    "main",
 		Project: "my-project",
 	})
@@ -272,7 +272,7 @@ func TestProjectBranches_ValidateSetAutomaticDeletionProtectionOpt(t *testing.T)
 	client := newLocalhostClient(t)
 
 	// Valid option with true should pass.
-	err := client.ProjectBranches.ValidateSetAutomaticDeletionProtectionOpt(&ProjectBranchesSetAutomaticDeletionProtectionOption{
+	err := client.ProjectBranches.ValidateSetAutomaticDeletionProtectionOpt(&ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Branch:  "feature-1",
 		Project: "my-project",
 		Value:   true,
@@ -280,7 +280,7 @@ func TestProjectBranches_ValidateSetAutomaticDeletionProtectionOpt(t *testing.T)
 	assert.NoError(t, err)
 
 	// Valid option with false should pass.
-	err = client.ProjectBranches.ValidateSetAutomaticDeletionProtectionOpt(&ProjectBranchesSetAutomaticDeletionProtectionOption{
+	err = client.ProjectBranches.ValidateSetAutomaticDeletionProtectionOpt(&ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Branch:  "feature-1",
 		Project: "my-project",
 		Value:   false,
@@ -292,7 +292,7 @@ func TestProjectBranches_ValidateSetMainOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.ProjectBranches.ValidateSetMainOpt(&ProjectBranchesSetMainOption{
+	err := client.ProjectBranches.ValidateSetMainOpt(&ProjectBranchesSetMainOptions{
 		Branch:  "main",
 		Project: "my-project",
 	})

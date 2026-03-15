@@ -12,7 +12,7 @@ func TestProjectBadges_Measure(t *testing.T) {
 	server := newTestServer(t, mockBinaryHandler(t, http.MethodGet, "/project_badges/measure", http.StatusOK, "image/svg+xml", []byte(`<svg>badge content</svg>`)))
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBadgesMeasureOption{
+	opt := &ProjectBadgesMeasureOptions{
 		Project: "my-project",
 		Metric:  "coverage",
 	}
@@ -32,19 +32,19 @@ func TestProjectBadges_Measure_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOption{
+	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOptions{
 		Metric: "coverage",
 	})
 	assert.Error(t, err)
 
 	// Missing Metric should fail validation.
-	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOption{
+	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Invalid Metric should fail validation.
-	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOption{
+	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOptions{
 		Project: "my-project",
 		Metric:  "invalid_metric",
 	})
@@ -55,7 +55,7 @@ func TestProjectBadges_QualityGate(t *testing.T) {
 	server := newTestServer(t, mockBinaryHandler(t, http.MethodGet, "/project_badges/quality_gate", http.StatusOK, "image/svg+xml", []byte(`<svg>quality gate badge</svg>`)))
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBadgesQualityGateOption{
+	opt := &ProjectBadgesQualityGateOptions{
 		Project: "my-project",
 	}
 
@@ -73,7 +73,7 @@ func TestProjectBadges_QualityGate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBadges.QualityGate(&ProjectBadgesQualityGateOption{})
+	_, _, err = client.ProjectBadges.QualityGate(&ProjectBadgesQualityGateOptions{})
 	assert.Error(t, err)
 }
 
@@ -81,7 +81,7 @@ func TestProjectBadges_RenewToken(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/project_badges/renew_token", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBadgesRenewTokenOption{
+	opt := &ProjectBadgesRenewTokenOptions{
 		Project: "my-project",
 	}
 
@@ -98,7 +98,7 @@ func TestProjectBadges_RenewToken_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBadges.RenewToken(&ProjectBadgesRenewTokenOption{})
+	_, err = client.ProjectBadges.RenewToken(&ProjectBadgesRenewTokenOptions{})
 	assert.Error(t, err)
 }
 
@@ -108,7 +108,7 @@ func TestProjectBadges_Token(t *testing.T) {
 	}))
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectBadgesTokenOption{
+	opt := &ProjectBadgesTokenOptions{
 		Project: "my-project",
 	}
 
@@ -127,7 +127,7 @@ func TestProjectBadges_Token_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBadges.Token(&ProjectBadgesTokenOption{})
+	_, _, err = client.ProjectBadges.Token(&ProjectBadgesTokenOptions{})
 	assert.Error(t, err)
 }
 
@@ -157,7 +157,7 @@ func TestProjectBadges_ValidateMeasureOpt_AllMetrics(t *testing.T) {
 	}
 
 	for _, metric := range validMetrics {
-		err := client.ProjectBadges.ValidateMeasureOpt(&ProjectBadgesMeasureOption{
+		err := client.ProjectBadges.ValidateMeasureOpt(&ProjectBadgesMeasureOptions{
 			Project: "my-project",
 			Metric:  metric,
 		})

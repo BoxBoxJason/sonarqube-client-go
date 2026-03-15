@@ -99,16 +99,16 @@ type UserGroupsUsers struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// UserGroupsAddUserOption represents options for adding a user to a group.
-type UserGroupsAddUserOption struct {
+// UserGroupsAddUserOptions represents options for adding a user to a group.
+type UserGroupsAddUserOptions struct {
 	// Login is the user login (optional - for internal accounts).
 	Login string `url:"login,omitempty"`
 	// Name is the group name (required).
 	Name string `url:"name,omitempty"`
 }
 
-// UserGroupsCreateOption represents options for creating a group.
-type UserGroupsCreateOption struct {
+// UserGroupsCreateOptions represents options for creating a group.
+type UserGroupsCreateOptions struct {
 	// Description is the description for the new group.
 	// Maximum length: 200 characters.
 	Description string `url:"description,omitempty"`
@@ -118,24 +118,24 @@ type UserGroupsCreateOption struct {
 	Name string `url:"name,omitempty"`
 }
 
-// UserGroupsDeleteOption represents options for deleting a group.
-type UserGroupsDeleteOption struct {
+// UserGroupsDeleteOptions represents options for deleting a group.
+type UserGroupsDeleteOptions struct {
 	// Name is the group name (required).
 	Name string `url:"name,omitempty"`
 }
 
-// UserGroupsRemoveUserOption represents options for removing a user from a group.
-type UserGroupsRemoveUserOption struct {
+// UserGroupsRemoveUserOptions represents options for removing a user from a group.
+type UserGroupsRemoveUserOptions struct {
 	// Login is the user login (optional - for internal accounts).
 	Login string `url:"login,omitempty"`
 	// Name is the group name (required).
 	Name string `url:"name,omitempty"`
 }
 
-// UserGroupsSearchOption represents options for searching groups.
+// UserGroupsSearchOptions represents options for searching groups.
 //
 //nolint:govet // Embedded PaginationArgs makes optimal alignment impractical
-type UserGroupsSearchOption struct {
+type UserGroupsSearchOptions struct {
 	PaginationArgs
 
 	// Managed filters by managed status.
@@ -148,8 +148,8 @@ type UserGroupsSearchOption struct {
 	Query string `url:"q,omitempty"`
 }
 
-// UserGroupsUpdateOption represents options for updating a group.
-type UserGroupsUpdateOption struct {
+// UserGroupsUpdateOptions represents options for updating a group.
+type UserGroupsUpdateOptions struct {
 	// CurrentName is the current name of the group to update (required).
 	CurrentName string `url:"currentName,omitempty"`
 	// Description is the new optional description for the group.
@@ -161,10 +161,10 @@ type UserGroupsUpdateOption struct {
 	Name string `url:"name,omitempty"`
 }
 
-// UserGroupsUsersOption represents options for listing users in a group.
+// UserGroupsUsersOptions represents options for listing users in a group.
 //
 //nolint:govet // Embedded PaginationArgs makes optimal alignment impractical
-type UserGroupsUsersOption struct {
+type UserGroupsUsersOptions struct {
 	PaginationArgs
 
 	// Name is the group name (required).
@@ -181,7 +181,7 @@ type UserGroupsUsersOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateAddUserOpt validates the options for AddUser.
-func (s *UserGroupsService) ValidateAddUserOpt(opt *UserGroupsAddUserOption) error {
+func (s *UserGroupsService) ValidateAddUserOpt(opt *UserGroupsAddUserOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -190,7 +190,7 @@ func (s *UserGroupsService) ValidateAddUserOpt(opt *UserGroupsAddUserOption) err
 }
 
 // ValidateCreateOpt validates the options for Create.
-func (s *UserGroupsService) ValidateCreateOpt(opt *UserGroupsCreateOption) error {
+func (s *UserGroupsService) ValidateCreateOpt(opt *UserGroupsCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -216,7 +216,7 @@ func (s *UserGroupsService) ValidateCreateOpt(opt *UserGroupsCreateOption) error
 }
 
 // ValidateDeleteOpt validates the options for Delete.
-func (s *UserGroupsService) ValidateDeleteOpt(opt *UserGroupsDeleteOption) error {
+func (s *UserGroupsService) ValidateDeleteOpt(opt *UserGroupsDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -225,7 +225,7 @@ func (s *UserGroupsService) ValidateDeleteOpt(opt *UserGroupsDeleteOption) error
 }
 
 // ValidateRemoveUserOpt validates the options for RemoveUser.
-func (s *UserGroupsService) ValidateRemoveUserOpt(opt *UserGroupsRemoveUserOption) error {
+func (s *UserGroupsService) ValidateRemoveUserOpt(opt *UserGroupsRemoveUserOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -234,7 +234,7 @@ func (s *UserGroupsService) ValidateRemoveUserOpt(opt *UserGroupsRemoveUserOptio
 }
 
 // ValidateSearchOpt validates the options for Search.
-func (s *UserGroupsService) ValidateSearchOpt(opt *UserGroupsSearchOption) error {
+func (s *UserGroupsService) ValidateSearchOpt(opt *UserGroupsSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -248,7 +248,7 @@ func (s *UserGroupsService) ValidateSearchOpt(opt *UserGroupsSearchOption) error
 }
 
 // ValidateUpdateOpt validates the options for Update.
-func (s *UserGroupsService) ValidateUpdateOpt(opt *UserGroupsUpdateOption) error {
+func (s *UserGroupsService) ValidateUpdateOpt(opt *UserGroupsUpdateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -276,7 +276,7 @@ func (s *UserGroupsService) ValidateUpdateOpt(opt *UserGroupsUpdateOption) error
 }
 
 // ValidateUsersOpt validates the options for Users.
-func (s *UserGroupsService) ValidateUsersOpt(opt *UserGroupsUsersOption) error {
+func (s *UserGroupsService) ValidateUsersOpt(opt *UserGroupsUsersOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -305,7 +305,7 @@ func (s *UserGroupsService) ValidateUsersOpt(opt *UserGroupsUsersOption) error {
 // Deprecated: Since 10.4. Use POST /api/v2/authorizations/group-memberships instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) AddUser(opt *UserGroupsAddUserOption) (*http.Response, error) {
+func (s *UserGroupsService) AddUser(opt *UserGroupsAddUserOptions) (*http.Response, error) {
 	err := s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return nil, err
@@ -330,7 +330,7 @@ func (s *UserGroupsService) AddUser(opt *UserGroupsAddUserOption) (*http.Respons
 // Deprecated: Since 10.4. Use POST /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Create(opt *UserGroupsCreateOption) (*UserGroupsCreate, *http.Response, error) {
+func (s *UserGroupsService) Create(opt *UserGroupsCreateOptions) (*UserGroupsCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -358,7 +358,7 @@ func (s *UserGroupsService) Create(opt *UserGroupsCreateOption) (*UserGroupsCrea
 // Deprecated: Since 10.4. Use DELETE /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOption) (*http.Response, error) {
+func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -384,7 +384,7 @@ func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOption) (*http.Response,
 // Deprecated: Since 10.4. Use DELETE /api/v2/authorizations/group-memberships instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOption) (*http.Response, error) {
+func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOptions) (*http.Response, error) {
 	err := s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return nil, err
@@ -409,7 +409,7 @@ func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOption) (*http.R
 // Deprecated: Since 10.4. Use GET /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Search(opt *UserGroupsSearchOption) (*UserGroupsSearch, *http.Response, error) {
+func (s *UserGroupsService) Search(opt *UserGroupsSearchOptions) (*UserGroupsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -436,7 +436,7 @@ func (s *UserGroupsService) Search(opt *UserGroupsSearchOption) (*UserGroupsSear
 // Deprecated: Since 10.4. Use PATCH /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Update(opt *UserGroupsUpdateOption) (*http.Response, error) {
+func (s *UserGroupsService) Update(opt *UserGroupsUpdateOptions) (*http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, err
@@ -461,7 +461,7 @@ func (s *UserGroupsService) Update(opt *UserGroupsUpdateOption) (*http.Response,
 // Deprecated: Since 10.4. Use GET /api/v2/authorizations/group-memberships instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Users(opt *UserGroupsUsersOption) (*UserGroupsUsers, *http.Response, error) {
+func (s *UserGroupsService) Users(opt *UserGroupsUsersOptions) (*UserGroupsUsers, *http.Response, error) {
 	err := s.ValidateUsersOpt(opt)
 	if err != nil {
 		return nil, nil, err

@@ -33,7 +33,7 @@ func TestMeasuresService_Component(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &MeasuresComponentOption{
+	opt := &MeasuresComponentOptions{
 		Component:  "my-project",
 		MetricKeys: []string{"coverage", "bugs", "vulnerabilities"},
 	}
@@ -50,14 +50,14 @@ func TestMeasuresService_Component_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Component
-	opt := &MeasuresComponentOption{
+	opt := &MeasuresComponentOptions{
 		MetricKeys: []string{"coverage"},
 	}
 	_, _, err := client.Measures.Component(opt)
 	assert.Error(t, err)
 
 	// Test missing MetricKeys
-	opt = &MeasuresComponentOption{
+	opt = &MeasuresComponentOptions{
 		Component: "my-project",
 	}
 	_, _, err = client.Measures.Component(opt)
@@ -93,7 +93,7 @@ func TestMeasuresService_ComponentTree(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &MeasuresComponentTreeOption{
+	opt := &MeasuresComponentTreeOptions{
 		Component:  "my-project",
 		MetricKeys: []string{"coverage"},
 		Strategy:   "all",
@@ -111,21 +111,21 @@ func TestMeasuresService_ComponentTree_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Component
-	opt := &MeasuresComponentTreeOption{
+	opt := &MeasuresComponentTreeOptions{
 		MetricKeys: []string{"coverage"},
 	}
 	_, _, err := client.Measures.ComponentTree(opt)
 	assert.Error(t, err)
 
 	// Test missing MetricKeys
-	opt = &MeasuresComponentTreeOption{
+	opt = &MeasuresComponentTreeOptions{
 		Component: "my-project",
 	}
 	_, _, err = client.Measures.ComponentTree(opt)
 	assert.Error(t, err)
 
 	// Test invalid Strategy
-	opt = &MeasuresComponentTreeOption{
+	opt = &MeasuresComponentTreeOptions{
 		Component:  "my-project",
 		MetricKeys: []string{"coverage"},
 		Strategy:   "invalid",
@@ -134,7 +134,7 @@ func TestMeasuresService_ComponentTree_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid MetricSortFilter
-	opt = &MeasuresComponentTreeOption{
+	opt = &MeasuresComponentTreeOptions{
 		Component:        "my-project",
 		MetricKeys:       []string{"coverage"},
 		MetricSortFilter: "invalid",
@@ -155,7 +155,7 @@ func TestMeasuresService_Search(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &MeasuresSearchOption{
+	opt := &MeasuresSearchOptions{
 		MetricKeys:  []string{"coverage"},
 		ProjectKeys: []string{"project1", "project2"},
 	}
@@ -171,14 +171,14 @@ func TestMeasuresService_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing MetricKeys
-	opt := &MeasuresSearchOption{
+	opt := &MeasuresSearchOptions{
 		ProjectKeys: []string{"project1"},
 	}
 	_, _, err := client.Measures.Search(opt)
 	assert.Error(t, err)
 
 	// Test missing ProjectKeys
-	opt = &MeasuresSearchOption{
+	opt = &MeasuresSearchOptions{
 		MetricKeys: []string{"coverage"},
 	}
 	_, _, err = client.Measures.Search(opt)
@@ -204,7 +204,7 @@ func TestMeasuresService_SearchHistory(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &MeasuresSearchHistoryOption{
+	opt := &MeasuresSearchHistoryOptions{
 		Component: "my-project",
 		Metrics:   []string{"coverage"},
 		From:      "2024-01-01",
@@ -223,14 +223,14 @@ func TestMeasuresService_SearchHistory_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Component
-	opt := &MeasuresSearchHistoryOption{
+	opt := &MeasuresSearchHistoryOptions{
 		Metrics: []string{"coverage"},
 	}
 	_, _, err := client.Measures.SearchHistory(opt)
 	assert.Error(t, err)
 
 	// Test missing Metrics
-	opt = &MeasuresSearchHistoryOption{
+	opt = &MeasuresSearchHistoryOptions{
 		Component: "my-project",
 	}
 	_, _, err = client.Measures.SearchHistory(opt)

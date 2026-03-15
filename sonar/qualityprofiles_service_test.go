@@ -13,7 +13,7 @@ func TestQualityprofiles_ActivateRule(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/activate_rule", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesActivateRuleOption{
+	opt := &QualityprofilesActivateRuleOptions{
 		Key:  "AU-TpxcA-iU5OvuD2FL0",
 		Rule: "squid:AvoidCycles",
 	}
@@ -31,19 +31,19 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOption{
+	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Rule: "squid:AvoidCycles",
 	})
 	assert.Error(t, err)
 
 	// Test missing Rule
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOption{
+	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key: "AU-TpxcA-iU5OvuD2FL0",
 	})
 	assert.Error(t, err)
 
 	// Test both Impacts and Severity set
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOption{
+	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key:      "AU-TpxcA-iU5OvuD2FL0",
 		Rule:     "squid:AvoidCycles",
 		Impacts:  map[string]string{"MAINTAINABILITY": "HIGH"},
@@ -52,7 +52,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid Severity
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOption{
+	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key:      "AU-TpxcA-iU5OvuD2FL0",
 		Rule:     "squid:AvoidCycles",
 		Severity: "INVALID",
@@ -60,7 +60,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid Impacts map key (software quality)
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOption{
+	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key:     "AU-TpxcA-iU5OvuD2FL0",
 		Rule:    "squid:AvoidCycles",
 		Impacts: map[string]string{"INVALID_QUALITY": "HIGH"},
@@ -68,7 +68,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid Impacts map value (severity)
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOption{
+	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key:     "AU-TpxcA-iU5OvuD2FL0",
 		Rule:    "squid:AvoidCycles",
 		Impacts: map[string]string{"MAINTAINABILITY": "INVALID_SEVERITY"},
@@ -80,7 +80,7 @@ func TestQualityprofiles_ActivateRules(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/activate_rules", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesActivateRulesOption{
+	opt := &QualityprofilesActivateRulesOptions{
 		TargetKey: "AU-TpxcA-iU5OvuD2FL0",
 		Languages: []string{"java"},
 	}
@@ -98,39 +98,39 @@ func TestQualityprofiles_ActivateRules_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing TargetKey
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOption{})
+	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{})
 	assert.Error(t, err)
 
 	// Test invalid language
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOption{
+	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
 		TargetKey: "AU-TpxcA-iU5OvuD2FL0",
 		Languages: []string{"invalid_language"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid severity
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOption{
+	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
 		TargetKey:  "AU-TpxcA-iU5OvuD2FL0",
 		Severities: []string{"INVALID_SEVERITY"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid impact severity
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOption{
+	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
 		TargetKey:        "AU-TpxcA-iU5OvuD2FL0",
 		ImpactSeverities: []string{"INVALID"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid software quality
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOption{
+	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
 		TargetKey:               "AU-TpxcA-iU5OvuD2FL0",
 		ImpactSoftwareQualities: []string{"INVALID"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid sort field
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOption{
+	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
 		TargetKey: "AU-TpxcA-iU5OvuD2FL0",
 		Sort:      "invalid_sort",
 	})
@@ -141,7 +141,7 @@ func TestQualityprofiles_AddGroup(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/add_group", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesAddGroupOption{
+	opt := &QualityprofilesAddGroupOptions{
 		Group:          "sonar-administrators",
 		Language:       "java",
 		QualityProfile: "Sonar way",
@@ -160,21 +160,21 @@ func TestQualityprofiles_AddGroup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Group
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOption{
+	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOption{
+	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
 		Group:          "sonar-administrators",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test invalid Language
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOption{
+	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
 		Group:          "sonar-administrators",
 		Language:       "invalid_lang",
 		QualityProfile: "Sonar way",
@@ -182,7 +182,7 @@ func TestQualityprofiles_AddGroup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOption{
+	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
 		Group:    "sonar-administrators",
 		Language: "java",
 	})
@@ -193,7 +193,7 @@ func TestQualityprofiles_AddProject(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/add_project", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesAddProjectOption{
+	opt := &QualityprofilesAddProjectOptions{
 		Language:       "java",
 		Project:        "my_project",
 		QualityProfile: "Sonar way",
@@ -212,21 +212,21 @@ func TestQualityprofiles_AddProject_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOption{
+	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOptions{
 		Project:        "my_project",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing Project
-	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOption{
+	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOption{
+	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOptions{
 		Language: "java",
 		Project:  "my_project",
 	})
@@ -237,7 +237,7 @@ func TestQualityprofiles_AddUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/add_user", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesAddUserOption{
+	opt := &QualityprofilesAddUserOptions{
 		Language:       "java",
 		Login:          "john.doe",
 		QualityProfile: "Sonar way",
@@ -256,21 +256,21 @@ func TestQualityprofiles_AddUser_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOption{
+	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOptions{
 		Login:          "john.doe",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing Login
-	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOption{
+	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOption{
+	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOptions{
 		Language: "java",
 		Login:    "john.doe",
 	})
@@ -287,7 +287,7 @@ func TestQualityprofiles_Backup(t *testing.T) {
 	})
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesBackupOption{
+	opt := &QualityprofilesBackupOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	}
@@ -307,13 +307,13 @@ func TestQualityprofiles_Backup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Backup(&QualityprofilesBackupOption{
+	_, _, err = client.Qualityprofiles.Backup(&QualityprofilesBackupOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.Backup(&QualityprofilesBackupOption{
+	_, _, err = client.Qualityprofiles.Backup(&QualityprofilesBackupOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -323,7 +323,7 @@ func TestQualityprofiles_ChangeParent(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/change_parent", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesChangeParentOption{
+	opt := &QualityprofilesChangeParentOptions{
 		Language:             "java",
 		QualityProfile:       "My Profile",
 		ParentQualityProfile: "Sonar way",
@@ -342,13 +342,13 @@ func TestQualityprofiles_ChangeParent_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.ChangeParent(&QualityprofilesChangeParentOption{
+	_, err = client.Qualityprofiles.ChangeParent(&QualityprofilesChangeParentOptions{
 		QualityProfile: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.ChangeParent(&QualityprofilesChangeParentOption{
+	_, err = client.Qualityprofiles.ChangeParent(&QualityprofilesChangeParentOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -370,7 +370,7 @@ func TestQualityprofiles_Changelog(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/changelog", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesChangelogOption{
+	opt := &QualityprofilesChangelogOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	}
@@ -391,19 +391,19 @@ func TestQualityprofiles_Changelog_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOption{
+	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOption{
+	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test invalid FilterMode
-	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOption{
+	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 		FilterMode:     "INVALID",
@@ -426,7 +426,7 @@ func TestQualityprofiles_Compare(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/compare", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesCompareOption{
+	opt := &QualityprofilesCompareOptions{
 		LeftKey:  "profile1",
 		RightKey: "profile2",
 	}
@@ -447,13 +447,13 @@ func TestQualityprofiles_Compare_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing LeftKey
-	_, _, err = client.Qualityprofiles.Compare(&QualityprofilesCompareOption{
+	_, _, err = client.Qualityprofiles.Compare(&QualityprofilesCompareOptions{
 		RightKey: "profile2",
 	})
 	assert.Error(t, err)
 
 	// Test missing RightKey
-	_, _, err = client.Qualityprofiles.Compare(&QualityprofilesCompareOption{
+	_, _, err = client.Qualityprofiles.Compare(&QualityprofilesCompareOptions{
 		LeftKey: "profile1",
 	})
 	assert.Error(t, err)
@@ -472,7 +472,7 @@ func TestQualityprofiles_Copy(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/qualityprofiles/copy", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesCopyOption{
+	opt := &QualityprofilesCopyOptions{
 		FromKey: "source-profile-key",
 		ToName:  "My Profile Copy",
 	}
@@ -492,19 +492,19 @@ func TestQualityprofiles_Copy_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing FromKey
-	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOption{
+	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOptions{
 		ToName: "New Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing ToName
-	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOption{
+	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOptions{
 		FromKey: "source-key",
 	})
 	assert.Error(t, err)
 
 	// Test ToName too long
-	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOption{
+	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOptions{
 		FromKey: "source-key",
 		ToName:  strings.Repeat("a", MaxQualityProfileNameLength+1),
 	})
@@ -525,7 +525,7 @@ func TestQualityprofiles_Create(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/qualityprofiles/create", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesCreateOption{
+	opt := &QualityprofilesCreateOptions{
 		Language: "java",
 		Name:     "My New Profile",
 	}
@@ -545,19 +545,19 @@ func TestQualityprofiles_Create_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOption{
+	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOptions{
 		Name: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOption{
+	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOption{
+	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOptions{
 		Language: "java",
 		Name:     strings.Repeat("a", MaxQualityProfileNameLength+1),
 	})
@@ -568,7 +568,7 @@ func TestQualityprofiles_DeactivateRule(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/deactivate_rule", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesDeactivateRuleOption{
+	opt := &QualityprofilesDeactivateRuleOptions{
 		Key:  "AU-TpxcA-iU5OvuD2FL0",
 		Rule: "squid:AvoidCycles",
 	}
@@ -586,13 +586,13 @@ func TestQualityprofiles_DeactivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.Qualityprofiles.DeactivateRule(&QualityprofilesDeactivateRuleOption{
+	_, err = client.Qualityprofiles.DeactivateRule(&QualityprofilesDeactivateRuleOptions{
 		Rule: "squid:AvoidCycles",
 	})
 	assert.Error(t, err)
 
 	// Test missing Rule
-	_, err = client.Qualityprofiles.DeactivateRule(&QualityprofilesDeactivateRuleOption{
+	_, err = client.Qualityprofiles.DeactivateRule(&QualityprofilesDeactivateRuleOptions{
 		Key: "AU-TpxcA-iU5OvuD2FL0",
 	})
 	assert.Error(t, err)
@@ -602,7 +602,7 @@ func TestQualityprofiles_DeactivateRules(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/deactivate_rules", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesDeactivateRulesOption{
+	opt := &QualityprofilesDeactivateRulesOptions{
 		TargetKey: "AU-TpxcA-iU5OvuD2FL0",
 		Languages: []string{"java"},
 	}
@@ -620,7 +620,7 @@ func TestQualityprofiles_DeactivateRules_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing TargetKey
-	_, err = client.Qualityprofiles.DeactivateRules(&QualityprofilesDeactivateRulesOption{})
+	_, err = client.Qualityprofiles.DeactivateRules(&QualityprofilesDeactivateRulesOptions{})
 	assert.Error(t, err)
 }
 
@@ -628,7 +628,7 @@ func TestQualityprofiles_Delete(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/delete", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesDeleteOption{
+	opt := &QualityprofilesDeleteOptions{
 		Language:       "java",
 		QualityProfile: "My Profile",
 	}
@@ -646,13 +646,13 @@ func TestQualityprofiles_Delete_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.Delete(&QualityprofilesDeleteOption{
+	_, err = client.Qualityprofiles.Delete(&QualityprofilesDeleteOptions{
 		QualityProfile: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.Delete(&QualityprofilesDeleteOption{
+	_, err = client.Qualityprofiles.Delete(&QualityprofilesDeleteOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -668,7 +668,7 @@ func TestQualityprofiles_Export(t *testing.T) {
 	})
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesExportOption{
+	opt := &QualityprofilesExportOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	}
@@ -688,7 +688,7 @@ func TestQualityprofiles_Export_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Export(&QualityprofilesExportOption{})
+	_, _, err = client.Qualityprofiles.Export(&QualityprofilesExportOptions{})
 	assert.Error(t, err)
 }
 
@@ -744,7 +744,7 @@ func TestQualityprofiles_Inheritance(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/inheritance", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesInheritanceOption{
+	opt := &QualityprofilesInheritanceOptions{
 		Language:       "java",
 		QualityProfile: "My Profile",
 	}
@@ -766,13 +766,13 @@ func TestQualityprofiles_Inheritance_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Inheritance(&QualityprofilesInheritanceOption{
+	_, _, err = client.Qualityprofiles.Inheritance(&QualityprofilesInheritanceOptions{
 		QualityProfile: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.Inheritance(&QualityprofilesInheritanceOption{
+	_, _, err = client.Qualityprofiles.Inheritance(&QualityprofilesInheritanceOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -790,7 +790,7 @@ func TestQualityprofiles_Projects(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/projects", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesProjectsOption{
+	opt := &QualityprofilesProjectsOptions{
 		Key: "profile-key",
 	}
 
@@ -810,11 +810,11 @@ func TestQualityprofiles_Projects_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, _, err = client.Qualityprofiles.Projects(&QualityprofilesProjectsOption{})
+	_, _, err = client.Qualityprofiles.Projects(&QualityprofilesProjectsOptions{})
 	assert.Error(t, err)
 
 	// Test invalid Selected
-	_, _, err = client.Qualityprofiles.Projects(&QualityprofilesProjectsOption{
+	_, _, err = client.Qualityprofiles.Projects(&QualityprofilesProjectsOptions{
 		Key:      "profile-key",
 		Selected: "invalid",
 	})
@@ -825,7 +825,7 @@ func TestQualityprofiles_RemoveGroup(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/remove_group", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesRemoveGroupOption{
+	opt := &QualityprofilesRemoveGroupOptions{
 		Group:          "sonar-administrators",
 		Language:       "java",
 		QualityProfile: "Sonar way",
@@ -844,7 +844,7 @@ func TestQualityprofiles_RemoveGroup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Group
-	_, err = client.Qualityprofiles.RemoveGroup(&QualityprofilesRemoveGroupOption{
+	_, err = client.Qualityprofiles.RemoveGroup(&QualityprofilesRemoveGroupOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
@@ -855,7 +855,7 @@ func TestQualityprofiles_RemoveProject(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/remove_project", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesRemoveProjectOption{
+	opt := &QualityprofilesRemoveProjectOptions{
 		Language:       "java",
 		Project:        "my_project",
 		QualityProfile: "Sonar way",
@@ -874,7 +874,7 @@ func TestQualityprofiles_RemoveProject_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.RemoveProject(&QualityprofilesRemoveProjectOption{
+	_, err = client.Qualityprofiles.RemoveProject(&QualityprofilesRemoveProjectOptions{
 		Project:        "my_project",
 		QualityProfile: "Sonar way",
 	})
@@ -885,7 +885,7 @@ func TestQualityprofiles_RemoveUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/remove_user", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesRemoveUserOption{
+	opt := &QualityprofilesRemoveUserOptions{
 		Language:       "java",
 		Login:          "john.doe",
 		QualityProfile: "Sonar way",
@@ -904,7 +904,7 @@ func TestQualityprofiles_RemoveUser_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.RemoveUser(&QualityprofilesRemoveUserOption{
+	_, err = client.Qualityprofiles.RemoveUser(&QualityprofilesRemoveUserOptions{
 		Login:          "john.doe",
 		QualityProfile: "Sonar way",
 	})
@@ -915,7 +915,7 @@ func TestQualityprofiles_Rename(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/rename", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesRenameOption{
+	opt := &QualityprofilesRenameOptions{
 		Key:  "profile-key",
 		Name: "New Profile Name",
 	}
@@ -933,19 +933,19 @@ func TestQualityprofiles_Rename_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOption{
+	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOptions{
 		Name: "New Name",
 	})
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOption{
+	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOptions{
 		Key: "profile-key",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOption{
+	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOptions{
 		Key:  "profile-key",
 		Name: strings.Repeat("a", MaxQualityProfileNameLength+1),
 	})
@@ -956,7 +956,7 @@ func TestQualityprofiles_Restore(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/restore", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesRestoreOption{
+	opt := &QualityprofilesRestoreOptions{
 		Backup: `<?xml version='1.0'?><profile><name>My Profile</name></profile>`,
 	}
 
@@ -973,7 +973,7 @@ func TestQualityprofiles_Restore_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Backup
-	_, err = client.Qualityprofiles.Restore(&QualityprofilesRestoreOption{})
+	_, err = client.Qualityprofiles.Restore(&QualityprofilesRestoreOptions{})
 	assert.Error(t, err)
 }
 
@@ -1005,7 +1005,7 @@ func TestQualityprofiles_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesSearchOption{
+	opt := &QualityprofilesSearchOptions{
 		Language: "java",
 	}
 
@@ -1037,7 +1037,7 @@ func TestQualityprofiles_SearchGroups(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/search_groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesSearchGroupsOption{
+	opt := &QualityprofilesSearchGroupsOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	}
@@ -1058,19 +1058,19 @@ func TestQualityprofiles_SearchGroups_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOption{
+	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOption{
+	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test invalid Selected
-	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOption{
+	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 		Selected:       "invalid",
@@ -1089,7 +1089,7 @@ func TestQualityprofiles_SearchUsers(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/search_users", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesSearchUsersOption{
+	opt := &QualityprofilesSearchUsersOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	}
@@ -1110,19 +1110,19 @@ func TestQualityprofiles_SearchUsers_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOption{
+	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOption{
+	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test invalid Selected
-	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOption{
+	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 		Selected:       "invalid",
@@ -1134,7 +1134,7 @@ func TestQualityprofiles_SetDefault(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualityprofiles/set_default", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesSetDefaultOption{
+	opt := &QualityprofilesSetDefaultOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	}
@@ -1152,13 +1152,13 @@ func TestQualityprofiles_SetDefault_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.SetDefault(&QualityprofilesSetDefaultOption{
+	_, err = client.Qualityprofiles.SetDefault(&QualityprofilesSetDefaultOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.SetDefault(&QualityprofilesSetDefaultOption{
+	_, err = client.Qualityprofiles.SetDefault(&QualityprofilesSetDefaultOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -1180,7 +1180,7 @@ func TestQualityprofiles_Show(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/show", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualityprofilesShowOption{
+	opt := &QualityprofilesShowOptions{
 		Key: "sonar-way-java",
 	}
 
@@ -1200,14 +1200,14 @@ func TestQualityprofiles_Show_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, _, err = client.Qualityprofiles.Show(&QualityprofilesShowOption{})
+	_, _, err = client.Qualityprofiles.Show(&QualityprofilesShowOptions{})
 	assert.Error(t, err)
 }
 
 func TestQualityprofiles_ConvertActivateRuleOptForURL(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	opt := &QualityprofilesActivateRuleOption{
+	opt := &QualityprofilesActivateRuleOptions{
 		Key:             "AU-TpxcA-iU5OvuD2FL0",
 		Rule:            "squid:AvoidCycles",
 		Impacts:         map[string]string{"MAINTAINABILITY": "HIGH", "SECURITY": "MEDIUM"},

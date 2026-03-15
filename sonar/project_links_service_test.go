@@ -23,7 +23,7 @@ func TestProjectLinks_Create(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectLinksCreateOption{
+	opt := &ProjectLinksCreateOptions{
 		Name:       "Homepage",
 		ProjectKey: "my-project",
 		URL:        "https://example.com",
@@ -45,21 +45,21 @@ func TestProjectLinks_Create_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOption{
+	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOptions{
 		ProjectKey: "my-project",
 		URL:        "https://example.com",
 	})
 	assert.Error(t, err)
 
 	// Missing URL should fail validation.
-	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOption{
+	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOptions{
 		Name:       "Homepage",
 		ProjectKey: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing ProjectID and ProjectKey should fail validation.
-	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOption{
+	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOptions{
 		Name: "Homepage",
 		URL:  "https://example.com",
 	})
@@ -72,7 +72,7 @@ func TestProjectLinks_Delete(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectLinksDeleteOption{
+	opt := &ProjectLinksDeleteOptions{
 		ID: "1",
 	}
 
@@ -89,7 +89,7 @@ func TestProjectLinks_Delete_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing ID should fail validation.
-	_, err = client.ProjectLinks.Delete(&ProjectLinksDeleteOption{})
+	_, err = client.ProjectLinks.Delete(&ProjectLinksDeleteOptions{})
 	assert.Error(t, err)
 }
 
@@ -106,7 +106,7 @@ func TestProjectLinks_Search(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectLinksSearchOption{
+	opt := &ProjectLinksSearchOptions{
 		ProjectKey: "my-project",
 	}
 
@@ -126,7 +126,7 @@ func TestProjectLinks_Search_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing ProjectID and ProjectKey should fail validation.
-	_, _, err = client.ProjectLinks.Search(&ProjectLinksSearchOption{})
+	_, _, err = client.ProjectLinks.Search(&ProjectLinksSearchOptions{})
 	assert.Error(t, err)
 }
 
@@ -134,7 +134,7 @@ func TestProjectLinks_ValidateCreateOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option with ProjectKey should pass.
-	err := client.ProjectLinks.ValidateCreateOpt(&ProjectLinksCreateOption{
+	err := client.ProjectLinks.ValidateCreateOpt(&ProjectLinksCreateOptions{
 		Name:       "Homepage",
 		ProjectKey: "my-project",
 		URL:        "https://example.com",
@@ -142,7 +142,7 @@ func TestProjectLinks_ValidateCreateOpt(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Valid option with ProjectID should pass.
-	err = client.ProjectLinks.ValidateCreateOpt(&ProjectLinksCreateOption{
+	err = client.ProjectLinks.ValidateCreateOpt(&ProjectLinksCreateOptions{
 		Name:      "Homepage",
 		ProjectID: "project-id",
 		URL:       "https://example.com",
@@ -154,7 +154,7 @@ func TestProjectLinks_ValidateCreateOpt(t *testing.T) {
 	for i := 0; i < MaxLinkNameLength+1; i++ {
 		longName += "a"
 	}
-	err = client.ProjectLinks.ValidateCreateOpt(&ProjectLinksCreateOption{
+	err = client.ProjectLinks.ValidateCreateOpt(&ProjectLinksCreateOptions{
 		Name:       longName,
 		ProjectKey: "my-project",
 		URL:        "https://example.com",

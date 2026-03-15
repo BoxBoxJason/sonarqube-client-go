@@ -26,14 +26,14 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		// Create a test project for hotspots-related operations
 		projectKey = helpers.UniqueResourceName("hot")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    "Hotspots Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -61,7 +61,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without project or hotspots parameter", func() {
-				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{})
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())
 				Expect(resp).To(BeNil())
@@ -70,7 +70,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should search hotspots for a project", func() {
-				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -79,7 +79,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should search hotspots with pagination", func() {
-				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOptions{
 					Project: projectKey,
 					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
@@ -92,7 +92,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should search hotspots with status filter", func() {
-				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOptions{
 					Project: projectKey,
 					Status:  "TO_REVIEW",
 				})
@@ -102,7 +102,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should search hotspots in new code period", func() {
-				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOptions{
 					Project:         projectKey,
 					InNewCodePeriod: true,
 				})
@@ -114,7 +114,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOption{
+				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOptions{
 					Project: "non-existent-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -140,7 +140,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required project", func() {
-				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{})
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Project"))
 				Expect(result).To(BeNil())
@@ -150,7 +150,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should list hotspots for a project", func() {
-				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -159,7 +159,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should list hotspots with pagination", func() {
-				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOptions{
 					Project: projectKey,
 					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
@@ -172,7 +172,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should list hotspots with status filter", func() {
-				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOptions{
 					Project: projectKey,
 					Status:  "TO_REVIEW",
 				})
@@ -184,7 +184,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOption{
+				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOptions{
 					Project: "non-existent-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -210,7 +210,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required hotspot key", func() {
-				result, resp, err := client.Hotspots.Show(&sonar.HotspotsShowOption{})
+				result, resp, err := client.Hotspots.Show(&sonar.HotspotsShowOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Hotspot"))
 				Expect(result).To(BeNil())
@@ -220,7 +220,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				result, resp, err := client.Hotspots.Show(&sonar.HotspotsShowOption{
+				result, resp, err := client.Hotspots.Show(&sonar.HotspotsShowOptions{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -246,7 +246,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required project key", func() {
-				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOption{
+				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOptions{
 					BranchName: "main",
 				})
 				Expect(err).To(HaveOccurred())
@@ -256,7 +256,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required branch name", func() {
-				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOption{
+				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOptions{
 					ProjectKey: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -268,7 +268,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOption{
+				result, resp, err := client.Hotspots.Pull(&sonar.HotspotsPullOptions{
 					ProjectKey: "non-existent-project",
 					BranchName: "main",
 				})
@@ -294,7 +294,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required hotspot key", func() {
-				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOption{
+				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOptions{
 					Comment: "Test comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -303,7 +303,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required comment", func() {
-				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOption{
+				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOptions{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -314,7 +314,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOption{
+				resp, err := client.Hotspots.AddComment(&sonar.HotspotsAddCommentOptions{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 					Comment: "Test comment",
 				})
@@ -339,7 +339,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required hotspot key", func() {
-				resp, err := client.Hotspots.Assign(&sonar.HotspotsAssignOption{
+				resp, err := client.Hotspots.Assign(&sonar.HotspotsAssignOptions{
 					Assignee: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -350,7 +350,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				resp, err := client.Hotspots.Assign(&sonar.HotspotsAssignOption{
+				resp, err := client.Hotspots.Assign(&sonar.HotspotsAssignOptions{
 					Hotspot:  "AXxxxxxxxxxxxxxxxxxx",
 					Assignee: "admin",
 				})
@@ -375,7 +375,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required hotspot key", func() {
-				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOption{
+				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOptions{
 					Status: "REVIEWED",
 				})
 				Expect(err).To(HaveOccurred())
@@ -384,7 +384,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required status", func() {
-				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOption{
+				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOptions{
 					Hotspot: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -395,7 +395,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Hotspot", func() {
 			It("should fail with non-existent hotspot key", func() {
-				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOption{
+				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOptions{
 					Hotspot:    "AXxxxxxxxxxxxxxxxxxx",
 					Status:     "REVIEWED",
 					Resolution: "SAFE",
@@ -421,7 +421,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required comment key", func() {
-				resp, err := client.Hotspots.DeleteComment(&sonar.HotspotsDeleteCommentOption{})
+				resp, err := client.Hotspots.DeleteComment(&sonar.HotspotsDeleteCommentOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Comment"))
 				Expect(resp).To(BeNil())
@@ -430,7 +430,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
-				resp, err := client.Hotspots.DeleteComment(&sonar.HotspotsDeleteCommentOption{
+				resp, err := client.Hotspots.DeleteComment(&sonar.HotspotsDeleteCommentOptions{
 					Comment: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -455,7 +455,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required comment key", func() {
-				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOption{
+				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOptions{
 					Text: "Updated comment",
 				})
 				Expect(err).To(HaveOccurred())
@@ -465,7 +465,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 
 			It("should fail without required text", func() {
-				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOption{
+				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOptions{
 					Comment: "AXxxxxxxxxxxxxxxxxxx",
 				})
 				Expect(err).To(HaveOccurred())
@@ -477,7 +477,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 		Context("Non-Existent Comment", func() {
 			It("should fail with non-existent comment key", func() {
-				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOption{
+				result, resp, err := client.Hotspots.EditComment(&sonar.HotspotsEditCommentOptions{
 					Comment: "AXxxxxxxxxxxxxxxxxxx",
 					Text:    "Updated comment",
 				})

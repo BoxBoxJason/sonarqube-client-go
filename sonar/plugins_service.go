@@ -248,22 +248,22 @@ type PluginUpdateDetail struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// PluginsDownloadOption represents options for downloading a plugin.
-type PluginsDownloadOption struct {
+// PluginsDownloadOptions represents options for downloading a plugin.
+type PluginsDownloadOptions struct {
 	// Plugin is the key identifying the plugin to download (required).
 	Plugin string `url:"plugin,omitempty"`
 }
 
-// PluginsInstallOption represents options for installing a plugin.
-type PluginsInstallOption struct {
+// PluginsInstallOptions represents options for installing a plugin.
+type PluginsInstallOptions struct {
 	// Key is the key identifying the plugin to install (required).
 	Key string `url:"key,omitempty"`
 }
 
-// PluginsInstalledOption represents options for listing installed plugins.
+// PluginsInstalledOptions represents options for listing installed plugins.
 //
 //nolint:govet // fieldalignment - structure kept for readability
-type PluginsInstalledOption struct {
+type PluginsInstalledOptions struct {
 	// Fields is the list of additional fields to return.
 	// Possible values: category.
 	Fields []string `url:"f,omitempty,comma"`
@@ -272,14 +272,14 @@ type PluginsInstalledOption struct {
 	Type string `url:"type,omitempty"`
 }
 
-// PluginsUninstallOption represents options for uninstalling a plugin.
-type PluginsUninstallOption struct {
+// PluginsUninstallOptions represents options for uninstalling a plugin.
+type PluginsUninstallOptions struct {
 	// Key is the key identifying the plugin to uninstall (required).
 	Key string `url:"key,omitempty"`
 }
 
-// PluginsUpdateOption represents options for updating a plugin.
-type PluginsUpdateOption struct {
+// PluginsUpdateOptions represents options for updating a plugin.
+type PluginsUpdateOptions struct {
 	// Key is the key identifying the plugin to update (required).
 	Key string `url:"key,omitempty"`
 }
@@ -305,7 +305,7 @@ var (
 // -----------------------------------------------------------------------------
 
 // ValidateDownloadOpt validates the options for the Download method.
-func (s *PluginsService) ValidateDownloadOpt(opt *PluginsDownloadOption) error {
+func (s *PluginsService) ValidateDownloadOpt(opt *PluginsDownloadOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -314,7 +314,7 @@ func (s *PluginsService) ValidateDownloadOpt(opt *PluginsDownloadOption) error {
 }
 
 // ValidateInstallOpt validates the options for the Install method.
-func (s *PluginsService) ValidateInstallOpt(opt *PluginsInstallOption) error {
+func (s *PluginsService) ValidateInstallOpt(opt *PluginsInstallOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -323,7 +323,7 @@ func (s *PluginsService) ValidateInstallOpt(opt *PluginsInstallOption) error {
 }
 
 // ValidateInstalledOpt validates the options for the Installed method.
-func (s *PluginsService) ValidateInstalledOpt(opt *PluginsInstalledOption) error {
+func (s *PluginsService) ValidateInstalledOpt(opt *PluginsInstalledOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -346,7 +346,7 @@ func (s *PluginsService) ValidateInstalledOpt(opt *PluginsInstalledOption) error
 }
 
 // ValidateUninstallOpt validates the options for the Uninstall method.
-func (s *PluginsService) ValidateUninstallOpt(opt *PluginsUninstallOption) error {
+func (s *PluginsService) ValidateUninstallOpt(opt *PluginsUninstallOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -355,7 +355,7 @@ func (s *PluginsService) ValidateUninstallOpt(opt *PluginsUninstallOption) error
 }
 
 // ValidateUpdateOpt validates the options for the Update method.
-func (s *PluginsService) ValidateUpdateOpt(opt *PluginsUpdateOption) error {
+func (s *PluginsService) ValidateUpdateOpt(opt *PluginsUpdateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -413,7 +413,7 @@ func (s *PluginsService) CancelAll() (*http.Response, error) {
 // API endpoint: GET /api/plugins/download.
 // Since: 7.2.
 // Internal: true.
-func (s *PluginsService) Download(opt *PluginsDownloadOption) (*string, *http.Response, error) {
+func (s *PluginsService) Download(opt *PluginsDownloadOptions) (*string, *http.Response, error) {
 	err := s.ValidateDownloadOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -441,7 +441,7 @@ func (s *PluginsService) Download(opt *PluginsDownloadOption) (*string, *http.Re
 //
 // API endpoint: POST /api/plugins/install.
 // Since: 5.2.
-func (s *PluginsService) Install(opt *PluginsInstallOption) (*http.Response, error) {
+func (s *PluginsService) Install(opt *PluginsInstallOptions) (*http.Response, error) {
 	err := s.ValidateInstallOpt(opt)
 	if err != nil {
 		return nil, err
@@ -465,7 +465,7 @@ func (s *PluginsService) Install(opt *PluginsInstallOption) (*http.Response, err
 //
 // API endpoint: GET /api/plugins/installed.
 // Since: 5.2.
-func (s *PluginsService) Installed(opt *PluginsInstalledOption) (*PluginsInstalled, *http.Response, error) {
+func (s *PluginsService) Installed(opt *PluginsInstalledOptions) (*PluginsInstalled, *http.Response, error) {
 	err := s.ValidateInstalledOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -512,7 +512,7 @@ func (s *PluginsService) Pending() (*PluginsPending, *http.Response, error) {
 //
 // API endpoint: POST /api/plugins/uninstall.
 // Since: 5.2.
-func (s *PluginsService) Uninstall(opt *PluginsUninstallOption) (*http.Response, error) {
+func (s *PluginsService) Uninstall(opt *PluginsUninstallOptions) (*http.Response, error) {
 	err := s.ValidateUninstallOpt(opt)
 	if err != nil {
 		return nil, err
@@ -537,7 +537,7 @@ func (s *PluginsService) Uninstall(opt *PluginsUninstallOption) (*http.Response,
 //
 // API endpoint: POST /api/plugins/update.
 // Since: 5.2.
-func (s *PluginsService) Update(opt *PluginsUpdateOption) (*http.Response, error) {
+func (s *PluginsService) Update(opt *PluginsUpdateOptions) (*http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, err

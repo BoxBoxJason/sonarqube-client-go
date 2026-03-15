@@ -26,14 +26,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 
 		// Create a test project for project-scoped notifications
 		projectKey = helpers.UniqueResourceName("notif")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    "Notifications Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -62,7 +62,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			})
 
 			It("should list notifications with empty options", func() {
-				result, resp, err := client.Notifications.List(&sonar.NotificationsListOption{})
+				result, resp, err := client.Notifications.List(&sonar.NotificationsListOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -83,7 +83,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			})
 
 			It("should fail without required type", func() {
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOption{})
+				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Type"))
 				Expect(resp).To(BeNil())
@@ -100,14 +100,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 
 				notificationType := listResult.GlobalTypes[0]
 
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOption{
+				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
 					Type: notificationType,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up
-				_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOption{
+				_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
 					Type: notificationType,
 				})
 				if err != nil {
@@ -124,7 +124,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 
 				notificationType := listResult.PerProjectTypes[0]
 
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOption{
+				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
 					Type:    notificationType,
 					Project: projectKey,
 				})
@@ -132,7 +132,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up
-				_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOption{
+				_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
 					Type:    notificationType,
 					Project: projectKey,
 				})
@@ -144,7 +144,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 
 		Context("Invalid Type", func() {
 			It("should fail for invalid notification type", func() {
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOption{
+				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
 					Type: "invalid-type",
 				})
 				Expect(err).To(HaveOccurred())
@@ -168,7 +168,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			})
 
 			It("should fail without required type", func() {
-				resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOption{})
+				resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Type"))
 				Expect(resp).To(BeNil())
@@ -186,13 +186,13 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				notificationType := listResult.GlobalTypes[0]
 
 				// Add the notification first
-				_, err = client.Notifications.Add(&sonar.NotificationsAddOption{
+				_, err = client.Notifications.Add(&sonar.NotificationsAddOptions{
 					Type: notificationType,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				// Now remove it
-				resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOption{
+				resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
 					Type: notificationType,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -225,7 +225,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				}
 
 				if unsubscribedType != "" {
-					resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOption{
+					resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
 						Type: unsubscribedType,
 					})
 					Expect(err).To(HaveOccurred())
@@ -251,7 +251,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			notificationType := listResult.GlobalTypes[0]
 
 			// Remove if already exists (clean state)
-			_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOption{
+			_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
 				Type: notificationType,
 			})
 			if err != nil {
@@ -259,7 +259,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			}
 
 			// Add the notification
-			resp, err := client.Notifications.Add(&sonar.NotificationsAddOption{
+			resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
 				Type: notificationType,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -280,7 +280,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			Expect(found).To(BeTrue(), "Notification should be in the list")
 
 			// Remove the notification
-			resp, err = client.Notifications.Remove(&sonar.NotificationsRemoveOption{
+			resp, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
 				Type: notificationType,
 			})
 			Expect(err).NotTo(HaveOccurred())

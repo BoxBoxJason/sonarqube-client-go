@@ -36,7 +36,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should search metrics with empty options", func() {
-				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOption{})
+				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -80,7 +80,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should support pagination", func() {
-				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOption{
+				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOptions{
 					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 5,
 					},

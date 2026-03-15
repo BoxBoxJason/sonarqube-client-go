@@ -230,24 +230,24 @@ type GitlabRepository struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// AlmIntegrationsCheckPatOption contains options for checking a Personal Access Token.
-type AlmIntegrationsCheckPatOption struct {
+// AlmIntegrationsCheckPatOptions contains options for checking a Personal Access Token.
+type AlmIntegrationsCheckPatOptions struct {
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
 }
 
-// AlmIntegrationsGetGithubClientIdOption contains options for getting a GitHub client ID.
-type AlmIntegrationsGetGithubClientIdOption struct {
+// AlmIntegrationsGetGithubClientIdOptions contains options for getting a GitHub client ID.
+type AlmIntegrationsGetGithubClientIdOptions struct {
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
 }
 
-// AlmIntegrationsImportAzureProjectOption contains options for importing an Azure DevOps project.
+// AlmIntegrationsImportAzureProjectOptions contains options for importing an Azure DevOps project.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-type AlmIntegrationsImportAzureProjectOption struct {
+type AlmIntegrationsImportAzureProjectOptions struct {
 	// AlmSetting is the DevOps Platform configuration key.
 	// This parameter is optional if you have only one Azure integration.
 	// Maximum length: 200 characters
@@ -267,10 +267,10 @@ type AlmIntegrationsImportAzureProjectOption struct {
 	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
-// AlmIntegrationsImportBitbucketCloudRepoOption contains options for importing a Bitbucket Cloud repository.
+// AlmIntegrationsImportBitbucketCloudRepoOptions contains options for importing a Bitbucket Cloud repository.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-type AlmIntegrationsImportBitbucketCloudRepoOption struct {
+type AlmIntegrationsImportBitbucketCloudRepoOptions struct {
 	// AlmSetting is the DevOps Platform configuration key.
 	// This parameter is optional if you have only one Bitbucket Cloud integration.
 	// Maximum length: 200 characters
@@ -287,10 +287,10 @@ type AlmIntegrationsImportBitbucketCloudRepoOption struct {
 	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
-// AlmIntegrationsImportBitbucketServerProjectOption contains options for importing a Bitbucket Server project.
+// AlmIntegrationsImportBitbucketServerProjectOptions contains options for importing a Bitbucket Server project.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-type AlmIntegrationsImportBitbucketServerProjectOption struct {
+type AlmIntegrationsImportBitbucketServerProjectOptions struct {
 	// AlmSetting is the DevOps Platform configuration key.
 	// This parameter is optional if you have only one Bitbucket Server integration.
 	// Maximum length: 200 characters
@@ -310,10 +310,10 @@ type AlmIntegrationsImportBitbucketServerProjectOption struct {
 	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
-// AlmIntegrationsImportGithubProjectOption contains options for importing a GitHub project.
+// AlmIntegrationsImportGithubProjectOptions contains options for importing a GitHub project.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-type AlmIntegrationsImportGithubProjectOption struct {
+type AlmIntegrationsImportGithubProjectOptions struct {
 	// AlmSetting is the DevOps Platform configuration key.
 	// This parameter is optional if you have only one GitHub integration.
 	// Maximum length: 200 characters
@@ -330,10 +330,10 @@ type AlmIntegrationsImportGithubProjectOption struct {
 	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
-// AlmIntegrationsImportGitlabProjectOption contains options for importing a GitLab project.
+// AlmIntegrationsImportGitlabProjectOptions contains options for importing a GitLab project.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-type AlmIntegrationsImportGitlabProjectOption struct {
+type AlmIntegrationsImportGitlabProjectOptions struct {
 	// AlmSetting is the DevOps Platform configuration key.
 	// This parameter is optional if you have only one GitLab integration.
 	AlmSetting string `url:"almSetting,omitempty"`
@@ -348,15 +348,15 @@ type AlmIntegrationsImportGitlabProjectOption struct {
 	NewCodeDefinitionValue int64 `url:"newCodeDefinitionValue,omitempty"`
 }
 
-// AlmIntegrationsListAzureProjectsOption contains options for listing Azure projects.
-type AlmIntegrationsListAzureProjectsOption struct {
+// AlmIntegrationsListAzureProjectsOptions contains options for listing Azure projects.
+type AlmIntegrationsListAzureProjectsOptions struct {
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
 }
 
-// AlmIntegrationsListBitbucketServerProjectsOption contains options for listing Bitbucket Server projects.
-type AlmIntegrationsListBitbucketServerProjectsOption struct {
+// AlmIntegrationsListBitbucketServerProjectsOptions contains options for listing Bitbucket Server projects.
+type AlmIntegrationsListBitbucketServerProjectsOptions struct {
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
@@ -367,10 +367,10 @@ type AlmIntegrationsListBitbucketServerProjectsOption struct {
 	Start int64 `url:"start,omitempty"`
 }
 
-// AlmIntegrationsListGithubOrganizationsOption contains options for listing GitHub organizations.
+// AlmIntegrationsListGithubOrganizationsOptions contains options for listing GitHub organizations.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsListGithubOrganizationsOption struct {
+type AlmIntegrationsListGithubOrganizationsOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -382,10 +382,10 @@ type AlmIntegrationsListGithubOrganizationsOption struct {
 	Token string `url:"token,omitempty"`
 }
 
-// AlmIntegrationsListGithubRepositoriesOption contains options for listing GitHub repositories.
+// AlmIntegrationsListGithubRepositoriesOptions contains options for listing GitHub repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsListGithubRepositoriesOption struct {
+type AlmIntegrationsListGithubRepositoriesOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -399,8 +399,8 @@ type AlmIntegrationsListGithubRepositoriesOption struct {
 	Query string `url:"q,omitempty"`
 }
 
-// AlmIntegrationsSearchAzureReposOption contains options for searching Azure repositories.
-type AlmIntegrationsSearchAzureReposOption struct {
+// AlmIntegrationsSearchAzureReposOptions contains options for searching Azure repositories.
+type AlmIntegrationsSearchAzureReposOptions struct {
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
@@ -412,10 +412,10 @@ type AlmIntegrationsSearchAzureReposOption struct {
 	SearchQuery string `url:"searchQuery,omitempty"`
 }
 
-// AlmIntegrationsSearchBitbucketCloudReposOption contains options for searching Bitbucket Cloud repositories.
+// AlmIntegrationsSearchBitbucketCloudReposOptions contains options for searching Bitbucket Cloud repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsSearchBitbucketCloudReposOption struct {
+type AlmIntegrationsSearchBitbucketCloudReposOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -427,10 +427,10 @@ type AlmIntegrationsSearchBitbucketCloudReposOption struct {
 	RepositoryName string `url:"repositoryName,omitempty"`
 }
 
-// AlmIntegrationsSearchBitbucketServerReposOption contains options for searching Bitbucket Server repositories.
+// AlmIntegrationsSearchBitbucketServerReposOptions contains options for searching Bitbucket Server repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsSearchBitbucketServerReposOption struct {
+type AlmIntegrationsSearchBitbucketServerReposOptions struct {
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
@@ -447,10 +447,10 @@ type AlmIntegrationsSearchBitbucketServerReposOption struct {
 	Start int64 `url:"start,omitempty"`
 }
 
-// AlmIntegrationsSearchGitlabReposOption contains options for searching GitLab repositories.
+// AlmIntegrationsSearchGitlabReposOptions contains options for searching GitLab repositories.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type AlmIntegrationsSearchGitlabReposOption struct {
+type AlmIntegrationsSearchGitlabReposOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -462,8 +462,8 @@ type AlmIntegrationsSearchGitlabReposOption struct {
 	ProjectName string `url:"projectName,omitempty"`
 }
 
-// AlmIntegrationsSetPatOption contains options for setting a Personal Access Token.
-type AlmIntegrationsSetPatOption struct {
+// AlmIntegrationsSetPatOptions contains options for setting a Personal Access Token.
+type AlmIntegrationsSetPatOptions struct {
 	// AlmSetting is the DevOps Platform configuration key.
 	// This parameter is optional if you have only one single DevOps Platform integration.
 	AlmSetting string `url:"almSetting,omitempty"`
@@ -481,7 +481,7 @@ type AlmIntegrationsSetPatOption struct {
 
 // CheckPat checks the validity of a Personal Access Token for the given DevOps Platform setting.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v *AlmIntegrationsCheckPat, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOptions) (v *AlmIntegrationsCheckPat, resp *http.Response, err error) {
 	err = s.ValidateCheckPatOpt(opt)
 	if err != nil {
 		return
@@ -504,7 +504,7 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOption) (v
 
 // GetGithubClientId gets the client ID of a GitHub Integration.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithubClientIdOption) (v *AlmIntegrationsGetGithubClientId, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithubClientIdOptions) (v *AlmIntegrationsGetGithubClientId, resp *http.Response, err error) {
 	err = s.ValidateGetGithubClientIdOpt(opt)
 	if err != nil {
 		return
@@ -530,7 +530,7 @@ func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithub
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportAzureProject(opt *AlmIntegrationsImportAzureProjectOption) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportAzureProject(opt *AlmIntegrationsImportAzureProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportAzureProjectOpt(opt)
 	if err != nil {
 		return
@@ -554,7 +554,7 @@ func (s *AlmIntegrationsService) ImportAzureProject(opt *AlmIntegrationsImportAz
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportBitbucketCloudRepo(opt *AlmIntegrationsImportBitbucketCloudRepoOption) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportBitbucketCloudRepo(opt *AlmIntegrationsImportBitbucketCloudRepoOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportBitbucketCloudRepoOpt(opt)
 	if err != nil {
 		return
@@ -578,7 +578,7 @@ func (s *AlmIntegrationsService) ImportBitbucketCloudRepo(opt *AlmIntegrationsIm
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportBitbucketServerProject(opt *AlmIntegrationsImportBitbucketServerProjectOption) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportBitbucketServerProject(opt *AlmIntegrationsImportBitbucketServerProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportBitbucketServerProjectOpt(opt)
 	if err != nil {
 		return
@@ -603,7 +603,7 @@ func (s *AlmIntegrationsService) ImportBitbucketServerProject(opt *AlmIntegratio
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportGithubProjectOption) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportGithubProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportGithubProjectOpt(opt)
 	if err != nil {
 		return
@@ -626,7 +626,7 @@ func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportG
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportGitlabProject(opt *AlmIntegrationsImportGitlabProjectOption) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportGitlabProject(opt *AlmIntegrationsImportGitlabProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportGitlabProjectOpt(opt)
 	if err != nil {
 		return
@@ -647,7 +647,7 @@ func (s *AlmIntegrationsService) ImportGitlabProject(opt *AlmIntegrationsImportG
 
 // ListAzureProjects lists Azure projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzureProjectsOption) (v *AlmIntegrationsListAzureProjects, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzureProjectsOptions) (v *AlmIntegrationsListAzureProjects, resp *http.Response, err error) {
 	err = s.ValidateListAzureProjectsOpt(opt)
 	if err != nil {
 		return
@@ -670,7 +670,7 @@ func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzure
 
 // ListBitbucketServerProjects lists the Bitbucket Server projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegrationsListBitbucketServerProjectsOption) (v *AlmIntegrationsListBitbucketServerProjects, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegrationsListBitbucketServerProjectsOptions) (v *AlmIntegrationsListBitbucketServerProjects, resp *http.Response, err error) {
 	err = s.ValidateListBitbucketServerProjectsOpt(opt)
 	if err != nil {
 		return
@@ -693,7 +693,7 @@ func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegration
 
 // ListGithubOrganizations lists GitHub organizations.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsListGithubOrganizationsOption) (v *AlmIntegrationsListGithubOrganizations, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsListGithubOrganizationsOptions) (v *AlmIntegrationsListGithubOrganizations, resp *http.Response, err error) {
 	err = s.ValidateListGithubOrganizationsOpt(opt)
 	if err != nil {
 		return
@@ -716,7 +716,7 @@ func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsLis
 
 // ListGithubRepositories lists the GitHub repositories for an organization.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsListGithubRepositoriesOption) (v *AlmIntegrationsListGithubRepositories, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsListGithubRepositoriesOptions) (v *AlmIntegrationsListGithubRepositories, resp *http.Response, err error) {
 	err = s.ValidateListGithubRepositoriesOpt(opt)
 	if err != nil {
 		return
@@ -739,7 +739,7 @@ func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsList
 
 // SearchAzureRepos searches the Azure repositories.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzureReposOption) (v *AlmIntegrationsSearchAzureRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzureReposOptions) (v *AlmIntegrationsSearchAzureRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchAzureReposOpt(opt)
 	if err != nil {
 		return
@@ -762,7 +762,7 @@ func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzur
 
 // SearchBitbucketCloudRepos searches the Bitbucket Cloud repositories.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsSearchBitbucketCloudReposOption) (v *AlmIntegrationsSearchBitbucketCloudRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsSearchBitbucketCloudReposOptions) (v *AlmIntegrationsSearchBitbucketCloudRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchBitbucketCloudReposOpt(opt)
 	if err != nil {
 		return
@@ -785,7 +785,7 @@ func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsS
 
 // SearchBitbucketServerRepos searches the Bitbucket Server repositories with REPO_ADMIN access.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrationsSearchBitbucketServerReposOption) (v *AlmIntegrationsSearchBitbucketServerRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrationsSearchBitbucketServerReposOptions) (v *AlmIntegrationsSearchBitbucketServerRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchBitbucketServerReposOpt(opt)
 	if err != nil {
 		return
@@ -808,7 +808,7 @@ func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrations
 
 // SearchGitlabRepos searches the GitLab projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGitlabReposOption) (v *AlmIntegrationsSearchGitlabRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGitlabReposOptions) (v *AlmIntegrationsSearchGitlabRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchGitlabReposOpt(opt)
 	if err != nil {
 		return
@@ -831,7 +831,7 @@ func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGit
 
 // SetPat sets a Personal Access Token for the given DevOps Platform setting.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SetPat(opt *AlmIntegrationsSetPatOption) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SetPat(opt *AlmIntegrationsSetPatOptions) (resp *http.Response, err error) {
 	err = s.ValidateSetPatOpt(opt)
 	if err != nil {
 		return
@@ -855,7 +855,7 @@ func (s *AlmIntegrationsService) SetPat(opt *AlmIntegrationsSetPatOption) (resp 
 // -----------------------------------------------------------------------------
 
 // ValidateCheckPatOpt validates the options for checking a Personal Access Token.
-func (s *AlmIntegrationsService) ValidateCheckPatOpt(opt *AlmIntegrationsCheckPatOption) error {
+func (s *AlmIntegrationsService) ValidateCheckPatOpt(opt *AlmIntegrationsCheckPatOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsCheckPatOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -874,7 +874,7 @@ func (s *AlmIntegrationsService) ValidateCheckPatOpt(opt *AlmIntegrationsCheckPa
 }
 
 // ValidateGetGithubClientIdOpt validates the options for getting a GitHub client ID.
-func (s *AlmIntegrationsService) ValidateGetGithubClientIdOpt(opt *AlmIntegrationsGetGithubClientIdOption) error {
+func (s *AlmIntegrationsService) ValidateGetGithubClientIdOpt(opt *AlmIntegrationsGetGithubClientIdOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsGetGithubClientIdOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -893,7 +893,7 @@ func (s *AlmIntegrationsService) ValidateGetGithubClientIdOpt(opt *AlmIntegratio
 }
 
 // ValidateImportAzureProjectOpt validates the options for importing an Azure DevOps project.
-func (s *AlmIntegrationsService) ValidateImportAzureProjectOpt(opt *AlmIntegrationsImportAzureProjectOption) error {
+func (s *AlmIntegrationsService) ValidateImportAzureProjectOpt(opt *AlmIntegrationsImportAzureProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsImportAzureProjectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -936,7 +936,7 @@ func (s *AlmIntegrationsService) ValidateImportAzureProjectOpt(opt *AlmIntegrati
 }
 
 // ValidateImportBitbucketCloudRepoOpt validates the options for importing a Bitbucket Cloud repository.
-func (s *AlmIntegrationsService) ValidateImportBitbucketCloudRepoOpt(opt *AlmIntegrationsImportBitbucketCloudRepoOption) error {
+func (s *AlmIntegrationsService) ValidateImportBitbucketCloudRepoOpt(opt *AlmIntegrationsImportBitbucketCloudRepoOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsImportBitbucketCloudRepoOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -969,7 +969,7 @@ func (s *AlmIntegrationsService) ValidateImportBitbucketCloudRepoOpt(opt *AlmInt
 }
 
 // ValidateImportBitbucketServerProjectOpt validates the options for importing a Bitbucket Server project.
-func (s *AlmIntegrationsService) ValidateImportBitbucketServerProjectOpt(opt *AlmIntegrationsImportBitbucketServerProjectOption) error {
+func (s *AlmIntegrationsService) ValidateImportBitbucketServerProjectOpt(opt *AlmIntegrationsImportBitbucketServerProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsImportBitbucketServerProjectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1012,7 +1012,7 @@ func (s *AlmIntegrationsService) ValidateImportBitbucketServerProjectOpt(opt *Al
 }
 
 // ValidateImportGithubProjectOpt validates the options for importing a GitHub project.
-func (s *AlmIntegrationsService) ValidateImportGithubProjectOpt(opt *AlmIntegrationsImportGithubProjectOption) error {
+func (s *AlmIntegrationsService) ValidateImportGithubProjectOpt(opt *AlmIntegrationsImportGithubProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsImportGithubProjectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1045,7 +1045,7 @@ func (s *AlmIntegrationsService) ValidateImportGithubProjectOpt(opt *AlmIntegrat
 }
 
 // ValidateImportGitlabProjectOpt validates the options for importing a GitLab project.
-func (s *AlmIntegrationsService) ValidateImportGitlabProjectOpt(opt *AlmIntegrationsImportGitlabProjectOption) error {
+func (s *AlmIntegrationsService) ValidateImportGitlabProjectOpt(opt *AlmIntegrationsImportGitlabProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsImportGitlabProjectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1073,7 +1073,7 @@ func (s *AlmIntegrationsService) ValidateImportGitlabProjectOpt(opt *AlmIntegrat
 }
 
 // ValidateListAzureProjectsOpt validates the options for listing Azure projects.
-func (s *AlmIntegrationsService) ValidateListAzureProjectsOpt(opt *AlmIntegrationsListAzureProjectsOption) error {
+func (s *AlmIntegrationsService) ValidateListAzureProjectsOpt(opt *AlmIntegrationsListAzureProjectsOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsListAzureProjectsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1092,7 +1092,7 @@ func (s *AlmIntegrationsService) ValidateListAzureProjectsOpt(opt *AlmIntegratio
 }
 
 // ValidateListBitbucketServerProjectsOpt validates the options for listing Bitbucket Server projects.
-func (s *AlmIntegrationsService) ValidateListBitbucketServerProjectsOpt(opt *AlmIntegrationsListBitbucketServerProjectsOption) error {
+func (s *AlmIntegrationsService) ValidateListBitbucketServerProjectsOpt(opt *AlmIntegrationsListBitbucketServerProjectsOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsListBitbucketServerProjectsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1118,7 +1118,7 @@ func (s *AlmIntegrationsService) ValidateListBitbucketServerProjectsOpt(opt *Alm
 }
 
 // ValidateListGithubOrganizationsOpt validates the options for listing GitHub organizations.
-func (s *AlmIntegrationsService) ValidateListGithubOrganizationsOpt(opt *AlmIntegrationsListGithubOrganizationsOption) error {
+func (s *AlmIntegrationsService) ValidateListGithubOrganizationsOpt(opt *AlmIntegrationsListGithubOrganizationsOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsListGithubOrganizationsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1144,7 +1144,7 @@ func (s *AlmIntegrationsService) ValidateListGithubOrganizationsOpt(opt *AlmInte
 }
 
 // ValidateListGithubRepositoriesOpt validates the options for listing GitHub repositories.
-func (s *AlmIntegrationsService) ValidateListGithubRepositoriesOpt(opt *AlmIntegrationsListGithubRepositoriesOption) error {
+func (s *AlmIntegrationsService) ValidateListGithubRepositoriesOpt(opt *AlmIntegrationsListGithubRepositoriesOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsListGithubRepositoriesOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1173,7 +1173,7 @@ func (s *AlmIntegrationsService) ValidateListGithubRepositoriesOpt(opt *AlmInteg
 }
 
 // ValidateSearchAzureReposOpt validates the options for searching Azure repositories.
-func (s *AlmIntegrationsService) ValidateSearchAzureReposOpt(opt *AlmIntegrationsSearchAzureReposOption) error {
+func (s *AlmIntegrationsService) ValidateSearchAzureReposOpt(opt *AlmIntegrationsSearchAzureReposOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsSearchAzureReposOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1206,7 +1206,7 @@ func (s *AlmIntegrationsService) ValidateSearchAzureReposOpt(opt *AlmIntegration
 }
 
 // ValidateSearchBitbucketCloudReposOpt validates the options for searching Bitbucket Cloud repositories.
-func (s *AlmIntegrationsService) ValidateSearchBitbucketCloudReposOpt(opt *AlmIntegrationsSearchBitbucketCloudReposOption) error {
+func (s *AlmIntegrationsService) ValidateSearchBitbucketCloudReposOpt(opt *AlmIntegrationsSearchBitbucketCloudReposOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsSearchBitbucketCloudReposOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1239,7 +1239,7 @@ func (s *AlmIntegrationsService) ValidateSearchBitbucketCloudReposOpt(opt *AlmIn
 }
 
 // ValidateSearchBitbucketServerReposOpt validates the options for searching Bitbucket Server repositories.
-func (s *AlmIntegrationsService) ValidateSearchBitbucketServerReposOpt(opt *AlmIntegrationsSearchBitbucketServerReposOption) error {
+func (s *AlmIntegrationsService) ValidateSearchBitbucketServerReposOpt(opt *AlmIntegrationsSearchBitbucketServerReposOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsSearchBitbucketServerReposOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1279,7 +1279,7 @@ func (s *AlmIntegrationsService) ValidateSearchBitbucketServerReposOpt(opt *AlmI
 }
 
 // ValidateSearchGitlabReposOpt validates the options for searching GitLab repositories.
-func (s *AlmIntegrationsService) ValidateSearchGitlabReposOpt(opt *AlmIntegrationsSearchGitlabReposOption) error {
+func (s *AlmIntegrationsService) ValidateSearchGitlabReposOpt(opt *AlmIntegrationsSearchGitlabReposOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsSearchGitlabReposOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1312,7 +1312,7 @@ func (s *AlmIntegrationsService) ValidateSearchGitlabReposOpt(opt *AlmIntegratio
 }
 
 // ValidateSetPatOpt validates the options for setting a Personal Access Token.
-func (s *AlmIntegrationsService) ValidateSetPatOpt(opt *AlmIntegrationsSetPatOption) error {
+func (s *AlmIntegrationsService) ValidateSetPatOpt(opt *AlmIntegrationsSetPatOptions) error {
 	if opt == nil {
 		return NewValidationError("AlmIntegrationsSetPatOption", "cannot be nil", ErrMissingRequired)
 	}

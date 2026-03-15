@@ -168,15 +168,15 @@ type AlmValidationError struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// AlmSettingsCountBindingOption contains parameters for the CountBinding method.
-type AlmSettingsCountBindingOption struct {
+// AlmSettingsCountBindingOptions contains parameters for the CountBinding method.
+type AlmSettingsCountBindingOptions struct {
 	// AlmSetting is the DevOps Platform setting key.
 	// This field is required.
 	AlmSetting string `url:"almSetting"`
 }
 
-// AlmSettingsCreateAzureOption contains parameters for the CreateAzure method.
-type AlmSettingsCreateAzureOption struct {
+// AlmSettingsCreateAzureOptions contains parameters for the CreateAzure method.
+type AlmSettingsCreateAzureOptions struct {
 	// Key is the unique key of the Azure DevOps instance setting.
 	// This field is required. Maximum length: 200 characters.
 	Key string `url:"key"`
@@ -188,8 +188,8 @@ type AlmSettingsCreateAzureOption struct {
 	URL string `url:"url"`
 }
 
-// AlmSettingsCreateBitbucketOption contains parameters for the CreateBitbucket method.
-type AlmSettingsCreateBitbucketOption struct {
+// AlmSettingsCreateBitbucketOptions contains parameters for the CreateBitbucket method.
+type AlmSettingsCreateBitbucketOptions struct {
 	// Key is the unique key of the Bitbucket instance setting.
 	// This field is required. Maximum length: 200 characters.
 	Key string `url:"key"`
@@ -201,8 +201,8 @@ type AlmSettingsCreateBitbucketOption struct {
 	URL string `url:"url"`
 }
 
-// AlmSettingsCreateBitbucketCloudOption contains parameters for the CreateBitbucketCloud method.
-type AlmSettingsCreateBitbucketCloudOption struct {
+// AlmSettingsCreateBitbucketCloudOptions contains parameters for the CreateBitbucketCloud method.
+type AlmSettingsCreateBitbucketCloudOptions struct {
 	// ClientID is the Bitbucket Cloud Client ID.
 	// This field is required. Maximum length: 2000 characters.
 	ClientID string `url:"clientId"`
@@ -217,8 +217,8 @@ type AlmSettingsCreateBitbucketCloudOption struct {
 	Workspace string `url:"workspace"`
 }
 
-// AlmSettingsCreateGithubOption contains parameters for the CreateGithub method.
-type AlmSettingsCreateGithubOption struct {
+// AlmSettingsCreateGithubOptions contains parameters for the CreateGithub method.
+type AlmSettingsCreateGithubOptions struct {
 	// AppID is the GitHub App ID.
 	// This field is required. Maximum length: 80 characters.
 	AppID string `url:"appId"`
@@ -242,8 +242,8 @@ type AlmSettingsCreateGithubOption struct {
 	WebhookSecret string `url:"webhookSecret,omitempty"`
 }
 
-// AlmSettingsCreateGitlabOption contains parameters for the CreateGitlab method.
-type AlmSettingsCreateGitlabOption struct {
+// AlmSettingsCreateGitlabOptions contains parameters for the CreateGitlab method.
+type AlmSettingsCreateGitlabOptions struct {
 	// Key is the unique key of the GitLab instance setting.
 	// This field is required. Maximum length: 200 characters.
 	Key string `url:"key"`
@@ -255,29 +255,29 @@ type AlmSettingsCreateGitlabOption struct {
 	URL string `url:"url"`
 }
 
-// AlmSettingsDeleteOption contains parameters for the Delete method.
-type AlmSettingsDeleteOption struct {
+// AlmSettingsDeleteOptions contains parameters for the Delete method.
+type AlmSettingsDeleteOptions struct {
 	// Key is the DevOps Platform Setting key.
 	// This field is required.
 	Key string `url:"key"`
 }
 
-// AlmSettingsGetBindingOption contains parameters for the GetBinding method.
-type AlmSettingsGetBindingOption struct {
+// AlmSettingsGetBindingOptions contains parameters for the GetBinding method.
+type AlmSettingsGetBindingOptions struct {
 	// Project is the project key.
 	// This field is required.
 	Project string `url:"project"`
 }
 
-// AlmSettingsListOption contains parameters for the List method.
-type AlmSettingsListOption struct {
+// AlmSettingsListOptions contains parameters for the List method.
+type AlmSettingsListOptions struct {
 	// Project is the project key.
 	// This field is optional.
 	Project string `url:"project,omitempty"`
 }
 
-// AlmSettingsUpdateAzureOption contains parameters for the UpdateAzure method.
-type AlmSettingsUpdateAzureOption struct {
+// AlmSettingsUpdateAzureOptions contains parameters for the UpdateAzure method.
+type AlmSettingsUpdateAzureOptions struct {
 	// Key is the unique key of the Azure instance setting.
 	// This field is required. Maximum length: 200 characters.
 	Key string `url:"key"`
@@ -292,8 +292,8 @@ type AlmSettingsUpdateAzureOption struct {
 	URL string `url:"url"`
 }
 
-// AlmSettingsUpdateBitbucketOption contains parameters for the UpdateBitbucket method.
-type AlmSettingsUpdateBitbucketOption struct {
+// AlmSettingsUpdateBitbucketOptions contains parameters for the UpdateBitbucket method.
+type AlmSettingsUpdateBitbucketOptions struct {
 	// Key is the unique key of the Bitbucket instance setting.
 	// This field is required. Maximum length: 200 characters.
 	Key string `url:"key"`
@@ -308,8 +308,8 @@ type AlmSettingsUpdateBitbucketOption struct {
 	URL string `url:"url"`
 }
 
-// AlmSettingsUpdateBitbucketCloudOption contains parameters for the UpdateBitbucketCloud method.
-type AlmSettingsUpdateBitbucketCloudOption struct {
+// AlmSettingsUpdateBitbucketCloudOptions contains parameters for the UpdateBitbucketCloud method.
+type AlmSettingsUpdateBitbucketCloudOptions struct {
 	// ClientID is the Bitbucket Cloud Client ID.
 	// This field is required. Maximum length: 80 characters.
 	ClientID string `url:"clientId"`
@@ -327,8 +327,8 @@ type AlmSettingsUpdateBitbucketCloudOption struct {
 	Workspace string `url:"workspace"`
 }
 
-// AlmSettingsUpdateGithubOption contains parameters for the UpdateGithub method.
-type AlmSettingsUpdateGithubOption struct {
+// AlmSettingsUpdateGithubOptions contains parameters for the UpdateGithub method.
+type AlmSettingsUpdateGithubOptions struct {
 	// AppID is the GitHub API ID.
 	// This field is required. Maximum length: 80 characters.
 	AppID string `url:"appId"`
@@ -355,8 +355,8 @@ type AlmSettingsUpdateGithubOption struct {
 	WebhookSecret string `url:"webhookSecret,omitempty"`
 }
 
-// AlmSettingsUpdateGitlabOption contains parameters for the UpdateGitlab method.
-type AlmSettingsUpdateGitlabOption struct {
+// AlmSettingsUpdateGitlabOptions contains parameters for the UpdateGitlab method.
+type AlmSettingsUpdateGitlabOptions struct {
 	// Key is the unique key of the GitLab instance setting.
 	// This field is required. Maximum length: 200 characters.
 	Key string `url:"key"`
@@ -371,8 +371,8 @@ type AlmSettingsUpdateGitlabOption struct {
 	URL string `url:"url"`
 }
 
-// AlmSettingsValidateOption contains parameters for the Validate method.
-type AlmSettingsValidateOption struct {
+// AlmSettingsValidateOptions contains parameters for the Validate method.
+type AlmSettingsValidateOptions struct {
 	// Key is the unique key of the DevOps Platform settings.
 	// This field is required. Maximum length: 200 characters.
 	Key string `url:"key"`
@@ -383,7 +383,7 @@ type AlmSettingsValidateOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateCountBindingOpt validates the options for the CountBinding method.
-func (s *AlmSettingsService) ValidateCountBindingOpt(opt *AlmSettingsCountBindingOption) error {
+func (s *AlmSettingsService) ValidateCountBindingOpt(opt *AlmSettingsCountBindingOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -397,7 +397,7 @@ func (s *AlmSettingsService) ValidateCountBindingOpt(opt *AlmSettingsCountBindin
 }
 
 // ValidateCreateAzureOpt validates the options for the CreateAzure method.
-func (s *AlmSettingsService) ValidateCreateAzureOpt(opt *AlmSettingsCreateAzureOption) error {
+func (s *AlmSettingsService) ValidateCreateAzureOpt(opt *AlmSettingsCreateAzureOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -436,7 +436,7 @@ func (s *AlmSettingsService) ValidateCreateAzureOpt(opt *AlmSettingsCreateAzureO
 }
 
 // ValidateCreateBitbucketOpt validates the options for the CreateBitbucket method.
-func (s *AlmSettingsService) ValidateCreateBitbucketOpt(opt *AlmSettingsCreateBitbucketOption) error {
+func (s *AlmSettingsService) ValidateCreateBitbucketOpt(opt *AlmSettingsCreateBitbucketOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -475,7 +475,7 @@ func (s *AlmSettingsService) ValidateCreateBitbucketOpt(opt *AlmSettingsCreateBi
 }
 
 // ValidateCreateBitbucketCloudOpt validates the options for the CreateBitbucketCloud method.
-func (s *AlmSettingsService) ValidateCreateBitbucketCloudOpt(opt *AlmSettingsCreateBitbucketCloudOption) error {
+func (s *AlmSettingsService) ValidateCreateBitbucketCloudOpt(opt *AlmSettingsCreateBitbucketCloudOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -521,7 +521,7 @@ func (s *AlmSettingsService) ValidateCreateBitbucketCloudOpt(opt *AlmSettingsCre
 // ValidateCreateGithubOpt validates the options for the CreateGithub method.
 //
 //nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
-func (s *AlmSettingsService) ValidateCreateGithubOpt(opt *AlmSettingsCreateGithubOption) error {
+func (s *AlmSettingsService) ValidateCreateGithubOpt(opt *AlmSettingsCreateGithubOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -597,7 +597,7 @@ func (s *AlmSettingsService) ValidateCreateGithubOpt(opt *AlmSettingsCreateGithu
 }
 
 // ValidateCreateGitlabOpt validates the options for the CreateGitlab method.
-func (s *AlmSettingsService) ValidateCreateGitlabOpt(opt *AlmSettingsCreateGitlabOption) error {
+func (s *AlmSettingsService) ValidateCreateGitlabOpt(opt *AlmSettingsCreateGitlabOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -636,7 +636,7 @@ func (s *AlmSettingsService) ValidateCreateGitlabOpt(opt *AlmSettingsCreateGitla
 }
 
 // ValidateDeleteOpt validates the options for the Delete method.
-func (s *AlmSettingsService) ValidateDeleteOpt(opt *AlmSettingsDeleteOption) error {
+func (s *AlmSettingsService) ValidateDeleteOpt(opt *AlmSettingsDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -650,7 +650,7 @@ func (s *AlmSettingsService) ValidateDeleteOpt(opt *AlmSettingsDeleteOption) err
 }
 
 // ValidateGetBindingOpt validates the options for the GetBinding method.
-func (s *AlmSettingsService) ValidateGetBindingOpt(opt *AlmSettingsGetBindingOption) error {
+func (s *AlmSettingsService) ValidateGetBindingOpt(opt *AlmSettingsGetBindingOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -664,13 +664,13 @@ func (s *AlmSettingsService) ValidateGetBindingOpt(opt *AlmSettingsGetBindingOpt
 }
 
 // ValidateListOpt validates the options for the List method.
-func (s *AlmSettingsService) ValidateListOpt(opt *AlmSettingsListOption) error {
+func (s *AlmSettingsService) ValidateListOpt(opt *AlmSettingsListOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
 
 // ValidateUpdateAzureOpt validates the options for the UpdateAzure method.
-func (s *AlmSettingsService) ValidateUpdateAzureOpt(opt *AlmSettingsUpdateAzureOption) error {
+func (s *AlmSettingsService) ValidateUpdateAzureOpt(opt *AlmSettingsUpdateAzureOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -713,7 +713,7 @@ func (s *AlmSettingsService) ValidateUpdateAzureOpt(opt *AlmSettingsUpdateAzureO
 }
 
 // ValidateUpdateBitbucketOpt validates the options for the UpdateBitbucket method.
-func (s *AlmSettingsService) ValidateUpdateBitbucketOpt(opt *AlmSettingsUpdateBitbucketOption) error {
+func (s *AlmSettingsService) ValidateUpdateBitbucketOpt(opt *AlmSettingsUpdateBitbucketOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -758,7 +758,7 @@ func (s *AlmSettingsService) ValidateUpdateBitbucketOpt(opt *AlmSettingsUpdateBi
 // ValidateUpdateBitbucketCloudOpt validates the options for the UpdateBitbucketCloud method.
 //
 //nolint:cyclop // Validation functions are naturally complex due to multiple checks
-func (s *AlmSettingsService) ValidateUpdateBitbucketCloudOpt(opt *AlmSettingsUpdateBitbucketCloudOption) error {
+func (s *AlmSettingsService) ValidateUpdateBitbucketCloudOpt(opt *AlmSettingsUpdateBitbucketCloudOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -813,7 +813,7 @@ func (s *AlmSettingsService) ValidateUpdateBitbucketCloudOpt(opt *AlmSettingsUpd
 // ValidateUpdateGithubOpt validates the options for the UpdateGithub method.
 //
 //nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
-func (s *AlmSettingsService) ValidateUpdateGithubOpt(opt *AlmSettingsUpdateGithubOption) error {
+func (s *AlmSettingsService) ValidateUpdateGithubOpt(opt *AlmSettingsUpdateGithubOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -890,7 +890,7 @@ func (s *AlmSettingsService) ValidateUpdateGithubOpt(opt *AlmSettingsUpdateGithu
 }
 
 // ValidateUpdateGitlabOpt validates the options for the UpdateGitlab method.
-func (s *AlmSettingsService) ValidateUpdateGitlabOpt(opt *AlmSettingsUpdateGitlabOption) error {
+func (s *AlmSettingsService) ValidateUpdateGitlabOpt(opt *AlmSettingsUpdateGitlabOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -933,7 +933,7 @@ func (s *AlmSettingsService) ValidateUpdateGitlabOpt(opt *AlmSettingsUpdateGitla
 }
 
 // ValidateValidateOpt validates the options for the Validate method.
-func (s *AlmSettingsService) ValidateValidateOpt(opt *AlmSettingsValidateOption) error {
+func (s *AlmSettingsService) ValidateValidateOpt(opt *AlmSettingsValidateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -960,7 +960,7 @@ func (s *AlmSettingsService) ValidateValidateOpt(opt *AlmSettingsValidateOption)
 //
 // API endpoint: GET /api/alm_settings/count_binding.
 // Since: 8.1.
-func (s *AlmSettingsService) CountBinding(opt *AlmSettingsCountBindingOption) (*AlmSettingsCountBinding, *http.Response, error) {
+func (s *AlmSettingsService) CountBinding(opt *AlmSettingsCountBindingOptions) (*AlmSettingsCountBinding, *http.Response, error) {
 	err := s.ValidateCountBindingOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -986,7 +986,7 @@ func (s *AlmSettingsService) CountBinding(opt *AlmSettingsCountBindingOption) (*
 //
 // API endpoint: POST /api/alm_settings/create_azure.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateAzure(opt *AlmSettingsCreateAzureOption) (*http.Response, error) {
+func (s *AlmSettingsService) CreateAzure(opt *AlmSettingsCreateAzureOptions) (*http.Response, error) {
 	err := s.ValidateCreateAzureOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1010,7 +1010,7 @@ func (s *AlmSettingsService) CreateAzure(opt *AlmSettingsCreateAzureOption) (*ht
 //
 // API endpoint: POST /api/alm_settings/create_bitbucket.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateBitbucket(opt *AlmSettingsCreateBitbucketOption) (*http.Response, error) {
+func (s *AlmSettingsService) CreateBitbucket(opt *AlmSettingsCreateBitbucketOptions) (*http.Response, error) {
 	err := s.ValidateCreateBitbucketOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1034,7 +1034,7 @@ func (s *AlmSettingsService) CreateBitbucket(opt *AlmSettingsCreateBitbucketOpti
 //
 // API endpoint: POST /api/alm_settings/create_bitbucketcloud.
 // Since: 8.7.
-func (s *AlmSettingsService) CreateBitbucketCloud(opt *AlmSettingsCreateBitbucketCloudOption) (*http.Response, error) {
+func (s *AlmSettingsService) CreateBitbucketCloud(opt *AlmSettingsCreateBitbucketCloudOptions) (*http.Response, error) {
 	err := s.ValidateCreateBitbucketCloudOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1058,7 +1058,7 @@ func (s *AlmSettingsService) CreateBitbucketCloud(opt *AlmSettingsCreateBitbucke
 //
 // API endpoint: POST /api/alm_settings/create_github.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateGithub(opt *AlmSettingsCreateGithubOption) (*http.Response, error) {
+func (s *AlmSettingsService) CreateGithub(opt *AlmSettingsCreateGithubOptions) (*http.Response, error) {
 	err := s.ValidateCreateGithubOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1082,7 +1082,7 @@ func (s *AlmSettingsService) CreateGithub(opt *AlmSettingsCreateGithubOption) (*
 //
 // API endpoint: POST /api/alm_settings/create_gitlab.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateGitlab(opt *AlmSettingsCreateGitlabOption) (*http.Response, error) {
+func (s *AlmSettingsService) CreateGitlab(opt *AlmSettingsCreateGitlabOptions) (*http.Response, error) {
 	err := s.ValidateCreateGitlabOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1106,7 +1106,7 @@ func (s *AlmSettingsService) CreateGitlab(opt *AlmSettingsCreateGitlabOption) (*
 //
 // API endpoint: POST /api/alm_settings/delete.
 // Since: 8.1.
-func (s *AlmSettingsService) Delete(opt *AlmSettingsDeleteOption) (*http.Response, error) {
+func (s *AlmSettingsService) Delete(opt *AlmSettingsDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1130,7 +1130,7 @@ func (s *AlmSettingsService) Delete(opt *AlmSettingsDeleteOption) (*http.Respons
 //
 // API endpoint: GET /api/alm_settings/get_binding.
 // Since: 8.1.
-func (s *AlmSettingsService) GetBinding(opt *AlmSettingsGetBindingOption) (*AlmSettingsGetBinding, *http.Response, error) {
+func (s *AlmSettingsService) GetBinding(opt *AlmSettingsGetBindingOptions) (*AlmSettingsGetBinding, *http.Response, error) {
 	err := s.ValidateGetBindingOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1157,7 +1157,7 @@ func (s *AlmSettingsService) GetBinding(opt *AlmSettingsGetBindingOption) (*AlmS
 //
 // API endpoint: GET /api/alm_settings/list.
 // Since: 8.1.
-func (s *AlmSettingsService) List(opt *AlmSettingsListOption) (*AlmSettingsList, *http.Response, error) {
+func (s *AlmSettingsService) List(opt *AlmSettingsListOptions) (*AlmSettingsList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1204,7 +1204,7 @@ func (s *AlmSettingsService) ListDefinitions() (*AlmSettingsListDefinitions, *ht
 //
 // API endpoint: POST /api/alm_settings/update_azure.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateAzure(opt *AlmSettingsUpdateAzureOption) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateAzure(opt *AlmSettingsUpdateAzureOptions) (*http.Response, error) {
 	err := s.ValidateUpdateAzureOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1228,7 +1228,7 @@ func (s *AlmSettingsService) UpdateAzure(opt *AlmSettingsUpdateAzureOption) (*ht
 //
 // API endpoint: POST /api/alm_settings/update_bitbucket.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateBitbucket(opt *AlmSettingsUpdateBitbucketOption) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateBitbucket(opt *AlmSettingsUpdateBitbucketOptions) (*http.Response, error) {
 	err := s.ValidateUpdateBitbucketOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1252,7 +1252,7 @@ func (s *AlmSettingsService) UpdateBitbucket(opt *AlmSettingsUpdateBitbucketOpti
 //
 // API endpoint: POST /api/alm_settings/update_bitbucketcloud.
 // Since: 8.7.
-func (s *AlmSettingsService) UpdateBitbucketCloud(opt *AlmSettingsUpdateBitbucketCloudOption) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateBitbucketCloud(opt *AlmSettingsUpdateBitbucketCloudOptions) (*http.Response, error) {
 	err := s.ValidateUpdateBitbucketCloudOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1276,7 +1276,7 @@ func (s *AlmSettingsService) UpdateBitbucketCloud(opt *AlmSettingsUpdateBitbucke
 //
 // API endpoint: POST /api/alm_settings/update_github.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateGithub(opt *AlmSettingsUpdateGithubOption) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateGithub(opt *AlmSettingsUpdateGithubOptions) (*http.Response, error) {
 	err := s.ValidateUpdateGithubOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1300,7 +1300,7 @@ func (s *AlmSettingsService) UpdateGithub(opt *AlmSettingsUpdateGithubOption) (*
 //
 // API endpoint: POST /api/alm_settings/update_gitlab.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateGitlab(opt *AlmSettingsUpdateGitlabOption) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateGitlab(opt *AlmSettingsUpdateGitlabOptions) (*http.Response, error) {
 	err := s.ValidateUpdateGitlabOpt(opt)
 	if err != nil {
 		return nil, err
@@ -1324,7 +1324,7 @@ func (s *AlmSettingsService) UpdateGitlab(opt *AlmSettingsUpdateGitlabOption) (*
 //
 // API endpoint: GET /api/alm_settings/validate.
 // Since: 8.6.
-func (s *AlmSettingsService) Validate(opt *AlmSettingsValidateOption) (*AlmSettingsValidation, *http.Response, error) {
+func (s *AlmSettingsService) Validate(opt *AlmSettingsValidateOptions) (*AlmSettingsValidation, *http.Response, error) {
 	err := s.ValidateValidateOpt(opt)
 	if err != nil {
 		return nil, nil, err

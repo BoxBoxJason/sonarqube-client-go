@@ -28,13 +28,13 @@ var _ = Describe("Batch Service", Ordered, func() {
 
 		// Create a test project for batch operations
 		projectKey := helpers.UniqueResourceName("batch")
-		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    "Batch Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -116,7 +116,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 					for _, line := range lines {
 						parts := strings.Split(strings.TrimSpace(line), "|")
 						if len(parts) > 0 && strings.HasSuffix(parts[0], ".jar") {
-							result, resp, err := client.Batch.File(&sonar.BatchFileOption{
+							result, resp, err := client.Batch.File(&sonar.BatchFileOptions{
 								Name: parts[0],
 							})
 							Expect(err).NotTo(HaveOccurred())
@@ -143,7 +143,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent file", func() {
-				_, resp, err := client.Batch.File(&sonar.BatchFileOption{
+				_, resp, err := client.Batch.File(&sonar.BatchFileOptions{
 					Name: "non-existent-file.jar",
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
@@ -165,7 +165,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 	Describe("Project", func() {
 		Context("Functional Tests", func() {
 			It("should get project batch info with valid key", func() {
-				result, resp, err := client.Batch.Project(&sonar.BatchProjectOption{
+				result, resp, err := client.Batch.Project(&sonar.BatchProjectOptions{
 					Key: testProject.Project.Key,
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
@@ -194,12 +194,12 @@ var _ = Describe("Batch Service", Ordered, func() {
 			})
 
 			It("should fail with missing key", func() {
-				_, _, err := client.Batch.Project(&sonar.BatchProjectOption{})
+				_, _, err := client.Batch.Project(&sonar.BatchProjectOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with non-existent project", func() {
-				_, resp, err := client.Batch.Project(&sonar.BatchProjectOption{
+				_, resp, err := client.Batch.Project(&sonar.BatchProjectOptions{
 					Key: "non-existent-project-12345",
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {

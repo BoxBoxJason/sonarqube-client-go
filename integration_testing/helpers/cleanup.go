@@ -117,7 +117,7 @@ func cleanupOrphanedTemplates(client *sonar.Client, _ time.Duration) error {
 
 	for _, t := range templates.PermissionTemplates {
 		if strings.HasPrefix(t.Name, E2EResourcePrefix) {
-			_, _ = client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOption{
+			_, _ = client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
 				TemplateName: t.Name,
 			})
 		}
@@ -128,7 +128,7 @@ func cleanupOrphanedTemplates(client *sonar.Client, _ time.Duration) error {
 
 func cleanupOrphanedProjects(client *sonar.Client, _ time.Duration) error {
 	// Search for projects with e2e prefix
-	projects, _, err := client.Projects.Search(&sonar.ProjectsSearchOption{
+	projects, _, err := client.Projects.Search(&sonar.ProjectsSearchOptions{
 		PaginationArgs:    sonar.PaginationArgs{Page: 0, PageSize: 0},
 		AnalyzedBefore:    "",
 		OnProvisionedOnly: false,
@@ -147,7 +147,7 @@ func cleanupOrphanedProjects(client *sonar.Client, _ time.Duration) error {
 
 	for _, p := range projects.Components {
 		if strings.HasPrefix(p.Key, E2EResourcePrefix) {
-			_, _ = client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, _ = client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: p.Key,
 			})
 		}
@@ -158,7 +158,7 @@ func cleanupOrphanedProjects(client *sonar.Client, _ time.Duration) error {
 
 func cleanupOrphanedUsers(client *sonar.Client, _ time.Duration) error {
 	//nolint:staticcheck // Using deprecated API until v2 API is implemented
-	users, _, err := client.Users.Search(&sonar.UsersSearchOption{
+	users, _, err := client.Users.Search(&sonar.UsersSearchOptions{
 		PaginationArgs:        sonar.PaginationArgs{Page: 0, PageSize: 0},
 		Deactivated:           false,
 		ExternalIdentity:      "",
@@ -180,7 +180,7 @@ func cleanupOrphanedUsers(client *sonar.Client, _ time.Duration) error {
 	for _, u := range users.Users {
 		if strings.HasPrefix(u.Login, E2EResourcePrefix) {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, _ = client.Users.Deactivate(&sonar.UsersDeactivateOption{
+			_, _, _ = client.Users.Deactivate(&sonar.UsersDeactivateOptions{
 				Login:     u.Login,
 				Anonymize: false,
 			})
@@ -192,7 +192,7 @@ func cleanupOrphanedUsers(client *sonar.Client, _ time.Duration) error {
 
 func cleanupOrphanedGroups(client *sonar.Client, _ time.Duration) error {
 	//nolint:staticcheck // Using deprecated API until v2 API is implemented
-	groups, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOption{
+	groups, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOptions{
 		PaginationArgs: sonar.PaginationArgs{Page: 0, PageSize: 0},
 		Managed:        nil,
 		Fields:         nil,
@@ -209,7 +209,7 @@ func cleanupOrphanedGroups(client *sonar.Client, _ time.Duration) error {
 	for _, g := range groups.Groups {
 		if strings.HasPrefix(g.Name, E2EResourcePrefix) {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _ = client.UserGroups.Delete(&sonar.UserGroupsDeleteOption{
+			_, _ = client.UserGroups.Delete(&sonar.UserGroupsDeleteOptions{
 				Name: g.Name,
 			})
 		}

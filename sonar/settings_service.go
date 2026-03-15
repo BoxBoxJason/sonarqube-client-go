@@ -117,20 +117,20 @@ type SettingValue struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// SettingsEncryptOption represents options for encrypting a value.
-type SettingsEncryptOption struct {
+// SettingsEncryptOptions represents options for encrypting a value.
+type SettingsEncryptOptions struct {
 	// Value is the setting value to encrypt (required).
 	Value string `url:"value,omitempty"`
 }
 
-// SettingsListDefinitionsOption represents options for listing setting definitions.
-type SettingsListDefinitionsOption struct {
+// SettingsListDefinitionsOptions represents options for listing setting definitions.
+type SettingsListDefinitionsOptions struct {
 	// Component is the component key to get definitions for (optional).
 	Component string `url:"component,omitempty"`
 }
 
-// SettingsResetOption represents options for resetting settings.
-type SettingsResetOption struct {
+// SettingsResetOptions represents options for resetting settings.
+type SettingsResetOptions struct {
 	// Component is the component key (optional).
 	// Only keys for projects, applications, portfolios or subportfolios are accepted.
 	Component string `url:"component,omitempty"`
@@ -158,10 +158,10 @@ func (m JSONEncodedMap) EncodeValues(key string, values *url.Values) error {
 	return nil
 }
 
-// SettingsSetOption represents options for setting a value.
+// SettingsSetOptions represents options for setting a value.
 //
 //nolint:govet // Field ordering prioritizes API clarity over memory alignment
-type SettingsSetOption struct {
+type SettingsSetOptions struct {
 	// Component is the component key (optional).
 	// Only keys for projects, applications, portfolios or subportfolios are accepted.
 	Component string `url:"component,omitempty"`
@@ -179,8 +179,8 @@ type SettingsSetOption struct {
 	FieldValues JSONEncodedMap `url:"fieldValues,omitempty"`
 }
 
-// SettingsValuesOption represents options for listing setting values.
-type SettingsValuesOption struct {
+// SettingsValuesOptions represents options for listing setting values.
+type SettingsValuesOptions struct {
 	// Component is the component key (optional).
 	Component string `url:"component,omitempty"`
 	// Keys is the list of setting keys (optional).
@@ -192,7 +192,7 @@ type SettingsValuesOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateEncryptOpt validates the options for Encrypt.
-func (s *SettingsService) ValidateEncryptOpt(opt *SettingsEncryptOption) error {
+func (s *SettingsService) ValidateEncryptOpt(opt *SettingsEncryptOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -201,7 +201,7 @@ func (s *SettingsService) ValidateEncryptOpt(opt *SettingsEncryptOption) error {
 }
 
 // ValidateListDefinitionsOpt validates the options for ListDefinitions.
-func (s *SettingsService) ValidateListDefinitionsOpt(opt *SettingsListDefinitionsOption) error {
+func (s *SettingsService) ValidateListDefinitionsOpt(opt *SettingsListDefinitionsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -210,7 +210,7 @@ func (s *SettingsService) ValidateListDefinitionsOpt(opt *SettingsListDefinition
 }
 
 // ValidateResetOpt validates the options for Reset.
-func (s *SettingsService) ValidateResetOpt(opt *SettingsResetOption) error {
+func (s *SettingsService) ValidateResetOpt(opt *SettingsResetOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -223,7 +223,7 @@ func (s *SettingsService) ValidateResetOpt(opt *SettingsResetOption) error {
 }
 
 // ValidateSetOpt validates the options for Set.
-func (s *SettingsService) ValidateSetOpt(opt *SettingsSetOption) error {
+func (s *SettingsService) ValidateSetOpt(opt *SettingsSetOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -249,7 +249,7 @@ func (s *SettingsService) ValidateSetOpt(opt *SettingsSetOption) error {
 }
 
 // ValidateValuesOpt validates the options for Values.
-func (s *SettingsService) ValidateValuesOpt(opt *SettingsValuesOption) error {
+func (s *SettingsService) ValidateValuesOpt(opt *SettingsValuesOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -285,7 +285,7 @@ func (s *SettingsService) CheckSecretKey() (*SettingsCheckSecretKey, *http.Respo
 // Requires 'Administer System' permission.
 //
 // Since: 6.1.
-func (s *SettingsService) Encrypt(opt *SettingsEncryptOption) (*SettingsEncrypt, *http.Response, error) {
+func (s *SettingsService) Encrypt(opt *SettingsEncryptOptions) (*SettingsEncrypt, *http.Response, error) {
 	err := s.ValidateEncryptOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -335,7 +335,7 @@ func (s *SettingsService) GenerateSecretKey() (*SettingsGenerateSecretKey, *http
 //   - 'Administer' rights on the specified component
 //
 // Since: 6.3.
-func (s *SettingsService) ListDefinitions(opt *SettingsListDefinitionsOption) (*SettingsListDefinitions, *http.Response, error) {
+func (s *SettingsService) ListDefinitions(opt *SettingsListDefinitionsOptions) (*SettingsListDefinitions, *http.Response, error) {
 	err := s.ValidateListDefinitionsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -382,7 +382,7 @@ func (s *SettingsService) LoginMessage() (*SettingsLoginMessage, *http.Response,
 //   - 'Administer' rights on the specified component
 //
 // Since: 6.1.
-func (s *SettingsService) Reset(opt *SettingsResetOption) (*http.Response, error) {
+func (s *SettingsService) Reset(opt *SettingsResetOptions) (*http.Response, error) {
 	err := s.ValidateResetOpt(opt)
 	if err != nil {
 		return nil, err
@@ -409,7 +409,7 @@ func (s *SettingsService) Reset(opt *SettingsResetOption) (*http.Response, error
 //   - 'Administer' rights on the specified component
 //
 // Since: 6.1.
-func (s *SettingsService) Set(opt *SettingsSetOption) (*http.Response, error) {
+func (s *SettingsService) Set(opt *SettingsSetOptions) (*http.Response, error) {
 	err := s.ValidateSetOpt(opt)
 	if err != nil {
 		return nil, err
@@ -437,7 +437,7 @@ func (s *SettingsService) Set(opt *SettingsSetOption) (*http.Response, error) {
 // Secured settings values are not returned by the endpoint.
 //
 // Since: 6.3.
-func (s *SettingsService) Values(opt *SettingsValuesOption) (*SettingsValues, *http.Response, error) {
+func (s *SettingsService) Values(opt *SettingsValuesOptions) (*SettingsValues, *http.Response, error) {
 	err := s.ValidateValuesOpt(opt)
 	if err != nil {
 		return nil, nil, err

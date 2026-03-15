@@ -44,8 +44,8 @@ type Notification struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// NotificationsAddOption contains parameters for the Add method.
-type NotificationsAddOption struct {
+// NotificationsAddOptions contains parameters for the Add method.
+type NotificationsAddOptions struct {
 	// Channel is the channel through which the notification is sent.
 	// Default is email.
 	Channel string `url:"channel,omitempty"`
@@ -58,14 +58,14 @@ type NotificationsAddOption struct {
 	Type string `url:"type"`
 }
 
-// NotificationsListOption contains parameters for the List method.
-type NotificationsListOption struct {
+// NotificationsListOptions contains parameters for the List method.
+type NotificationsListOptions struct {
 	// Login is the user login. If not provided, the authenticated user is used.
 	Login string `url:"login,omitempty"`
 }
 
-// NotificationsRemoveOption contains parameters for the Remove method.
-type NotificationsRemoveOption struct {
+// NotificationsRemoveOptions contains parameters for the Remove method.
+type NotificationsRemoveOptions struct {
 	// Channel is the channel through which the notification is sent.
 	// Default is email.
 	Channel string `url:"channel,omitempty"`
@@ -83,7 +83,7 @@ type NotificationsRemoveOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateAddOpt validates the options for the Add method.
-func (s *NotificationsService) ValidateAddOpt(opt *NotificationsAddOption) error {
+func (s *NotificationsService) ValidateAddOpt(opt *NotificationsAddOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -97,13 +97,13 @@ func (s *NotificationsService) ValidateAddOpt(opt *NotificationsAddOption) error
 }
 
 // ValidateListOpt validates the options for the List method.
-func (s *NotificationsService) ValidateListOpt(opt *NotificationsListOption) error {
+func (s *NotificationsService) ValidateListOpt(opt *NotificationsListOptions) error {
 	// No required fields
 	return nil
 }
 
 // ValidateRemoveOpt validates the options for the Remove method.
-func (s *NotificationsService) ValidateRemoveOpt(opt *NotificationsRemoveOption) error {
+func (s *NotificationsService) ValidateRemoveOpt(opt *NotificationsRemoveOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -127,7 +127,7 @@ func (s *NotificationsService) ValidateRemoveOpt(opt *NotificationsRemoveOption)
 //
 // API endpoint: POST /api/notifications/add.
 // Since: 6.3.
-func (s *NotificationsService) Add(opt *NotificationsAddOption) (*http.Response, error) {
+func (s *NotificationsService) Add(opt *NotificationsAddOptions) (*http.Response, error) {
 	err := s.ValidateAddOpt(opt)
 	if err != nil {
 		return nil, err
@@ -152,7 +152,7 @@ func (s *NotificationsService) Add(opt *NotificationsAddOption) (*http.Response,
 //
 // API endpoint: GET /api/notifications/list.
 // Since: 6.3.
-func (s *NotificationsService) List(opt *NotificationsListOption) (*NotificationsList, *http.Response, error) {
+func (s *NotificationsService) List(opt *NotificationsListOptions) (*NotificationsList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -179,7 +179,7 @@ func (s *NotificationsService) List(opt *NotificationsListOption) (*Notification
 //
 // API endpoint: POST /api/notifications/remove.
 // Since: 6.3.
-func (s *NotificationsService) Remove(opt *NotificationsRemoveOption) (*http.Response, error) {
+func (s *NotificationsService) Remove(opt *NotificationsRemoveOptions) (*http.Response, error) {
 	err := s.ValidateRemoveOpt(opt)
 	if err != nil {
 		return nil, err

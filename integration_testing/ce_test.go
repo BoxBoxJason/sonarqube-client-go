@@ -27,13 +27,13 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 		// Create a test project for CE operations
 		projectName := helpers.UniqueResourceName("ce-test-project")
-		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    projectName,
 			Project: projectName,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -60,7 +60,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should list CE tasks with pagination", func() {
-				result, resp, err := client.Ce.Activity(&sonar.CeActivityOption{
+				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					CePaginationArgs: sonar.CePaginationArgs{
 						Page:     1,
 						PageSize: 10,
@@ -73,7 +73,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should list CE tasks filtered by component", func() {
-				result, resp, err := client.Ce.Activity(&sonar.CeActivityOption{
+				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					Component: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -82,7 +82,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should list CE tasks filtered by status", func() {
-				result, resp, err := client.Ce.Activity(&sonar.CeActivityOption{
+				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					Statuses: []string{"SUCCESS"},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -91,7 +91,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should list CE tasks filtered by type", func() {
-				result, resp, err := client.Ce.Activity(&sonar.CeActivityOption{
+				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					Type: "REPORT",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -100,7 +100,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should list CE tasks with onlyCurrents filter", func() {
-				result, resp, err := client.Ce.Activity(&sonar.CeActivityOption{
+				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					OnlyCurrents: true,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -109,7 +109,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should search CE tasks by query", func() {
-				result, resp, err := client.Ce.Activity(&sonar.CeActivityOption{
+				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					Query: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -120,21 +120,21 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with invalid status", func() {
-				_, _, err := client.Ce.Activity(&sonar.CeActivityOption{
+				_, _, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					Statuses: []string{"INVALID_STATUS"},
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with invalid type", func() {
-				_, _, err := client.Ce.Activity(&sonar.CeActivityOption{
+				_, _, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					Type: "INVALID_TYPE",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with invalid page size", func() {
-				_, _, err := client.Ce.Activity(&sonar.CeActivityOption{
+				_, _, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					CePaginationArgs: sonar.CePaginationArgs{
 						PageSize: 10000,
 					},
@@ -157,7 +157,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should get activity status for specific component", func() {
-				result, resp, err := client.Ce.ActivityStatus(&sonar.CeActivityStatusOption{
+				result, resp, err := client.Ce.ActivityStatus(&sonar.CeActivityStatusOptions{
 					Component: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -173,7 +173,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 	Describe("AnalysisStatus", func() {
 		Context("Functional Tests", func() {
 			It("should get analysis status for component", func() {
-				result, resp, err := client.Ce.AnalysisStatus(&sonar.CeAnalysisStatusOption{
+				result, resp, err := client.Ce.AnalysisStatus(&sonar.CeAnalysisStatusOptions{
 					Component: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -184,7 +184,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing component", func() {
-				_, _, err := client.Ce.AnalysisStatus(&sonar.CeAnalysisStatusOption{})
+				_, _, err := client.Ce.AnalysisStatus(&sonar.CeAnalysisStatusOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
@@ -194,7 +194,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent component", func() {
-				_, resp, err := client.Ce.AnalysisStatus(&sonar.CeAnalysisStatusOption{
+				_, resp, err := client.Ce.AnalysisStatus(&sonar.CeAnalysisStatusOptions{
 					Component: "non-existent-project-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -210,7 +210,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 	Describe("Cancel", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing task ID", func() {
-				_, err := client.Ce.Cancel(&sonar.CeCancelOption{})
+				_, err := client.Ce.Cancel(&sonar.CeCancelOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
@@ -221,7 +221,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 			It("should handle non-existent task ID gracefully", func() {
 				// SonarQube returns 204 even for non-existent task IDs
-				resp, err := client.Ce.Cancel(&sonar.CeCancelOption{
+				resp, err := client.Ce.Cancel(&sonar.CeCancelOptions{
 					ID: "non-existent-task-id",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -250,7 +250,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 	Describe("Component", func() {
 		Context("Functional Tests", func() {
 			It("should get component CE status", func() {
-				result, resp, err := client.Ce.Component(&sonar.CeComponentOption{
+				result, resp, err := client.Ce.Component(&sonar.CeComponentOptions{
 					Component: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -261,7 +261,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing component", func() {
-				_, _, err := client.Ce.Component(&sonar.CeComponentOption{})
+				_, _, err := client.Ce.Component(&sonar.CeComponentOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
@@ -271,7 +271,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent component", func() {
-				_, resp, err := client.Ce.Component(&sonar.CeComponentOption{
+				_, resp, err := client.Ce.Component(&sonar.CeComponentOptions{
 					Component: "non-existent-project-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -287,14 +287,14 @@ var _ = Describe("Ce Service", Ordered, func() {
 	Describe("DismissAnalysisWarning", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing component", func() {
-				_, err := client.Ce.DismissAnalysisWarning(&sonar.CeDismissAnalysisWarningOption{
+				_, err := client.Ce.DismissAnalysisWarning(&sonar.CeDismissAnalysisWarningOptions{
 					Warning: "some-warning",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing warning", func() {
-				_, err := client.Ce.DismissAnalysisWarning(&sonar.CeDismissAnalysisWarningOption{
+				_, err := client.Ce.DismissAnalysisWarning(&sonar.CeDismissAnalysisWarningOptions{
 					Component: testProject.Project.Key,
 				})
 				Expect(err).To(HaveOccurred())
@@ -306,7 +306,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent warning", func() {
-				resp, err := client.Ce.DismissAnalysisWarning(&sonar.CeDismissAnalysisWarningOption{
+				resp, err := client.Ce.DismissAnalysisWarning(&sonar.CeDismissAnalysisWarningOptions{
 					Component: testProject.Project.Key,
 					Warning:   "non-existent-warning",
 				})
@@ -369,14 +369,14 @@ var _ = Describe("Ce Service", Ordered, func() {
 	Describe("Submit", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing project key", func() {
-				_, _, err := client.Ce.Submit(&sonar.CeSubmitOption{
+				_, _, err := client.Ce.Submit(&sonar.CeSubmitOptions{
 					Report: "dummy-report",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing report", func() {
-				_, _, err := client.Ce.Submit(&sonar.CeSubmitOption{
+				_, _, err := client.Ce.Submit(&sonar.CeSubmitOptions{
 					ProjectKey: testProject.Project.Key,
 				})
 				Expect(err).To(HaveOccurred())
@@ -389,7 +389,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 			It("should fail with project key too long", func() {
 				longKey := string(make([]byte, 500))
-				_, _, err := client.Ce.Submit(&sonar.CeSubmitOption{
+				_, _, err := client.Ce.Submit(&sonar.CeSubmitOptions{
 					ProjectKey: longKey,
 					Report:     "dummy-report",
 				})
@@ -405,7 +405,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should get task details when tasks exist", func() {
 				// First get any existing task from activity
-				activity, _, err := client.Ce.Activity(&sonar.CeActivityOption{
+				activity, _, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					CePaginationArgs: sonar.CePaginationArgs{
 						PageSize: 1,
 					},
@@ -414,7 +414,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 				if len(activity.Tasks) > 0 {
 					taskID := activity.Tasks[0].ID
-					result, resp, err := client.Ce.Task(&sonar.CeTaskOption{
+					result, resp, err := client.Ce.Task(&sonar.CeTaskOptions{
 						ID: taskID,
 					})
 					Expect(err).NotTo(HaveOccurred())
@@ -428,7 +428,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 			It("should get task details with additional fields", func() {
 				// First get any existing task from activity
-				activity, _, err := client.Ce.Activity(&sonar.CeActivityOption{
+				activity, _, err := client.Ce.Activity(&sonar.CeActivityOptions{
 					CePaginationArgs: sonar.CePaginationArgs{
 						PageSize: 1,
 					},
@@ -437,7 +437,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 				if len(activity.Tasks) > 0 {
 					taskID := activity.Tasks[0].ID
-					result, resp, err := client.Ce.Task(&sonar.CeTaskOption{
+					result, resp, err := client.Ce.Task(&sonar.CeTaskOptions{
 						ID:               taskID,
 						AdditionalFields: []string{"warnings"},
 					})
@@ -452,7 +452,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing task ID", func() {
-				_, _, err := client.Ce.Task(&sonar.CeTaskOption{})
+				_, _, err := client.Ce.Task(&sonar.CeTaskOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
@@ -462,7 +462,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should fail with invalid additional fields", func() {
-				_, _, err := client.Ce.Task(&sonar.CeTaskOption{
+				_, _, err := client.Ce.Task(&sonar.CeTaskOptions{
 					ID:               "some-task-id",
 					AdditionalFields: []string{"invalid_field"},
 				})
@@ -470,7 +470,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent task ID", func() {
-				_, resp, err := client.Ce.Task(&sonar.CeTaskOption{
+				_, resp, err := client.Ce.Task(&sonar.CeTaskOptions{
 					ID: "non-existent-task-id",
 				})
 				Expect(err).To(HaveOccurred())

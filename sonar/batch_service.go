@@ -10,13 +10,13 @@ type BatchService struct {
 	client *Client
 }
 
-// BatchFileOption contains parameters for the File endpoint.
-type BatchFileOption struct {
+// BatchFileOptions contains parameters for the File endpoint.
+type BatchFileOptions struct {
 	Name string `url:"name,omitempty"` // Description:"File name",ExampleValue:"batch-library-2.3.jar"
 }
 
-// BatchProjectOption contains parameters for the Project endpoint.
-type BatchProjectOption struct {
+// BatchProjectOptions contains parameters for the Project endpoint.
+type BatchProjectOptions struct {
 	Branch      string `url:"branch,omitempty"`      // Description:"Branch key",ExampleValue:"feature/my_branch"
 	Key         string `url:"key,omitempty"`         // Description:"Project key",ExampleValue:"my_project"
 	Profile     string `url:"profile,omitempty"`     // Description:"Profile name",ExampleValue:"SonarQube Way"
@@ -37,7 +37,7 @@ type BatchFileData struct {
 }
 
 // ValidateFileOpt validates the options for the File endpoint.
-func (s *BatchService) ValidateFileOpt(opt *BatchFileOption) error {
+func (s *BatchService) ValidateFileOpt(opt *BatchFileOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -46,7 +46,7 @@ func (s *BatchService) ValidateFileOpt(opt *BatchFileOption) error {
 }
 
 // ValidateProjectOpt validates the options for the Project endpoint.
-func (s *BatchService) ValidateProjectOpt(opt *BatchProjectOption) error {
+func (s *BatchService) ValidateProjectOpt(opt *BatchProjectOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -56,7 +56,7 @@ func (s *BatchService) ValidateProjectOpt(opt *BatchProjectOption) error {
 
 // File downloads a JAR file listed in the index (see batch/index).
 // This endpoint returns binary data for the requested JAR file.
-func (s *BatchService) File(opt *BatchFileOption) (v []byte, resp *http.Response, err error) {
+func (s *BatchService) File(opt *BatchFileOptions) (v []byte, resp *http.Response, err error) {
 	err = s.ValidateFileOpt(opt)
 	if err != nil {
 		return
@@ -99,7 +99,7 @@ func (s *BatchService) Index() (v *string, resp *http.Response, err error) {
 
 // Project returns project repository information including file hashes
 // for incremental analysis.
-func (s *BatchService) Project(opt *BatchProjectOption) (v *BatchProject, resp *http.Response, err error) {
+func (s *BatchService) Project(opt *BatchProjectOptions) (v *BatchProject, resp *http.Response, err error) {
 	err = s.ValidateProjectOpt(opt)
 	if err != nil {
 		return
