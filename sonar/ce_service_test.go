@@ -13,7 +13,7 @@ func TestCe_Activity(t *testing.T) {
 		assert.Equal(t, http.MethodGet, r.Method)
 		assert.Equal(t, "/ce/activity", r.URL.Path)
 		assert.Equal(t, "my-project", r.URL.Query().Get("component"))
-		assert.Equal(t, "SUCCESS", r.URL.Query().Get("status"))
+		assert.Equal(t, TaskStatusSuccess, r.URL.Query().Get("status"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -51,7 +51,7 @@ func TestCe_Activity(t *testing.T) {
 
 	opt := &CeActivityOptions{
 		Component: "my-project",
-		Statuses:  []string{"SUCCESS"},
+		Statuses:  []string{TaskStatusSuccess},
 	}
 
 	result, resp, err := client.Ce.Activity(opt)
@@ -61,7 +61,7 @@ func TestCe_Activity(t *testing.T) {
 	assert.Equal(t, int64(2), result.Paging.Total)
 	assert.Len(t, result.Tasks, 2)
 	assert.Equal(t, "task-1", result.Tasks[0].ID)
-	assert.Equal(t, "SUCCESS", result.Tasks[0].Status)
+	assert.Equal(t, TaskStatusSuccess, result.Tasks[0].Status)
 	assert.Equal(t, int64(1234), result.Tasks[0].ExecutionTimeMs)
 }
 
@@ -331,10 +331,10 @@ func TestCe_Component(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
 	assert.Equal(t, "current-task", result.Current.ID)
-	assert.Equal(t, "SUCCESS", result.Current.Status)
+	assert.Equal(t, TaskStatusSuccess, result.Current.Status)
 	assert.Len(t, result.Queue, 1)
 	assert.Equal(t, "queued-task-1", result.Queue[0].ID)
-	assert.Equal(t, "PENDING", result.Queue[0].Status)
+	assert.Equal(t, TaskStatusPending, result.Queue[0].Status)
 }
 
 func TestCe_Component_ValidationError(t *testing.T) {
@@ -527,7 +527,7 @@ func TestCe_Task(t *testing.T) {
 		assert.Equal(t, http.MethodGet, r.Method)
 		assert.Equal(t, "/ce/task", r.URL.Path)
 		assert.Equal(t, "task-123", r.URL.Query().Get("id"))
-		assert.Equal(t, "stacktrace", r.URL.Query().Get("additionalFields"))
+		assert.Equal(t, TaskFieldStacktrace, r.URL.Query().Get("additionalFields"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -552,7 +552,7 @@ func TestCe_Task(t *testing.T) {
 
 	opt := &CeTaskOptions{
 		ID:               "task-123",
-		AdditionalFields: []string{"stacktrace"},
+		AdditionalFields: []string{TaskFieldStacktrace},
 	}
 
 	result, resp, err := client.Ce.Task(opt)
@@ -560,7 +560,7 @@ func TestCe_Task(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
 	assert.Equal(t, "task-123", result.Task.ID)
-	assert.Equal(t, "FAILED", result.Task.Status)
+	assert.Equal(t, TaskStatusFailed, result.Task.Status)
 	assert.Equal(t, "Analysis failed", result.Task.ErrorMessage)
 	assert.True(t, result.Task.HasErrorStacktrace)
 	assert.Equal(t, int64(3), result.Task.WarningCount)
@@ -609,7 +609,7 @@ func TestCe_TaskTypes(t *testing.T) {
 	require.NotNil(t, result)
 	assert.Len(t, result.TaskTypes, 4)
 
-	expectedTypes := []string{"REPORT", "ISSUE_SYNC", "AUDIT_PURGE", "PROJECT_EXPORT"}
+	expectedTypes := []string{TaskTypeReport, TaskTypeIssueSync, TaskTypeAuditPurge, TaskTypeProjectExport}
 	assert.Equal(t, expectedTypes, result.TaskTypes)
 }
 
@@ -702,21 +702,21 @@ func TestCe_ValidateActivityOpt(t *testing.T) {
 		{
 			name: "valid statuses",
 			opt: &CeActivityOptions{
-				Statuses: []string{"SUCCESS", "FAILED"},
+				Statuses: []string{TaskStatusSuccess, TaskStatusFailed},
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid status",
 			opt: &CeActivityOptions{
-				Statuses: []string{"SUCCESS", "INVALID"},
+				Statuses: []string{TaskStatusSuccess, "INVALID"},
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid type",
 			opt: &CeActivityOptions{
-				Type: "REPORT",
+				Type: TaskTypeReport,
 			},
 			wantErr: false,
 		},
@@ -731,8 +731,8 @@ func TestCe_ValidateActivityOpt(t *testing.T) {
 			name: "valid all fields",
 			opt: &CeActivityOptions{
 				Component:    "my-project",
-				Statuses:     []string{"SUCCESS", "FAILED", "PENDING"},
-				Type:         "REPORT",
+				Statuses:     []string{TaskStatusSuccess, TaskStatusFailed, TaskStatusPending},
+				Type:         TaskTypeReport,
 				OnlyCurrents: true,
 				CePaginationArgs: CePaginationArgs{
 					Page:     1,
@@ -784,7 +784,7 @@ func TestCe_ValidateTaskOpt(t *testing.T) {
 			name: "valid with all additional fields",
 			opt: &CeTaskOptions{
 				ID:               "task-123",
-				AdditionalFields: []string{"stacktrace", "scannerContext", "warnings"},
+				AdditionalFields: []string{TaskFieldStacktrace, TaskFieldScannerContext, TaskFieldWarnings},
 			},
 			wantErr: false,
 		},

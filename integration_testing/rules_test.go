@@ -203,34 +203,34 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		It("should filter by severity", func() {
 			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
-				Severities: []string{"CRITICAL"},
+				Severities: []string{sonar.RuleSeverityCritical},
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			for _, rule := range result.Rules {
-				Expect(rule.Severity).To(Equal("CRITICAL"))
+				Expect(rule.Severity).To(Equal(sonar.RuleSeverityCritical))
 			}
 		})
 
 		It("should filter by type", func() {
 			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
-				Types: []string{"BUG"},
+				Types: []string{sonar.RuleTypeBug},
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			for _, rule := range result.Rules {
-				Expect(rule.Type).To(Equal("BUG"))
+				Expect(rule.Type).To(Equal(sonar.RuleTypeBug))
 			}
 		})
 
 		It("should filter by status", func() {
 			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
-				Statuses: []string{"READY"},
+				Statuses: []string{sonar.RuleStatusReady},
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			for _, rule := range result.Rules {
-				Expect(rule.Status).To(Equal("READY"))
+				Expect(rule.Status).To(Equal(sonar.RuleStatusReady))
 			}
 		})
 
@@ -474,11 +474,11 @@ var _ = Describe("Rules Service", Ordered, func() {
 					Name:                "E2E Severity Rule " + customKey,
 					MarkdownDescription: "Rule with custom severity",
 					TemplateKey:         templateRule.Key,
-					Severity:            "CRITICAL",
+					Severity:            sonar.RuleSeverityCritical,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
-				Expect(result.Rule.Severity).To(Equal("CRITICAL"))
+				Expect(result.Rule.Severity).To(Equal(sonar.RuleSeverityCritical))
 
 				cleanup.RegisterCleanup("rule", result.Rule.Key, func() error {
 					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
@@ -496,11 +496,11 @@ var _ = Describe("Rules Service", Ordered, func() {
 					Name:                "E2E Status Rule " + customKey,
 					MarkdownDescription: "Rule with custom status",
 					TemplateKey:         templateRule.Key,
-					Status:              "BETA",
+					Status:              sonar.RuleStatusBeta,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
-				Expect(result.Rule.Status).To(Equal("BETA"))
+				Expect(result.Rule.Status).To(Equal(sonar.RuleStatusBeta))
 
 				cleanup.RegisterCleanup("rule", result.Rule.Key, func() error {
 					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
@@ -626,7 +626,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 					Name:                "Severity Update Rule",
 					MarkdownDescription: "Testing severity update",
 					TemplateKey:         templateRule.Key,
-					Severity:            "MINOR",
+					Severity:            sonar.RuleSeverityMinor,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
@@ -639,11 +639,11 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 				updateResult, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
 					Key:      createResult.Rule.Key,
-					Severity: "BLOCKER",
+					Severity: sonar.RuleSeverityBlocker,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
-				Expect(updateResult.Rule.Severity).To(Equal("BLOCKER"))
+				Expect(updateResult.Rule.Severity).To(Equal(sonar.RuleSeverityBlocker))
 			})
 
 			It("should update a custom rule status", func() {
@@ -654,7 +654,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 					Name:                "Status Update Rule",
 					MarkdownDescription: "Testing status update",
 					TemplateKey:         templateRule.Key,
-					Status:              "READY",
+					Status:              sonar.RuleStatusReady,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
@@ -667,11 +667,11 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 				updateResult, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
 					Key:    createResult.Rule.Key,
-					Status: "DEPRECATED",
+					Status: sonar.RuleStatusDeprecated,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
-				Expect(updateResult.Rule.Status).To(Equal("DEPRECATED"))
+				Expect(updateResult.Rule.Status).To(Equal(sonar.RuleStatusDeprecated))
 			})
 
 			It("should update tags on a rule", func() {
@@ -804,7 +804,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 					Key: createResult.Rule.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
-				Expect(showResult.Rule.Status).To(Equal("REMOVED"))
+				Expect(showResult.Rule.Status).To(Equal(sonar.RuleStatusRemoved))
 			})
 
 			Context("parameter validation", func() {

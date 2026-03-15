@@ -225,7 +225,7 @@ func TestUserGroups_Users(t *testing.T) {
 
 	opt := &UserGroupsUsersOptions{
 		Name:     "sonar-administrators",
-		Selected: "selected",
+		Selected: SelectionFilterSelected,
 	}
 
 	result, resp, err := client.UserGroups.Users(opt)

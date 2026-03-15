@@ -198,7 +198,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 
 			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
-				Type:    "PREVIOUS_VERSION",
+				Type:    sonar.NewCodePeriodTypePreviousVersion,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -227,7 +227,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 
 			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
-				Type:    "NUMBER_OF_DAYS",
+				Type:    sonar.NewCodePeriodTypeNumberOfDays,
 				Value:   "30",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -257,7 +257,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 
 			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
-				Type:    "REFERENCE_BRANCH",
+				Type:    sonar.NewCodePeriodTypeReferenceBranch,
 				Value:   "main",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -288,7 +288,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
 				Branch:  "main",
-				Type:    "NUMBER_OF_DAYS",
+				Type:    sonar.NewCodePeriodTypeNumberOfDays,
 				Value:   "15",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -331,7 +331,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should fail with NUMBER_OF_DAYS and invalid value", func() {
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: "some-project",
-					Type:    "NUMBER_OF_DAYS",
+					Type:    sonar.NewCodePeriodTypeNumberOfDays,
 					Value:   "invalid",
 				})
 				Expect(err).To(HaveOccurred())
@@ -341,7 +341,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should fail with NUMBER_OF_DAYS exceeding max value", func() {
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: "some-project",
-					Type:    "NUMBER_OF_DAYS",
+					Type:    sonar.NewCodePeriodTypeNumberOfDays,
 					Value:   "100",
 				})
 				Expect(err).To(HaveOccurred())
@@ -351,7 +351,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should fail with NUMBER_OF_DAYS without value", func() {
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: "some-project",
-					Type:    "NUMBER_OF_DAYS",
+					Type:    sonar.NewCodePeriodTypeNumberOfDays,
 					Value:   "",
 				})
 				Expect(err).To(HaveOccurred())
@@ -361,7 +361,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should fail with NUMBER_OF_DAYS with zero value", func() {
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: "some-project",
-					Type:    "NUMBER_OF_DAYS",
+					Type:    sonar.NewCodePeriodTypeNumberOfDays,
 					Value:   "0",
 				})
 				Expect(err).To(HaveOccurred())
@@ -371,7 +371,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should fail with NUMBER_OF_DAYS with negative value", func() {
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: "some-project",
-					Type:    "NUMBER_OF_DAYS",
+					Type:    sonar.NewCodePeriodTypeNumberOfDays,
 					Value:   "-5",
 				})
 				Expect(err).To(HaveOccurred())
@@ -396,7 +396,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: projectKey,
-					Type:    "NUMBER_OF_DAYS",
+					Type:    sonar.NewCodePeriodTypeNumberOfDays,
 					Value:   "1",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -421,7 +421,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: projectKey,
-					Type:    "NUMBER_OF_DAYS",
+					Type:    sonar.NewCodePeriodTypeNumberOfDays,
 					Value:   "90",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -430,7 +430,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 
 			It("should fail with REFERENCE_BRANCH missing project", func() {
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
-					Type:  "REFERENCE_BRANCH",
+					Type:  sonar.NewCodePeriodTypeReferenceBranch,
 					Value: "main",
 				})
 				Expect(err).To(HaveOccurred())
@@ -440,7 +440,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			It("should fail with SPECIFIC_ANALYSIS missing branch", func() {
 				resp, err := client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 					Project: "some-project",
-					Type:    "SPECIFIC_ANALYSIS",
+					Type:    sonar.NewCodePeriodTypeSpecificAnalysis,
 					Value:   "some-analysis-id",
 				})
 				Expect(err).To(HaveOccurred())
@@ -472,7 +472,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			// First, set a new code period
 			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
-				Type:    "PREVIOUS_VERSION",
+				Type:    sonar.NewCodePeriodTypePreviousVersion,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -505,7 +505,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
 				Branch:  "main",
-				Type:    "NUMBER_OF_DAYS",
+				Type:    sonar.NewCodePeriodTypeNumberOfDays,
 				Value:   "45",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -559,7 +559,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			// Step 3: Set project-level new code period
 			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
-				Type:    "NUMBER_OF_DAYS",
+				Type:    sonar.NewCodePeriodTypeNumberOfDays,
 				Value:   "30",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -568,7 +568,7 @@ var _ = Describe("NewCodePeriods Service", Ordered, func() {
 			_, err = client.NewCodePeriods.Set(&sonar.NewCodePeriodsSetOptions{
 				Project: projectKey,
 				Branch:  "main",
-				Type:    "PREVIOUS_VERSION",
+				Type:    sonar.NewCodePeriodTypePreviousVersion,
 			})
 			Expect(err).NotTo(HaveOccurred())
 

@@ -89,7 +89,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			It("should search issues with impact severities filter", func() {
 				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOptions{
 					Projects:         []string{projectKey},
-					ImpactSeverities: []string{"HIGH", "MEDIUM"},
+					ImpactSeverities: []string{sonar.RuleImpactSeverityHigh, sonar.RuleImpactSeverityMedium},
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -99,7 +99,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			It("should search issues with issue statuses filter", func() {
 				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOptions{
 					Projects:      []string{projectKey},
-					IssueStatuses: []string{"OPEN", "CONFIRMED"},
+					IssueStatuses: []string{sonar.IssueStatusOpen, sonar.IssueStatusConfirmed},
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -109,7 +109,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			It("should search issues with clean code categories filter", func() {
 				result, resp, err := client.Issues.Search(&sonar.IssuesSearchOptions{
 					Projects:                     []string{projectKey},
-					CleanCodeAttributeCategories: []string{"INTENTIONAL", "CONSISTENT"},
+					CleanCodeAttributeCategories: []string{sonar.CleanCodeAttributeCategoryIntentional, sonar.CleanCodeAttributeCategoryConsistent},
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -408,7 +408,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 			It("should fail without required issue key", func() {
 				result, resp, err := client.Issues.DoTransition(&sonar.IssuesDoTransitionOptions{
-					Transition: "confirm",
+					Transition: sonar.IssueTransitionConfirm,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Issue"))
@@ -431,7 +431,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.DoTransition(&sonar.IssuesDoTransitionOptions{
 					Issue:      nonExistentIssueKey,
-					Transition: "confirm",
+					Transition: sonar.IssueTransitionConfirm,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())
@@ -498,7 +498,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 			It("should fail without required issue key", func() {
 				result, resp, err := client.Issues.SetSeverity(&sonar.IssuesSetSeverityOptions{
-					Severity: "MAJOR",
+					Severity: sonar.RuleSeverityMajor,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Issue"))
@@ -511,7 +511,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.SetSeverity(&sonar.IssuesSetSeverityOptions{
 					Issue:    nonExistentIssueKey,
-					Severity: "MAJOR",
+					Severity: sonar.RuleSeverityMajor,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())
@@ -576,7 +576,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 			It("should fail without required issue key", func() {
 				result, resp, err := client.Issues.SetType(&sonar.IssuesSetTypeOptions{
-					Type: "BUG",
+					Type: sonar.RuleTypeBug,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Issue"))
@@ -599,7 +599,7 @@ var _ = Describe("Issues Service", Ordered, func() {
 			It("should fail with non-existent issue key", func() {
 				result, resp, err := client.Issues.SetType(&sonar.IssuesSetTypeOptions{
 					Issue: nonExistentIssueKey,
-					Type:  "BUG",
+					Type:  sonar.RuleTypeBug,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(result).To(BeNil())

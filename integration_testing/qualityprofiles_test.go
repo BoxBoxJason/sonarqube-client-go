@@ -1333,7 +1333,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			result, resp, err := client.Qualityprofiles.SearchGroups(&sonar.QualityprofilesSearchGroupsOptions{
 				QualityProfile: profileName,
 				Language:       "java",
-				Selected:       "all",
+				Selected:       sonar.SelectionFilterAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -1509,7 +1509,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			result, resp, err := client.Qualityprofiles.SearchUsers(&sonar.QualityprofilesSearchUsersOptions{
 				QualityProfile: profileName,
 				Language:       "java",
-				Selected:       "all",
+				Selected:       sonar.SelectionFilterAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -1692,7 +1692,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			usersResult, _, err := client.Qualityprofiles.SearchUsers(&sonar.QualityprofilesSearchUsersOptions{
 				QualityProfile: profileName,
 				Language:       "java",
-				Selected:       "selected",
+				Selected:       sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			foundAdmin := false

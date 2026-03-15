@@ -17,7 +17,7 @@ func TestNavigationService_Component(t *testing.T) {
 			AnalysisDate: "2023-05-01T12:00:00+0000",
 			IsFavorite:   true,
 			Breadcrumbs: []NavigationBreadcrumb{
-				{Key: "my-project", Name: "My Project", Qualifier: "TRK"},
+				{Key: "my-project", Name: "My Project", Qualifier: ProjectQualifierTRK},
 			},
 			QualityGate: NavigationQualityGate{
 				Key:       "1",
@@ -82,7 +82,7 @@ func TestNavigationService_Global(t *testing.T) {
 			CanAdmin:           true,
 			Standalone:         true,
 			ProductionDatabase: true,
-			Qualifiers:         []string{"TRK", "VW", "APP"},
+			Qualifiers:         []string{ProjectQualifierTRK, ProjectQualifierVW, ProjectQualifierAPP},
 			GlobalPages: []NavigationExtension{
 				{Key: "page1", Name: "Page 1"},
 			},

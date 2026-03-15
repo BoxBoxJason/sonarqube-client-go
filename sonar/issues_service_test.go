@@ -150,7 +150,7 @@ func TestIssues_BulkChange(t *testing.T) {
 
 	opt := &IssuesBulkChangeOptions{
 		Issues:      []string{"issue1", "issue2"},
-		SetSeverity: "MAJOR",
+		SetSeverity: RuleSeverityMajor,
 		AddTags:     []string{"tag1", "tag2"},
 	}
 	result, resp, err := client.Issues.BulkChange(opt)
@@ -303,7 +303,7 @@ func TestIssues_DoTransition(t *testing.T) {
 
 	opt := &IssuesDoTransitionOptions{
 		Issue:      "test-key",
-		Transition: "confirm",
+		Transition: IssueTransitionConfirm,
 	}
 	result, resp, err := client.Issues.DoTransition(opt)
 	require.NoError(t, err)
@@ -433,9 +433,9 @@ func TestIssues_Search(t *testing.T) {
 
 	opt := &IssuesSearchOptions{
 		Projects:         []string{"my-project"},
-		Severities:       []string{"BLOCKER", "CRITICAL"},
-		Types:            []string{"BUG"},
-		ImpactSeverities: []string{"HIGH"},
+		Severities:       []string{RuleSeverityBlocker, RuleSeverityCritical},
+		Types:            []string{RuleTypeBug},
+		ImpactSeverities: []string{RuleImpactSeverityHigh},
 	}
 	result, resp, err := client.Issues.Search(opt)
 	require.NoError(t, err)
@@ -508,12 +508,12 @@ func TestIssues_SetSeverity(t *testing.T) {
 
 	opt := &IssuesSetSeverityOptions{
 		Issue:    "test-key",
-		Severity: "BLOCKER",
+		Severity: RuleSeverityBlocker,
 	}
 	result, resp, err := client.Issues.SetSeverity(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "BLOCKER", result.Issue.Severity)
+	assert.Equal(t, RuleSeverityBlocker, result.Issue.Severity)
 }
 
 func TestIssues_SetSeverity_ValidationError(t *testing.T) {
@@ -570,12 +570,12 @@ func TestIssues_SetType(t *testing.T) {
 
 	opt := &IssuesSetTypeOptions{
 		Issue: "test-key",
-		Type:  "BUG",
+		Type:  RuleTypeBug,
 	}
 	result, resp, err := client.Issues.SetType(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "BUG", result.Issue.Type)
+	assert.Equal(t, RuleTypeBug, result.Issue.Type)
 }
 
 func TestIssues_SetType_ValidationError(t *testing.T) {
@@ -587,7 +587,7 @@ func TestIssues_SetType_ValidationError(t *testing.T) {
 	}{
 		{
 			name: "missing issue",
-			opt:  &IssuesSetTypeOptions{Type: "BUG"},
+			opt:  &IssuesSetTypeOptions{Type: RuleTypeBug},
 		},
 		{
 			name: "missing type",

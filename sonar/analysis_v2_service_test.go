@@ -183,11 +183,11 @@ func TestAnalysisV2_GetActiveRules(t *testing.T) {
 		{
 			RuleKey:     AnalysisRuleKey{Repository: "java", Rule: "S1234"},
 			Name:        "Some Rule",
-			Severity:    "MAJOR",
+			Severity:    RuleSeverityMajor,
 			Language:    "java",
 			QProfileKey: "qp-1",
 			Params:      []AnalysisParam{{Key: "max", Value: "10"}},
-			Impacts:     map[string]string{"MAINTAINABILITY": "HIGH"},
+			Impacts:     map[string]string{SoftwareQualityMaintainability: RuleImpactSeverityHigh},
 		},
 	}
 	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/v2/analysis/active_rules", http.StatusOK,
@@ -203,7 +203,7 @@ func TestAnalysisV2_GetActiveRules(t *testing.T) {
 	assert.Len(t, result, 1)
 	assert.Equal(t, "java", result[0].RuleKey.Repository)
 	assert.Equal(t, "S1234", result[0].RuleKey.Rule)
-	assert.Equal(t, "MAJOR", result[0].Severity)
+	assert.Equal(t, RuleSeverityMajor, result[0].Severity)
 }
 
 func TestAnalysisV2_GetActiveRules_Validation(t *testing.T) {

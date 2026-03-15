@@ -48,7 +48,7 @@ func TestNewCodePeriods_List(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
 	assert.Len(t, result.NewCodePeriods, 2)
-	assert.Equal(t, "PREVIOUS_VERSION", result.NewCodePeriods[0].Type)
+	assert.Equal(t, NewCodePeriodTypePreviousVersion, result.NewCodePeriods[0].Type)
 	assert.Equal(t, "30", result.NewCodePeriods[1].Value)
 }
 
@@ -68,7 +68,7 @@ func TestNewCodePeriods_Set(t *testing.T) {
 	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodPost, r.Method)
 		assert.Equal(t, "/new_code_periods/set", r.URL.Path)
-		assert.Equal(t, "NUMBER_OF_DAYS", r.URL.Query().Get("type"))
+		assert.Equal(t, NewCodePeriodTypeNumberOfDays, r.URL.Query().Get("type"))
 		assert.Equal(t, "30", r.URL.Query().Get("value"))
 
 		w.WriteHeader(http.StatusOK)
@@ -77,7 +77,7 @@ func TestNewCodePeriods_Set(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &NewCodePeriodsSetOptions{
-		Type:  "NUMBER_OF_DAYS",
+		Type:  NewCodePeriodTypeNumberOfDays,
 		Value: "30",
 	}
 
@@ -105,13 +105,13 @@ func TestNewCodePeriods_Set_ValidationError(t *testing.T) {
 
 	// SPECIFIC_ANALYSIS without Branch should fail validation.
 	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOptions{
-		Type: "SPECIFIC_ANALYSIS",
+		Type: NewCodePeriodTypeSpecificAnalysis,
 	})
 	assert.Error(t, err)
 
 	// REFERENCE_BRANCH without Project should fail validation.
 	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOptions{
-		Type: "REFERENCE_BRANCH",
+		Type: NewCodePeriodTypeReferenceBranch,
 	})
 	assert.Error(t, err)
 }
@@ -130,7 +130,7 @@ func TestNewCodePeriods_Show(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
-	assert.Equal(t, "NUMBER_OF_DAYS", result.Type)
+	assert.Equal(t, NewCodePeriodTypeNumberOfDays, result.Type)
 	assert.Equal(t, "30", result.Value)
 }
 
@@ -164,7 +164,7 @@ func TestNewCodePeriods_Show_WithOptions(t *testing.T) {
 	result, _, err := client.NewCodePeriods.Show(opt)
 	require.NoError(t, err)
 	assert.Equal(t, "my-project", result.ProjectKey)
-	assert.Equal(t, "REFERENCE_BRANCH", result.Type)
+	assert.Equal(t, NewCodePeriodTypeReferenceBranch, result.Type)
 	assert.Equal(t, "main", result.Value)
 }
 
@@ -201,7 +201,7 @@ func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// All valid types without special requirements should pass.
-	validTypes := []string{"PREVIOUS_VERSION"}
+	validTypes := []string{NewCodePeriodTypePreviousVersion}
 	for _, periodType := range validTypes {
 		err := client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOptions{
 			Type: periodType,
@@ -211,21 +211,21 @@ func TestNewCodePeriods_ValidateSetOpt(t *testing.T) {
 
 	// NUMBER_OF_DAYS with valid Value should pass.
 	err := client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOptions{
-		Type:  "NUMBER_OF_DAYS",
+		Type:  NewCodePeriodTypeNumberOfDays,
 		Value: "30",
 	})
 	assert.NoError(t, err)
 
 	// SPECIFIC_ANALYSIS with Branch should pass.
 	err = client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOptions{
-		Type:   "SPECIFIC_ANALYSIS",
+		Type:   NewCodePeriodTypeSpecificAnalysis,
 		Branch: "main",
 	})
 	assert.NoError(t, err)
 
 	// REFERENCE_BRANCH with Project should pass.
 	err = client.NewCodePeriods.ValidateSetOpt(&NewCodePeriodsSetOptions{
-		Type:    "REFERENCE_BRANCH",
+		Type:    NewCodePeriodTypeReferenceBranch,
 		Project: "my-project",
 	})
 	assert.NoError(t, err)

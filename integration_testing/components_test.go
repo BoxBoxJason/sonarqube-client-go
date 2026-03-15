@@ -37,7 +37,7 @@ var _ = Describe("Components Service", Ordered, func() {
 	Describe("Search", func() {
 		It("should search for projects", func() {
 			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOptions{
-				Qualifiers: []string{"TRK"},
+				Qualifiers: []string{sonar.ProjectQualifierTRK},
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -47,7 +47,7 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		It("should search projects with pagination", func() {
 			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOptions{
-				Qualifiers: []string{"TRK"},
+				Qualifiers: []string{sonar.ProjectQualifierTRK},
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
 				},
@@ -81,7 +81,7 @@ var _ = Describe("Components Service", Ordered, func() {
 
 			// Search for it
 			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOptions{
-				Qualifiers: []string{"TRK"},
+				Qualifiers: []string{sonar.ProjectQualifierTRK},
 				Query:      query,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -216,7 +216,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 			Expect(result.Component.Key).To(Equal(projectKey))
-			Expect(result.Component.Qualifier).To(Equal("TRK"))
+			Expect(result.Component.Qualifier).To(Equal(sonar.ProjectQualifierTRK))
 		})
 
 		It("should return ancestors for project", func() {
@@ -288,7 +288,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should get tree with all strategy", func() {
 			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
 				Component: projectKey,
-				Strategy:  "all",
+				Strategy:  sonar.MeasureStrategyAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -298,7 +298,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should get tree with children strategy", func() {
 			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
 				Component: projectKey,
-				Strategy:  "children",
+				Strategy:  sonar.MeasureStrategyChildren,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -308,7 +308,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should get tree with leaves strategy", func() {
 			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
 				Component: projectKey,
-				Strategy:  "leaves",
+				Strategy:  sonar.MeasureStrategyLeaves,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -416,7 +416,7 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		It("should get more suggestions for TRK qualifier", func() {
 			result, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOptions{
-				More: "TRK",
+				More: sonar.ProjectQualifierTRK,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -480,7 +480,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result.Name).NotTo(BeEmpty())
-			Expect(result.Query).To(Equal("TRK"))
+			Expect(result.Query).To(Equal(sonar.ProjectQualifierTRK))
 		})
 
 		Context("parameter validation", func() {

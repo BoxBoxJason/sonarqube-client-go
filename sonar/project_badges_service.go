@@ -2,6 +2,47 @@ package sonar
 
 import "net/http"
 
+const (
+	// BadgeMetricCoverage represents the coverage metric for badges.
+	BadgeMetricCoverage = "coverage"
+	// BadgeMetricDuplicatedLinesDensity represents the duplicated lines density metric for badges.
+	BadgeMetricDuplicatedLinesDensity = "duplicated_lines_density"
+	// BadgeMetricNcloc represents the ncloc metric for badges.
+	BadgeMetricNcloc = "ncloc"
+	// BadgeMetricAlertStatus represents the alert status metric for badges.
+	BadgeMetricAlertStatus = "alert_status"
+	// BadgeMetricSecurityHotspots represents the security hotspots metric for badges.
+	BadgeMetricSecurityHotspots = "security_hotspots"
+	// BadgeMetricBugs represents the bugs metric for badges.
+	BadgeMetricBugs = "bugs"
+	// BadgeMetricCodeSmells represents the code smells metric for badges.
+	BadgeMetricCodeSmells = "code_smells"
+	// BadgeMetricVulnerabilities represents the vulnerabilities metric for badges.
+	BadgeMetricVulnerabilities = "vulnerabilities"
+	// BadgeMetricSqaleRating represents the sqale rating metric for badges.
+	BadgeMetricSqaleRating = "sqale_rating"
+	// BadgeMetricReliabilityRating represents the reliability rating metric for badges.
+	BadgeMetricReliabilityRating = "reliability_rating"
+	// BadgeMetricSecurityRating represents the security rating metric for badges.
+	BadgeMetricSecurityRating = "security_rating"
+	// BadgeMetricSqaleIndex represents the sqale index metric for badges.
+	BadgeMetricSqaleIndex = "sqale_index"
+	// BadgeMetricSoftwareQualityReliabilityIssues represents the software quality reliability issues metric for badges.
+	BadgeMetricSoftwareQualityReliabilityIssues = "software_quality_reliability_issues"
+	// BadgeMetricSoftwareQualityMaintainabilityIssues represents the software quality maintainability issues metric for badges.
+	BadgeMetricSoftwareQualityMaintainabilityIssues = "software_quality_maintainability_issues"
+	// BadgeMetricSoftwareQualitySecurityIssues represents the software quality security issues metric for badges.
+	BadgeMetricSoftwareQualitySecurityIssues = "software_quality_security_issues"
+	// BadgeMetricSoftwareQualityMaintainabilityRating represents the software quality maintainability rating metric for badges.
+	BadgeMetricSoftwareQualityMaintainabilityRating = "software_quality_maintainability_rating"
+	// BadgeMetricSoftwareQualityReliabilityRating represents the software quality reliability rating metric for badges.
+	BadgeMetricSoftwareQualityReliabilityRating = "software_quality_reliability_rating"
+	// BadgeMetricSoftwareQualitySecurityRating represents the software quality security rating metric for badges.
+	BadgeMetricSoftwareQualitySecurityRating = "software_quality_security_rating"
+	// BadgeMetricSoftwareQualityMaintainabilityRemediationEffort represents the software quality maintainability remediation effort metric for badges.
+	BadgeMetricSoftwareQualityMaintainabilityRemediationEffort = "software_quality_maintainability_remediation_effort"
+)
+
 // ProjectBadgesService handles communication with the project badges related methods
 // of the SonarQube API.
 // This service generates badges based on quality gates or measures.
@@ -14,25 +55,25 @@ type ProjectBadgesService struct {
 var (
 	// allowedBadgeMetrics is the set of supported metrics for badges.
 	allowedBadgeMetrics = map[string]struct{}{
-		"coverage":                            {},
-		"duplicated_lines_density":            {},
-		"ncloc":                               {},
-		"alert_status":                        {},
-		"security_hotspots":                   {},
-		"bugs":                                {},
-		"code_smells":                         {},
-		"vulnerabilities":                     {},
-		"sqale_rating":                        {},
-		"reliability_rating":                  {},
-		"security_rating":                     {},
-		"sqale_index":                         {},
-		"software_quality_reliability_issues": {},
-		"software_quality_maintainability_issues":             {},
-		"software_quality_security_issues":                    {},
-		"software_quality_maintainability_rating":             {},
-		"software_quality_reliability_rating":                 {},
-		"software_quality_security_rating":                    {},
-		"software_quality_maintainability_remediation_effort": {},
+		BadgeMetricCoverage:                                        {},
+		BadgeMetricDuplicatedLinesDensity:                          {},
+		BadgeMetricNcloc:                                           {},
+		BadgeMetricAlertStatus:                                     {},
+		BadgeMetricSecurityHotspots:                                {},
+		BadgeMetricBugs:                                            {},
+		BadgeMetricCodeSmells:                                      {},
+		BadgeMetricVulnerabilities:                                 {},
+		BadgeMetricSqaleRating:                                     {},
+		BadgeMetricReliabilityRating:                               {},
+		BadgeMetricSecurityRating:                                  {},
+		BadgeMetricSqaleIndex:                                      {},
+		BadgeMetricSoftwareQualityReliabilityIssues:                {},
+		BadgeMetricSoftwareQualityMaintainabilityIssues:            {},
+		BadgeMetricSoftwareQualitySecurityIssues:                   {},
+		BadgeMetricSoftwareQualityMaintainabilityRating:            {},
+		BadgeMetricSoftwareQualityReliabilityRating:                {},
+		BadgeMetricSoftwareQualitySecurityRating:                   {},
+		BadgeMetricSoftwareQualityMaintainabilityRemediationEffort: {},
 	}
 )
 

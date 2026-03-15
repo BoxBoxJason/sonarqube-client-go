@@ -94,7 +94,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			It("should search hotspots with status filter", func() {
 				result, resp, err := client.Hotspots.Search(&sonar.HotspotsSearchOptions{
 					Project: projectKey,
-					Status:  "TO_REVIEW",
+					Status:  sonar.HotspotStatusToReview,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -174,7 +174,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			It("should list hotspots with status filter", func() {
 				result, resp, err := client.Hotspots.List(&sonar.HotspotsListOptions{
 					Project: projectKey,
-					Status:  "TO_REVIEW",
+					Status:  sonar.HotspotStatusToReview,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -376,7 +376,7 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 
 			It("should fail without required hotspot key", func() {
 				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOptions{
-					Status: "REVIEWED",
+					Status: sonar.HotspotStatusReviewed,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Hotspot"))
@@ -397,8 +397,8 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			It("should fail with non-existent hotspot key", func() {
 				resp, err := client.Hotspots.ChangeStatus(&sonar.HotspotsChangeStatusOptions{
 					Hotspot:    "AXxxxxxxxxxxxxxxxxxx",
-					Status:     "REVIEWED",
-					Resolution: "SAFE",
+					Status:     sonar.HotspotStatusReviewed,
+					Resolution: sonar.HotspotResolutionSafe,
 				})
 				Expect(err).To(HaveOccurred())
 				if resp != nil {

@@ -96,7 +96,7 @@ func TestMeasuresService_ComponentTree(t *testing.T) {
 	opt := &MeasuresComponentTreeOptions{
 		Component:  "my-project",
 		MetricKeys: []string{"coverage"},
-		Strategy:   "all",
+		Strategy:   MeasureStrategyAll,
 	}
 
 	result, resp, err := client.Measures.ComponentTree(opt)

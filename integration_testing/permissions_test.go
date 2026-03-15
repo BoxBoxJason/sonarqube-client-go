@@ -48,7 +48,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Permission Test Project",
 				Project:    testProjectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -173,7 +173,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Remove User Permission Test",
 				Project:    testProjectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -274,7 +274,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Group Permission Test Project",
 				Project:    testProjectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -401,7 +401,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Remove Group Permission Test",
 				Project:    testProjectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -1471,7 +1471,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Apply Template Test",
 				Project:    testProjectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -1697,7 +1697,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			var originalDefaultID string
 			for _, dt := range searchResult.DefaultTemplates {
-				if dt.Qualifier == "TRK" {
+				if dt.Qualifier == sonar.ProjectQualifierTRK {
 					originalDefaultID = dt.TemplateID
 					break
 				}
@@ -1706,7 +1706,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			// Set our template as default
 			resp, err := client.Permissions.SetDefaultTemplate(&sonar.PermissionsSetDefaultTemplateOptions{
 				TemplateName: testTemplateName,
-				Qualifier:    "TRK",
+				Qualifier:    sonar.ProjectQualifierTRK,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
@@ -1718,7 +1718,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			for _, t := range searchResult.PermissionTemplates {
 				if t.Name == testTemplateName {
 					for _, dt := range searchResult.DefaultTemplates {
-						if dt.TemplateID == t.ID && dt.Qualifier == "TRK" {
+						if dt.TemplateID == t.ID && dt.Qualifier == sonar.ProjectQualifierTRK {
 							found = true
 							break
 						}
@@ -1732,7 +1732,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			if originalDefaultID != "" {
 				_, _ = client.Permissions.SetDefaultTemplate(&sonar.PermissionsSetDefaultTemplateOptions{
 					TemplateID: originalDefaultID,
-					Qualifier:  "TRK",
+					Qualifier:  sonar.ProjectQualifierTRK,
 				})
 			}
 		})
@@ -1746,7 +1746,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			It("should fail with missing template identifier", func() {
 				resp, err := client.Permissions.SetDefaultTemplate(&sonar.PermissionsSetDefaultTemplateOptions{
-					Qualifier: "TRK",
+					Qualifier: sonar.ProjectQualifierTRK,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -1775,7 +1775,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Lifecycle Test Project",
 				Project:    projectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -1879,7 +1879,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Template Lifecycle Project",
 				Project:    projectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 

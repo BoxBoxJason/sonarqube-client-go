@@ -235,7 +235,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
-					Strategy:   "children",
+					Strategy:   sonar.MeasureStrategyChildren,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -246,7 +246,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
-					Strategy:   "leaves",
+					Strategy:   sonar.MeasureStrategyLeaves,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -257,7 +257,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:  projectKey,
 					MetricKeys: []string{"ncloc"},
-					Strategy:   "all",
+					Strategy:   sonar.MeasureStrategyAll,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -268,7 +268,7 @@ var _ = Describe("Measures Service", Ordered, func() {
 				result, resp, err := client.Measures.ComponentTree(&sonar.MeasuresComponentTreeOptions{
 					Component:        projectKey,
 					MetricKeys:       []string{"ncloc"},
-					MetricSortFilter: "withMeasuresOnly",
+					MetricSortFilter: sonar.MeasuresMetricSortFilterWithMeasuresOnly,
 					MetricSort:       "ncloc",
 					Sort:             []string{"metric"},
 				})

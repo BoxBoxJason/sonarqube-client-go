@@ -64,7 +64,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			result, resp, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Full Config Project",
 				Project:    projectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 				MainBranch: "main",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -80,7 +80,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 			Expect(result.Project.Key).To(Equal(projectKey))
-			Expect(result.Project.Visibility).To(Equal("private"))
+			Expect(result.Project.Visibility).To(Equal(sonar.ProjectVisibilityPrivate))
 		})
 
 		It("should create a public project", func() {
@@ -89,7 +89,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			result, resp, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Public Project",
 				Project:    projectKey,
-				Visibility: "public",
+				Visibility: sonar.ProjectVisibilityPublic,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -103,7 +103,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
-			Expect(result.Project.Visibility).To(Equal("public"))
+			Expect(result.Project.Visibility).To(Equal(sonar.ProjectVisibilityPublic))
 		})
 
 		Context("parameter validation", func() {
@@ -183,7 +183,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Search Test Project",
 				Project:    testProjectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -235,25 +235,25 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 		It("should search projects by visibility", func() {
 			result, resp, err := client.Projects.Search(&sonar.ProjectsSearchOptions{
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 			for _, c := range result.Components {
-				Expect(c.Visibility).To(Equal("private"))
+				Expect(c.Visibility).To(Equal(sonar.ProjectVisibilityPrivate))
 			}
 		})
 
 		It("should search projects by qualifier", func() {
 			result, resp, err := client.Projects.Search(&sonar.ProjectsSearchOptions{
-				Qualifiers: []string{"TRK"},
+				Qualifiers: []string{sonar.ProjectQualifierTRK},
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 			for _, c := range result.Components {
-				Expect(c.Qualifier).To(Equal("TRK"))
+				Expect(c.Qualifier).To(Equal(sonar.ProjectQualifierTRK))
 			}
 		})
 
@@ -444,7 +444,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Visibility Test Project",
 				Project:    projectKey,
-				Visibility: "public",
+				Visibility: sonar.ProjectVisibilityPublic,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -457,7 +457,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOptions{
 				Project:    projectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
@@ -471,7 +471,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			for _, c := range result.Components {
 				if c.Key == projectKey {
 					found = true
-					Expect(c.Visibility).To(Equal("private"))
+					Expect(c.Visibility).To(Equal(sonar.ProjectVisibilityPrivate))
 					break
 				}
 			}
@@ -484,7 +484,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Visibility Test Project 2",
 				Project:    projectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -497,7 +497,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOptions{
 				Project:    projectKey,
-				Visibility: "public",
+				Visibility: sonar.ProjectVisibilityPublic,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
@@ -511,7 +511,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			for _, c := range result.Components {
 				if c.Key == projectKey {
 					found = true
-					Expect(c.Visibility).To(Equal("public"))
+					Expect(c.Visibility).To(Equal(sonar.ProjectVisibilityPublic))
 					break
 				}
 			}
@@ -527,7 +527,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 			It("should fail with missing project key", func() {
 				resp, err := client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOptions{
-					Visibility: "private",
+					Visibility: sonar.ProjectVisibilityPrivate,
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -767,7 +767,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 		It("should update default visibility to private", func() {
 			resp, err := client.Projects.UpdateDefaultVisibility(&sonar.ProjectsUpdateDefaultVisibilityOptions{
-				ProjectVisibility: "private",
+				ProjectVisibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
@@ -775,7 +775,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 
 		It("should update default visibility to public", func() {
 			resp, err := client.Projects.UpdateDefaultVisibility(&sonar.ProjectsUpdateDefaultVisibilityOptions{
-				ProjectVisibility: "public",
+				ProjectVisibility: sonar.ProjectVisibilityPublic,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
@@ -816,7 +816,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			result, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:       "Lifecycle Test",
 				Project:    projectKey,
-				Visibility: "public",
+				Visibility: sonar.ProjectVisibilityPublic,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -835,7 +835,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			})
 
 			Expect(result.Project.Key).To(Equal(projectKey))
-			Expect(result.Project.Visibility).To(Equal("public"))
+			Expect(result.Project.Visibility).To(Equal(sonar.ProjectVisibilityPublic))
 
 			// Step 2: Search for project
 			searchResult, _, err := client.Projects.Search(&sonar.ProjectsSearchOptions{
@@ -854,7 +854,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			// Step 3: Update visibility
 			_, err = client.Projects.UpdateVisibility(&sonar.ProjectsUpdateVisibilityOptions{
 				Project:    projectKey,
-				Visibility: "private",
+				Visibility: sonar.ProjectVisibilityPrivate,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
@@ -874,7 +874,7 @@ var _ = Describe("Projects Service", Ordered, func() {
 			for _, c := range searchResult.Components {
 				if c.Key == newProjectKey {
 					found = true
-					Expect(c.Visibility).To(Equal("private"))
+					Expect(c.Visibility).To(Equal(sonar.ProjectVisibilityPrivate))
 					break
 				}
 			}

@@ -731,7 +731,7 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 			},
 		},
 		DefaultTemplates: []DefaultTemplate{
-			{Qualifier: "TRK", TemplateID: "template-1"},
+			{Qualifier: ProjectQualifierTRK, TemplateID: "template-1"},
 		},
 	}
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/search_templates", http.StatusOK, response))
