@@ -13,7 +13,7 @@ func TestUserGroups_AddUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/user_groups/add_user", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UserGroupsAddUserOption{
+	opt := &UserGroupsAddUserOptions{
 		Name:  "sonar-administrators",
 		Login: "g.hopper",
 	}
@@ -31,7 +31,7 @@ func TestUserGroups_AddUser_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.UserGroups.AddUser(&UserGroupsAddUserOption{
+	_, err = client.UserGroups.AddUser(&UserGroupsAddUserOptions{
 		Login: "user",
 	})
 	assert.Error(t, err)
@@ -51,7 +51,7 @@ func TestUserGroups_Create(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/user_groups/create", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UserGroupsCreateOption{
+	opt := &UserGroupsCreateOptions{
 		Name:        "sonar-users",
 		Description: "Default group",
 	}
@@ -70,19 +70,19 @@ func TestUserGroups_Create_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.UserGroups.Create(&UserGroupsCreateOption{
+	_, _, err = client.UserGroups.Create(&UserGroupsCreateOptions{
 		Description: "test",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, _, err = client.UserGroups.Create(&UserGroupsCreateOption{
+	_, _, err = client.UserGroups.Create(&UserGroupsCreateOptions{
 		Name: strings.Repeat("a", MaxGroupNameLength+1),
 	})
 	assert.Error(t, err)
 
 	// Test Description too long
-	_, _, err = client.UserGroups.Create(&UserGroupsCreateOption{
+	_, _, err = client.UserGroups.Create(&UserGroupsCreateOptions{
 		Name:        "test",
 		Description: strings.Repeat("a", MaxGroupDescriptionLength+1),
 	})
@@ -93,7 +93,7 @@ func TestUserGroups_Delete(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/user_groups/delete", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UserGroupsDeleteOption{
+	opt := &UserGroupsDeleteOptions{
 		Name: "sonar-users",
 	}
 
@@ -110,7 +110,7 @@ func TestUserGroups_Delete_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.UserGroups.Delete(&UserGroupsDeleteOption{})
+	_, err = client.UserGroups.Delete(&UserGroupsDeleteOptions{})
 	assert.Error(t, err)
 }
 
@@ -118,7 +118,7 @@ func TestUserGroups_RemoveUser(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/user_groups/remove_user", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UserGroupsRemoveUserOption{
+	opt := &UserGroupsRemoveUserOptions{
 		Name:  "sonar-administrators",
 		Login: "g.hopper",
 	}
@@ -149,7 +149,7 @@ func TestUserGroups_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/user_groups/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UserGroupsSearchOption{
+	opt := &UserGroupsSearchOptions{
 		Query:  "admin",
 		Fields: []string{"name", "description"},
 	}
@@ -168,7 +168,7 @@ func TestUserGroups_Search_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid field
-	_, _, err = client.UserGroups.Search(&UserGroupsSearchOption{
+	_, _, err = client.UserGroups.Search(&UserGroupsSearchOptions{
 		Fields: []string{"invalid_field"},
 	})
 	assert.Error(t, err)
@@ -178,7 +178,7 @@ func TestUserGroups_Update(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/user_groups/update", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UserGroupsUpdateOption{
+	opt := &UserGroupsUpdateOptions{
 		CurrentName: "old-group",
 		Name:        "new-group",
 		Description: "Updated description",
@@ -197,7 +197,7 @@ func TestUserGroups_Update_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing CurrentName
-	_, err = client.UserGroups.Update(&UserGroupsUpdateOption{
+	_, err = client.UserGroups.Update(&UserGroupsUpdateOptions{
 		Name: "new-group",
 	})
 	assert.Error(t, err)
@@ -223,7 +223,7 @@ func TestUserGroups_Users(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/user_groups/users", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UserGroupsUsersOption{
+	opt := &UserGroupsUsersOptions{
 		Name:     "sonar-administrators",
 		Selected: "selected",
 	}
@@ -242,11 +242,11 @@ func TestUserGroups_Users_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.UserGroups.Users(&UserGroupsUsersOption{})
+	_, _, err = client.UserGroups.Users(&UserGroupsUsersOptions{})
 	assert.Error(t, err)
 
 	// Test invalid Selected value
-	_, _, err = client.UserGroups.Users(&UserGroupsUsersOption{
+	_, _, err = client.UserGroups.Users(&UserGroupsUsersOptions{
 		Name:     "test",
 		Selected: "invalid",
 	})

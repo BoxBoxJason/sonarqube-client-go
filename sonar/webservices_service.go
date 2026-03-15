@@ -110,15 +110,15 @@ type WebserviceParam struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// WebservicesListOption represents options for listing webservices.
-type WebservicesListOption struct {
+// WebservicesListOptions represents options for listing webservices.
+type WebservicesListOptions struct {
 	// IncludeInternals includes internal actions and parameters.
 	// Default: false.
 	IncludeInternals bool `url:"include_internals,omitempty"`
 }
 
-// WebservicesResponseExampleOption represents options for getting a response example.
-type WebservicesResponseExampleOption struct {
+// WebservicesResponseExampleOptions represents options for getting a response example.
+type WebservicesResponseExampleOptions struct {
 	// Action is the action key (required).
 	Action string `url:"action,omitempty"`
 	// Controller is the controller key (required).
@@ -130,13 +130,13 @@ type WebservicesResponseExampleOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateListOpt validates the options for the List method.
-func (s *WebservicesService) ValidateListOpt(_ *WebservicesListOption) error {
+func (s *WebservicesService) ValidateListOpt(_ *WebservicesListOptions) error {
 	// No required fields, all options are optional
 	return nil
 }
 
 // ValidateResponseExampleOpt validates the options for the ResponseExample method.
-func (s *WebservicesService) ValidateResponseExampleOpt(opt *WebservicesResponseExampleOption) error {
+func (s *WebservicesService) ValidateResponseExampleOpt(opt *WebservicesResponseExampleOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -158,7 +158,7 @@ func (s *WebservicesService) ValidateResponseExampleOpt(opt *WebservicesResponse
 //
 // API endpoint: GET /api/webservices/list.
 // Since: 4.2.
-func (s *WebservicesService) List(opt *WebservicesListOption) (*WebservicesList, *http.Response, error) {
+func (s *WebservicesService) List(opt *WebservicesListOptions) (*WebservicesList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -184,7 +184,7 @@ func (s *WebservicesService) List(opt *WebservicesListOption) (*WebservicesList,
 //
 // API endpoint: GET /api/webservices/response_example.
 // Since: 4.4.
-func (s *WebservicesService) ResponseExample(opt *WebservicesResponseExampleOption) (*string, *http.Response, error) {
+func (s *WebservicesService) ResponseExample(opt *WebservicesResponseExampleOptions) (*string, *http.Response, error) {
 	err := s.ValidateResponseExampleOpt(opt)
 	if err != nil {
 		return nil, nil, err

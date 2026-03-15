@@ -44,7 +44,7 @@ func TestL10N_Index_WithLocale(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.L10N.Index(&L10NIndexOption{Locale: "fr"})
+	result, resp, err := client.L10N.Index(&L10NIndexOptions{Locale: "fr"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "fr", result.Locale)
@@ -56,7 +56,7 @@ func TestL10N_Index_WithTimestamp(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	_, _, err := client.L10N.Index(&L10NIndexOption{Timestamp: "2024-01-01T00:00:00+0000"})
+	_, _, err := client.L10N.Index(&L10NIndexOptions{Timestamp: "2024-01-01T00:00:00+0000"})
 	require.NoError(t, err)
 }
 
@@ -76,14 +76,14 @@ func TestL10N_ValidateIndexOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *L10NIndexOption
+		opt     *L10NIndexOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &L10NIndexOption{}, false},
-		{"with Locale", &L10NIndexOption{Locale: "en"}, false},
-		{"with Timestamp", &L10NIndexOption{Timestamp: "2024-01-01T00:00:00+0000"}, false},
-		{"with both", &L10NIndexOption{Locale: "fr", Timestamp: "2024-01-01T00:00:00+0000"}, false},
+		{"empty option", &L10NIndexOptions{}, false},
+		{"with Locale", &L10NIndexOptions{Locale: "en"}, false},
+		{"with Timestamp", &L10NIndexOptions{Timestamp: "2024-01-01T00:00:00+0000"}, false},
+		{"with both", &L10NIndexOptions{Locale: "fr", Timestamp: "2024-01-01T00:00:00+0000"}, false},
 	}
 
 	for _, tt := range tests {

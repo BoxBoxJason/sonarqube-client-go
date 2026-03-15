@@ -20,7 +20,7 @@ func TestLanguages_List(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Languages.List(&LanguagesListOption{})
+	result, resp, err := client.Languages.List(&LanguagesListOptions{})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -35,7 +35,7 @@ func TestLanguages_List_WithQuery(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Languages.List(&LanguagesListOption{Query: "java"})
+	result, resp, err := client.Languages.List(&LanguagesListOptions{Query: "java"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Languages, 1)
@@ -57,12 +57,12 @@ func TestLanguages_ValidateListOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *LanguagesListOption
+		opt     *LanguagesListOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &LanguagesListOption{}, false},
-		{"with query", &LanguagesListOption{Query: "java", PageSize: 25}, false},
+		{"empty option", &LanguagesListOptions{}, false},
+		{"with query", &LanguagesListOptions{Query: "java", PageSize: 25}, false},
 	}
 
 	for _, tt := range tests {

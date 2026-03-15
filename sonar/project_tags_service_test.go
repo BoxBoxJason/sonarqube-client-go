@@ -30,7 +30,7 @@ func TestProjectTagsService_Search(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		opt := &ProjectTagsSearchOption{
+		opt := &ProjectTagsSearchOptions{
 			PaginationArgs: PaginationArgs{
 				Page:     2,
 				PageSize: 10,
@@ -52,7 +52,7 @@ func TestProjectTagsService_Set(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		opt := &ProjectTagsSetOption{
+		opt := &ProjectTagsSetOptions{
 			Project: "my-project",
 			Tags:    []string{"security", "performance"},
 		}
@@ -75,7 +75,7 @@ func TestProjectTagsService_Set(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		opt := &ProjectTagsSetOption{
+		opt := &ProjectTagsSetOptions{
 			Project: "my-project",
 			Tags:    []string{},
 		}
@@ -97,7 +97,7 @@ func TestProjectTagsService_Set(t *testing.T) {
 	t.Run("missing project fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectTags.Set(&ProjectTagsSetOption{
+		_, err := client.ProjectTags.Set(&ProjectTagsSetOptions{
 			Tags: []string{"tag1"},
 		})
 
@@ -110,12 +110,12 @@ func TestProjectTagsService_ValidateSearchOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *ProjectTagsSearchOption
+		opt     *ProjectTagsSearchOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &ProjectTagsSearchOption{}, false},
-		{"with query", &ProjectTagsSearchOption{Query: "test"}, false},
+		{"empty option", &ProjectTagsSearchOptions{}, false},
+		{"with query", &ProjectTagsSearchOptions{Query: "test"}, false},
 	}
 
 	for _, tt := range tests {
@@ -135,13 +135,13 @@ func TestProjectTagsService_ValidateSetOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *ProjectTagsSetOption
+		opt     *ProjectTagsSetOptions
 		wantErr bool
 	}{
-		{"valid", &ProjectTagsSetOption{Project: "my-project", Tags: []string{"tag1", "tag2"}}, false},
-		{"empty tags array", &ProjectTagsSetOption{Project: "my-project", Tags: []string{}}, false},
+		{"valid", &ProjectTagsSetOptions{Project: "my-project", Tags: []string{"tag1", "tag2"}}, false},
+		{"empty tags array", &ProjectTagsSetOptions{Project: "my-project", Tags: []string{}}, false},
 		{"nil option", nil, true},
-		{"missing project", &ProjectTagsSetOption{Tags: []string{"tag1"}}, true},
+		{"missing project", &ProjectTagsSetOptions{Tags: []string{"tag1"}}, true},
 	}
 
 	for _, tt := range tests {

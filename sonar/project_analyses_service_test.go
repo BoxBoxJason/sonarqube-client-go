@@ -30,7 +30,7 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
+		result, resp, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 			Category: "VERSION",
 			Name:     "1.0",
@@ -50,7 +50,7 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 	t.Run("missing analysis", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
+		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
 			Name: "1.0",
 		})
 		assert.Error(t, err)
@@ -59,7 +59,7 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 	t.Run("missing name", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
+		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 		})
 		assert.Error(t, err)
@@ -68,7 +68,7 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 	t.Run("invalid category", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOption{
+		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 			Category: "INVALID",
 			Name:     "1.0",
@@ -88,7 +88,7 @@ func TestProjectAnalysesService_Delete(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOption{
+		resp, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 		})
 		require.NoError(t, err)
@@ -105,7 +105,7 @@ func TestProjectAnalysesService_Delete(t *testing.T) {
 	t.Run("missing analysis", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOption{})
+		_, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -121,7 +121,7 @@ func TestProjectAnalysesService_DeleteEvent(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOption{
+		resp, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOptions{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 		})
 		require.NoError(t, err)
@@ -138,7 +138,7 @@ func TestProjectAnalysesService_DeleteEvent(t *testing.T) {
 	t.Run("missing event", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOption{})
+		_, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -176,7 +176,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
+		result, resp, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
 			Project: "my-project",
 		})
 		require.NoError(t, err)
@@ -200,7 +200,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
+		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
 			Project:  "my-project",
 			Branch:   "main",
 			Category: "VERSION",
@@ -218,7 +218,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
+		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
 			Project: "my-project",
 			From:    "2022-01-01T00:00:00Z",
 			To:      "2022-12-31T23:59:59Z",
@@ -236,14 +236,14 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 	t.Run("missing project", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{})
+		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{})
 		assert.Error(t, err)
 	})
 
 	t.Run("invalid category", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
+		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
 			Project:  "my-project",
 			Category: "INVALID",
 		})
@@ -253,7 +253,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 	t.Run("invalid from date", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
+		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
 			Project: "my-project",
 			From:    "invalid-date",
 		})
@@ -263,7 +263,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 	t.Run("invalid to date", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOption{
+		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
 			Project: "my-project",
 			To:      "invalid-date",
 		})
@@ -292,7 +292,7 @@ func TestProjectAnalysesService_SearchAll(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		opt := &ProjectAnalysesSearchOption{
+		opt := &ProjectAnalysesSearchOptions{
 			Project: "my-project",
 		}
 		opt.PageSize = 1
@@ -331,7 +331,7 @@ func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOption{
+		result, resp, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOptions{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 			Name:  "2.0",
 		})
@@ -350,7 +350,7 @@ func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 	t.Run("missing event", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOption{
+		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOptions{
 			Name: "2.0",
 		})
 		assert.Error(t, err)
@@ -359,7 +359,7 @@ func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 	t.Run("missing name", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOption{
+		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOptions{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 		})
 		assert.Error(t, err)
@@ -371,16 +371,16 @@ func TestProjectAnalysesService_ValidateCreateEventOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *ProjectAnalysesCreateEventOption
+		opt     *ProjectAnalysesCreateEventOptions
 		wantErr bool
 	}{
-		{"valid minimal", &ProjectAnalysesCreateEventOption{Analysis: "a1", Name: "1.0"}, false},
-		{"valid with VERSION", &ProjectAnalysesCreateEventOption{Analysis: "a1", Name: "1.0", Category: "VERSION"}, false},
-		{"valid with OTHER", &ProjectAnalysesCreateEventOption{Analysis: "a1", Name: "1.0", Category: "OTHER"}, false},
+		{"valid minimal", &ProjectAnalysesCreateEventOptions{Analysis: "a1", Name: "1.0"}, false},
+		{"valid with VERSION", &ProjectAnalysesCreateEventOptions{Analysis: "a1", Name: "1.0", Category: "VERSION"}, false},
+		{"valid with OTHER", &ProjectAnalysesCreateEventOptions{Analysis: "a1", Name: "1.0", Category: "OTHER"}, false},
 		{"nil option", nil, true},
-		{"missing analysis", &ProjectAnalysesCreateEventOption{Name: "1.0"}, true},
-		{"missing name", &ProjectAnalysesCreateEventOption{Analysis: "a1"}, true},
-		{"invalid category", &ProjectAnalysesCreateEventOption{Analysis: "a1", Name: "1.0", Category: "INVALID"}, true},
+		{"missing analysis", &ProjectAnalysesCreateEventOptions{Name: "1.0"}, true},
+		{"missing name", &ProjectAnalysesCreateEventOptions{Analysis: "a1"}, true},
+		{"invalid category", &ProjectAnalysesCreateEventOptions{Analysis: "a1", Name: "1.0", Category: "INVALID"}, true},
 	}
 
 	for _, tt := range tests {
@@ -400,12 +400,12 @@ func TestProjectAnalysesService_ValidateDeleteOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *ProjectAnalysesDeleteOption
+		opt     *ProjectAnalysesDeleteOptions
 		wantErr bool
 	}{
-		{"valid", &ProjectAnalysesDeleteOption{Analysis: "a1"}, false},
+		{"valid", &ProjectAnalysesDeleteOptions{Analysis: "a1"}, false},
 		{"nil option", nil, true},
-		{"empty analysis", &ProjectAnalysesDeleteOption{}, true},
+		{"empty analysis", &ProjectAnalysesDeleteOptions{}, true},
 	}
 
 	for _, tt := range tests {
@@ -425,12 +425,12 @@ func TestProjectAnalysesService_ValidateDeleteEventOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *ProjectAnalysesDeleteEventOption
+		opt     *ProjectAnalysesDeleteEventOptions
 		wantErr bool
 	}{
-		{"valid", &ProjectAnalysesDeleteEventOption{Event: "e1"}, false},
+		{"valid", &ProjectAnalysesDeleteEventOptions{Event: "e1"}, false},
 		{"nil option", nil, true},
-		{"empty event", &ProjectAnalysesDeleteEventOption{}, true},
+		{"empty event", &ProjectAnalysesDeleteEventOptions{}, true},
 	}
 
 	for _, tt := range tests {
@@ -450,19 +450,19 @@ func TestProjectAnalysesService_ValidateSearchOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *ProjectAnalysesSearchOption
+		opt     *ProjectAnalysesSearchOptions
 		wantErr bool
 	}{
-		{"valid minimal", &ProjectAnalysesSearchOption{Project: "p1"}, false},
-		{"valid with VERSION", &ProjectAnalysesSearchOption{Project: "p1", Category: "VERSION"}, false},
-		{"valid with QUALITY_GATE", &ProjectAnalysesSearchOption{Project: "p1", Category: "QUALITY_GATE"}, false},
-		{"valid with date", &ProjectAnalysesSearchOption{Project: "p1", From: "2022-01-01"}, false},
-		{"valid with datetime", &ProjectAnalysesSearchOption{Project: "p1", From: "2022-01-01T00:00:00Z"}, false},
+		{"valid minimal", &ProjectAnalysesSearchOptions{Project: "p1"}, false},
+		{"valid with VERSION", &ProjectAnalysesSearchOptions{Project: "p1", Category: "VERSION"}, false},
+		{"valid with QUALITY_GATE", &ProjectAnalysesSearchOptions{Project: "p1", Category: "QUALITY_GATE"}, false},
+		{"valid with date", &ProjectAnalysesSearchOptions{Project: "p1", From: "2022-01-01"}, false},
+		{"valid with datetime", &ProjectAnalysesSearchOptions{Project: "p1", From: "2022-01-01T00:00:00Z"}, false},
 		{"nil option", nil, true},
-		{"missing project", &ProjectAnalysesSearchOption{}, true},
-		{"invalid category", &ProjectAnalysesSearchOption{Project: "p1", Category: "INVALID"}, true},
-		{"invalid from", &ProjectAnalysesSearchOption{Project: "p1", From: "bad"}, true},
-		{"invalid to", &ProjectAnalysesSearchOption{Project: "p1", To: "bad"}, true},
+		{"missing project", &ProjectAnalysesSearchOptions{}, true},
+		{"invalid category", &ProjectAnalysesSearchOptions{Project: "p1", Category: "INVALID"}, true},
+		{"invalid from", &ProjectAnalysesSearchOptions{Project: "p1", From: "bad"}, true},
+		{"invalid to", &ProjectAnalysesSearchOptions{Project: "p1", To: "bad"}, true},
 	}
 
 	for _, tt := range tests {
@@ -482,13 +482,13 @@ func TestProjectAnalysesService_ValidateUpdateEventOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *ProjectAnalysesUpdateEventOption
+		opt     *ProjectAnalysesUpdateEventOptions
 		wantErr bool
 	}{
-		{"valid", &ProjectAnalysesUpdateEventOption{Event: "e1", Name: "2.0"}, false},
+		{"valid", &ProjectAnalysesUpdateEventOptions{Event: "e1", Name: "2.0"}, false},
 		{"nil option", nil, true},
-		{"missing event", &ProjectAnalysesUpdateEventOption{Name: "2.0"}, true},
-		{"missing name", &ProjectAnalysesUpdateEventOption{Event: "e1"}, true},
+		{"missing event", &ProjectAnalysesUpdateEventOptions{Name: "2.0"}, true},
+		{"missing name", &ProjectAnalysesUpdateEventOptions{Event: "e1"}, true},
 	}
 
 	for _, tt := range tests {

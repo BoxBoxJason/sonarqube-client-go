@@ -103,8 +103,8 @@ type ProjectAnalysis struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// ProjectAnalysesCreateEventOption represents options for creating an event.
-type ProjectAnalysesCreateEventOption struct {
+// ProjectAnalysesCreateEventOptions represents options for creating an event.
+type ProjectAnalysesCreateEventOptions struct {
 	// Analysis is the analysis key (required).
 	Analysis string `url:"analysis,omitempty"`
 	// Category is the event category.
@@ -115,22 +115,22 @@ type ProjectAnalysesCreateEventOption struct {
 	Name string `url:"name,omitempty"`
 }
 
-// ProjectAnalysesDeleteOption represents options for deleting an analysis.
-type ProjectAnalysesDeleteOption struct {
+// ProjectAnalysesDeleteOptions represents options for deleting an analysis.
+type ProjectAnalysesDeleteOptions struct {
 	// Analysis is the analysis key (required).
 	Analysis string `url:"analysis,omitempty"`
 }
 
-// ProjectAnalysesDeleteEventOption represents options for deleting an event.
-type ProjectAnalysesDeleteEventOption struct {
+// ProjectAnalysesDeleteEventOptions represents options for deleting an event.
+type ProjectAnalysesDeleteEventOptions struct {
 	// Event is the event key (required).
 	Event string `url:"event,omitempty"`
 }
 
-// ProjectAnalysesSearchOption represents options for searching analyses.
+// ProjectAnalysesSearchOptions represents options for searching analyses.
 //
 //nolint:govet // fieldalignment - structure kept for readability
-type ProjectAnalysesSearchOption struct {
+type ProjectAnalysesSearchOptions struct {
 	// PaginationArgs embeds pagination parameters.
 	PaginationArgs
 
@@ -151,8 +151,8 @@ type ProjectAnalysesSearchOption struct {
 	To string `url:"to,omitempty"`
 }
 
-// ProjectAnalysesUpdateEventOption represents options for updating an event.
-type ProjectAnalysesUpdateEventOption struct {
+// ProjectAnalysesUpdateEventOptions represents options for updating an event.
+type ProjectAnalysesUpdateEventOptions struct {
 	// Event is the event key (required).
 	Event string `url:"event,omitempty"`
 	// Name is the new event name (required).
@@ -185,7 +185,7 @@ var (
 // -----------------------------------------------------------------------------
 
 // ValidateCreateEventOpt validates the options for the CreateEvent method.
-func (s *ProjectAnalysesService) ValidateCreateEventOpt(opt *ProjectAnalysesCreateEventOption) error {
+func (s *ProjectAnalysesService) ValidateCreateEventOpt(opt *ProjectAnalysesCreateEventOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -211,7 +211,7 @@ func (s *ProjectAnalysesService) ValidateCreateEventOpt(opt *ProjectAnalysesCrea
 }
 
 // ValidateDeleteOpt validates the options for the Delete method.
-func (s *ProjectAnalysesService) ValidateDeleteOpt(opt *ProjectAnalysesDeleteOption) error {
+func (s *ProjectAnalysesService) ValidateDeleteOpt(opt *ProjectAnalysesDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -220,7 +220,7 @@ func (s *ProjectAnalysesService) ValidateDeleteOpt(opt *ProjectAnalysesDeleteOpt
 }
 
 // ValidateDeleteEventOpt validates the options for the DeleteEvent method.
-func (s *ProjectAnalysesService) ValidateDeleteEventOpt(opt *ProjectAnalysesDeleteEventOption) error {
+func (s *ProjectAnalysesService) ValidateDeleteEventOpt(opt *ProjectAnalysesDeleteEventOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -238,7 +238,7 @@ func validateDateFormat(value, fieldName string) error {
 }
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *ProjectAnalysesService) ValidateSearchOpt(opt *ProjectAnalysesSearchOption) error {
+func (s *ProjectAnalysesService) ValidateSearchOpt(opt *ProjectAnalysesSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -264,7 +264,7 @@ func (s *ProjectAnalysesService) ValidateSearchOpt(opt *ProjectAnalysesSearchOpt
 }
 
 // ValidateUpdateEventOpt validates the options for the UpdateEvent method.
-func (s *ProjectAnalysesService) ValidateUpdateEventOpt(opt *ProjectAnalysesUpdateEventOption) error {
+func (s *ProjectAnalysesService) ValidateUpdateEventOpt(opt *ProjectAnalysesUpdateEventOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -327,7 +327,7 @@ func isValidDateTime(dateTimeStr string) bool {
 //
 // API endpoint: POST /api/project_analyses/create_event.
 // Since: 6.3.
-func (s *ProjectAnalysesService) CreateEvent(opt *ProjectAnalysesCreateEventOption) (*ProjectAnalysesEvent, *http.Response, error) {
+func (s *ProjectAnalysesService) CreateEvent(opt *ProjectAnalysesCreateEventOptions) (*ProjectAnalysesEvent, *http.Response, error) {
 	err := s.ValidateCreateEventOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -353,7 +353,7 @@ func (s *ProjectAnalysesService) CreateEvent(opt *ProjectAnalysesCreateEventOpti
 //
 // API endpoint: POST /api/project_analyses/delete.
 // Since: 6.3.
-func (s *ProjectAnalysesService) Delete(opt *ProjectAnalysesDeleteOption) (*http.Response, error) {
+func (s *ProjectAnalysesService) Delete(opt *ProjectAnalysesDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -378,7 +378,7 @@ func (s *ProjectAnalysesService) Delete(opt *ProjectAnalysesDeleteOption) (*http
 //
 // API endpoint: POST /api/project_analyses/delete_event.
 // Since: 6.3.
-func (s *ProjectAnalysesService) DeleteEvent(opt *ProjectAnalysesDeleteEventOption) (*http.Response, error) {
+func (s *ProjectAnalysesService) DeleteEvent(opt *ProjectAnalysesDeleteEventOptions) (*http.Response, error) {
 	err := s.ValidateDeleteEventOpt(opt)
 	if err != nil {
 		return nil, err
@@ -402,7 +402,7 @@ func (s *ProjectAnalysesService) DeleteEvent(opt *ProjectAnalysesDeleteEventOpti
 //
 // API endpoint: GET /api/project_analyses/search.
 // Since: 6.3.
-func (s *ProjectAnalysesService) Search(opt *ProjectAnalysesSearchOption) (*ProjectAnalysesSearch, *http.Response, error) {
+func (s *ProjectAnalysesService) Search(opt *ProjectAnalysesSearchOptions) (*ProjectAnalysesSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -425,7 +425,7 @@ func (s *ProjectAnalysesService) Search(opt *ProjectAnalysesSearchOption) (*Proj
 
 // SearchAll is a convenience method to iterate over all analyses.
 // It handles pagination automatically.
-func (s *ProjectAnalysesService) SearchAll(opt *ProjectAnalysesSearchOption) ([]ProjectAnalysis, *http.Response, error) {
+func (s *ProjectAnalysesService) SearchAll(opt *ProjectAnalysesSearchOptions) ([]ProjectAnalysis, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -463,7 +463,7 @@ func (s *ProjectAnalysesService) SearchAll(opt *ProjectAnalysesSearchOption) ([]
 //
 // API endpoint: POST /api/project_analyses/update_event.
 // Since: 6.3.
-func (s *ProjectAnalysesService) UpdateEvent(opt *ProjectAnalysesUpdateEventOption) (*ProjectAnalysesEvent, *http.Response, error) {
+func (s *ProjectAnalysesService) UpdateEvent(opt *ProjectAnalysesUpdateEventOptions) (*ProjectAnalysesEvent, *http.Response, error) {
 	err := s.ValidateUpdateEventOpt(opt)
 	if err != nil {
 		return nil, nil, err

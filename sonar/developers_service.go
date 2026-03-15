@@ -36,8 +36,8 @@ type DeveloperEvent struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// DevelopersSearchEventsOption contains parameters for the SearchEvents method.
-type DevelopersSearchEventsOption struct {
+// DevelopersSearchEventsOptions contains parameters for the SearchEvents method.
+type DevelopersSearchEventsOptions struct {
 	// From is a list of datetimes.
 	// Filter events created after the given date (exclusive).
 	// This field is required.
@@ -52,7 +52,7 @@ type DevelopersSearchEventsOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateSearchEventsOpt validates the options for the SearchEvents method.
-func (s *DevelopersService) ValidateSearchEventsOpt(opt *DevelopersSearchEventsOption) error {
+func (s *DevelopersService) ValidateSearchEventsOpt(opt *DevelopersSearchEventsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -78,7 +78,7 @@ func (s *DevelopersService) ValidateSearchEventsOpt(opt *DevelopersSearchEventsO
 //
 // API endpoint: GET /api/developers/search_events.
 // WARNING: This is an internal API and may change without notice.
-func (s *DevelopersService) SearchEvents(opt *DevelopersSearchEventsOption) (*DevelopersSearchEvents, *http.Response, error) {
+func (s *DevelopersService) SearchEvents(opt *DevelopersSearchEventsOptions) (*DevelopersSearchEvents, *http.Response, error) {
 	err := s.ValidateSearchEventsOpt(opt)
 	if err != nil {
 		return nil, nil, err

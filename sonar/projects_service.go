@@ -130,10 +130,10 @@ type ScannableProject struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// ProjectsBulkDeleteOption represents options for bulk deleting projects.
+// ProjectsBulkDeleteOptions represents options for bulk deleting projects.
 //
 //nolint:govet // Field ordering prioritizes API clarity over memory alignment
-type ProjectsBulkDeleteOption struct {
+type ProjectsBulkDeleteOptions struct {
 	// OnProvisionedOnly filters only provisioned projects (optional).
 	OnProvisionedOnly bool `url:"onProvisionedOnly,omitempty"`
 	// AnalyzedBefore filters projects analyzed before the given date (optional).
@@ -151,8 +151,8 @@ type ProjectsBulkDeleteOption struct {
 	Qualifiers []string `url:"qualifiers,omitempty,comma"`
 }
 
-// ProjectsCreateOption represents options for creating a project.
-type ProjectsCreateOption struct {
+// ProjectsCreateOptions represents options for creating a project.
+type ProjectsCreateOptions struct {
 	// Name is the project name (required).
 	// Maximum length: 500 characters.
 	Name string `url:"name,omitempty"`
@@ -174,16 +174,16 @@ type ProjectsCreateOption struct {
 	Visibility string `url:"visibility,omitempty"`
 }
 
-// ProjectsDeleteOption represents options for deleting a project.
-type ProjectsDeleteOption struct {
+// ProjectsDeleteOptions represents options for deleting a project.
+type ProjectsDeleteOptions struct {
 	// Project is the project key (required).
 	Project string `url:"project,omitempty"`
 }
 
-// ProjectsSearchOption represents options for searching projects.
+// ProjectsSearchOptions represents options for searching projects.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type ProjectsSearchOption struct {
+type ProjectsSearchOptions struct {
 	PaginationArgs
 
 	// AnalyzedBefore filters projects analyzed before the given date (optional).
@@ -203,34 +203,34 @@ type ProjectsSearchOption struct {
 	Visibility string `url:"visibility,omitempty"`
 }
 
-// ProjectsSearchMyProjectsOption represents options for searching my projects.
-type ProjectsSearchMyProjectsOption struct {
+// ProjectsSearchMyProjectsOptions represents options for searching my projects.
+type ProjectsSearchMyProjectsOptions struct {
 	PaginationArgs
 }
 
-// ProjectsSearchMyScannableProjectsOption contains optional parameters for SearchMyScannableProjects.
-type ProjectsSearchMyScannableProjectsOption struct {
+// ProjectsSearchMyScannableProjectsOptions contains optional parameters for SearchMyScannableProjects.
+type ProjectsSearchMyScannableProjectsOptions struct {
 	// Query is used to filter projects by name.
 	Query string `url:"q,omitempty"`
 }
 
-// ProjectsUpdateDefaultVisibilityOption represents options for updating default visibility.
-type ProjectsUpdateDefaultVisibilityOption struct {
+// ProjectsUpdateDefaultVisibilityOptions represents options for updating default visibility.
+type ProjectsUpdateDefaultVisibilityOptions struct {
 	// ProjectVisibility is the new default visibility (required).
 	// Possible values: private, public.
 	ProjectVisibility string `url:"projectVisibility,omitempty"`
 }
 
-// ProjectsUpdateKeyOption represents options for updating a project key.
-type ProjectsUpdateKeyOption struct {
+// ProjectsUpdateKeyOptions represents options for updating a project key.
+type ProjectsUpdateKeyOptions struct {
 	// From is the current project key (required).
 	From string `url:"from,omitempty"`
 	// To is the new project key (required).
 	To string `url:"to,omitempty"`
 }
 
-// ProjectsUpdateVisibilityOption represents options for updating project visibility.
-type ProjectsUpdateVisibilityOption struct {
+// ProjectsUpdateVisibilityOptions represents options for updating project visibility.
+type ProjectsUpdateVisibilityOptions struct {
 	// Project is the project key (required).
 	Project string `url:"project,omitempty"`
 	// Visibility is the new visibility (required).
@@ -243,7 +243,7 @@ type ProjectsUpdateVisibilityOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateBulkDeleteOpt validates the options for BulkDelete.
-func (s *ProjectsService) ValidateBulkDeleteOpt(opt *ProjectsBulkDeleteOption) error {
+func (s *ProjectsService) ValidateBulkDeleteOpt(opt *ProjectsBulkDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -271,7 +271,7 @@ func (s *ProjectsService) ValidateBulkDeleteOpt(opt *ProjectsBulkDeleteOption) e
 }
 
 // ValidateCreateOpt validates the options for Create.
-func (s *ProjectsService) ValidateCreateOpt(opt *ProjectsCreateOption) error {
+func (s *ProjectsService) ValidateCreateOpt(opt *ProjectsCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -307,7 +307,7 @@ func (s *ProjectsService) ValidateCreateOpt(opt *ProjectsCreateOption) error {
 }
 
 // ValidateDeleteOpt validates the options for Delete.
-func (s *ProjectsService) ValidateDeleteOpt(opt *ProjectsDeleteOption) error {
+func (s *ProjectsService) ValidateDeleteOpt(opt *ProjectsDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -316,7 +316,7 @@ func (s *ProjectsService) ValidateDeleteOpt(opt *ProjectsDeleteOption) error {
 }
 
 // ValidateSearchOpt validates the options for Search.
-func (s *ProjectsService) ValidateSearchOpt(opt *ProjectsSearchOption) error {
+func (s *ProjectsService) ValidateSearchOpt(opt *ProjectsSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -340,7 +340,7 @@ func (s *ProjectsService) ValidateSearchOpt(opt *ProjectsSearchOption) error {
 }
 
 // ValidateSearchMyProjectsOpt validates the options for SearchMyProjects.
-func (s *ProjectsService) ValidateSearchMyProjectsOpt(opt *ProjectsSearchMyProjectsOption) error {
+func (s *ProjectsService) ValidateSearchMyProjectsOpt(opt *ProjectsSearchMyProjectsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -349,7 +349,7 @@ func (s *ProjectsService) ValidateSearchMyProjectsOpt(opt *ProjectsSearchMyProje
 }
 
 // ValidateUpdateDefaultVisibilityOpt validates the options for UpdateDefaultVisibility.
-func (s *ProjectsService) ValidateUpdateDefaultVisibilityOpt(opt *ProjectsUpdateDefaultVisibilityOption) error {
+func (s *ProjectsService) ValidateUpdateDefaultVisibilityOpt(opt *ProjectsUpdateDefaultVisibilityOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -368,7 +368,7 @@ func (s *ProjectsService) ValidateUpdateDefaultVisibilityOpt(opt *ProjectsUpdate
 }
 
 // ValidateUpdateKeyOpt validates the options for UpdateKey.
-func (s *ProjectsService) ValidateUpdateKeyOpt(opt *ProjectsUpdateKeyOption) error {
+func (s *ProjectsService) ValidateUpdateKeyOpt(opt *ProjectsUpdateKeyOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -387,7 +387,7 @@ func (s *ProjectsService) ValidateUpdateKeyOpt(opt *ProjectsUpdateKeyOption) err
 }
 
 // ValidateUpdateVisibilityOpt validates the options for UpdateVisibility.
-func (s *ProjectsService) ValidateUpdateVisibilityOpt(opt *ProjectsUpdateVisibilityOption) error {
+func (s *ProjectsService) ValidateUpdateVisibilityOpt(opt *ProjectsUpdateVisibilityOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -419,7 +419,7 @@ func (s *ProjectsService) ValidateUpdateVisibilityOpt(opt *ProjectsUpdateVisibil
 // Requires 'Administer System' permission.
 //
 // Since: 5.2.
-func (s *ProjectsService) BulkDelete(opt *ProjectsBulkDeleteOption) (*http.Response, error) {
+func (s *ProjectsService) BulkDelete(opt *ProjectsBulkDeleteOptions) (*http.Response, error) {
 	err := s.ValidateBulkDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -442,7 +442,7 @@ func (s *ProjectsService) BulkDelete(opt *ProjectsBulkDeleteOption) (*http.Respo
 // Requires 'Create Projects' permission.
 //
 // Since: 4.0.
-func (s *ProjectsService) Create(opt *ProjectsCreateOption) (*ProjectsCreate, *http.Response, error) {
+func (s *ProjectsService) Create(opt *ProjectsCreateOptions) (*ProjectsCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -467,7 +467,7 @@ func (s *ProjectsService) Create(opt *ProjectsCreateOption) (*ProjectsCreate, *h
 // Requires 'Administer System' permission or 'Administer' permission on the project.
 //
 // Since: 5.2.
-func (s *ProjectsService) Delete(opt *ProjectsDeleteOption) (*http.Response, error) {
+func (s *ProjectsService) Delete(opt *ProjectsDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
@@ -490,7 +490,7 @@ func (s *ProjectsService) Delete(opt *ProjectsDeleteOption) (*http.Response, err
 // Requires 'Browse' permission on the returned projects.
 //
 // Since: 6.3.
-func (s *ProjectsService) Search(opt *ProjectsSearchOption) (*ProjectsSearch, *http.Response, error) {
+func (s *ProjectsService) Search(opt *ProjectsSearchOptions) (*ProjectsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -515,7 +515,7 @@ func (s *ProjectsService) Search(opt *ProjectsSearchOption) (*ProjectsSearch, *h
 // Only the favorite and recently analyzed projects will be returned.
 //
 // Since: 6.4.
-func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOption) (*ProjectsSearchMyProjects, *http.Response, error) {
+func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOptions) (*ProjectsSearchMyProjects, *http.Response, error) {
 	err := s.ValidateSearchMyProjectsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -540,7 +540,7 @@ func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOption) 
 // Requires authentication.
 //
 // Since: 9.5.
-func (s *ProjectsService) SearchMyScannableProjects(opt *ProjectsSearchMyScannableProjectsOption) (*ProjectsSearchMyScannableProjects, *http.Response, error) {
+func (s *ProjectsService) SearchMyScannableProjects(opt *ProjectsSearchMyScannableProjectsOptions) (*ProjectsSearchMyScannableProjects, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "projects/search_my_scannable_projects", opt)
 	if err != nil {
 		return nil, nil, err
@@ -560,7 +560,7 @@ func (s *ProjectsService) SearchMyScannableProjects(opt *ProjectsSearchMyScannab
 // Requires 'Administer System' permission.
 //
 // Since: 6.4.
-func (s *ProjectsService) UpdateDefaultVisibility(opt *ProjectsUpdateDefaultVisibilityOption) (*http.Response, error) {
+func (s *ProjectsService) UpdateDefaultVisibility(opt *ProjectsUpdateDefaultVisibilityOptions) (*http.Response, error) {
 	err := s.ValidateUpdateDefaultVisibilityOpt(opt)
 	if err != nil {
 		return nil, err
@@ -583,7 +583,7 @@ func (s *ProjectsService) UpdateDefaultVisibility(opt *ProjectsUpdateDefaultVisi
 // Requires 'Administer' permission on the project.
 //
 // Since: 6.1.
-func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOption) (*http.Response, error) {
+func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOptions) (*http.Response, error) {
 	err := s.ValidateUpdateKeyOpt(opt)
 	if err != nil {
 		return nil, err
@@ -606,7 +606,7 @@ func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOption) (*http.Respons
 // Requires 'Project administer' permission on the project.
 //
 // Since: 6.4.
-func (s *ProjectsService) UpdateVisibility(opt *ProjectsUpdateVisibilityOption) (*http.Response, error) {
+func (s *ProjectsService) UpdateVisibility(opt *ProjectsUpdateVisibilityOptions) (*http.Response, error) {
 	err := s.ValidateUpdateVisibilityOpt(opt)
 	if err != nil {
 		return nil, err

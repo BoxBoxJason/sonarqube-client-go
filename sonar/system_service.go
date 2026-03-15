@@ -542,16 +542,16 @@ type PluginUpdate struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// SystemChangeLogLevelOption contains options for the ChangeLogLevel method.
-type SystemChangeLogLevelOption struct {
+// SystemChangeLogLevelOptions contains options for the ChangeLogLevel method.
+type SystemChangeLogLevelOptions struct {
 	// Level is the new log level.
 	// Possible values: TRACE, DEBUG, INFO.
 	// Be cautious: DEBUG, and even more TRACE, may have performance impacts.
 	Level string `url:"level,omitempty"`
 }
 
-// SystemLogsOption contains options for the Logs method.
-type SystemLogsOption struct {
+// SystemLogsOptions contains options for the Logs method.
+type SystemLogsOptions struct {
 	// Name is the name of the logs to retrieve.
 	// Possible values: access, app, ce, deprecation, es, web.
 	// Default: app.
@@ -567,7 +567,7 @@ type SystemLogsOption struct {
 // Requires system administration permission.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/change_log_level
-func (s *SystemService) ChangeLogLevel(opt *SystemChangeLogLevelOption) (*http.Response, error) {
+func (s *SystemService) ChangeLogLevel(opt *SystemChangeLogLevelOptions) (*http.Response, error) {
 	err := s.ValidateChangeLogLevelOpt(opt)
 	if err != nil {
 		return nil, err
@@ -700,7 +700,7 @@ func (s *SystemService) Liveness() (*SystemLiveness, *http.Response, error) {
 // Requires system administration permission.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/logs
-func (s *SystemService) Logs(opt *SystemLogsOption) (*string, *http.Response, error) {
+func (s *SystemService) Logs(opt *SystemLogsOptions) (*string, *http.Response, error) {
 	err := s.ValidateLogsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -842,7 +842,7 @@ func (s *SystemService) Upgrades() (*SystemUpgrades, *http.Response, error) {
 // -----------------------------------------------------------------------------
 
 // ValidateChangeLogLevelOpt validates the options for ChangeLogLevel.
-func (s *SystemService) ValidateChangeLogLevelOpt(opt *SystemChangeLogLevelOption) error {
+func (s *SystemService) ValidateChangeLogLevelOpt(opt *SystemChangeLogLevelOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "options cannot be nil", ErrMissingRequired)
 	}
@@ -861,7 +861,7 @@ func (s *SystemService) ValidateChangeLogLevelOpt(opt *SystemChangeLogLevelOptio
 }
 
 // ValidateLogsOpt validates the options for Logs.
-func (s *SystemService) ValidateLogsOpt(opt *SystemLogsOption) error {
+func (s *SystemService) ValidateLogsOpt(opt *SystemLogsOptions) error {
 	// opt can be nil (uses defaults)
 	if opt == nil {
 		return nil

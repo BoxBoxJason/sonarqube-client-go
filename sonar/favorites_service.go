@@ -36,23 +36,23 @@ type Favorite struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// FavoritesAddOption contains parameters for the Add method.
-type FavoritesAddOption struct {
+// FavoritesAddOptions contains parameters for the Add method.
+type FavoritesAddOptions struct {
 	// Component is the component key.
 	// Only components with qualifiers TRK, VW, SVW, APP are supported.
 	// This field is required.
 	Component string `url:"component"`
 }
 
-// FavoritesRemoveOption contains parameters for the Remove method.
-type FavoritesRemoveOption struct {
+// FavoritesRemoveOptions contains parameters for the Remove method.
+type FavoritesRemoveOptions struct {
 	// Component is the component key.
 	// This field is required.
 	Component string `url:"component"`
 }
 
-// FavoritesSearchOption contains parameters for the Search method.
-type FavoritesSearchOption struct {
+// FavoritesSearchOptions contains parameters for the Search method.
+type FavoritesSearchOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 }
@@ -62,7 +62,7 @@ type FavoritesSearchOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateAddOpt validates the options for the Add method.
-func (s *FavoritesService) ValidateAddOpt(opt *FavoritesAddOption) error {
+func (s *FavoritesService) ValidateAddOpt(opt *FavoritesAddOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -76,7 +76,7 @@ func (s *FavoritesService) ValidateAddOpt(opt *FavoritesAddOption) error {
 }
 
 // ValidateRemoveOpt validates the options for the Remove method.
-func (s *FavoritesService) ValidateRemoveOpt(opt *FavoritesRemoveOption) error {
+func (s *FavoritesService) ValidateRemoveOpt(opt *FavoritesRemoveOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -90,7 +90,7 @@ func (s *FavoritesService) ValidateRemoveOpt(opt *FavoritesRemoveOption) error {
 }
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *FavoritesService) ValidateSearchOpt(opt *FavoritesSearchOption) error {
+func (s *FavoritesService) ValidateSearchOpt(opt *FavoritesSearchOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -108,7 +108,7 @@ func (s *FavoritesService) ValidateSearchOpt(opt *FavoritesSearchOption) error {
 //
 // API endpoint: POST /api/favorites/add.
 // Since: 6.3.
-func (s *FavoritesService) Add(opt *FavoritesAddOption) (*http.Response, error) {
+func (s *FavoritesService) Add(opt *FavoritesAddOptions) (*http.Response, error) {
 	err := s.ValidateAddOpt(opt)
 	if err != nil {
 		return nil, err
@@ -132,7 +132,7 @@ func (s *FavoritesService) Add(opt *FavoritesAddOption) (*http.Response, error) 
 //
 // API endpoint: POST /api/favorites/remove.
 // Since: 6.3.
-func (s *FavoritesService) Remove(opt *FavoritesRemoveOption) (*http.Response, error) {
+func (s *FavoritesService) Remove(opt *FavoritesRemoveOptions) (*http.Response, error) {
 	err := s.ValidateRemoveOpt(opt)
 	if err != nil {
 		return nil, err
@@ -156,7 +156,7 @@ func (s *FavoritesService) Remove(opt *FavoritesRemoveOption) (*http.Response, e
 //
 // API endpoint: GET /api/favorites/search.
 // Since: 6.3.
-func (s *FavoritesService) Search(opt *FavoritesSearchOption) (*FavoritesSearch, *http.Response, error) {
+func (s *FavoritesService) Search(opt *FavoritesSearchOptions) (*FavoritesSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err

@@ -26,14 +26,14 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		// Create a test project for component navigation
 		projectKey = helpers.UniqueResourceName("nav")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOption{
+		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
 			Name:    "Navigation Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -59,7 +59,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 			})
 
 			It("should fail with empty component key", func() {
-				resp, _, err := client.Navigation.Component(&sonar.NavigationComponentOption{
+				resp, _, err := client.Navigation.Component(&sonar.NavigationComponentOptions{
 					Component: "",
 				})
 				Expect(resp).To(BeNil())
@@ -69,7 +69,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get component navigation with valid component key and breadcrumbs", func() {
-				result, resp, err := client.Navigation.Component(&sonar.NavigationComponentOption{
+				result, resp, err := client.Navigation.Component(&sonar.NavigationComponentOptions{
 					Component: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -82,7 +82,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		Context("Error Cases", func() {
 			It("should fail with non-existent component key", func() {
-				_, resp, err := client.Navigation.Component(&sonar.NavigationComponentOption{
+				_, resp, err := client.Navigation.Component(&sonar.NavigationComponentOptions{
 					Component: "non-existent-component-key-12345",
 				})
 				Expect(err).To(HaveOccurred())

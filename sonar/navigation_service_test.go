@@ -31,7 +31,7 @@ func TestNavigationService_Component(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/component", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		opt := &NavigationComponentOption{
+		opt := &NavigationComponentOptions{
 			Component: "my-project",
 		}
 
@@ -55,7 +55,7 @@ func TestNavigationService_Component(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		opt := &NavigationComponentOption{
+		opt := &NavigationComponentOptions{
 			Component: "my-project",
 			Branch:    "feature/my-branch",
 		}
@@ -143,10 +143,10 @@ func TestNavigationService_ValidateComponentOpt(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Test empty option (should be valid)
-	err = client.Navigation.ValidateComponentOpt(&NavigationComponentOption{})
+	err = client.Navigation.ValidateComponentOpt(&NavigationComponentOptions{})
 	assert.NoError(t, err)
 
 	// Test with component
-	err = client.Navigation.ValidateComponentOpt(&NavigationComponentOption{Component: "my-project"})
+	err = client.Navigation.ValidateComponentOpt(&NavigationComponentOptions{Component: "my-project"})
 	assert.NoError(t, err)
 }

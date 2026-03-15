@@ -21,7 +21,7 @@ func TestAlmSettings_CountBinding(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/alm_settings/count_binding", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsCountBindingOption{
+	opt := &AlmSettingsCountBindingOptions{
 		AlmSetting: "my-alm-setting",
 	}
 
@@ -41,7 +41,7 @@ func TestAlmSettings_CountBinding_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmSettings.CountBinding(&AlmSettingsCountBindingOption{})
+	_, _, err = client.AlmSettings.CountBinding(&AlmSettingsCountBindingOptions{})
 	assert.Error(t, err)
 }
 
@@ -53,7 +53,7 @@ func TestAlmSettings_CreateAzure(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/create_azure", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsCreateAzureOption{
+	opt := &AlmSettingsCreateAzureOptions{
 		Key:                 "my-azure-setting",
 		PersonalAccessToken: "my-pat",
 		URL:                 "https://dev.azure.com/myorg",
@@ -72,14 +72,14 @@ func TestAlmSettings_CreateAzure_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOption{
+	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOptions{
 		PersonalAccessToken: "pat",
 		URL:                 "https://dev.azure.com",
 	})
 	assert.Error(t, err)
 
 	// Test Key too long
-	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOption{
+	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOptions{
 		Key:                 strings.Repeat("a", MaxAlmKeyLength+1),
 		PersonalAccessToken: "pat",
 		URL:                 "https://dev.azure.com",
@@ -87,14 +87,14 @@ func TestAlmSettings_CreateAzure_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing PersonalAccessToken
-	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOption{
+	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOptions{
 		Key: "my-key",
 		URL: "https://dev.azure.com",
 	})
 	assert.Error(t, err)
 
 	// Test PersonalAccessToken too long
-	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOption{
+	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOptions{
 		Key:                 "my-key",
 		PersonalAccessToken: strings.Repeat("a", MaxPersonalAccessTokenLength+1),
 		URL:                 "https://dev.azure.com",
@@ -102,14 +102,14 @@ func TestAlmSettings_CreateAzure_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOption{
+	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOptions{
 		Key:                 "my-key",
 		PersonalAccessToken: "pat",
 	})
 	assert.Error(t, err)
 
 	// Test URL too long
-	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOption{
+	_, err = client.AlmSettings.CreateAzure(&AlmSettingsCreateAzureOptions{
 		Key:                 "my-key",
 		PersonalAccessToken: "pat",
 		URL:                 strings.Repeat("a", MaxAlmURLLength+1),
@@ -125,7 +125,7 @@ func TestAlmSettings_CreateBitbucket(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/create_bitbucket", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsCreateBitbucketOption{
+	opt := &AlmSettingsCreateBitbucketOptions{
 		Key:                 "my-bitbucket-setting",
 		PersonalAccessToken: "my-pat",
 		URL:                 "https://bitbucket.example.com",
@@ -144,14 +144,14 @@ func TestAlmSettings_CreateBitbucket_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOption{
+	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOptions{
 		PersonalAccessToken: "pat",
 		URL:                 "https://bitbucket.example.com",
 	})
 	assert.Error(t, err)
 
 	// Test Key too long
-	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOption{
+	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOptions{
 		Key:                 strings.Repeat("a", MaxAlmKeyLength+1),
 		PersonalAccessToken: "pat",
 		URL:                 "https://bitbucket.example.com",
@@ -159,14 +159,14 @@ func TestAlmSettings_CreateBitbucket_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing PersonalAccessToken
-	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOption{
+	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOptions{
 		Key: "my-key",
 		URL: "https://bitbucket.example.com",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOption{
+	_, err = client.AlmSettings.CreateBitbucket(&AlmSettingsCreateBitbucketOptions{
 		Key:                 "my-key",
 		PersonalAccessToken: "pat",
 	})
@@ -181,7 +181,7 @@ func TestAlmSettings_CreateBitbucketCloud(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/create_bitbucketcloud", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsCreateBitbucketCloudOption{
+	opt := &AlmSettingsCreateBitbucketCloudOptions{
 		ClientID:     "my-client-id",
 		ClientSecret: "my-client-secret",
 		Key:          "my-bitbucket-cloud-setting",
@@ -201,7 +201,7 @@ func TestAlmSettings_CreateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing ClientID
-	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOption{
+	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOptions{
 		ClientSecret: "secret",
 		Key:          "my-key",
 		Workspace:    "workspace",
@@ -209,7 +209,7 @@ func TestAlmSettings_CreateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test ClientID too long
-	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOption{
+	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOptions{
 		ClientID:     strings.Repeat("a", MaxBitbucketCloudClientIDLength+1),
 		ClientSecret: "secret",
 		Key:          "my-key",
@@ -218,7 +218,7 @@ func TestAlmSettings_CreateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing ClientSecret
-	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOption{
+	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOptions{
 		ClientID:  "client-id",
 		Key:       "my-key",
 		Workspace: "workspace",
@@ -226,7 +226,7 @@ func TestAlmSettings_CreateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOption{
+	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOptions{
 		ClientID:     "client-id",
 		ClientSecret: "secret",
 		Workspace:    "workspace",
@@ -234,7 +234,7 @@ func TestAlmSettings_CreateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Workspace
-	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOption{
+	_, err = client.AlmSettings.CreateBitbucketCloud(&AlmSettingsCreateBitbucketCloudOptions{
 		ClientID:     "client-id",
 		ClientSecret: "secret",
 		Key:          "my-key",
@@ -250,7 +250,7 @@ func TestAlmSettings_CreateGithub(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/create_github", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsCreateGithubOption{
+	opt := &AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientID:     "my-client-id",
 		ClientSecret: "my-client-secret",
@@ -268,7 +268,7 @@ func TestAlmSettings_CreateGithub_WithOptionalWebhookSecret(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/create_github", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsCreateGithubOption{
+	opt := &AlmSettingsCreateGithubOptions{
 		AppID:         "12345",
 		ClientID:      "my-client-id",
 		ClientSecret:  "my-client-secret",
@@ -291,7 +291,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AppID
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		ClientID:     "client-id",
 		ClientSecret: "secret",
 		Key:          "my-key",
@@ -301,7 +301,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test AppID too long
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        strings.Repeat("a", MaxGitHubAppIDLength+1),
 		ClientID:     "client-id",
 		ClientSecret: "secret",
@@ -312,7 +312,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing ClientID
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientSecret: "secret",
 		Key:          "my-key",
@@ -322,7 +322,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test ClientID too long
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientID:     strings.Repeat("a", MaxGitHubClientIDLength+1),
 		ClientSecret: "secret",
@@ -333,7 +333,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing ClientSecret
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:      "12345",
 		ClientID:   "client-id",
 		Key:        "my-key",
@@ -343,7 +343,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test ClientSecret too long
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientID:     "client-id",
 		ClientSecret: strings.Repeat("a", MaxGitHubClientSecretLength+1),
@@ -354,7 +354,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientID:     "client-id",
 		ClientSecret: "secret",
@@ -364,7 +364,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing PrivateKey
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientID:     "client-id",
 		ClientSecret: "secret",
@@ -374,7 +374,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test PrivateKey too long
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientID:     "client-id",
 		ClientSecret: "secret",
@@ -385,7 +385,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:        "12345",
 		ClientID:     "client-id",
 		ClientSecret: "secret",
@@ -395,7 +395,7 @@ func TestAlmSettings_CreateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test WebhookSecret too long
-	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOption{
+	_, err = client.AlmSettings.CreateGithub(&AlmSettingsCreateGithubOptions{
 		AppID:         "12345",
 		ClientID:      "client-id",
 		ClientSecret:  "secret",
@@ -415,7 +415,7 @@ func TestAlmSettings_CreateGitlab(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/create_gitlab", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsCreateGitlabOption{
+	opt := &AlmSettingsCreateGitlabOptions{
 		Key:                 "my-gitlab-setting",
 		PersonalAccessToken: "my-pat",
 		URL:                 "https://gitlab.example.com",
@@ -434,21 +434,21 @@ func TestAlmSettings_CreateGitlab_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.CreateGitlab(&AlmSettingsCreateGitlabOption{
+	_, err = client.AlmSettings.CreateGitlab(&AlmSettingsCreateGitlabOptions{
 		PersonalAccessToken: "pat",
 		URL:                 "https://gitlab.example.com",
 	})
 	assert.Error(t, err)
 
 	// Test missing PersonalAccessToken
-	_, err = client.AlmSettings.CreateGitlab(&AlmSettingsCreateGitlabOption{
+	_, err = client.AlmSettings.CreateGitlab(&AlmSettingsCreateGitlabOptions{
 		Key: "my-key",
 		URL: "https://gitlab.example.com",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.CreateGitlab(&AlmSettingsCreateGitlabOption{
+	_, err = client.AlmSettings.CreateGitlab(&AlmSettingsCreateGitlabOptions{
 		Key:                 "my-key",
 		PersonalAccessToken: "pat",
 	})
@@ -463,7 +463,7 @@ func TestAlmSettings_Delete(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/delete", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsDeleteOption{
+	opt := &AlmSettingsDeleteOptions{
 		Key: "my-alm-setting",
 	}
 
@@ -480,7 +480,7 @@ func TestAlmSettings_Delete_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.Delete(&AlmSettingsDeleteOption{})
+	_, err = client.AlmSettings.Delete(&AlmSettingsDeleteOptions{})
 	assert.Error(t, err)
 }
 
@@ -500,7 +500,7 @@ func TestAlmSettings_GetBinding(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/alm_settings/get_binding", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsGetBindingOption{
+	opt := &AlmSettingsGetBindingOptions{
 		Project: "my-project",
 	}
 
@@ -521,7 +521,7 @@ func TestAlmSettings_GetBinding_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Project
-	_, _, err = client.AlmSettings.GetBinding(&AlmSettingsGetBindingOption{})
+	_, _, err = client.AlmSettings.GetBinding(&AlmSettingsGetBindingOptions{})
 	assert.Error(t, err)
 }
 
@@ -539,7 +539,7 @@ func TestAlmSettings_List(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/alm_settings/list", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.AlmSettings.List(&AlmSettingsListOption{})
+	result, resp, err := client.AlmSettings.List(&AlmSettingsListOptions{})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -557,7 +557,7 @@ func TestAlmSettings_List_WithProject(t *testing.T) {
 	})
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsListOption{
+	opt := &AlmSettingsListOptions{
 		Project: "my-project",
 	}
 
@@ -607,7 +607,7 @@ func TestAlmSettings_UpdateAzure(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/update_azure", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsUpdateAzureOption{
+	opt := &AlmSettingsUpdateAzureOptions{
 		Key: "my-azure-setting",
 		URL: "https://dev.azure.com",
 	}
@@ -621,7 +621,7 @@ func TestAlmSettings_UpdateAzure_WithOptionalFields(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/update_azure", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsUpdateAzureOption{
+	opt := &AlmSettingsUpdateAzureOptions{
 		Key:                 "my-azure-setting",
 		NewKey:              "new-azure-setting",
 		PersonalAccessToken: "new-pat",
@@ -641,20 +641,20 @@ func TestAlmSettings_UpdateAzure_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOption{
+	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOptions{
 		URL: "https://dev.azure.com",
 	})
 	assert.Error(t, err)
 
 	// Test Key too long
-	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOption{
+	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOptions{
 		Key: strings.Repeat("a", MaxAlmKeyLength+1),
 		URL: "https://dev.azure.com",
 	})
 	assert.Error(t, err)
 
 	// Test NewKey too long
-	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOption{
+	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOptions{
 		Key:    "my-key",
 		NewKey: strings.Repeat("a", MaxAlmKeyLength+1),
 		URL:    "https://dev.azure.com",
@@ -662,7 +662,7 @@ func TestAlmSettings_UpdateAzure_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test PersonalAccessToken too long
-	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOption{
+	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOptions{
 		Key:                 "my-key",
 		PersonalAccessToken: strings.Repeat("a", MaxPersonalAccessTokenLength+1),
 		URL:                 "https://dev.azure.com",
@@ -670,13 +670,13 @@ func TestAlmSettings_UpdateAzure_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOption{
+	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOptions{
 		Key: "my-key",
 	})
 	assert.Error(t, err)
 
 	// Test URL too long
-	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOption{
+	_, err = client.AlmSettings.UpdateAzure(&AlmSettingsUpdateAzureOptions{
 		Key: "my-key",
 		URL: strings.Repeat("a", MaxAlmURLLength+1),
 	})
@@ -691,7 +691,7 @@ func TestAlmSettings_UpdateBitbucket(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/update_bitbucket", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsUpdateBitbucketOption{
+	opt := &AlmSettingsUpdateBitbucketOptions{
 		Key: "my-bitbucket-setting",
 		URL: "https://bitbucket.example.com",
 	}
@@ -709,13 +709,13 @@ func TestAlmSettings_UpdateBitbucket_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.UpdateBitbucket(&AlmSettingsUpdateBitbucketOption{
+	_, err = client.AlmSettings.UpdateBitbucket(&AlmSettingsUpdateBitbucketOptions{
 		URL: "https://bitbucket.example.com",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.UpdateBitbucket(&AlmSettingsUpdateBitbucketOption{
+	_, err = client.AlmSettings.UpdateBitbucket(&AlmSettingsUpdateBitbucketOptions{
 		Key: "my-key",
 	})
 	assert.Error(t, err)
@@ -729,7 +729,7 @@ func TestAlmSettings_UpdateBitbucketCloud(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/update_bitbucketcloud", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsUpdateBitbucketCloudOption{
+	opt := &AlmSettingsUpdateBitbucketCloudOptions{
 		ClientID:  "my-client-id",
 		Key:       "my-bitbucket-cloud-setting",
 		Workspace: "my-workspace",
@@ -748,14 +748,14 @@ func TestAlmSettings_UpdateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing ClientID
-	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOption{
+	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOptions{
 		Key:       "my-key",
 		Workspace: "workspace",
 	})
 	assert.Error(t, err)
 
 	// Test ClientID too long
-	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOption{
+	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOptions{
 		ClientID:  strings.Repeat("a", MaxBitbucketCloudClientIDUpdateLength+1),
 		Key:       "my-key",
 		Workspace: "workspace",
@@ -763,7 +763,7 @@ func TestAlmSettings_UpdateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test ClientSecret too long
-	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOption{
+	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOptions{
 		ClientID:     "client-id",
 		ClientSecret: strings.Repeat("a", MaxBitbucketCloudClientSecretUpdateLength+1),
 		Key:          "my-key",
@@ -772,21 +772,21 @@ func TestAlmSettings_UpdateBitbucketCloud_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOption{
+	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOptions{
 		ClientID:  "client-id",
 		Workspace: "workspace",
 	})
 	assert.Error(t, err)
 
 	// Test missing Workspace
-	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOption{
+	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOptions{
 		ClientID: "client-id",
 		Key:      "my-key",
 	})
 	assert.Error(t, err)
 
 	// Test Workspace too long
-	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOption{
+	_, err = client.AlmSettings.UpdateBitbucketCloud(&AlmSettingsUpdateBitbucketCloudOptions{
 		ClientID:  "client-id",
 		Key:       "my-key",
 		Workspace: strings.Repeat("a", MaxBitbucketCloudWorkspaceUpdateLength+1),
@@ -802,7 +802,7 @@ func TestAlmSettings_UpdateGithub(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/update_github", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsUpdateGithubOption{
+	opt := &AlmSettingsUpdateGithubOptions{
 		AppID:    "12345",
 		ClientID: "my-client-id",
 		Key:      "my-github-setting",
@@ -818,7 +818,7 @@ func TestAlmSettings_UpdateGithub_WithOptionalFields(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/update_github", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsUpdateGithubOption{
+	opt := &AlmSettingsUpdateGithubOptions{
 		AppID:         "12345",
 		ClientID:      "my-client-id",
 		ClientSecret:  "new-client-secret",
@@ -842,7 +842,7 @@ func TestAlmSettings_UpdateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing AppID
-	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOption{
+	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOptions{
 		ClientID: "client-id",
 		Key:      "my-key",
 		URL:      "https://api.github.com",
@@ -850,7 +850,7 @@ func TestAlmSettings_UpdateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test AppID too long
-	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOption{
+	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOptions{
 		AppID:    strings.Repeat("a", MaxGitHubAppIDLength+1),
 		ClientID: "client-id",
 		Key:      "my-key",
@@ -859,7 +859,7 @@ func TestAlmSettings_UpdateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing ClientID
-	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOption{
+	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOptions{
 		AppID: "12345",
 		Key:   "my-key",
 		URL:   "https://api.github.com",
@@ -867,7 +867,7 @@ func TestAlmSettings_UpdateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOption{
+	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOptions{
 		AppID:    "12345",
 		ClientID: "client-id",
 		URL:      "https://api.github.com",
@@ -875,7 +875,7 @@ func TestAlmSettings_UpdateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOption{
+	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOptions{
 		AppID:    "12345",
 		ClientID: "client-id",
 		Key:      "my-key",
@@ -883,7 +883,7 @@ func TestAlmSettings_UpdateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test PrivateKey too long
-	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOption{
+	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOptions{
 		AppID:      "12345",
 		ClientID:   "client-id",
 		Key:        "my-key",
@@ -893,7 +893,7 @@ func TestAlmSettings_UpdateGithub_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test WebhookSecret too long
-	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOption{
+	_, err = client.AlmSettings.UpdateGithub(&AlmSettingsUpdateGithubOptions{
 		AppID:         "12345",
 		ClientID:      "client-id",
 		Key:           "my-key",
@@ -911,7 +911,7 @@ func TestAlmSettings_UpdateGitlab(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/update_gitlab", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsUpdateGitlabOption{
+	opt := &AlmSettingsUpdateGitlabOptions{
 		Key: "my-gitlab-setting",
 		URL: "https://gitlab.example.com",
 	}
@@ -929,13 +929,13 @@ func TestAlmSettings_UpdateGitlab_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.AlmSettings.UpdateGitlab(&AlmSettingsUpdateGitlabOption{
+	_, err = client.AlmSettings.UpdateGitlab(&AlmSettingsUpdateGitlabOptions{
 		URL: "https://gitlab.example.com",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.AlmSettings.UpdateGitlab(&AlmSettingsUpdateGitlabOption{
+	_, err = client.AlmSettings.UpdateGitlab(&AlmSettingsUpdateGitlabOptions{
 		Key: "my-key",
 	})
 	assert.Error(t, err)
@@ -950,7 +950,7 @@ func TestAlmSettings_Validate(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/alm_settings/validate", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsValidateOption{
+	opt := &AlmSettingsValidateOptions{
 		Key: "my-alm-setting",
 	}
 
@@ -971,7 +971,7 @@ func TestAlmSettings_Validate_WithErrors(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/alm_settings/validate", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &AlmSettingsValidateOption{
+	opt := &AlmSettingsValidateOptions{
 		Key: "my-alm-setting",
 	}
 
@@ -989,11 +989,11 @@ func TestAlmSettings_Validate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, _, err = client.AlmSettings.Validate(&AlmSettingsValidateOption{})
+	_, _, err = client.AlmSettings.Validate(&AlmSettingsValidateOptions{})
 	assert.Error(t, err)
 
 	// Test Key too long
-	_, _, err = client.AlmSettings.Validate(&AlmSettingsValidateOption{
+	_, _, err = client.AlmSettings.Validate(&AlmSettingsValidateOptions{
 		Key: strings.Repeat("a", MaxAlmKeyLength+1),
 	})
 	assert.Error(t, err)
@@ -1011,6 +1011,6 @@ func TestAlmSettings_ValidateListOpt(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Empty options should be valid
-	err = client.AlmSettings.ValidateListOpt(&AlmSettingsListOption{})
+	err = client.AlmSettings.ValidateListOpt(&AlmSettingsListOptions{})
 	assert.NoError(t, err)
 }

@@ -25,7 +25,7 @@ func TestSourcesService_Index(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SourcesIndexOption{
+	opt := &SourcesIndexOptions{
 		Resource: "my-project:src/main.go",
 		From:     1,
 		To:       10,
@@ -42,7 +42,7 @@ func TestSourcesService_Index_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Resource
-	opt := &SourcesIndexOption{}
+	opt := &SourcesIndexOptions{}
 	_, _, err := client.Sources.Index(opt)
 	assert.Error(t, err)
 }
@@ -65,7 +65,7 @@ func TestSourcesService_IssueSnippets(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SourcesIssueSnippetsOption{
+	opt := &SourcesIssueSnippetsOptions{
 		IssueKey: "AX1234567890",
 	}
 
@@ -82,7 +82,7 @@ func TestSourcesService_IssueSnippets_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing IssueKey
-	opt := &SourcesIssueSnippetsOption{}
+	opt := &SourcesIssueSnippetsOptions{}
 	_, _, err := client.Sources.IssueSnippets(opt)
 	assert.Error(t, err)
 }
@@ -105,7 +105,7 @@ func TestSourcesService_Lines(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SourcesLinesOption{
+	opt := &SourcesLinesOptions{
 		Key:    "my-project:src/main.go",
 		Branch: "main",
 		From:   1,
@@ -125,7 +125,7 @@ func TestSourcesService_Lines_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Key
-	opt := &SourcesLinesOption{
+	opt := &SourcesLinesOptions{
 		Branch: "main",
 	}
 	_, _, err := client.Sources.Lines(opt)
@@ -146,7 +146,7 @@ func TestSourcesService_Raw(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SourcesRawOption{
+	opt := &SourcesRawOptions{
 		Key: "my-project:src/main.go",
 	}
 
@@ -161,7 +161,7 @@ func TestSourcesService_Raw_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Key
-	opt := &SourcesRawOption{}
+	opt := &SourcesRawOptions{}
 	_, _, err := client.Sources.Raw(opt)
 	assert.Error(t, err)
 }
@@ -178,7 +178,7 @@ func TestSourcesService_Scm(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SourcesScmOption{
+	opt := &SourcesScmOptions{
 		Key:           "my-project:src/main.go",
 		CommitsByLine: true,
 	}
@@ -194,7 +194,7 @@ func TestSourcesService_Scm_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Key
-	opt := &SourcesScmOption{
+	opt := &SourcesScmOptions{
 		CommitsByLine: true,
 	}
 	_, _, err := client.Sources.Scm(opt)
@@ -214,7 +214,7 @@ func TestSourcesService_Show(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SourcesShowOption{
+	opt := &SourcesShowOptions{
 		Key:  "my-project:src/main.go",
 		From: 1,
 		To:   10,
@@ -231,7 +231,7 @@ func TestSourcesService_Show_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Key
-	opt := &SourcesShowOption{}
+	opt := &SourcesShowOptions{}
 	_, _, err := client.Sources.Show(opt)
 	assert.Error(t, err)
 }

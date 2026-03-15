@@ -14,7 +14,7 @@ func TestBatchService_File(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.File(&BatchFileOption{
+		result, resp, err := client.Batch.File(&BatchFileOptions{
 			Name: "batch-library-2.3.jar",
 		})
 
@@ -38,7 +38,7 @@ func TestBatchService_File(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.File(&BatchFileOption{})
+		_, _, err := client.Batch.File(&BatchFileOptions{})
 
 		require.NoError(t, err)
 	})
@@ -77,7 +77,7 @@ func TestBatchService_Project(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.Project(&BatchProjectOption{
+		result, resp, err := client.Batch.Project(&BatchProjectOptions{
 			Key: "my-project",
 		})
 
@@ -92,7 +92,7 @@ func TestBatchService_Project(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.Project(&BatchProjectOption{
+		_, _, err := client.Batch.Project(&BatchProjectOptions{
 			Key:    "my-project",
 			Branch: "feature/my-branch",
 		})
@@ -105,7 +105,7 @@ func TestBatchService_Project(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.Project(&BatchProjectOption{
+		_, _, err := client.Batch.Project(&BatchProjectOptions{
 			Key:         "my-project",
 			PullRequest: "5461",
 		})
@@ -129,12 +129,12 @@ func TestBatchService_ValidateFileOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *BatchFileOption
+		opt     *BatchFileOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &BatchFileOption{}, false},
-		{"with name", &BatchFileOption{Name: "test.jar"}, false},
+		{"empty option", &BatchFileOptions{}, false},
+		{"with name", &BatchFileOptions{Name: "test.jar"}, false},
 	}
 
 	for _, tt := range tests {
@@ -154,14 +154,14 @@ func TestBatchService_ValidateProjectOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *BatchProjectOption
+		opt     *BatchProjectOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &BatchProjectOption{}, true},
-		{"with key", &BatchProjectOption{Key: "my-project"}, false},
-		{"with branch", &BatchProjectOption{Key: "my-project", Branch: "main"}, false},
-		{"with pull request", &BatchProjectOption{Key: "my-project", PullRequest: "123"}, false},
+		{"empty option", &BatchProjectOptions{}, true},
+		{"with key", &BatchProjectOptions{Key: "my-project"}, false},
+		{"with branch", &BatchProjectOptions{Key: "my-project", Branch: "main"}, false},
+		{"with pull request", &BatchProjectOptions{Key: "my-project", PullRequest: "123"}, false},
 	}
 
 	for _, tt := range tests {

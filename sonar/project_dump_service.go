@@ -44,15 +44,15 @@ type ProjectDumpStatus struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// ProjectDumpExportOption contains parameters for the Export method.
-type ProjectDumpExportOption struct {
+// ProjectDumpExportOptions contains parameters for the Export method.
+type ProjectDumpExportOptions struct {
 	// Key is the project key.
 	// This field is required.
 	Key string `url:"key"`
 }
 
-// ProjectDumpStatusOption contains parameters for the Status method.
-type ProjectDumpStatusOption struct {
+// ProjectDumpStatusOptions contains parameters for the Status method.
+type ProjectDumpStatusOptions struct {
 	// ID is the project id.
 	ID string `url:"id,omitempty"`
 	// Key is the project key.
@@ -64,7 +64,7 @@ type ProjectDumpStatusOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateExportOpt validates the options for the Export method.
-func (s *ProjectDumpService) ValidateExportOpt(opt *ProjectDumpExportOption) error {
+func (s *ProjectDumpService) ValidateExportOpt(opt *ProjectDumpExportOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -79,7 +79,7 @@ func (s *ProjectDumpService) ValidateExportOpt(opt *ProjectDumpExportOption) err
 
 // ValidateStatusOpt validates the options for the Status method.
 // Either ID or Key must be provided.
-func (s *ProjectDumpService) ValidateStatusOpt(opt *ProjectDumpStatusOption) error {
+func (s *ProjectDumpService) ValidateStatusOpt(opt *ProjectDumpStatusOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -100,7 +100,7 @@ func (s *ProjectDumpService) ValidateStatusOpt(opt *ProjectDumpStatusOption) err
 //
 // API endpoint: POST /api/project_dump/export.
 // Since: 1.0.
-func (s *ProjectDumpService) Export(opt *ProjectDumpExportOption) (*ProjectDumpExport, *http.Response, error) {
+func (s *ProjectDumpService) Export(opt *ProjectDumpExportOptions) (*ProjectDumpExport, *http.Response, error) {
 	err := s.ValidateExportOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -126,7 +126,7 @@ func (s *ProjectDumpService) Export(opt *ProjectDumpExportOption) (*ProjectDumpE
 //
 // API endpoint: GET /api/project_dump/status.
 // Since: 1.0.
-func (s *ProjectDumpService) Status(opt *ProjectDumpStatusOption) (*ProjectDumpStatus, *http.Response, error) {
+func (s *ProjectDumpService) Status(opt *ProjectDumpStatusOptions) (*ProjectDumpStatus, *http.Response, error) {
 	err := s.ValidateStatusOpt(opt)
 	if err != nil {
 		return nil, nil, err

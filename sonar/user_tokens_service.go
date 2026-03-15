@@ -82,8 +82,8 @@ type UserTokensSearch struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// UserTokensGenerateOption contains parameters for the Generate method.
-type UserTokensGenerateOption struct {
+// UserTokensGenerateOptions contains parameters for the Generate method.
+type UserTokensGenerateOptions struct {
 	// ExpirationDate is the expiration date of the token in ISO 8601 format (YYYY-MM-DD).
 	// If not set, defaults to no expiration.
 	ExpirationDate string `url:"expirationDate,omitempty"`
@@ -102,8 +102,8 @@ type UserTokensGenerateOption struct {
 	Type string `url:"type,omitempty"`
 }
 
-// UserTokensRevokeOption contains parameters for the Revoke method.
-type UserTokensRevokeOption struct {
+// UserTokensRevokeOptions contains parameters for the Revoke method.
+type UserTokensRevokeOptions struct {
 	// Login is the user login.
 	Login string `url:"login,omitempty"`
 	// Name is the token name.
@@ -111,8 +111,8 @@ type UserTokensRevokeOption struct {
 	Name string `url:"name"`
 }
 
-// UserTokensSearchOption contains parameters for the Search method.
-type UserTokensSearchOption struct {
+// UserTokensSearchOptions contains parameters for the Search method.
+type UserTokensSearchOptions struct {
 	// Login is the user login.
 	Login string `url:"login,omitempty"`
 }
@@ -122,7 +122,7 @@ type UserTokensSearchOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateGenerateOpt validates the options for the Generate method.
-func (s *UserTokensService) ValidateGenerateOpt(opt *UserTokensGenerateOption) error {
+func (s *UserTokensService) ValidateGenerateOpt(opt *UserTokensGenerateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -153,7 +153,7 @@ func (s *UserTokensService) ValidateGenerateOpt(opt *UserTokensGenerateOption) e
 }
 
 // ValidateRevokeOpt validates the options for the Revoke method.
-func (s *UserTokensService) ValidateRevokeOpt(opt *UserTokensRevokeOption) error {
+func (s *UserTokensService) ValidateRevokeOpt(opt *UserTokensRevokeOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -167,7 +167,7 @@ func (s *UserTokensService) ValidateRevokeOpt(opt *UserTokensRevokeOption) error
 }
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *UserTokensService) ValidateSearchOpt(opt *UserTokensSearchOption) error {
+func (s *UserTokensService) ValidateSearchOpt(opt *UserTokensSearchOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
@@ -183,7 +183,7 @@ func (s *UserTokensService) ValidateSearchOpt(opt *UserTokensSearchOption) error
 //
 // API endpoint: POST /api/user_tokens/generate.
 // Since: 5.3.
-func (s *UserTokensService) Generate(opt *UserTokensGenerateOption) (*UserTokensGenerate, *http.Response, error) {
+func (s *UserTokensService) Generate(opt *UserTokensGenerateOptions) (*UserTokensGenerate, *http.Response, error) {
 	err := s.ValidateGenerateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -210,7 +210,7 @@ func (s *UserTokensService) Generate(opt *UserTokensGenerateOption) (*UserTokens
 //
 // API endpoint: POST /api/user_tokens/revoke.
 // Since: 5.3.
-func (s *UserTokensService) Revoke(opt *UserTokensRevokeOption) (*http.Response, error) {
+func (s *UserTokensService) Revoke(opt *UserTokensRevokeOptions) (*http.Response, error) {
 	err := s.ValidateRevokeOpt(opt)
 	if err != nil {
 		return nil, err
@@ -238,7 +238,7 @@ func (s *UserTokensService) Revoke(opt *UserTokensRevokeOption) (*http.Response,
 //
 // API endpoint: GET /api/user_tokens/search.
 // Since: 5.3.
-func (s *UserTokensService) Search(opt *UserTokensSearchOption) (*UserTokensSearch, *http.Response, error) {
+func (s *UserTokensService) Search(opt *UserTokensSearchOptions) (*UserTokensSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err

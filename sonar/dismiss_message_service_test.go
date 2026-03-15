@@ -14,7 +14,7 @@ func TestDismissMessage_Check(t *testing.T) {
 	}))
 	client := newTestClient(t, server.url())
 
-	opt := &DismissMessageCheckOption{
+	opt := &DismissMessageCheckOptions{
 		MessageType: "INFO",
 		ProjectKey:  "my-project",
 	}
@@ -31,7 +31,7 @@ func TestDismissMessage_Check_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *DismissMessageCheckOption
+		opt  *DismissMessageCheckOptions
 	}{
 		{
 			name: "nil option",
@@ -39,13 +39,13 @@ func TestDismissMessage_Check_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing MessageType",
-			opt: &DismissMessageCheckOption{
+			opt: &DismissMessageCheckOptions{
 				ProjectKey: "my-project",
 			},
 		},
 		{
 			name: "missing ProjectKey",
-			opt: &DismissMessageCheckOption{
+			opt: &DismissMessageCheckOptions{
 				MessageType: "INFO",
 			},
 		},
@@ -63,7 +63,7 @@ func TestDismissMessage_Dismiss(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/dismiss_message/dismiss", http.StatusNoContent))
 	client := newTestClient(t, server.url())
 
-	opt := &DismissMessageDismissOption{
+	opt := &DismissMessageDismissOptions{
 		MessageType: "WARNING",
 		ProjectKey:  "my-project",
 	}
@@ -78,7 +78,7 @@ func TestDismissMessage_Dismiss_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *DismissMessageDismissOption
+		opt  *DismissMessageDismissOptions
 	}{
 		{
 			name: "nil option",
@@ -86,13 +86,13 @@ func TestDismissMessage_Dismiss_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing MessageType",
-			opt: &DismissMessageDismissOption{
+			opt: &DismissMessageDismissOptions{
 				ProjectKey: "my-project",
 			},
 		},
 		{
 			name: "missing ProjectKey",
-			opt: &DismissMessageDismissOption{
+			opt: &DismissMessageDismissOptions{
 				MessageType: "INFO",
 			},
 		},
@@ -111,12 +111,12 @@ func TestDismissMessage_ValidateCheckOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *DismissMessageCheckOption
+		opt     *DismissMessageCheckOptions
 		wantErr bool
 	}{
 		{
 			name: "valid option",
-			opt: &DismissMessageCheckOption{
+			opt: &DismissMessageCheckOptions{
 				MessageType: "INFO",
 				ProjectKey:  "my-project",
 			},
@@ -146,12 +146,12 @@ func TestDismissMessage_ValidateDismissOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *DismissMessageDismissOption
+		opt     *DismissMessageDismissOptions
 		wantErr bool
 	}{
 		{
 			name: "valid option",
-			opt: &DismissMessageDismissOption{
+			opt: &DismissMessageDismissOptions{
 				MessageType: "INFO",
 				ProjectKey:  "my-project",
 			},

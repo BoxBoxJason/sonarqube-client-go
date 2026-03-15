@@ -13,7 +13,7 @@ func TestAuthentication_Login(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AuthenticationLoginOption{
+	opt := &AuthenticationLoginOptions{
 		Login:    "admin",
 		Password: "secret",
 	}
@@ -28,11 +28,11 @@ func TestAuthentication_Login_Validation(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *AuthenticationLoginOption
+		opt  *AuthenticationLoginOptions
 	}{
 		{"nil option", nil},
-		{"missing Login", &AuthenticationLoginOption{Password: "secret"}},
-		{"missing Password", &AuthenticationLoginOption{Login: "admin"}},
+		{"missing Login", &AuthenticationLoginOptions{Password: "secret"}},
+		{"missing Password", &AuthenticationLoginOptions{Login: "admin"}},
 	}
 
 	for _, tt := range tests {
@@ -83,13 +83,13 @@ func TestAuthentication_ValidateLoginOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *AuthenticationLoginOption
+		opt     *AuthenticationLoginOptions
 		wantErr bool
 	}{
-		{"valid option", &AuthenticationLoginOption{Login: "admin", Password: "secret"}, false},
+		{"valid option", &AuthenticationLoginOptions{Login: "admin", Password: "secret"}, false},
 		{"nil option", nil, true},
-		{"missing Login", &AuthenticationLoginOption{Password: "secret"}, true},
-		{"missing Password", &AuthenticationLoginOption{Login: "admin"}, true},
+		{"missing Login", &AuthenticationLoginOptions{Password: "secret"}, true},
+		{"missing Password", &AuthenticationLoginOptions{Login: "admin"}, true},
 	}
 
 	for _, tt := range tests {

@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// paginatedOption is a test option struct with pagination support.
-type paginatedOption struct {
+// paginatedOptions is a test option struct with pagination support.
+type paginatedOptions struct {
 	PaginationArgs
 	Query string `url:"q,omitempty"`
 }
@@ -33,8 +33,8 @@ type testPaging struct {
 	Total     int64
 }
 
-// nonPaginatedOption is a test option struct without pagination.
-type nonPaginatedOption struct {
+// nonPaginatedOptions is a test option struct without pagination.
+type nonPaginatedOptions struct {
 	Query string `url:"q,omitempty"`
 }
 
@@ -47,12 +47,12 @@ func TestHasPagination(t *testing.T) {
 	}{
 		{
 			name: "with pagination",
-			typ:  reflect.TypeOf(paginatedOption{}),
+			typ:  reflect.TypeOf(paginatedOptions{}),
 			want: true,
 		},
 		{
 			name: "without pagination",
-			typ:  reflect.TypeOf(nonPaginatedOption{}),
+			typ:  reflect.TypeOf(nonPaginatedOptions{}),
 			want: false,
 		},
 	}
@@ -141,7 +141,7 @@ type paginatedService struct {
 }
 
 // Search simulates a paginated method that returns pages of results.
-func (s *paginatedService) Search(opt *paginatedOption) (*paginatedResponse, *http.Response, error) {
+func (s *paginatedService) Search(opt *paginatedOptions) (*paginatedResponse, *http.Response, error) {
 	s.callCount++
 
 	// Return different data based on page.
@@ -167,7 +167,7 @@ func (s *paginatedService) Search(opt *paginatedOption) (*paginatedResponse, *ht
 // TestPaginateAll tests multi-page result collection.
 func TestPaginateAll(t *testing.T) {
 	svc := &paginatedService{}
-	opt := &paginatedOption{Query: "test"}
+	opt := &paginatedOptions{Query: "test"}
 	optValue := reflect.New(reflect.TypeOf(*opt))
 	optValue.Elem().Set(reflect.ValueOf(*opt))
 	svcValue := reflect.ValueOf(svc)
@@ -190,7 +190,7 @@ func TestPaginateAll(t *testing.T) {
 
 // TestSetPageField tests setting pagination fields on option structs.
 func TestSetPageField(t *testing.T) {
-	opt := &paginatedOption{}
+	opt := &paginatedOptions{}
 	optVal := reflect.ValueOf(opt).Elem()
 
 	setPageField(optVal, "Page", 5)

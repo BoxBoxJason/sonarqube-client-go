@@ -32,8 +32,8 @@ type Language struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// LanguagesListOption contains parameters for the List method.
-type LanguagesListOption struct {
+// LanguagesListOptions contains parameters for the List method.
+type LanguagesListOptions struct {
 	// Query is a pattern to match language keys/names against.
 	Query string `url:"q,omitempty"`
 	// PageSize is the size of the list to return. Use 0 for all languages.
@@ -48,7 +48,7 @@ type LanguagesListOption struct {
 // ValidateListOpt validates the options for the List method.
 // Currently, there are no validation rules for this method,
 // but this function is provided for consistency and future extensibility.
-func (s *LanguagesService) ValidateListOpt(opt *LanguagesListOption) error {
+func (s *LanguagesService) ValidateListOpt(opt *LanguagesListOptions) error {
 	// No required fields, no validation needed
 	return nil
 }
@@ -61,7 +61,7 @@ func (s *LanguagesService) ValidateListOpt(opt *LanguagesListOption) error {
 //
 // API endpoint: GET /api/languages/list.
 // Since: 5.1.
-func (s *LanguagesService) List(opt *LanguagesListOption) (*LanguagesList, *http.Response, error) {
+func (s *LanguagesService) List(opt *LanguagesListOptions) (*LanguagesList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err

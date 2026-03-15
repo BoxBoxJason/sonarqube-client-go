@@ -402,8 +402,8 @@ type ComponentsTree struct {
 // Option Types
 // =============================================================================
 
-// ComponentsAppOption contains parameters for the App method.
-type ComponentsAppOption struct {
+// ComponentsAppOptions contains parameters for the App method.
+type ComponentsAppOptions struct {
 	// Branch is the branch key. Not available in the community edition.
 	// Either branch or pullRequest can be provided, not both.
 	Branch string `url:"branch,omitempty"`
@@ -415,10 +415,10 @@ type ComponentsAppOption struct {
 	PullRequest string `url:"pullRequest,omitempty"`
 }
 
-// ComponentsSearchOption contains parameters for the Search method.
+// ComponentsSearchOptions contains parameters for the Search method.
 //
 //nolint:govet // Field order maintained for API parameter consistency
-type ComponentsSearchOption struct {
+type ComponentsSearchOptions struct {
 	// PaginationArgs contains the pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -433,10 +433,10 @@ type ComponentsSearchOption struct {
 	Qualifiers []string `url:"qualifiers,comma"`
 }
 
-// ComponentsSearchProjectsOption contains parameters for the SearchProjects method.
+// ComponentsSearchProjectsOptions contains parameters for the SearchProjects method.
 //
 //nolint:govet // Field order maintained for API parameter consistency
-type ComponentsSearchProjectsOption struct {
+type ComponentsSearchProjectsOptions struct {
 	// PaginationArgs contains the pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -458,8 +458,8 @@ type ComponentsSearchProjectsOption struct {
 	Sort string `url:"s,omitempty"`
 }
 
-// ComponentsShowOption contains parameters for the Show method.
-type ComponentsShowOption struct {
+// ComponentsShowOptions contains parameters for the Show method.
+type ComponentsShowOptions struct {
 	// Branch is the branch key. Not available in the community edition.
 	Branch string `url:"branch,omitempty"`
 	// Component is the component key.
@@ -469,10 +469,10 @@ type ComponentsShowOption struct {
 	PullRequest string `url:"pullRequest,omitempty"`
 }
 
-// ComponentsSuggestionsOption contains parameters for the Suggestions method.
+// ComponentsSuggestionsOptions contains parameters for the Suggestions method.
 //
 //nolint:govet // Field order maintained for API parameter consistency
-type ComponentsSuggestionsOption struct {
+type ComponentsSuggestionsOptions struct {
 	// More is the category for which to display the next 20 results.
 	// Allowed values: VW, SVW, APP, TRK.
 	More string `url:"more,omitempty"`
@@ -484,10 +484,10 @@ type ComponentsSuggestionsOption struct {
 	Search string `url:"s,omitempty"`
 }
 
-// ComponentsTreeOption contains parameters for the Tree method.
+// ComponentsTreeOptions contains parameters for the Tree method.
 //
 //nolint:govet // Field order maintained for API parameter consistency
-type ComponentsTreeOption struct {
+type ComponentsTreeOptions struct {
 	// PaginationArgs contains the pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -523,7 +523,7 @@ type ComponentsTreeOption struct {
 // =============================================================================
 
 // ValidateAppOpt validates the options for the App method.
-func (s *ComponentsService) ValidateAppOpt(opt *ComponentsAppOption) error {
+func (s *ComponentsService) ValidateAppOpt(opt *ComponentsAppOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -541,7 +541,7 @@ func (s *ComponentsService) ValidateAppOpt(opt *ComponentsAppOption) error {
 }
 
 // ValidateSearchOpt validates the options for the Search method.
-func (s *ComponentsService) ValidateSearchOpt(opt *ComponentsSearchOption) error {
+func (s *ComponentsService) ValidateSearchOpt(opt *ComponentsSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -569,7 +569,7 @@ func (s *ComponentsService) ValidateSearchOpt(opt *ComponentsSearchOption) error
 }
 
 // ValidateSearchProjectsOpt validates the options for the SearchProjects method.
-func (s *ComponentsService) ValidateSearchProjectsOpt(opt *ComponentsSearchProjectsOption) error {
+func (s *ComponentsService) ValidateSearchProjectsOpt(opt *ComponentsSearchProjectsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -603,7 +603,7 @@ func (s *ComponentsService) ValidateSearchProjectsOpt(opt *ComponentsSearchProje
 }
 
 // ValidateShowOpt validates the options for the Show method.
-func (s *ComponentsService) ValidateShowOpt(opt *ComponentsShowOption) error {
+func (s *ComponentsService) ValidateShowOpt(opt *ComponentsShowOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -621,7 +621,7 @@ func (s *ComponentsService) ValidateShowOpt(opt *ComponentsShowOption) error {
 }
 
 // ValidateSuggestionsOpt validates the options for the Suggestions method.
-func (s *ComponentsService) ValidateSuggestionsOpt(opt *ComponentsSuggestionsOption) error {
+func (s *ComponentsService) ValidateSuggestionsOpt(opt *ComponentsSuggestionsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -644,7 +644,7 @@ func (s *ComponentsService) ValidateSuggestionsOpt(opt *ComponentsSuggestionsOpt
 }
 
 // ValidateTreeOpt validates the options for the Tree method.
-func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOption) error {
+func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -697,7 +697,7 @@ func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOption) error {
 // This is an internal API and may change without notice.
 //
 // Since: 4.4.
-func (s *ComponentsService) App(opt *ComponentsAppOption) (*ComponentsApp, *http.Response, error) {
+func (s *ComponentsService) App(opt *ComponentsAppOptions) (*ComponentsApp, *http.Response, error) {
 	err := s.ValidateAppOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -721,7 +721,7 @@ func (s *ComponentsService) App(opt *ComponentsAppOption) (*ComponentsApp, *http
 // Search searches for components.
 //
 // Since: 6.3.
-func (s *ComponentsService) Search(opt *ComponentsSearchOption) (*ComponentsSearch, *http.Response, error) {
+func (s *ComponentsService) Search(opt *ComponentsSearchOptions) (*ComponentsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -747,7 +747,7 @@ func (s *ComponentsService) Search(opt *ComponentsSearchOption) (*ComponentsSear
 // This is an internal API and may change without notice.
 //
 // Since: 6.2.
-func (s *ComponentsService) SearchProjects(opt *ComponentsSearchProjectsOption) (*ComponentsSearchProjects, *http.Response, error) {
+func (s *ComponentsService) SearchProjects(opt *ComponentsSearchProjectsOptions) (*ComponentsSearchProjects, *http.Response, error) {
 	err := s.ValidateSearchProjectsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -773,7 +773,7 @@ func (s *ComponentsService) SearchProjects(opt *ComponentsSearchProjectsOption) 
 // Requires the following permission: 'Browse' on the project of the specified component.
 //
 // Since: 5.4.
-func (s *ComponentsService) Show(opt *ComponentsShowOption) (*ComponentsShow, *http.Response, error) {
+func (s *ComponentsService) Show(opt *ComponentsShowOptions) (*ComponentsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -802,7 +802,7 @@ func (s *ComponentsService) Show(opt *ComponentsShowOption) (*ComponentsShow, *h
 // This is an internal API and may change without notice.
 //
 // Since: 4.2.
-func (s *ComponentsService) Suggestions(opt *ComponentsSuggestionsOption) (*ComponentsSuggestions, *http.Response, error) {
+func (s *ComponentsService) Suggestions(opt *ComponentsSuggestionsOptions) (*ComponentsSuggestions, *http.Response, error) {
 	err := s.ValidateSuggestionsOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -828,7 +828,7 @@ func (s *ComponentsService) Suggestions(opt *ComponentsSuggestionsOption) (*Comp
 // When limiting search with the q parameter, directories are not returned.
 //
 // Since: 5.4.
-func (s *ComponentsService) Tree(opt *ComponentsTreeOption) (*ComponentsTree, *http.Response, error) {
+func (s *ComponentsService) Tree(opt *ComponentsTreeOptions) (*ComponentsTree, *http.Response, error) {
 	err := s.ValidateTreeOpt(opt)
 	if err != nil {
 		return nil, nil, err

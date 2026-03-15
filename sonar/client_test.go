@@ -49,7 +49,7 @@ func TestNewClient_WithCreateOptions(t *testing.T) {
 	url := "http://example.com/api/"
 	token := "my-token"
 
-	client, err := NewClient(&ClientCreateOption{
+	client, err := NewClient(&ClientCreateOptions{
 		URL:   &url,
 		Token: &token,
 	})

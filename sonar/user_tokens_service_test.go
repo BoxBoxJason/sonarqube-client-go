@@ -21,7 +21,7 @@ func TestUserTokens_Generate(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &UserTokensGenerateOption{
+	opt := &UserTokensGenerateOptions{
 		Name: "my-token",
 	}
 
@@ -47,7 +47,7 @@ func TestUserTokens_Generate_WithType(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &UserTokensGenerateOption{
+	opt := &UserTokensGenerateOptions{
 		Name:       "project-token",
 		Type:       "PROJECT_ANALYSIS_TOKEN",
 		ProjectKey: "my-project",
@@ -67,18 +67,18 @@ func TestUserTokens_Generate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOption{})
+	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOptions{})
 	assert.Error(t, err)
 
 	// Invalid Type should fail validation.
-	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOption{
+	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOptions{
 		Name: "my-token",
 		Type: "INVALID_TYPE",
 	})
 	assert.Error(t, err)
 
 	// PROJECT_ANALYSIS_TOKEN without ProjectKey should fail validation.
-	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOption{
+	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOptions{
 		Name: "my-token",
 		Type: "PROJECT_ANALYSIS_TOKEN",
 	})
@@ -90,7 +90,7 @@ func TestUserTokens_Revoke(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &UserTokensRevokeOption{
+	opt := &UserTokensRevokeOptions{
 		Name: "my-token",
 	}
 
@@ -107,7 +107,7 @@ func TestUserTokens_Revoke_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, err = client.UserTokens.Revoke(&UserTokensRevokeOption{})
+	_, err = client.UserTokens.Revoke(&UserTokensRevokeOptions{})
 	assert.Error(t, err)
 }
 
@@ -151,7 +151,7 @@ func TestUserTokens_Search_WithLogin(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &UserTokensSearchOption{
+	opt := &UserTokensSearchOptions{
 		Login: "testuser",
 	}
 
@@ -164,7 +164,7 @@ func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOption{
+	err := client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOptions{
 		Name: "my-token",
 	})
 	assert.NoError(t, err)
@@ -172,7 +172,7 @@ func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
 	// All valid token types should pass.
 	validTypes := []string{"USER_TOKEN", "GLOBAL_ANALYSIS_TOKEN"}
 	for _, tokenType := range validTypes {
-		err := client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOption{
+		err := client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOptions{
 			Name: "my-token",
 			Type: tokenType,
 		})
@@ -180,7 +180,7 @@ func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
 	}
 
 	// PROJECT_ANALYSIS_TOKEN with ProjectKey should pass.
-	err = client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOption{
+	err = client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOptions{
 		Name:       "project-token",
 		Type:       "PROJECT_ANALYSIS_TOKEN",
 		ProjectKey: "my-project",
@@ -192,7 +192,7 @@ func TestUserTokens_ValidateGenerateOpt(t *testing.T) {
 	for i := 0; i < MaxTokenNameLength+1; i++ {
 		longName += "a"
 	}
-	err = client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOption{
+	err = client.UserTokens.ValidateGenerateOpt(&UserTokensGenerateOptions{
 		Name: longName,
 	})
 	assert.Error(t, err)

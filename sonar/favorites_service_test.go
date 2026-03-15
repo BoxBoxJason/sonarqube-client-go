@@ -12,7 +12,7 @@ func TestFavorites_Add(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/favorites/add", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &FavoritesAddOption{
+	opt := &FavoritesAddOptions{
 		Component: "my-project",
 	}
 
@@ -29,7 +29,7 @@ func TestFavorites_Add_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, err = client.Favorites.Add(&FavoritesAddOption{})
+	_, err = client.Favorites.Add(&FavoritesAddOptions{})
 	assert.Error(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestFavorites_Remove(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/favorites/remove", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &FavoritesRemoveOption{
+	opt := &FavoritesRemoveOptions{
 		Component: "my-project",
 	}
 
@@ -54,7 +54,7 @@ func TestFavorites_Remove_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, err = client.Favorites.Remove(&FavoritesRemoveOption{})
+	_, err = client.Favorites.Remove(&FavoritesRemoveOptions{})
 	assert.Error(t, err)
 }
 
@@ -93,7 +93,7 @@ func TestFavorites_Search_WithPagination(t *testing.T) {
 	}))
 	client := newTestClient(t, server.URL)
 
-	opt := &FavoritesSearchOption{
+	opt := &FavoritesSearchOptions{
 		PaginationArgs: PaginationArgs{
 			Page:     2,
 			PageSize: 50,
@@ -109,7 +109,7 @@ func TestFavorites_ValidateAddOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.Favorites.ValidateAddOpt(&FavoritesAddOption{
+	err := client.Favorites.ValidateAddOpt(&FavoritesAddOptions{
 		Component: "my-project",
 	})
 	assert.NoError(t, err)
@@ -119,7 +119,7 @@ func TestFavorites_ValidateAddOpt(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Component should fail.
-	err = client.Favorites.ValidateAddOpt(&FavoritesAddOption{})
+	err = client.Favorites.ValidateAddOpt(&FavoritesAddOptions{})
 	assert.Error(t, err)
 }
 
@@ -127,7 +127,7 @@ func TestFavorites_ValidateRemoveOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.Favorites.ValidateRemoveOpt(&FavoritesRemoveOption{
+	err := client.Favorites.ValidateRemoveOpt(&FavoritesRemoveOptions{
 		Component: "my-project",
 	})
 	assert.NoError(t, err)
@@ -137,7 +137,7 @@ func TestFavorites_ValidateRemoveOpt(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Component should fail.
-	err = client.Favorites.ValidateRemoveOpt(&FavoritesRemoveOption{})
+	err = client.Favorites.ValidateRemoveOpt(&FavoritesRemoveOptions{})
 	assert.Error(t, err)
 }
 
@@ -149,11 +149,11 @@ func TestFavorites_ValidateSearchOpt(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Empty option should be valid.
-	err = client.Favorites.ValidateSearchOpt(&FavoritesSearchOption{})
+	err = client.Favorites.ValidateSearchOpt(&FavoritesSearchOptions{})
 	assert.NoError(t, err)
 
 	// Valid pagination should be valid.
-	err = client.Favorites.ValidateSearchOpt(&FavoritesSearchOption{
+	err = client.Favorites.ValidateSearchOpt(&FavoritesSearchOptions{
 		PaginationArgs: PaginationArgs{
 			Page:     1,
 			PageSize: 100,

@@ -265,8 +265,8 @@ type QualityGateCondition struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// QualitygatesAddGroupOption contains options for allowing a group to edit a quality gate.
-type QualitygatesAddGroupOption struct {
+// QualitygatesAddGroupOptions contains options for allowing a group to edit a quality gate.
+type QualitygatesAddGroupOptions struct {
 	// GateName is the name of the quality gate (required).
 	// Maximum length: 100 characters
 	GateName string `url:"gateName,omitempty"`
@@ -274,8 +274,8 @@ type QualitygatesAddGroupOption struct {
 	GroupName string `url:"groupName,omitempty"`
 }
 
-// QualitygatesAddUserOption contains options for allowing a user to edit a quality gate.
-type QualitygatesAddUserOption struct {
+// QualitygatesAddUserOptions contains options for allowing a user to edit a quality gate.
+type QualitygatesAddUserOptions struct {
 	// GateName is the name of the quality gate (required).
 	// Maximum length: 100 characters
 	GateName string `url:"gateName,omitempty"`
@@ -283,8 +283,8 @@ type QualitygatesAddUserOption struct {
 	Login string `url:"login,omitempty"`
 }
 
-// QualitygatesCopyOption contains options for copying a quality gate.
-type QualitygatesCopyOption struct {
+// QualitygatesCopyOptions contains options for copying a quality gate.
+type QualitygatesCopyOptions struct {
 	// Name is the name of the new quality gate to create (required).
 	Name string `url:"name,omitempty"`
 	// SourceName is the name of the quality gate to copy (required).
@@ -292,15 +292,15 @@ type QualitygatesCopyOption struct {
 	SourceName string `url:"sourceName,omitempty"`
 }
 
-// QualitygatesCreateOption contains options for creating a quality gate.
-type QualitygatesCreateOption struct {
+// QualitygatesCreateOptions contains options for creating a quality gate.
+type QualitygatesCreateOptions struct {
 	// Name is the name of the quality gate to create (required).
 	// Maximum length: 100 characters
 	Name string `url:"name,omitempty"`
 }
 
-// QualitygatesCreateConditionOption contains options for creating a condition.
-type QualitygatesCreateConditionOption struct {
+// QualitygatesCreateConditionOptions contains options for creating a condition.
+type QualitygatesCreateConditionOptions struct {
 	// Error is the condition error threshold (required).
 	// Maximum length: 64 characters
 	Error string `url:"error,omitempty"`
@@ -315,33 +315,33 @@ type QualitygatesCreateConditionOption struct {
 	Op string `url:"op,omitempty"`
 }
 
-// QualitygatesDeleteConditionOption contains options for deleting a condition.
-type QualitygatesDeleteConditionOption struct {
+// QualitygatesDeleteConditionOptions contains options for deleting a condition.
+type QualitygatesDeleteConditionOptions struct {
 	// ID is the condition UUID (required).
 	ID string `url:"id,omitempty"`
 }
 
-// QualitygatesDeselectOption contains options for removing a project association.
-type QualitygatesDeselectOption struct {
+// QualitygatesDeselectOptions contains options for removing a project association.
+type QualitygatesDeselectOptions struct {
 	// ProjectKey is the project key (required).
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// QualitygatesDestroyOption contains options for deleting a quality gate.
-type QualitygatesDestroyOption struct {
+// QualitygatesDestroyOptions contains options for deleting a quality gate.
+type QualitygatesDestroyOptions struct {
 	// Name is the name of the quality gate to delete (required).
 	// Maximum length: 100 characters
 	Name string `url:"name,omitempty"`
 }
 
-// QualitygatesGetByProjectOption contains options for getting a project's quality gate.
-type QualitygatesGetByProjectOption struct {
+// QualitygatesGetByProjectOptions contains options for getting a project's quality gate.
+type QualitygatesGetByProjectOptions struct {
 	// Project is the project key (required).
 	Project string `url:"project,omitempty"`
 }
 
-// QualitygatesProjectStatusOption contains options for getting project status.
-type QualitygatesProjectStatusOption struct {
+// QualitygatesProjectStatusOptions contains options for getting project status.
+type QualitygatesProjectStatusOptions struct {
 	// AnalysisID is the analysis id (optional).
 	// Either AnalysisID, ProjectID, or ProjectKey must be provided.
 	AnalysisID string `url:"analysisId,omitempty"`
@@ -356,8 +356,8 @@ type QualitygatesProjectStatusOption struct {
 	PullRequest string `url:"pullRequest,omitempty"`
 }
 
-// QualitygatesRemoveGroupOption contains options for removing group permissions.
-type QualitygatesRemoveGroupOption struct {
+// QualitygatesRemoveGroupOptions contains options for removing group permissions.
+type QualitygatesRemoveGroupOptions struct {
 	// GateName is the name of the quality gate (required).
 	// Maximum length: 100 characters
 	GateName string `url:"gateName,omitempty"`
@@ -365,8 +365,8 @@ type QualitygatesRemoveGroupOption struct {
 	GroupName string `url:"groupName,omitempty"`
 }
 
-// QualitygatesRemoveUserOption contains options for removing user permissions.
-type QualitygatesRemoveUserOption struct {
+// QualitygatesRemoveUserOptions contains options for removing user permissions.
+type QualitygatesRemoveUserOptions struct {
 	// GateName is the name of the quality gate (required).
 	// Maximum length: 100 characters
 	GateName string `url:"gateName,omitempty"`
@@ -374,8 +374,8 @@ type QualitygatesRemoveUserOption struct {
 	Login string `url:"login,omitempty"`
 }
 
-// QualitygatesRenameOption contains options for renaming a quality gate.
-type QualitygatesRenameOption struct {
+// QualitygatesRenameOptions contains options for renaming a quality gate.
+type QualitygatesRenameOptions struct {
 	// CurrentName is the current name of the quality gate (required).
 	// Maximum length: 100 characters
 	CurrentName string `url:"currentName,omitempty"`
@@ -384,10 +384,10 @@ type QualitygatesRenameOption struct {
 	Name string `url:"name,omitempty"`
 }
 
-// QualitygatesSearchOption contains options for searching projects.
+// QualitygatesSearchOptions contains options for searching projects.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualitygatesSearchOption struct {
+type QualitygatesSearchOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -402,10 +402,10 @@ type QualitygatesSearchOption struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// QualitygatesSearchGroupsOption contains options for searching groups.
+// QualitygatesSearchGroupsOptions contains options for searching groups.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualitygatesSearchGroupsOption struct {
+type QualitygatesSearchGroupsOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -418,10 +418,10 @@ type QualitygatesSearchGroupsOption struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// QualitygatesSearchUsersOption contains options for searching users.
+// QualitygatesSearchUsersOptions contains options for searching users.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualitygatesSearchUsersOption struct {
+type QualitygatesSearchUsersOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -434,8 +434,8 @@ type QualitygatesSearchUsersOption struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// QualitygatesSelectOption contains options for associating a project.
-type QualitygatesSelectOption struct {
+// QualitygatesSelectOptions contains options for associating a project.
+type QualitygatesSelectOptions struct {
 	// GateName is the name of the quality gate (required).
 	// Maximum length: 100 characters
 	GateName string `url:"gateName,omitempty"`
@@ -443,21 +443,21 @@ type QualitygatesSelectOption struct {
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// QualitygatesSetAsDefaultOption contains options for setting the default gate.
-type QualitygatesSetAsDefaultOption struct {
+// QualitygatesSetAsDefaultOptions contains options for setting the default gate.
+type QualitygatesSetAsDefaultOptions struct {
 	// Name is the name of the quality gate to set as default (required).
 	// Maximum length: 100 characters
 	Name string `url:"name,omitempty"`
 }
 
-// QualitygatesShowOption contains options for showing a quality gate.
-type QualitygatesShowOption struct {
+// QualitygatesShowOptions contains options for showing a quality gate.
+type QualitygatesShowOptions struct {
 	// Name is the name of the quality gate (required).
 	Name string `url:"name,omitempty"`
 }
 
-// QualitygatesUpdateConditionOption contains options for updating a condition.
-type QualitygatesUpdateConditionOption struct {
+// QualitygatesUpdateConditionOptions contains options for updating a condition.
+type QualitygatesUpdateConditionOptions struct {
 	// Error is the condition error threshold (required).
 	// Maximum length: 64 characters
 	Error string `url:"error,omitempty"`
@@ -480,7 +480,7 @@ type QualitygatesUpdateConditionOption struct {
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) AddGroup(opt *QualitygatesAddGroupOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) AddGroup(opt *QualitygatesAddGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddGroupOpt(opt)
 	if err != nil {
 		return
@@ -503,7 +503,7 @@ func (s *QualitygatesService) AddGroup(opt *QualitygatesAddGroupOption) (resp *h
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) AddUser(opt *QualitygatesAddUserOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) AddUser(opt *QualitygatesAddUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return
@@ -524,7 +524,7 @@ func (s *QualitygatesService) AddUser(opt *QualitygatesAddUserOption) (resp *htt
 
 // Copy copies a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Copy(opt *QualitygatesCopyOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) Copy(opt *QualitygatesCopyOptions) (resp *http.Response, err error) {
 	err = s.ValidateCopyOpt(opt)
 	if err != nil {
 		return
@@ -545,7 +545,7 @@ func (s *QualitygatesService) Copy(opt *QualitygatesCopyOption) (resp *http.Resp
 
 // Create creates a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Create(opt *QualitygatesCreateOption) (v *QualitygatesCreate, resp *http.Response, err error) {
+func (s *QualitygatesService) Create(opt *QualitygatesCreateOptions) (v *QualitygatesCreate, resp *http.Response, err error) {
 	err = s.ValidateCreateOpt(opt)
 	if err != nil {
 		return
@@ -568,7 +568,7 @@ func (s *QualitygatesService) Create(opt *QualitygatesCreateOption) (v *Qualityg
 
 // CreateCondition adds a new condition to a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) CreateCondition(opt *QualitygatesCreateConditionOption) (v *QualitygatesCreateCondition, resp *http.Response, err error) {
+func (s *QualitygatesService) CreateCondition(opt *QualitygatesCreateConditionOptions) (v *QualitygatesCreateCondition, resp *http.Response, err error) {
 	err = s.ValidateCreateConditionOpt(opt)
 	if err != nil {
 		return
@@ -591,7 +591,7 @@ func (s *QualitygatesService) CreateCondition(opt *QualitygatesCreateConditionOp
 
 // DeleteCondition deletes a condition from a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) DeleteCondition(opt *QualitygatesDeleteConditionOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) DeleteCondition(opt *QualitygatesDeleteConditionOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeleteConditionOpt(opt)
 	if err != nil {
 		return
@@ -614,7 +614,7 @@ func (s *QualitygatesService) DeleteCondition(opt *QualitygatesDeleteConditionOp
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - 'Administer' rights on the project
-func (s *QualitygatesService) Deselect(opt *QualitygatesDeselectOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) Deselect(opt *QualitygatesDeselectOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeselectOpt(opt)
 	if err != nil {
 		return
@@ -635,7 +635,7 @@ func (s *QualitygatesService) Deselect(opt *QualitygatesDeselectOption) (resp *h
 
 // Destroy deletes a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Destroy(opt *QualitygatesDestroyOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) Destroy(opt *QualitygatesDestroyOptions) (resp *http.Response, err error) {
 	err = s.ValidateDestroyOpt(opt)
 	if err != nil {
 		return
@@ -659,7 +659,7 @@ func (s *QualitygatesService) Destroy(opt *QualitygatesDestroyOption) (resp *htt
 //   - 'Administer System'
 //   - 'Administer' rights on the specified project
 //   - 'Browse' on the specified project
-func (s *QualitygatesService) GetByProject(opt *QualitygatesGetByProjectOption) (v *QualitygatesGetByProject, resp *http.Response, err error) {
+func (s *QualitygatesService) GetByProject(opt *QualitygatesGetByProjectOptions) (v *QualitygatesGetByProject, resp *http.Response, err error) {
 	err = s.ValidateGetByProjectOpt(opt)
 	if err != nil {
 		return
@@ -706,7 +706,7 @@ func (s *QualitygatesService) List() (v *QualitygatesList, resp *http.Response, 
 //   - 'Administer' rights on the specified project
 //   - 'Browse' on the specified project
 //   - 'Execute Analysis' on the specified project
-func (s *QualitygatesService) ProjectStatus(opt *QualitygatesProjectStatusOption) (v *QualitygatesProjectStatus, resp *http.Response, err error) {
+func (s *QualitygatesService) ProjectStatus(opt *QualitygatesProjectStatusOptions) (v *QualitygatesProjectStatus, resp *http.Response, err error) {
 	err = s.ValidateProjectStatusOpt(opt)
 	if err != nil {
 		return
@@ -731,7 +731,7 @@ func (s *QualitygatesService) ProjectStatus(opt *QualitygatesProjectStatusOption
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) RemoveGroup(opt *QualitygatesRemoveGroupOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) RemoveGroup(opt *QualitygatesRemoveGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveGroupOpt(opt)
 	if err != nil {
 		return
@@ -754,7 +754,7 @@ func (s *QualitygatesService) RemoveGroup(opt *QualitygatesRemoveGroupOption) (r
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) RemoveUser(opt *QualitygatesRemoveUserOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) RemoveUser(opt *QualitygatesRemoveUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return
@@ -775,7 +775,7 @@ func (s *QualitygatesService) RemoveUser(opt *QualitygatesRemoveUserOption) (res
 
 // Rename renames a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Rename(opt *QualitygatesRenameOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) Rename(opt *QualitygatesRenameOptions) (resp *http.Response, err error) {
 	err = s.ValidateRenameOpt(opt)
 	if err != nil {
 		return
@@ -796,7 +796,7 @@ func (s *QualitygatesService) Rename(opt *QualitygatesRenameOption) (resp *http.
 
 // Search searches for projects associated (or not) to a quality gate.
 // Only authorized projects for the current user will be returned.
-func (s *QualitygatesService) Search(opt *QualitygatesSearchOption) (v *QualitygatesSearch, resp *http.Response, err error) {
+func (s *QualitygatesService) Search(opt *QualitygatesSearchOptions) (v *QualitygatesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
@@ -821,7 +821,7 @@ func (s *QualitygatesService) Search(opt *QualitygatesSearchOption) (v *Qualityg
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) SearchGroups(opt *QualitygatesSearchGroupsOption) (v *QualitygatesSearchGroups, resp *http.Response, err error) {
+func (s *QualitygatesService) SearchGroups(opt *QualitygatesSearchGroupsOptions) (v *QualitygatesSearchGroups, resp *http.Response, err error) {
 	err = s.ValidateSearchGroupsOpt(opt)
 	if err != nil {
 		return
@@ -846,7 +846,7 @@ func (s *QualitygatesService) SearchGroups(opt *QualitygatesSearchGroupsOption) 
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) SearchUsers(opt *QualitygatesSearchUsersOption) (v *QualitygatesSearchUsers, resp *http.Response, err error) {
+func (s *QualitygatesService) SearchUsers(opt *QualitygatesSearchUsersOptions) (v *QualitygatesSearchUsers, resp *http.Response, err error) {
 	err = s.ValidateSearchUsersOpt(opt)
 	if err != nil {
 		return
@@ -871,7 +871,7 @@ func (s *QualitygatesService) SearchUsers(opt *QualitygatesSearchUsersOption) (v
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - 'Administer' right on the specified project
-func (s *QualitygatesService) Select(opt *QualitygatesSelectOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) Select(opt *QualitygatesSelectOptions) (resp *http.Response, err error) {
 	err = s.ValidateSelectOpt(opt)
 	if err != nil {
 		return
@@ -892,7 +892,7 @@ func (s *QualitygatesService) Select(opt *QualitygatesSelectOption) (resp *http.
 
 // SetAsDefault sets a quality gate as the default quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) SetAsDefault(opt *QualitygatesSetAsDefaultOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) SetAsDefault(opt *QualitygatesSetAsDefaultOptions) (resp *http.Response, err error) {
 	err = s.ValidateSetAsDefaultOpt(opt)
 	if err != nil {
 		return
@@ -912,7 +912,7 @@ func (s *QualitygatesService) SetAsDefault(opt *QualitygatesSetAsDefaultOption) 
 }
 
 // Show displays the details of a quality gate.
-func (s *QualitygatesService) Show(opt *QualitygatesShowOption) (v *QualitygatesShow, resp *http.Response, err error) {
+func (s *QualitygatesService) Show(opt *QualitygatesShowOptions) (v *QualitygatesShow, resp *http.Response, err error) {
 	err = s.ValidateShowOpt(opt)
 	if err != nil {
 		return
@@ -935,7 +935,7 @@ func (s *QualitygatesService) Show(opt *QualitygatesShowOption) (v *Qualitygates
 
 // UpdateCondition updates a condition attached to a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) UpdateCondition(opt *QualitygatesUpdateConditionOption) (resp *http.Response, err error) {
+func (s *QualitygatesService) UpdateCondition(opt *QualitygatesUpdateConditionOptions) (resp *http.Response, err error) {
 	err = s.ValidateUpdateConditionOpt(opt)
 	if err != nil {
 		return
@@ -959,7 +959,7 @@ func (s *QualitygatesService) UpdateCondition(opt *QualitygatesUpdateConditionOp
 // -----------------------------------------------------------------------------
 
 // ValidateAddGroupOpt validates the options for adding a group to a quality gate.
-func (s *QualitygatesService) ValidateAddGroupOpt(opt *QualitygatesAddGroupOption) error {
+func (s *QualitygatesService) ValidateAddGroupOpt(opt *QualitygatesAddGroupOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesAddGroupOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -983,7 +983,7 @@ func (s *QualitygatesService) ValidateAddGroupOpt(opt *QualitygatesAddGroupOptio
 }
 
 // ValidateAddUserOpt validates the options for adding a user to a quality gate.
-func (s *QualitygatesService) ValidateAddUserOpt(opt *QualitygatesAddUserOption) error {
+func (s *QualitygatesService) ValidateAddUserOpt(opt *QualitygatesAddUserOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesAddUserOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1007,7 +1007,7 @@ func (s *QualitygatesService) ValidateAddUserOpt(opt *QualitygatesAddUserOption)
 }
 
 // ValidateCopyOpt validates the options for copying a quality gate.
-func (s *QualitygatesService) ValidateCopyOpt(opt *QualitygatesCopyOption) error {
+func (s *QualitygatesService) ValidateCopyOpt(opt *QualitygatesCopyOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesCopyOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1031,7 +1031,7 @@ func (s *QualitygatesService) ValidateCopyOpt(opt *QualitygatesCopyOption) error
 }
 
 // ValidateCreateOpt validates the options for creating a quality gate.
-func (s *QualitygatesService) ValidateCreateOpt(opt *QualitygatesCreateOption) error {
+func (s *QualitygatesService) ValidateCreateOpt(opt *QualitygatesCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesCreateOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1050,7 +1050,7 @@ func (s *QualitygatesService) ValidateCreateOpt(opt *QualitygatesCreateOption) e
 }
 
 // ValidateCreateConditionOpt validates the options for creating a condition.
-func (s *QualitygatesService) ValidateCreateConditionOpt(opt *QualitygatesCreateConditionOption) error {
+func (s *QualitygatesService) ValidateCreateConditionOpt(opt *QualitygatesCreateConditionOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesCreateConditionOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1089,7 +1089,7 @@ func (s *QualitygatesService) ValidateCreateConditionOpt(opt *QualitygatesCreate
 }
 
 // ValidateDeleteConditionOpt validates the options for deleting a condition.
-func (s *QualitygatesService) ValidateDeleteConditionOpt(opt *QualitygatesDeleteConditionOption) error {
+func (s *QualitygatesService) ValidateDeleteConditionOpt(opt *QualitygatesDeleteConditionOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesDeleteConditionOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1103,7 +1103,7 @@ func (s *QualitygatesService) ValidateDeleteConditionOpt(opt *QualitygatesDelete
 }
 
 // ValidateDeselectOpt validates the options for deselecting a project.
-func (s *QualitygatesService) ValidateDeselectOpt(opt *QualitygatesDeselectOption) error {
+func (s *QualitygatesService) ValidateDeselectOpt(opt *QualitygatesDeselectOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesDeselectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1117,7 +1117,7 @@ func (s *QualitygatesService) ValidateDeselectOpt(opt *QualitygatesDeselectOptio
 }
 
 // ValidateDestroyOpt validates the options for destroying a quality gate.
-func (s *QualitygatesService) ValidateDestroyOpt(opt *QualitygatesDestroyOption) error {
+func (s *QualitygatesService) ValidateDestroyOpt(opt *QualitygatesDestroyOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesDestroyOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1136,7 +1136,7 @@ func (s *QualitygatesService) ValidateDestroyOpt(opt *QualitygatesDestroyOption)
 }
 
 // ValidateGetByProjectOpt validates the options for getting a project's quality gate.
-func (s *QualitygatesService) ValidateGetByProjectOpt(opt *QualitygatesGetByProjectOption) error {
+func (s *QualitygatesService) ValidateGetByProjectOpt(opt *QualitygatesGetByProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesGetByProjectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1150,7 +1150,7 @@ func (s *QualitygatesService) ValidateGetByProjectOpt(opt *QualitygatesGetByProj
 }
 
 // ValidateProjectStatusOpt validates the options for getting project status.
-func (s *QualitygatesService) ValidateProjectStatusOpt(opt *QualitygatesProjectStatusOption) error {
+func (s *QualitygatesService) ValidateProjectStatusOpt(opt *QualitygatesProjectStatusOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesProjectStatusOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1168,7 +1168,7 @@ func (s *QualitygatesService) ValidateProjectStatusOpt(opt *QualitygatesProjectS
 }
 
 // ValidateRemoveGroupOpt validates the options for removing a group from a quality gate.
-func (s *QualitygatesService) ValidateRemoveGroupOpt(opt *QualitygatesRemoveGroupOption) error {
+func (s *QualitygatesService) ValidateRemoveGroupOpt(opt *QualitygatesRemoveGroupOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesRemoveGroupOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1192,7 +1192,7 @@ func (s *QualitygatesService) ValidateRemoveGroupOpt(opt *QualitygatesRemoveGrou
 }
 
 // ValidateRemoveUserOpt validates the options for removing a user from a quality gate.
-func (s *QualitygatesService) ValidateRemoveUserOpt(opt *QualitygatesRemoveUserOption) error {
+func (s *QualitygatesService) ValidateRemoveUserOpt(opt *QualitygatesRemoveUserOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesRemoveUserOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1216,7 +1216,7 @@ func (s *QualitygatesService) ValidateRemoveUserOpt(opt *QualitygatesRemoveUserO
 }
 
 // ValidateRenameOpt validates the options for renaming a quality gate.
-func (s *QualitygatesService) ValidateRenameOpt(opt *QualitygatesRenameOption) error {
+func (s *QualitygatesService) ValidateRenameOpt(opt *QualitygatesRenameOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesRenameOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1245,7 +1245,7 @@ func (s *QualitygatesService) ValidateRenameOpt(opt *QualitygatesRenameOption) e
 }
 
 // ValidateSearchOpt validates the options for searching projects.
-func (s *QualitygatesService) ValidateSearchOpt(opt *QualitygatesSearchOption) error {
+func (s *QualitygatesService) ValidateSearchOpt(opt *QualitygatesSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesSearchOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1272,7 +1272,7 @@ func (s *QualitygatesService) ValidateSearchOpt(opt *QualitygatesSearchOption) e
 }
 
 // ValidateSearchGroupsOpt validates the options for searching groups.
-func (s *QualitygatesService) ValidateSearchGroupsOpt(opt *QualitygatesSearchGroupsOption) error {
+func (s *QualitygatesService) ValidateSearchGroupsOpt(opt *QualitygatesSearchGroupsOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesSearchGroupsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1294,7 +1294,7 @@ func (s *QualitygatesService) ValidateSearchGroupsOpt(opt *QualitygatesSearchGro
 }
 
 // ValidateSearchUsersOpt validates the options for searching users.
-func (s *QualitygatesService) ValidateSearchUsersOpt(opt *QualitygatesSearchUsersOption) error {
+func (s *QualitygatesService) ValidateSearchUsersOpt(opt *QualitygatesSearchUsersOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesSearchUsersOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1316,7 +1316,7 @@ func (s *QualitygatesService) ValidateSearchUsersOpt(opt *QualitygatesSearchUser
 }
 
 // ValidateSelectOpt validates the options for selecting a project.
-func (s *QualitygatesService) ValidateSelectOpt(opt *QualitygatesSelectOption) error {
+func (s *QualitygatesService) ValidateSelectOpt(opt *QualitygatesSelectOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesSelectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1340,7 +1340,7 @@ func (s *QualitygatesService) ValidateSelectOpt(opt *QualitygatesSelectOption) e
 }
 
 // ValidateSetAsDefaultOpt validates the options for setting a default quality gate.
-func (s *QualitygatesService) ValidateSetAsDefaultOpt(opt *QualitygatesSetAsDefaultOption) error {
+func (s *QualitygatesService) ValidateSetAsDefaultOpt(opt *QualitygatesSetAsDefaultOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesSetAsDefaultOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1359,7 +1359,7 @@ func (s *QualitygatesService) ValidateSetAsDefaultOpt(opt *QualitygatesSetAsDefa
 }
 
 // ValidateShowOpt validates the options for showing a quality gate.
-func (s *QualitygatesService) ValidateShowOpt(opt *QualitygatesShowOption) error {
+func (s *QualitygatesService) ValidateShowOpt(opt *QualitygatesShowOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesShowOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1373,7 +1373,7 @@ func (s *QualitygatesService) ValidateShowOpt(opt *QualitygatesShowOption) error
 }
 
 // ValidateUpdateConditionOpt validates the options for updating a condition.
-func (s *QualitygatesService) ValidateUpdateConditionOpt(opt *QualitygatesUpdateConditionOption) error {
+func (s *QualitygatesService) ValidateUpdateConditionOpt(opt *QualitygatesUpdateConditionOptions) error {
 	if opt == nil {
 		return NewValidationError("QualitygatesUpdateConditionOption", "cannot be nil", ErrMissingRequired)
 	}

@@ -36,7 +36,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should list webservices with empty options", func() {
-				result, resp, err := client.Webservices.List(&sonar.WebservicesListOption{})
+				result, resp, err := client.Webservices.List(&sonar.WebservicesListOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -97,12 +97,12 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should include internals when requested", func() {
-				withoutInternals, _, err := client.Webservices.List(&sonar.WebservicesListOption{
+				withoutInternals, _, err := client.Webservices.List(&sonar.WebservicesListOptions{
 					IncludeInternals: false,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				withInternals, _, err := client.Webservices.List(&sonar.WebservicesListOption{
+				withInternals, _, err := client.Webservices.List(&sonar.WebservicesListOptions{
 					IncludeInternals: true,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -130,7 +130,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should get response example for an action with example", func() {
 				// First find an action with a response example
-				list, _, err := client.Webservices.List(&sonar.WebservicesListOption{
+				list, _, err := client.Webservices.List(&sonar.WebservicesListOptions{
 					IncludeInternals: true,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -154,7 +154,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 					Skip("No action with response example found in this SonarQube version")
 				}
 
-				result, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOption{
+				result, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{
 					Controller: controller,
 					Action:     action,
 				})
@@ -173,14 +173,14 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should fail with empty options", func() {
-				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOption{})
+				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(err.Error()).To(ContainSubstring("Action"))
 			})
 
 			It("should fail with missing action", func() {
-				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOption{
+				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{
 					Controller: "api/system",
 				})
 				Expect(err).To(HaveOccurred())
@@ -189,7 +189,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should fail with missing controller", func() {
-				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOption{
+				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{
 					Action: "status",
 				})
 				Expect(err).To(HaveOccurred())

@@ -18,7 +18,7 @@ func TestNotifications_Add(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &NotificationsAddOption{
+	opt := &NotificationsAddOptions{
 		Type: "NewIssues",
 	}
 
@@ -38,7 +38,7 @@ func TestNotifications_Add_WithAllOptions(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &NotificationsAddOption{
+	opt := &NotificationsAddOptions{
 		Type:    "NewIssues",
 		Channel: "email",
 		Project: "my-project",
@@ -58,7 +58,7 @@ func TestNotifications_Add_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Type should fail validation.
-	_, err = client.Notifications.Add(&NotificationsAddOption{})
+	_, err = client.Notifications.Add(&NotificationsAddOptions{})
 	assert.Error(t, err)
 }
 
@@ -100,7 +100,7 @@ func TestNotifications_List_WithLogin(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &NotificationsListOption{
+	opt := &NotificationsListOptions{
 		Login: "admin",
 	}
 
@@ -119,7 +119,7 @@ func TestNotifications_Remove(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &NotificationsRemoveOption{
+	opt := &NotificationsRemoveOptions{
 		Type: "NewIssues",
 	}
 
@@ -136,7 +136,7 @@ func TestNotifications_Remove_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Type should fail validation.
-	_, err = client.Notifications.Remove(&NotificationsRemoveOption{})
+	_, err = client.Notifications.Remove(&NotificationsRemoveOptions{})
 	assert.Error(t, err)
 }
 
@@ -144,7 +144,7 @@ func TestNotifications_ValidateAddOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.Notifications.ValidateAddOpt(&NotificationsAddOption{
+	err := client.Notifications.ValidateAddOpt(&NotificationsAddOptions{
 		Type: "NewIssues",
 	})
 	assert.NoError(t, err)
@@ -154,7 +154,7 @@ func TestNotifications_ValidateAddOpt(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Type should fail.
-	err = client.Notifications.ValidateAddOpt(&NotificationsAddOption{})
+	err = client.Notifications.ValidateAddOpt(&NotificationsAddOptions{})
 	assert.Error(t, err)
 }
 
@@ -166,7 +166,7 @@ func TestNotifications_ValidateListOpt(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Empty option should be valid.
-	err = client.Notifications.ValidateListOpt(&NotificationsListOption{})
+	err = client.Notifications.ValidateListOpt(&NotificationsListOptions{})
 	assert.NoError(t, err)
 }
 
@@ -174,7 +174,7 @@ func TestNotifications_ValidateRemoveOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.Notifications.ValidateRemoveOpt(&NotificationsRemoveOption{
+	err := client.Notifications.ValidateRemoveOpt(&NotificationsRemoveOptions{
 		Type: "NewIssues",
 	})
 	assert.NoError(t, err)
@@ -184,6 +184,6 @@ func TestNotifications_ValidateRemoveOpt(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Type should fail.
-	err = client.Notifications.ValidateRemoveOpt(&NotificationsRemoveOption{})
+	err = client.Notifications.ValidateRemoveOpt(&NotificationsRemoveOptions{})
 	assert.Error(t, err)
 }

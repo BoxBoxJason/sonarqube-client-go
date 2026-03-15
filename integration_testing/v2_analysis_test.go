@@ -197,7 +197,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		BeforeAll(func() {
 			projectKey = helpers.UniqueResourceName("v2arproj")
-			_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOption{
+			_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
 				Name:    "V2 Active Rules Test",
 				Project: projectKey,
 			})
@@ -205,7 +205,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, cleanupErr := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+				_, cleanupErr := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return helpers.IgnoreNotFoundError(cleanupErr)

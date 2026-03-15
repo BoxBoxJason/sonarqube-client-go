@@ -26,8 +26,8 @@ type SonarlintEvents struct{}
 // Option Types
 // -----------------------------------------------------------------------------
 
-// PushSonarlintEventsOption contains parameters for the SonarlintEvents method.
-type PushSonarlintEventsOption struct {
+// PushSonarlintEventsOptions contains parameters for the SonarlintEvents method.
+type PushSonarlintEventsOptions struct {
 	// Languages is a list of languages for which events will be delivered.
 	// This field is required.
 	Languages []string `url:"languages,comma"`
@@ -41,7 +41,7 @@ type PushSonarlintEventsOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateSonarlintEventsOpt validates the options for the SonarlintEvents method.
-func (s *PushService) ValidateSonarlintEventsOpt(opt *PushSonarlintEventsOption) error {
+func (s *PushService) ValidateSonarlintEventsOpt(opt *PushSonarlintEventsOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -69,7 +69,7 @@ func (s *PushService) ValidateSonarlintEventsOpt(opt *PushSonarlintEventsOption)
 //
 // API endpoint: GET /api/push/sonarlint_events.
 // WARNING: This is an internal API and may change without notice.
-func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOption) (*http.Response, error) {
+func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOptions) (*http.Response, error) {
 	err := s.ValidateSonarlintEventsOpt(opt)
 	if err != nil {
 		return nil, err

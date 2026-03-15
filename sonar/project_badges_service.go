@@ -50,8 +50,8 @@ type ProjectBadgesToken struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// ProjectBadgesMeasureOption contains parameters for the Measure method.
-type ProjectBadgesMeasureOption struct {
+// ProjectBadgesMeasureOptions contains parameters for the Measure method.
+type ProjectBadgesMeasureOptions struct {
 	// Branch is the branch key.
 	Branch string `url:"branch,omitempty"`
 	// Metric is the metric key.
@@ -70,8 +70,8 @@ type ProjectBadgesMeasureOption struct {
 	Token string `url:"token,omitempty"`
 }
 
-// ProjectBadgesQualityGateOption contains parameters for the QualityGate method.
-type ProjectBadgesQualityGateOption struct {
+// ProjectBadgesQualityGateOptions contains parameters for the QualityGate method.
+type ProjectBadgesQualityGateOptions struct {
 	// Branch is the branch key.
 	Branch string `url:"branch,omitempty"`
 	// Project is the project or application key.
@@ -81,15 +81,15 @@ type ProjectBadgesQualityGateOption struct {
 	Token string `url:"token,omitempty"`
 }
 
-// ProjectBadgesRenewTokenOption contains parameters for the RenewToken method.
-type ProjectBadgesRenewTokenOption struct {
+// ProjectBadgesRenewTokenOptions contains parameters for the RenewToken method.
+type ProjectBadgesRenewTokenOptions struct {
 	// Project is the project or application key.
 	// This field is required.
 	Project string `url:"project"`
 }
 
-// ProjectBadgesTokenOption contains parameters for the Token method.
-type ProjectBadgesTokenOption struct {
+// ProjectBadgesTokenOptions contains parameters for the Token method.
+type ProjectBadgesTokenOptions struct {
 	// Project is the project or application key.
 	// This field is required.
 	Project string `url:"project"`
@@ -100,7 +100,7 @@ type ProjectBadgesTokenOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateMeasureOpt validates the options for the Measure method.
-func (s *ProjectBadgesService) ValidateMeasureOpt(opt *ProjectBadgesMeasureOption) error {
+func (s *ProjectBadgesService) ValidateMeasureOpt(opt *ProjectBadgesMeasureOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -124,7 +124,7 @@ func (s *ProjectBadgesService) ValidateMeasureOpt(opt *ProjectBadgesMeasureOptio
 }
 
 // ValidateQualityGateOpt validates the options for the QualityGate method.
-func (s *ProjectBadgesService) ValidateQualityGateOpt(opt *ProjectBadgesQualityGateOption) error {
+func (s *ProjectBadgesService) ValidateQualityGateOpt(opt *ProjectBadgesQualityGateOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -138,7 +138,7 @@ func (s *ProjectBadgesService) ValidateQualityGateOpt(opt *ProjectBadgesQualityG
 }
 
 // ValidateRenewTokenOpt validates the options for the RenewToken method.
-func (s *ProjectBadgesService) ValidateRenewTokenOpt(opt *ProjectBadgesRenewTokenOption) error {
+func (s *ProjectBadgesService) ValidateRenewTokenOpt(opt *ProjectBadgesRenewTokenOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -152,7 +152,7 @@ func (s *ProjectBadgesService) ValidateRenewTokenOpt(opt *ProjectBadgesRenewToke
 }
 
 // ValidateTokenOpt validates the options for the Token method.
-func (s *ProjectBadgesService) ValidateTokenOpt(opt *ProjectBadgesTokenOption) error {
+func (s *ProjectBadgesService) ValidateTokenOpt(opt *ProjectBadgesTokenOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -174,7 +174,7 @@ func (s *ProjectBadgesService) ValidateTokenOpt(opt *ProjectBadgesTokenOption) e
 //
 // API endpoint: GET /api/project_badges/measure.
 // Since: 7.1.
-func (s *ProjectBadgesService) Measure(opt *ProjectBadgesMeasureOption) (*string, *http.Response, error) {
+func (s *ProjectBadgesService) Measure(opt *ProjectBadgesMeasureOptions) (*string, *http.Response, error) {
 	err := s.ValidateMeasureOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -200,7 +200,7 @@ func (s *ProjectBadgesService) Measure(opt *ProjectBadgesMeasureOption) (*string
 //
 // API endpoint: GET /api/project_badges/quality_gate.
 // Since: 7.1.
-func (s *ProjectBadgesService) QualityGate(opt *ProjectBadgesQualityGateOption) (*string, *http.Response, error) {
+func (s *ProjectBadgesService) QualityGate(opt *ProjectBadgesQualityGateOptions) (*string, *http.Response, error) {
 	err := s.ValidateQualityGateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -227,7 +227,7 @@ func (s *ProjectBadgesService) QualityGate(opt *ProjectBadgesQualityGateOption) 
 //
 // API endpoint: POST /api/project_badges/renew_token.
 // Since: 9.2.
-func (s *ProjectBadgesService) RenewToken(opt *ProjectBadgesRenewTokenOption) (*http.Response, error) {
+func (s *ProjectBadgesService) RenewToken(opt *ProjectBadgesRenewTokenOptions) (*http.Response, error) {
 	err := s.ValidateRenewTokenOpt(opt)
 	if err != nil {
 		return nil, err
@@ -252,7 +252,7 @@ func (s *ProjectBadgesService) RenewToken(opt *ProjectBadgesRenewTokenOption) (*
 //
 // API endpoint: GET /api/project_badges/token.
 // Since: 9.2.
-func (s *ProjectBadgesService) Token(opt *ProjectBadgesTokenOption) (*ProjectBadgesToken, *http.Response, error) {
+func (s *ProjectBadgesService) Token(opt *ProjectBadgesTokenOptions) (*ProjectBadgesToken, *http.Response, error) {
 	err := s.ValidateTokenOpt(opt)
 	if err != nil {
 		return nil, nil, err

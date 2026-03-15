@@ -19,7 +19,7 @@ func TestProjectDump_Export(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectDumpExportOption{
+	opt := &ProjectDumpExportOptions{
 		Key: "my-project",
 	}
 
@@ -40,7 +40,7 @@ func TestProjectDump_Export_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Key should fail validation.
-	_, _, err = client.ProjectDump.Export(&ProjectDumpExportOption{})
+	_, _, err = client.ProjectDump.Export(&ProjectDumpExportOptions{})
 	assert.Error(t, err)
 }
 
@@ -55,7 +55,7 @@ func TestProjectDump_Status(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectDumpStatusOption{
+	opt := &ProjectDumpStatusOptions{
 		Key: "my-project",
 	}
 
@@ -77,7 +77,7 @@ func TestProjectDump_Status_WithID(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectDumpStatusOption{
+	opt := &ProjectDumpStatusOptions{
 		ID: "proj-123",
 	}
 
@@ -95,7 +95,7 @@ func TestProjectDump_Status_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing both ID and Key should fail validation.
-	_, _, err = client.ProjectDump.Status(&ProjectDumpStatusOption{})
+	_, _, err = client.ProjectDump.Status(&ProjectDumpStatusOptions{})
 	assert.Error(t, err)
 }
 
@@ -103,7 +103,7 @@ func TestProjectDump_ValidateExportOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option should pass.
-	err := client.ProjectDump.ValidateExportOpt(&ProjectDumpExportOption{
+	err := client.ProjectDump.ValidateExportOpt(&ProjectDumpExportOptions{
 		Key: "my-project",
 	})
 	assert.NoError(t, err)
@@ -113,7 +113,7 @@ func TestProjectDump_ValidateExportOpt(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Key should fail.
-	err = client.ProjectDump.ValidateExportOpt(&ProjectDumpExportOption{})
+	err = client.ProjectDump.ValidateExportOpt(&ProjectDumpExportOptions{})
 	assert.Error(t, err)
 }
 
@@ -121,13 +121,13 @@ func TestProjectDump_ValidateStatusOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Valid option with Key should pass.
-	err := client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOption{
+	err := client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOptions{
 		Key: "my-project",
 	})
 	assert.NoError(t, err)
 
 	// Valid option with ID should pass.
-	err = client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOption{
+	err = client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOptions{
 		ID: "proj-123",
 	})
 	assert.NoError(t, err)
@@ -137,6 +137,6 @@ func TestProjectDump_ValidateStatusOpt(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing both ID and Key should fail.
-	err = client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOption{})
+	err = client.ProjectDump.ValidateStatusOpt(&ProjectDumpStatusOptions{})
 	assert.Error(t, err)
 }

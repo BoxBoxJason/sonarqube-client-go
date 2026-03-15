@@ -28,8 +28,8 @@ type L10NIndex struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// L10NIndexOption contains parameters for the Index method.
-type L10NIndexOption struct {
+// L10NIndexOptions contains parameters for the Index method.
+type L10NIndexOptions struct {
 	// Locale is the BCP47 language tag, used to override the browser Accept-Language header.
 	Locale string `url:"locale,omitempty"`
 	// Timestamp is the date of the last cache update.
@@ -41,7 +41,7 @@ type L10NIndexOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateIndexOpt validates the options for the Index method.
-func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOption) error {
+func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
@@ -54,7 +54,7 @@ func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOption) error {
 //
 // API endpoint: GET /api/l10n/index.
 // Warning: This API is internal and may change without notice.
-func (s *L10NService) Index(opt *L10NIndexOption) (*L10NIndex, *http.Response, error) {
+func (s *L10NService) Index(opt *L10NIndexOptions) (*L10NIndex, *http.Response, error) {
 	err := s.ValidateIndexOpt(opt)
 	if err != nil {
 		return nil, nil, err

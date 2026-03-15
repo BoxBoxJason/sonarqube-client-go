@@ -13,7 +13,7 @@ func TestEmails_Send(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/emails/send", http.StatusNoContent))
 	client := newTestClient(t, server.url())
 
-	opt := &EmailsSendOption{
+	opt := &EmailsSendOptions{
 		Message: "Test message content",
 		Subject: "Test Subject",
 		To:      "test@example.com",
@@ -27,7 +27,7 @@ func TestEmails_Send(t *testing.T) {
 func TestEmails_Send_ValidationErrors(t *testing.T) {
 	tests := []struct {
 		name      string
-		opt       *EmailsSendOption
+		opt       *EmailsSendOptions
 		wantField string
 	}{
 		{
@@ -37,14 +37,14 @@ func TestEmails_Send_ValidationErrors(t *testing.T) {
 		},
 		{
 			name: "missing message",
-			opt: &EmailsSendOption{
+			opt: &EmailsSendOptions{
 				To: "test@example.com",
 			},
 			wantField: "Message",
 		},
 		{
 			name: "missing to",
-			opt: &EmailsSendOption{
+			opt: &EmailsSendOptions{
 				Message: "Test message",
 			},
 			wantField: "To",
@@ -68,7 +68,7 @@ func TestEmails_Send_ValidationErrors(t *testing.T) {
 func TestEmails_ValidateSendOpt(t *testing.T) {
 	tests := []struct {
 		name      string
-		opt       *EmailsSendOption
+		opt       *EmailsSendOptions
 		wantErr   bool
 		wantField string
 	}{
@@ -80,7 +80,7 @@ func TestEmails_ValidateSendOpt(t *testing.T) {
 		},
 		{
 			name: "missing message",
-			opt: &EmailsSendOption{
+			opt: &EmailsSendOptions{
 				To: "test@example.com",
 			},
 			wantErr:   true,
@@ -88,7 +88,7 @@ func TestEmails_ValidateSendOpt(t *testing.T) {
 		},
 		{
 			name: "missing to",
-			opt: &EmailsSendOption{
+			opt: &EmailsSendOptions{
 				Message: "Test message",
 			},
 			wantErr:   true,
@@ -96,7 +96,7 @@ func TestEmails_ValidateSendOpt(t *testing.T) {
 		},
 		{
 			name: "valid option",
-			opt: &EmailsSendOption{
+			opt: &EmailsSendOptions{
 				Message: "Test message",
 				To:      "test@example.com",
 			},
@@ -104,7 +104,7 @@ func TestEmails_ValidateSendOpt(t *testing.T) {
 		},
 		{
 			name: "valid with subject",
-			opt: &EmailsSendOption{
+			opt: &EmailsSendOptions{
 				Message: "Test message",
 				Subject: "Subject",
 				To:      "test@example.com",

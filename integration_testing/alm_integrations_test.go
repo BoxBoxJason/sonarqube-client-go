@@ -32,7 +32,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				_, resp, err := client.AlmIntegrations.CheckPat(&sonar.AlmIntegrationsCheckPatOption{})
+				_, resp, err := client.AlmIntegrations.CheckPat(&sonar.AlmIntegrationsCheckPatOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -40,7 +40,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 
 			It("should fail with almSetting too long", func() {
 				longKey := string(make([]byte, 201))
-				_, resp, err := client.AlmIntegrations.CheckPat(&sonar.AlmIntegrationsCheckPatOption{
+				_, resp, err := client.AlmIntegrations.CheckPat(&sonar.AlmIntegrationsCheckPatOptions{
 					AlmSetting: longKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -64,7 +64,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.GetGithubClientId(&sonar.AlmIntegrationsGetGithubClientIdOption{})
+				result, resp, err := client.AlmIntegrations.GetGithubClientId(&sonar.AlmIntegrationsGetGithubClientIdOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -86,7 +86,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required projectName", func() {
-				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOption{
+				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOptions{
 					RepositoryName: "test-repo",
 				})
 				Expect(err).To(HaveOccurred())
@@ -95,7 +95,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required repositoryName", func() {
-				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOption{
+				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOptions{
 					ProjectName: "test-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -104,7 +104,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail with invalid newCodeDefinitionType", func() {
-				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOption{
+				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOptions{
 					ProjectName:           "test-project",
 					RepositoryName:        "test-repo",
 					NewCodeDefinitionType: "INVALID_TYPE",
@@ -115,7 +115,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail with NUMBER_OF_DAYS type and invalid days value", func() {
-				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOption{
+				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOptions{
 					ProjectName:            "test-project",
 					RepositoryName:         "test-repo",
 					NewCodeDefinitionType:  "NUMBER_OF_DAYS",
@@ -127,7 +127,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail with NUMBER_OF_DAYS type and days value too high", func() {
-				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOption{
+				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOptions{
 					ProjectName:            "test-project",
 					RepositoryName:         "test-repo",
 					NewCodeDefinitionType:  "NUMBER_OF_DAYS",
@@ -153,14 +153,14 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required repositorySlug", func() {
-				resp, err := client.AlmIntegrations.ImportBitbucketCloudRepo(&sonar.AlmIntegrationsImportBitbucketCloudRepoOption{})
+				resp, err := client.AlmIntegrations.ImportBitbucketCloudRepo(&sonar.AlmIntegrationsImportBitbucketCloudRepoOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("RepositorySlug"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid newCodeDefinitionType", func() {
-				resp, err := client.AlmIntegrations.ImportBitbucketCloudRepo(&sonar.AlmIntegrationsImportBitbucketCloudRepoOption{
+				resp, err := client.AlmIntegrations.ImportBitbucketCloudRepo(&sonar.AlmIntegrationsImportBitbucketCloudRepoOptions{
 					RepositorySlug:        "test-slug",
 					NewCodeDefinitionType: "INVALID_TYPE",
 				})
@@ -184,7 +184,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required projectKey", func() {
-				resp, err := client.AlmIntegrations.ImportBitbucketServerProject(&sonar.AlmIntegrationsImportBitbucketServerProjectOption{
+				resp, err := client.AlmIntegrations.ImportBitbucketServerProject(&sonar.AlmIntegrationsImportBitbucketServerProjectOptions{
 					RepositorySlug: "test-slug",
 				})
 				Expect(err).To(HaveOccurred())
@@ -193,7 +193,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required repositorySlug", func() {
-				resp, err := client.AlmIntegrations.ImportBitbucketServerProject(&sonar.AlmIntegrationsImportBitbucketServerProjectOption{
+				resp, err := client.AlmIntegrations.ImportBitbucketServerProject(&sonar.AlmIntegrationsImportBitbucketServerProjectOptions{
 					ProjectKey: "test-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -216,7 +216,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required repositoryKey", func() {
-				resp, err := client.AlmIntegrations.ImportGithubProject(&sonar.AlmIntegrationsImportGithubProjectOption{})
+				resp, err := client.AlmIntegrations.ImportGithubProject(&sonar.AlmIntegrationsImportGithubProjectOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("RepositoryKey"))
 				Expect(resp).To(BeNil())
@@ -224,7 +224,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 
 			It("should fail with repositoryKey too long", func() {
 				longKey := string(make([]byte, 257))
-				resp, err := client.AlmIntegrations.ImportGithubProject(&sonar.AlmIntegrationsImportGithubProjectOption{
+				resp, err := client.AlmIntegrations.ImportGithubProject(&sonar.AlmIntegrationsImportGithubProjectOptions{
 					RepositoryKey: longKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -247,7 +247,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required gitlabProjectId", func() {
-				resp, err := client.AlmIntegrations.ImportGitlabProject(&sonar.AlmIntegrationsImportGitlabProjectOption{})
+				resp, err := client.AlmIntegrations.ImportGitlabProject(&sonar.AlmIntegrationsImportGitlabProjectOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("GitlabProjectId"))
 				Expect(resp).To(BeNil())
@@ -269,7 +269,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.ListAzureProjects(&sonar.AlmIntegrationsListAzureProjectsOption{})
+				result, resp, err := client.AlmIntegrations.ListAzureProjects(&sonar.AlmIntegrationsListAzureProjectsOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -292,7 +292,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.ListBitbucketServerProjects(&sonar.AlmIntegrationsListBitbucketServerProjectsOption{})
+				result, resp, err := client.AlmIntegrations.ListBitbucketServerProjects(&sonar.AlmIntegrationsListBitbucketServerProjectsOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -315,7 +315,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.ListGithubOrganizations(&sonar.AlmIntegrationsListGithubOrganizationsOption{})
+				result, resp, err := client.AlmIntegrations.ListGithubOrganizations(&sonar.AlmIntegrationsListGithubOrganizationsOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -338,7 +338,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.ListGithubRepositories(&sonar.AlmIntegrationsListGithubRepositoriesOption{
+				result, resp, err := client.AlmIntegrations.ListGithubRepositories(&sonar.AlmIntegrationsListGithubRepositoriesOptions{
 					Organization: "test-org",
 				})
 				Expect(err).To(HaveOccurred())
@@ -348,7 +348,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required organization", func() {
-				result, resp, err := client.AlmIntegrations.ListGithubRepositories(&sonar.AlmIntegrationsListGithubRepositoriesOption{
+				result, resp, err := client.AlmIntegrations.ListGithubRepositories(&sonar.AlmIntegrationsListGithubRepositoriesOptions{
 					AlmSetting: "test-github",
 				})
 				Expect(err).To(HaveOccurred())
@@ -373,7 +373,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.SearchAzureRepos(&sonar.AlmIntegrationsSearchAzureReposOption{})
+				result, resp, err := client.AlmIntegrations.SearchAzureRepos(&sonar.AlmIntegrationsSearchAzureReposOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -396,7 +396,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.SearchBitbucketCloudRepos(&sonar.AlmIntegrationsSearchBitbucketCloudReposOption{})
+				result, resp, err := client.AlmIntegrations.SearchBitbucketCloudRepos(&sonar.AlmIntegrationsSearchBitbucketCloudReposOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -419,7 +419,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.SearchBitbucketServerRepos(&sonar.AlmIntegrationsSearchBitbucketServerReposOption{})
+				result, resp, err := client.AlmIntegrations.SearchBitbucketServerRepos(&sonar.AlmIntegrationsSearchBitbucketServerReposOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -442,7 +442,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.SearchGitlabRepos(&sonar.AlmIntegrationsSearchGitlabReposOption{})
+				result, resp, err := client.AlmIntegrations.SearchGitlabRepos(&sonar.AlmIntegrationsSearchGitlabReposOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())
@@ -464,7 +464,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required pat", func() {
-				resp, err := client.AlmIntegrations.SetPat(&sonar.AlmIntegrationsSetPatOption{
+				resp, err := client.AlmIntegrations.SetPat(&sonar.AlmIntegrationsSetPatOptions{
 					AlmSetting: "test-alm",
 				})
 				Expect(err).To(HaveOccurred())
@@ -474,7 +474,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 
 			It("should fail with pat too long", func() {
 				longPat := string(make([]byte, 2001))
-				resp, err := client.AlmIntegrations.SetPat(&sonar.AlmIntegrationsSetPatOption{
+				resp, err := client.AlmIntegrations.SetPat(&sonar.AlmIntegrationsSetPatOptions{
 					AlmSetting: "test-alm",
 					Pat:        longPat,
 				})

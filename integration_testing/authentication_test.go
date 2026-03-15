@@ -82,7 +82,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
 
-				opt := &sonar.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOptions{
 					Login:    cfg.Username,
 					Password: cfg.Password,
 				}
@@ -103,7 +103,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
 
-				opt := &sonar.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOptions{
 					Login:    cfg.Username,
 					Password: "wrongpassword",
 				}
@@ -124,7 +124,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(loginClient).NotTo(BeNil())
 
-				opt := &sonar.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOptions{
 					Login:    "nonexistentuser",
 					Password: "somepassword",
 				}
@@ -146,7 +146,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with missing Login field", func() {
-				opt := &sonar.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOptions{
 					Password: "somepassword",
 				}
 
@@ -156,7 +156,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with missing Password field", func() {
-				opt := &sonar.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOptions{
 					Login: "someuser",
 				}
 
@@ -166,7 +166,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with empty Login field", func() {
-				opt := &sonar.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOptions{
 					Login:    "",
 					Password: "somepassword",
 				}
@@ -177,7 +177,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			})
 
 			It("should fail with empty Password field", func() {
-				opt := &sonar.AuthenticationLoginOption{
+				opt := &sonar.AuthenticationLoginOptions{
 					Login:    "someuser",
 					Password: "",
 				}
@@ -204,7 +204,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Expect(sessionClient).NotTo(BeNil())
 
 				// Login first
-				loginOpt := &sonar.AuthenticationLoginOption{
+				loginOpt := &sonar.AuthenticationLoginOptions{
 					Login:    cfg.Username,
 					Password: cfg.Password,
 				}
@@ -261,7 +261,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			Expect(result.Valid).To(BeFalse())
 
 			// Step 2: Login
-			loginOpt := &sonar.AuthenticationLoginOption{
+			loginOpt := &sonar.AuthenticationLoginOptions{
 				Login:    cfg.Username,
 				Password: cfg.Password,
 			}

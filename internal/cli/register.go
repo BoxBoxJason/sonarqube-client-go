@@ -115,7 +115,7 @@ func buildMethodCommand(serviceName string, _ reflect.Type, method reflect.Metho
 	)
 
 	if hasOpt {
-		optType = methodType.In(1) // The option parameter type (should be *SomeOption)
+		optType = methodType.In(1) // The option parameter type (should be *SomeOptions)
 		if optType.Kind() == reflect.Ptr {
 			optType = optType.Elem()
 		}

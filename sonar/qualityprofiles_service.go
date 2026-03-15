@@ -428,10 +428,10 @@ type ShownProfile struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// QualityprofilesActivateRuleOption contains options for activating a rule.
+// QualityprofilesActivateRuleOptions contains options for activating a rule.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesActivateRuleOption struct {
+type QualityprofilesActivateRuleOptions struct {
 	// Key is the quality profile key (required).
 	Key string `url:"key,omitempty"`
 	// Rule is the rule key (required).
@@ -452,10 +452,10 @@ type QualityprofilesActivateRuleOption struct {
 	Severity string `url:"severity,omitempty"`
 }
 
-// QualityprofilesActivateRulesOption contains options for bulk activating rules.
+// QualityprofilesActivateRulesOptions contains options for bulk activating rules.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesActivateRulesOption struct {
+type QualityprofilesActivateRulesOptions struct {
 	// TargetKey is the quality profile key on which rules are activated (required).
 	TargetKey string `url:"targetKey,omitempty"`
 	// Activation filters rules that are activated or deactivated on the selected quality profile.
@@ -543,8 +543,8 @@ type QualityprofilesActivateRulesOption struct {
 	Types []string `url:"types,omitempty,comma"`
 }
 
-// QualityprofilesAddGroupOption contains options for allowing a group to edit a profile.
-type QualityprofilesAddGroupOption struct {
+// QualityprofilesAddGroupOptions contains options for allowing a group to edit a profile.
+type QualityprofilesAddGroupOptions struct {
 	// Group is the group name (required).
 	Group string `url:"group,omitempty"`
 	// Language is the quality profile language (required).
@@ -556,8 +556,8 @@ type QualityprofilesAddGroupOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesAddProjectOption contains options for associating a project.
-type QualityprofilesAddProjectOption struct {
+// QualityprofilesAddProjectOptions contains options for associating a project.
+type QualityprofilesAddProjectOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -569,8 +569,8 @@ type QualityprofilesAddProjectOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesAddUserOption contains options for allowing a user to edit a profile.
-type QualityprofilesAddUserOption struct {
+// QualityprofilesAddUserOptions contains options for allowing a user to edit a profile.
+type QualityprofilesAddUserOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -582,8 +582,8 @@ type QualityprofilesAddUserOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesBackupOption contains options for backing up a profile.
-type QualityprofilesBackupOption struct {
+// QualityprofilesBackupOptions contains options for backing up a profile.
+type QualityprofilesBackupOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -593,8 +593,8 @@ type QualityprofilesBackupOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesChangeParentOption contains options for changing a profile's parent.
-type QualityprofilesChangeParentOption struct {
+// QualityprofilesChangeParentOptions contains options for changing a profile's parent.
+type QualityprofilesChangeParentOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -607,10 +607,10 @@ type QualityprofilesChangeParentOption struct {
 	ParentQualityProfile string `url:"parentQualityProfile,omitempty"`
 }
 
-// QualityprofilesChangelogOption contains options for getting a profile's changelog.
+// QualityprofilesChangelogOptions contains options for getting a profile's changelog.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesChangelogOption struct {
+type QualityprofilesChangelogOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -630,17 +630,17 @@ type QualityprofilesChangelogOption struct {
 	To string `url:"to,omitempty"`
 }
 
-// QualityprofilesCompareOption contains options for comparing two profiles.
+// QualityprofilesCompareOptions contains options for comparing two profiles.
 // WARNING: This endpoint is internal and may change without notice.
-type QualityprofilesCompareOption struct {
+type QualityprofilesCompareOptions struct {
 	// LeftKey is the left profile key (required).
 	LeftKey string `url:"leftKey,omitempty"`
 	// RightKey is the right profile key (required).
 	RightKey string `url:"rightKey,omitempty"`
 }
 
-// QualityprofilesCopyOption contains options for copying a profile.
-type QualityprofilesCopyOption struct {
+// QualityprofilesCopyOptions contains options for copying a profile.
+type QualityprofilesCopyOptions struct {
 	// FromKey is the source quality profile key (required).
 	FromKey string `url:"fromKey,omitempty"`
 	// ToName is the name for the new quality profile (required).
@@ -648,8 +648,8 @@ type QualityprofilesCopyOption struct {
 	ToName string `url:"toName,omitempty"`
 }
 
-// QualityprofilesCreateOption contains options for creating a profile.
-type QualityprofilesCreateOption struct {
+// QualityprofilesCreateOptions contains options for creating a profile.
+type QualityprofilesCreateOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -660,19 +660,19 @@ type QualityprofilesCreateOption struct {
 	Name string `url:"name,omitempty"`
 }
 
-// QualityprofilesDeactivateRuleOption contains options for deactivating a rule.
-type QualityprofilesDeactivateRuleOption struct {
+// QualityprofilesDeactivateRuleOptions contains options for deactivating a rule.
+type QualityprofilesDeactivateRuleOptions struct {
 	// Key is the quality profile key (required).
 	Key string `url:"key,omitempty"`
 	// Rule is the rule key (required).
 	Rule string `url:"rule,omitempty"`
 }
 
-// QualityprofilesDeactivateRulesOption contains options for bulk deactivating rules.
+// QualityprofilesDeactivateRulesOptions contains options for bulk deactivating rules.
 // Uses the same filter parameters as QualityprofilesActivateRulesOption.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesDeactivateRulesOption struct {
+type QualityprofilesDeactivateRulesOptions struct {
 	// TargetKey is the quality profile key on which rules are deactivated (required).
 	TargetKey string `url:"targetKey,omitempty"`
 	// Activation filters rules that are activated or deactivated on the selected quality profile.
@@ -753,8 +753,8 @@ type QualityprofilesDeactivateRulesOption struct {
 	Types []string `url:"types,omitempty,comma"`
 }
 
-// QualityprofilesDeleteOption contains options for deleting a profile.
-type QualityprofilesDeleteOption struct {
+// QualityprofilesDeleteOptions contains options for deleting a profile.
+type QualityprofilesDeleteOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -764,10 +764,10 @@ type QualityprofilesDeleteOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesExportOption contains options for exporting a profile.
+// QualityprofilesExportOptions contains options for exporting a profile.
 //
 // Deprecated: Since SonarQube 25.4. Use Backup instead.
-type QualityprofilesExportOption struct {
+type QualityprofilesExportOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -778,8 +778,8 @@ type QualityprofilesExportOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesInheritanceOption contains options for getting inheritance info.
-type QualityprofilesInheritanceOption struct {
+// QualityprofilesInheritanceOptions contains options for getting inheritance info.
+type QualityprofilesInheritanceOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -789,10 +789,10 @@ type QualityprofilesInheritanceOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesProjectsOption contains options for listing associated projects.
+// QualityprofilesProjectsOptions contains options for listing associated projects.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesProjectsOption struct {
+type QualityprofilesProjectsOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -805,8 +805,8 @@ type QualityprofilesProjectsOption struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// QualityprofilesRemoveGroupOption contains options for removing group permissions.
-type QualityprofilesRemoveGroupOption struct {
+// QualityprofilesRemoveGroupOptions contains options for removing group permissions.
+type QualityprofilesRemoveGroupOptions struct {
 	// Group is the group name (required).
 	Group string `url:"group,omitempty"`
 	// Language is the quality profile language (required).
@@ -818,8 +818,8 @@ type QualityprofilesRemoveGroupOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesRemoveProjectOption contains options for removing a project association.
-type QualityprofilesRemoveProjectOption struct {
+// QualityprofilesRemoveProjectOptions contains options for removing a project association.
+type QualityprofilesRemoveProjectOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -831,8 +831,8 @@ type QualityprofilesRemoveProjectOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesRemoveUserOption contains options for removing user permissions.
-type QualityprofilesRemoveUserOption struct {
+// QualityprofilesRemoveUserOptions contains options for removing user permissions.
+type QualityprofilesRemoveUserOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -844,8 +844,8 @@ type QualityprofilesRemoveUserOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesRenameOption contains options for renaming a profile.
-type QualityprofilesRenameOption struct {
+// QualityprofilesRenameOptions contains options for renaming a profile.
+type QualityprofilesRenameOptions struct {
 	// Key is the quality profile key (required).
 	Key string `url:"key,omitempty"`
 	// Name is the new quality profile name (required).
@@ -853,16 +853,16 @@ type QualityprofilesRenameOption struct {
 	Name string `url:"name,omitempty"`
 }
 
-// QualityprofilesRestoreOption contains options for restoring a profile from backup.
-type QualityprofilesRestoreOption struct {
+// QualityprofilesRestoreOptions contains options for restoring a profile from backup.
+type QualityprofilesRestoreOptions struct {
 	// Backup is the profile backup file content in XML format (required).
 	Backup string `url:"backup,omitempty"`
 }
 
-// QualityprofilesSearchOption contains options for searching profiles.
+// QualityprofilesSearchOptions contains options for searching profiles.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesSearchOption struct {
+type QualityprofilesSearchOptions struct {
 	// Defaults returns only default profiles if true.
 	Defaults bool `url:"defaults,omitempty"`
 	// Language is the quality profile language.
@@ -876,11 +876,11 @@ type QualityprofilesSearchOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesSearchGroupsOption contains options for searching groups.
+// QualityprofilesSearchGroupsOptions contains options for searching groups.
 // WARNING: This endpoint is internal and may change without notice.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesSearchGroupsOption struct {
+type QualityprofilesSearchGroupsOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -898,10 +898,10 @@ type QualityprofilesSearchGroupsOption struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// QualityprofilesSearchUsersOption contains options for searching users.
+// QualityprofilesSearchUsersOptions contains options for searching users.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type QualityprofilesSearchUsersOption struct {
+type QualityprofilesSearchUsersOptions struct {
 	// PaginationArgs contains pagination parameters.
 	PaginationArgs `url:",inline"`
 
@@ -916,8 +916,8 @@ type QualityprofilesSearchUsersOption struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// QualityprofilesSetDefaultOption contains options for setting the default profile.
-type QualityprofilesSetDefaultOption struct {
+// QualityprofilesSetDefaultOptions contains options for setting the default profile.
+type QualityprofilesSetDefaultOptions struct {
 	// Language is the quality profile language (required).
 	// Allowed values: 'kubernetes', 'css', 'scala', 'jsp', 'py', 'js', 'docker', 'rust',
 	// 'java', 'web', 'flex', 'xml', 'json', 'ipynb', 'text', 'vbnet', 'cloudformation',
@@ -927,8 +927,8 @@ type QualityprofilesSetDefaultOption struct {
 	QualityProfile string `url:"qualityProfile,omitempty"`
 }
 
-// QualityprofilesShowOption contains options for showing a profile.
-type QualityprofilesShowOption struct {
+// QualityprofilesShowOptions contains options for showing a profile.
+type QualityprofilesShowOptions struct {
 	// Key is the quality profile key (required).
 	Key string `url:"key,omitempty"`
 	// CompareToSonarWay adds the number of missing rules from related Sonar way profile.
@@ -943,7 +943,7 @@ type QualityprofilesShowOption struct {
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) ActivateRule(opt *QualityprofilesActivateRuleOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) ActivateRule(opt *QualityprofilesActivateRuleOptions) (resp *http.Response, err error) {
 	err = s.ValidateActivateRuleOpt(opt)
 	if err != nil {
 		return
@@ -969,7 +969,7 @@ func (s *QualityprofilesService) ActivateRule(opt *QualityprofilesActivateRuleOp
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) ActivateRules(opt *QualityprofilesActivateRulesOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) ActivateRules(opt *QualityprofilesActivateRulesOptions) (resp *http.Response, err error) {
 	err = s.ValidateActivateRulesOpt(opt)
 	if err != nil {
 		return
@@ -992,7 +992,7 @@ func (s *QualityprofilesService) ActivateRules(opt *QualityprofilesActivateRules
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) AddGroup(opt *QualityprofilesAddGroupOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) AddGroup(opt *QualityprofilesAddGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddGroupOpt(opt)
 	if err != nil {
 		return
@@ -1015,7 +1015,7 @@ func (s *QualityprofilesService) AddGroup(opt *QualityprofilesAddGroupOption) (r
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Administer right on the specified project
-func (s *QualityprofilesService) AddProject(opt *QualityprofilesAddProjectOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) AddProject(opt *QualityprofilesAddProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddProjectOpt(opt)
 	if err != nil {
 		return
@@ -1038,7 +1038,7 @@ func (s *QualityprofilesService) AddProject(opt *QualityprofilesAddProjectOption
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) AddUser(opt *QualityprofilesAddUserOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) AddUser(opt *QualityprofilesAddUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return
@@ -1059,7 +1059,7 @@ func (s *QualityprofilesService) AddUser(opt *QualityprofilesAddUserOption) (res
 
 // Backup backs up a quality profile in XML form.
 // The exported profile can be restored through Restore.
-func (s *QualityprofilesService) Backup(opt *QualityprofilesBackupOption) (v *string, resp *http.Response, err error) {
+func (s *QualityprofilesService) Backup(opt *QualityprofilesBackupOptions) (v *string, resp *http.Response, err error) {
 	err = s.ValidateBackupOpt(opt)
 	if err != nil {
 		return
@@ -1084,7 +1084,7 @@ func (s *QualityprofilesService) Backup(opt *QualityprofilesBackupOption) (v *st
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) ChangeParent(opt *QualityprofilesChangeParentOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) ChangeParent(opt *QualityprofilesChangeParentOptions) (resp *http.Response, err error) {
 	err = s.ValidateChangeParentOpt(opt)
 	if err != nil {
 		return
@@ -1105,7 +1105,7 @@ func (s *QualityprofilesService) ChangeParent(opt *QualityprofilesChangeParentOp
 
 // Changelog gets the history of changes on a quality profile.
 // Events are ordered by date in descending order (most recent first).
-func (s *QualityprofilesService) Changelog(opt *QualityprofilesChangelogOption) (v *QualityprofilesChangelog, resp *http.Response, err error) {
+func (s *QualityprofilesService) Changelog(opt *QualityprofilesChangelogOptions) (v *QualityprofilesChangelog, resp *http.Response, err error) {
 	err = s.ValidateChangelogOpt(opt)
 	if err != nil {
 		return
@@ -1127,7 +1127,7 @@ func (s *QualityprofilesService) Changelog(opt *QualityprofilesChangelogOption) 
 }
 
 // Compare compares two quality profiles.
-func (s *QualityprofilesService) Compare(opt *QualityprofilesCompareOption) (v *QualityprofilesCompare, resp *http.Response, err error) {
+func (s *QualityprofilesService) Compare(opt *QualityprofilesCompareOptions) (v *QualityprofilesCompare, resp *http.Response, err error) {
 	err = s.ValidateCompareOpt(opt)
 	if err != nil {
 		return
@@ -1150,7 +1150,7 @@ func (s *QualityprofilesService) Compare(opt *QualityprofilesCompareOption) (v *
 
 // Copy copies a quality profile.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) Copy(opt *QualityprofilesCopyOption) (v *QualityprofilesCopy, resp *http.Response, err error) {
+func (s *QualityprofilesService) Copy(opt *QualityprofilesCopyOptions) (v *QualityprofilesCopy, resp *http.Response, err error) {
 	err = s.ValidateCopyOpt(opt)
 	if err != nil {
 		return
@@ -1173,7 +1173,7 @@ func (s *QualityprofilesService) Copy(opt *QualityprofilesCopyOption) (v *Qualit
 
 // Create creates a quality profile.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) Create(opt *QualityprofilesCreateOption) (v *QualityprofilesCreate, resp *http.Response, err error) {
+func (s *QualityprofilesService) Create(opt *QualityprofilesCreateOptions) (v *QualityprofilesCreate, resp *http.Response, err error) {
 	err = s.ValidateCreateOpt(opt)
 	if err != nil {
 		return
@@ -1198,7 +1198,7 @@ func (s *QualityprofilesService) Create(opt *QualityprofilesCreateOption) (v *Qu
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) DeactivateRule(opt *QualityprofilesDeactivateRuleOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) DeactivateRule(opt *QualityprofilesDeactivateRuleOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeactivateRuleOpt(opt)
 	if err != nil {
 		return
@@ -1221,7 +1221,7 @@ func (s *QualityprofilesService) DeactivateRule(opt *QualityprofilesDeactivateRu
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) DeactivateRules(opt *QualityprofilesDeactivateRulesOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) DeactivateRules(opt *QualityprofilesDeactivateRulesOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeactivateRulesOpt(opt)
 	if err != nil {
 		return
@@ -1245,7 +1245,7 @@ func (s *QualityprofilesService) DeactivateRules(opt *QualityprofilesDeactivateR
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) Delete(opt *QualityprofilesDeleteOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) Delete(opt *QualityprofilesDeleteOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return
@@ -1267,7 +1267,7 @@ func (s *QualityprofilesService) Delete(opt *QualityprofilesDeleteOption) (resp 
 // Export exports a quality profile.
 //
 // Deprecated: Since SonarQube 25.4. Use Backup instead.
-func (s *QualityprofilesService) Export(opt *QualityprofilesExportOption) (v *string, resp *http.Response, err error) {
+func (s *QualityprofilesService) Export(opt *QualityprofilesExportOptions) (v *string, resp *http.Response, err error) {
 	err = s.ValidateExportOpt(opt)
 	if err != nil {
 		return
@@ -1327,7 +1327,7 @@ func (s *QualityprofilesService) Importers() (v *QualityprofilesImporters, resp 
 }
 
 // Inheritance shows a quality profile's ancestors and children.
-func (s *QualityprofilesService) Inheritance(opt *QualityprofilesInheritanceOption) (v *QualityprofilesInheritance, resp *http.Response, err error) {
+func (s *QualityprofilesService) Inheritance(opt *QualityprofilesInheritanceOptions) (v *QualityprofilesInheritance, resp *http.Response, err error) {
 	err = s.ValidateInheritanceOpt(opt)
 	if err != nil {
 		return
@@ -1350,7 +1350,7 @@ func (s *QualityprofilesService) Inheritance(opt *QualityprofilesInheritanceOpti
 
 // Projects lists projects with their association status regarding a quality profile.
 // Only projects explicitly bound to the profile are returned.
-func (s *QualityprofilesService) Projects(opt *QualityprofilesProjectsOption) (v *QualityprofilesProjects, resp *http.Response, err error) {
+func (s *QualityprofilesService) Projects(opt *QualityprofilesProjectsOptions) (v *QualityprofilesProjects, resp *http.Response, err error) {
 	err = s.ValidateProjectsOpt(opt)
 	if err != nil {
 		return
@@ -1375,7 +1375,7 @@ func (s *QualityprofilesService) Projects(opt *QualityprofilesProjectsOption) (v
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) RemoveGroup(opt *QualityprofilesRemoveGroupOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) RemoveGroup(opt *QualityprofilesRemoveGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveGroupOpt(opt)
 	if err != nil {
 		return
@@ -1399,7 +1399,7 @@ func (s *QualityprofilesService) RemoveGroup(opt *QualityprofilesRemoveGroupOpti
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
 //   - Administer right on the specified project
-func (s *QualityprofilesService) RemoveProject(opt *QualityprofilesRemoveProjectOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) RemoveProject(opt *QualityprofilesRemoveProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveProjectOpt(opt)
 	if err != nil {
 		return
@@ -1422,7 +1422,7 @@ func (s *QualityprofilesService) RemoveProject(opt *QualityprofilesRemoveProject
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) RemoveUser(opt *QualityprofilesRemoveUserOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) RemoveUser(opt *QualityprofilesRemoveUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return
@@ -1445,7 +1445,7 @@ func (s *QualityprofilesService) RemoveUser(opt *QualityprofilesRemoveUserOption
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) Rename(opt *QualityprofilesRenameOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) Rename(opt *QualityprofilesRenameOptions) (resp *http.Response, err error) {
 	err = s.ValidateRenameOpt(opt)
 	if err != nil {
 		return
@@ -1468,7 +1468,7 @@ func (s *QualityprofilesService) Rename(opt *QualityprofilesRenameOption) (resp 
 // The restored profile name is taken from the backup file.
 // If a profile with the same name and language exists, it will be overwritten.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) Restore(opt *QualityprofilesRestoreOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) Restore(opt *QualityprofilesRestoreOptions) (resp *http.Response, err error) {
 	err = s.ValidateRestoreOpt(opt)
 	if err != nil {
 		return
@@ -1488,7 +1488,7 @@ func (s *QualityprofilesService) Restore(opt *QualityprofilesRestoreOption) (res
 }
 
 // Search searches for quality profiles.
-func (s *QualityprofilesService) Search(opt *QualityprofilesSearchOption) (v *QualityprofilesSearch, resp *http.Response, err error) {
+func (s *QualityprofilesService) Search(opt *QualityprofilesSearchOptions) (v *QualityprofilesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
@@ -1513,7 +1513,7 @@ func (s *QualityprofilesService) Search(opt *QualityprofilesSearchOption) (v *Qu
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) SearchGroups(opt *QualityprofilesSearchGroupsOption) (v *QualityprofilesSearchGroups, resp *http.Response, err error) {
+func (s *QualityprofilesService) SearchGroups(opt *QualityprofilesSearchGroupsOptions) (v *QualityprofilesSearchGroups, resp *http.Response, err error) {
 	err = s.ValidateSearchGroupsOpt(opt)
 	if err != nil {
 		return
@@ -1538,7 +1538,7 @@ func (s *QualityprofilesService) SearchGroups(opt *QualityprofilesSearchGroupsOp
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) SearchUsers(opt *QualityprofilesSearchUsersOption) (v *QualityprofilesSearchUsers, resp *http.Response, err error) {
+func (s *QualityprofilesService) SearchUsers(opt *QualityprofilesSearchUsersOptions) (v *QualityprofilesSearchUsers, resp *http.Response, err error) {
 	err = s.ValidateSearchUsersOpt(opt)
 	if err != nil {
 		return
@@ -1561,7 +1561,7 @@ func (s *QualityprofilesService) SearchUsers(opt *QualityprofilesSearchUsersOpti
 
 // SetDefault selects the default profile for a given language.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) SetDefault(opt *QualityprofilesSetDefaultOption) (resp *http.Response, err error) {
+func (s *QualityprofilesService) SetDefault(opt *QualityprofilesSetDefaultOptions) (resp *http.Response, err error) {
 	err = s.ValidateSetDefaultOpt(opt)
 	if err != nil {
 		return
@@ -1581,7 +1581,7 @@ func (s *QualityprofilesService) SetDefault(opt *QualityprofilesSetDefaultOption
 }
 
 // Show shows a quality profile.
-func (s *QualityprofilesService) Show(opt *QualityprofilesShowOption) (v *QualityprofilesShow, resp *http.Response, err error) {
+func (s *QualityprofilesService) Show(opt *QualityprofilesShowOptions) (v *QualityprofilesShow, resp *http.Response, err error) {
 	err = s.ValidateShowOpt(opt)
 	if err != nil {
 		return
@@ -1607,7 +1607,7 @@ func (s *QualityprofilesService) Show(opt *QualityprofilesShowOption) (v *Qualit
 // -----------------------------------------------------------------------------
 
 // ValidateActivateRuleOpt validates the options for activating a rule.
-func (s *QualityprofilesService) ValidateActivateRuleOpt(opt *QualityprofilesActivateRuleOption) error {
+func (s *QualityprofilesService) ValidateActivateRuleOpt(opt *QualityprofilesActivateRuleOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesActivateRuleOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1650,7 +1650,7 @@ func (s *QualityprofilesService) ValidateActivateRuleOpt(opt *QualityprofilesAct
 // ValidateActivateRulesOpt validates the options for bulk activating rules.
 //
 //nolint:cyclop,funlen // Validation functions are naturally complex due to multiple checks
-func (s *QualityprofilesService) ValidateActivateRulesOpt(opt *QualityprofilesActivateRulesOption) error {
+func (s *QualityprofilesService) ValidateActivateRulesOpt(opt *QualityprofilesActivateRulesOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesActivateRulesOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1759,7 +1759,7 @@ func (s *QualityprofilesService) ValidateActivateRulesOpt(opt *QualityprofilesAc
 }
 
 // ValidateAddGroupOpt validates the options for adding a group to a quality profile.
-func (s *QualityprofilesService) ValidateAddGroupOpt(opt *QualityprofilesAddGroupOption) error {
+func (s *QualityprofilesService) ValidateAddGroupOpt(opt *QualityprofilesAddGroupOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesAddGroupOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1788,7 +1788,7 @@ func (s *QualityprofilesService) ValidateAddGroupOpt(opt *QualityprofilesAddGrou
 }
 
 // ValidateAddProjectOpt validates the options for associating a project.
-func (s *QualityprofilesService) ValidateAddProjectOpt(opt *QualityprofilesAddProjectOption) error {
+func (s *QualityprofilesService) ValidateAddProjectOpt(opt *QualityprofilesAddProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesAddProjectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1817,7 +1817,7 @@ func (s *QualityprofilesService) ValidateAddProjectOpt(opt *QualityprofilesAddPr
 }
 
 // ValidateAddUserOpt validates the options for adding a user to a quality profile.
-func (s *QualityprofilesService) ValidateAddUserOpt(opt *QualityprofilesAddUserOption) error {
+func (s *QualityprofilesService) ValidateAddUserOpt(opt *QualityprofilesAddUserOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesAddUserOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1846,7 +1846,7 @@ func (s *QualityprofilesService) ValidateAddUserOpt(opt *QualityprofilesAddUserO
 }
 
 // ValidateBackupOpt validates the options for backing up a profile.
-func (s *QualityprofilesService) ValidateBackupOpt(opt *QualityprofilesBackupOption) error {
+func (s *QualityprofilesService) ValidateBackupOpt(opt *QualityprofilesBackupOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesBackupOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1870,7 +1870,7 @@ func (s *QualityprofilesService) ValidateBackupOpt(opt *QualityprofilesBackupOpt
 }
 
 // ValidateChangeParentOpt validates the options for changing a profile's parent.
-func (s *QualityprofilesService) ValidateChangeParentOpt(opt *QualityprofilesChangeParentOption) error {
+func (s *QualityprofilesService) ValidateChangeParentOpt(opt *QualityprofilesChangeParentOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesChangeParentOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1896,7 +1896,7 @@ func (s *QualityprofilesService) ValidateChangeParentOpt(opt *QualityprofilesCha
 }
 
 // ValidateChangelogOpt validates the options for getting a profile's changelog.
-func (s *QualityprofilesService) ValidateChangelogOpt(opt *QualityprofilesChangelogOption) error {
+func (s *QualityprofilesService) ValidateChangelogOpt(opt *QualityprofilesChangelogOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesChangelogOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1930,7 +1930,7 @@ func (s *QualityprofilesService) ValidateChangelogOpt(opt *QualityprofilesChange
 }
 
 // ValidateCompareOpt validates the options for comparing two profiles.
-func (s *QualityprofilesService) ValidateCompareOpt(opt *QualityprofilesCompareOption) error {
+func (s *QualityprofilesService) ValidateCompareOpt(opt *QualityprofilesCompareOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesCompareOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1949,7 +1949,7 @@ func (s *QualityprofilesService) ValidateCompareOpt(opt *QualityprofilesCompareO
 }
 
 // ValidateCopyOpt validates the options for copying a profile.
-func (s *QualityprofilesService) ValidateCopyOpt(opt *QualityprofilesCopyOption) error {
+func (s *QualityprofilesService) ValidateCopyOpt(opt *QualityprofilesCopyOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesCopyOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -1973,7 +1973,7 @@ func (s *QualityprofilesService) ValidateCopyOpt(opt *QualityprofilesCopyOption)
 }
 
 // ValidateCreateOpt validates the options for creating a profile.
-func (s *QualityprofilesService) ValidateCreateOpt(opt *QualityprofilesCreateOption) error {
+func (s *QualityprofilesService) ValidateCreateOpt(opt *QualityprofilesCreateOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesCreateOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2002,7 +2002,7 @@ func (s *QualityprofilesService) ValidateCreateOpt(opt *QualityprofilesCreateOpt
 }
 
 // ValidateDeactivateRuleOpt validates the options for deactivating a rule.
-func (s *QualityprofilesService) ValidateDeactivateRuleOpt(opt *QualityprofilesDeactivateRuleOption) error {
+func (s *QualityprofilesService) ValidateDeactivateRuleOpt(opt *QualityprofilesDeactivateRuleOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesDeactivateRuleOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2021,7 +2021,7 @@ func (s *QualityprofilesService) ValidateDeactivateRuleOpt(opt *QualityprofilesD
 }
 
 // ValidateDeactivateRulesOpt validates the options for bulk deactivating rules.
-func (s *QualityprofilesService) ValidateDeactivateRulesOpt(opt *QualityprofilesDeactivateRulesOption) error {
+func (s *QualityprofilesService) ValidateDeactivateRulesOpt(opt *QualityprofilesDeactivateRulesOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesDeactivateRulesOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2031,14 +2031,14 @@ func (s *QualityprofilesService) ValidateDeactivateRulesOpt(opt *Qualityprofiles
 		return err
 	}
 
-	// Note: DeactivateRulesOption uses string fields for filters instead of slices,
+	// Note: DeactivateRulesOptions uses string fields for filters instead of slices,
 	// which limits granular validation. The API will validate the format.
 
 	return nil
 }
 
 // ValidateDeleteOpt validates the options for deleting a profile.
-func (s *QualityprofilesService) ValidateDeleteOpt(opt *QualityprofilesDeleteOption) error {
+func (s *QualityprofilesService) ValidateDeleteOpt(opt *QualityprofilesDeleteOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesDeleteOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2062,7 +2062,7 @@ func (s *QualityprofilesService) ValidateDeleteOpt(opt *QualityprofilesDeleteOpt
 }
 
 // ValidateExportOpt validates the options for exporting a profile.
-func (s *QualityprofilesService) ValidateExportOpt(opt *QualityprofilesExportOption) error {
+func (s *QualityprofilesService) ValidateExportOpt(opt *QualityprofilesExportOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesExportOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2083,7 +2083,7 @@ func (s *QualityprofilesService) ValidateExportOpt(opt *QualityprofilesExportOpt
 }
 
 // ValidateInheritanceOpt validates the options for getting inheritance info.
-func (s *QualityprofilesService) ValidateInheritanceOpt(opt *QualityprofilesInheritanceOption) error {
+func (s *QualityprofilesService) ValidateInheritanceOpt(opt *QualityprofilesInheritanceOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesInheritanceOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2107,7 +2107,7 @@ func (s *QualityprofilesService) ValidateInheritanceOpt(opt *QualityprofilesInhe
 }
 
 // ValidateProjectsOpt validates the options for listing associated projects.
-func (s *QualityprofilesService) ValidateProjectsOpt(opt *QualityprofilesProjectsOption) error {
+func (s *QualityprofilesService) ValidateProjectsOpt(opt *QualityprofilesProjectsOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesProjectsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2127,7 +2127,7 @@ func (s *QualityprofilesService) ValidateProjectsOpt(opt *QualityprofilesProject
 }
 
 // ValidateRemoveGroupOpt validates the options for removing group permissions.
-func (s *QualityprofilesService) ValidateRemoveGroupOpt(opt *QualityprofilesRemoveGroupOption) error {
+func (s *QualityprofilesService) ValidateRemoveGroupOpt(opt *QualityprofilesRemoveGroupOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesRemoveGroupOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2156,7 +2156,7 @@ func (s *QualityprofilesService) ValidateRemoveGroupOpt(opt *QualityprofilesRemo
 }
 
 // ValidateRemoveProjectOpt validates the options for removing a project association.
-func (s *QualityprofilesService) ValidateRemoveProjectOpt(opt *QualityprofilesRemoveProjectOption) error {
+func (s *QualityprofilesService) ValidateRemoveProjectOpt(opt *QualityprofilesRemoveProjectOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesRemoveProjectOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2185,7 +2185,7 @@ func (s *QualityprofilesService) ValidateRemoveProjectOpt(opt *QualityprofilesRe
 }
 
 // ValidateRemoveUserOpt validates the options for removing user permissions.
-func (s *QualityprofilesService) ValidateRemoveUserOpt(opt *QualityprofilesRemoveUserOption) error {
+func (s *QualityprofilesService) ValidateRemoveUserOpt(opt *QualityprofilesRemoveUserOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesRemoveUserOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2214,7 +2214,7 @@ func (s *QualityprofilesService) ValidateRemoveUserOpt(opt *QualityprofilesRemov
 }
 
 // ValidateRenameOpt validates the options for renaming a profile.
-func (s *QualityprofilesService) ValidateRenameOpt(opt *QualityprofilesRenameOption) error {
+func (s *QualityprofilesService) ValidateRenameOpt(opt *QualityprofilesRenameOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesRenameOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2238,7 +2238,7 @@ func (s *QualityprofilesService) ValidateRenameOpt(opt *QualityprofilesRenameOpt
 }
 
 // ValidateRestoreOpt validates the options for restoring a profile.
-func (s *QualityprofilesService) ValidateRestoreOpt(opt *QualityprofilesRestoreOption) error {
+func (s *QualityprofilesService) ValidateRestoreOpt(opt *QualityprofilesRestoreOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesRestoreOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2252,7 +2252,7 @@ func (s *QualityprofilesService) ValidateRestoreOpt(opt *QualityprofilesRestoreO
 }
 
 // ValidateSearchOpt validates the options for searching profiles.
-func (s *QualityprofilesService) ValidateSearchOpt(opt *QualityprofilesSearchOption) error {
+func (s *QualityprofilesService) ValidateSearchOpt(opt *QualityprofilesSearchOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesSearchOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2271,7 +2271,7 @@ func (s *QualityprofilesService) ValidateSearchOpt(opt *QualityprofilesSearchOpt
 }
 
 // ValidateSearchGroupsOpt validates the options for searching groups.
-func (s *QualityprofilesService) ValidateSearchGroupsOpt(opt *QualityprofilesSearchGroupsOption) error {
+func (s *QualityprofilesService) ValidateSearchGroupsOpt(opt *QualityprofilesSearchGroupsOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesSearchGroupsOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2301,7 +2301,7 @@ func (s *QualityprofilesService) ValidateSearchGroupsOpt(opt *QualityprofilesSea
 }
 
 // ValidateSearchUsersOpt validates the options for searching users.
-func (s *QualityprofilesService) ValidateSearchUsersOpt(opt *QualityprofilesSearchUsersOption) error {
+func (s *QualityprofilesService) ValidateSearchUsersOpt(opt *QualityprofilesSearchUsersOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesSearchUsersOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2331,7 +2331,7 @@ func (s *QualityprofilesService) ValidateSearchUsersOpt(opt *QualityprofilesSear
 }
 
 // ValidateSetDefaultOpt validates the options for setting the default profile.
-func (s *QualityprofilesService) ValidateSetDefaultOpt(opt *QualityprofilesSetDefaultOption) error {
+func (s *QualityprofilesService) ValidateSetDefaultOpt(opt *QualityprofilesSetDefaultOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesSetDefaultOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2355,7 +2355,7 @@ func (s *QualityprofilesService) ValidateSetDefaultOpt(opt *QualityprofilesSetDe
 }
 
 // ValidateShowOpt validates the options for showing a profile.
-func (s *QualityprofilesService) ValidateShowOpt(opt *QualityprofilesShowOption) error {
+func (s *QualityprofilesService) ValidateShowOpt(opt *QualityprofilesShowOptions) error {
 	if opt == nil {
 		return NewValidationError("QualityprofilesShowOption", "cannot be nil", ErrMissingRequired)
 	}
@@ -2372,10 +2372,10 @@ func (s *QualityprofilesService) ValidateShowOpt(opt *QualityprofilesShowOption)
 // Conversion Functions
 // -----------------------------------------------------------------------------
 
-// convertActivateRuleOptForURL converts QualityprofilesActivateRuleOption to a URL-encodable format.
-func (s *QualityprofilesService) convertActivateRuleOptForURL(opt *QualityprofilesActivateRuleOption) *qualityprofilesActivateRuleURLOption {
+// convertActivateRuleOptForURL converts QualityprofilesActivateRuleOptions to a URL-encodable format.
+func (s *QualityprofilesService) convertActivateRuleOptForURL(opt *QualityprofilesActivateRuleOptions) *qualityprofilesActivateRuleURLOptions {
 	//nolint:exhaustruct // Only populate fields that have values
-	urlOpt := &qualityprofilesActivateRuleURLOption{
+	urlOpt := &qualityprofilesActivateRuleURLOptions{
 		Key:             opt.Key,
 		Rule:            opt.Rule,
 		PrioritizedRule: opt.PrioritizedRule,
@@ -2395,10 +2395,10 @@ func (s *QualityprofilesService) convertActivateRuleOptForURL(opt *Qualityprofil
 	return urlOpt
 }
 
-// qualityprofilesActivateRuleURLOption is the URL-encodable version of QualityprofilesActivateRuleOption.
+// qualityprofilesActivateRuleURLOptions is the URL-encodable version of QualityprofilesActivateRuleOption.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type qualityprofilesActivateRuleURLOption struct {
+type qualityprofilesActivateRuleURLOptions struct {
 	Key             string `url:"key,omitempty"`
 	Rule            string `url:"rule,omitempty"`
 	Impacts         string `url:"impacts,omitempty"`

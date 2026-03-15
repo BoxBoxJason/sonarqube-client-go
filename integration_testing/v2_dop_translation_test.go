@@ -130,7 +130,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 				Expect(result.NewProjectCreated).To(BeTrue())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return helpers.IgnoreNotFoundError(err)
@@ -200,7 +200,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 				Expect(result.NewProjectCreated).To(BeTrue())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return helpers.IgnoreNotFoundError(err)
@@ -222,7 +222,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 				Expect(createResult.NewProjectCreated).To(BeTrue())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOption{
+					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return helpers.IgnoreNotFoundError(err)

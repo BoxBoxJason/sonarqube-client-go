@@ -36,7 +36,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should succeed with empty options", func() {
-				result, resp, err := client.Languages.List(&sonar.LanguagesListOption{})
+				result, resp, err := client.Languages.List(&sonar.LanguagesListOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -91,7 +91,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should filter languages with query", func() {
-				result, resp, err := client.Languages.List(&sonar.LanguagesListOption{
+				result, resp, err := client.Languages.List(&sonar.LanguagesListOptions{
 					Query: "java",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -112,7 +112,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 				}
 			})
 			It("should limit results with page size", func() {
-				result, resp, err := client.Languages.List(&sonar.LanguagesListOption{
+				result, resp, err := client.Languages.List(&sonar.LanguagesListOptions{
 					PageSize: 2,
 				})
 				Expect(err).NotTo(HaveOccurred())

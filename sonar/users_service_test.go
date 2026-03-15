@@ -12,7 +12,7 @@ func TestUsers_Anonymize(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/anonymize", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersAnonymizeOption{
+	opt := &UsersAnonymizeOptions{
 		Login: "deactivated-user",
 	}
 
@@ -29,7 +29,7 @@ func TestUsers_Anonymize_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Users.Anonymize(&UsersAnonymizeOption{})
+	_, err = client.Users.Anonymize(&UsersAnonymizeOptions{})
 	assert.Error(t, err)
 }
 
@@ -37,7 +37,7 @@ func TestUsers_ChangePassword(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/change_password", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersChangePasswordOption{
+	opt := &UsersChangePasswordOptions{
 		Login:    "myuser",
 		Password: "MyNewPassword123!",
 	}
@@ -52,7 +52,7 @@ func TestUsers_ChangePassword_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *UsersChangePasswordOption
+		opt  *UsersChangePasswordOptions
 	}{
 		{
 			name: "nil option",
@@ -60,15 +60,15 @@ func TestUsers_ChangePassword_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing login",
-			opt:  &UsersChangePasswordOption{Password: "MyNewPassword123!"},
+			opt:  &UsersChangePasswordOptions{Password: "MyNewPassword123!"},
 		},
 		{
 			name: "missing password",
-			opt:  &UsersChangePasswordOption{Login: "myuser"},
+			opt:  &UsersChangePasswordOptions{Login: "myuser"},
 		},
 		{
 			name: "password too short",
-			opt:  &UsersChangePasswordOption{Login: "myuser", Password: "short"},
+			opt:  &UsersChangePasswordOptions{Login: "myuser", Password: "short"},
 		},
 	}
 
@@ -95,7 +95,7 @@ func TestUsers_Create(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/users/create", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersCreateOption{
+	opt := &UsersCreateOptions{
 		Login:       "newuser",
 		Name:        "New User",
 		Email:       "newuser@example.com",
@@ -119,7 +119,7 @@ func TestUsers_Create_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *UsersCreateOption
+		opt  *UsersCreateOptions
 	}{
 		{
 			name: "nil option",
@@ -127,23 +127,23 @@ func TestUsers_Create_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing login",
-			opt:  &UsersCreateOption{Name: "Test User"},
+			opt:  &UsersCreateOptions{Name: "Test User"},
 		},
 		{
 			name: "missing name",
-			opt:  &UsersCreateOption{Login: "testuser"},
+			opt:  &UsersCreateOptions{Login: "testuser"},
 		},
 		{
 			name: "login too short",
-			opt:  &UsersCreateOption{Login: "x", Name: "Test User"},
+			opt:  &UsersCreateOptions{Login: "x", Name: "Test User"},
 		},
 		{
 			name: "local user without password",
-			opt:  &UsersCreateOption{Login: "testuser", Name: "Test User", Local: true},
+			opt:  &UsersCreateOptions{Login: "testuser", Name: "Test User", Local: true},
 		},
 		{
 			name: "password too short",
-			opt:  &UsersCreateOption{Login: "testuser", Name: "Test User", Local: true, Password: "short"},
+			opt:  &UsersCreateOptions{Login: "testuser", Name: "Test User", Local: true, Password: "short"},
 		},
 	}
 
@@ -208,7 +208,7 @@ func TestUsers_Deactivate(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/users/deactivate", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersDeactivateOption{
+	opt := &UsersDeactivateOptions{
 		Login:     "myuser",
 		Anonymize: false,
 	}
@@ -235,7 +235,7 @@ func TestUsers_Deactivate_WithAnonymize(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/users/deactivate", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersDeactivateOption{
+	opt := &UsersDeactivateOptions{
 		Login:     "myuser",
 		Anonymize: true,
 	}
@@ -254,7 +254,7 @@ func TestUsers_Deactivate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, _, err = client.Users.Deactivate(&UsersDeactivateOption{})
+	_, _, err = client.Users.Deactivate(&UsersDeactivateOptions{})
 	assert.Error(t, err)
 }
 
@@ -262,7 +262,7 @@ func TestUsers_DismissNotice(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/dismiss_notice", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersDismissNoticeOption{
+	opt := &UsersDismissNoticeOptions{
 		Notice: "educationPrinciples",
 	}
 
@@ -276,7 +276,7 @@ func TestUsers_DismissNotice_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *UsersDismissNoticeOption
+		opt  *UsersDismissNoticeOptions
 	}{
 		{
 			name: "nil option",
@@ -284,11 +284,11 @@ func TestUsers_DismissNotice_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing notice",
-			opt:  &UsersDismissNoticeOption{},
+			opt:  &UsersDismissNoticeOptions{},
 		},
 		{
 			name: "invalid notice",
-			opt:  &UsersDismissNoticeOption{Notice: "invalidNotice"},
+			opt:  &UsersDismissNoticeOptions{Notice: "invalidNotice"},
 		},
 	}
 
@@ -328,7 +328,7 @@ func TestUsers_Groups(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersGroupsOption{
+	opt := &UsersGroupsOptions{
 		Login: "myuser",
 	}
 
@@ -355,7 +355,7 @@ func TestUsers_Groups_WithPagination(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersGroupsOption{
+	opt := &UsersGroupsOptions{
 		Login: "myuser",
 		PaginationArgs: PaginationArgs{
 			Page:     2,
@@ -382,7 +382,7 @@ func TestUsers_Groups_WithFilter(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersGroupsOption{
+	opt := &UsersGroupsOptions{
 		Login:    "myuser",
 		Query:    "admin",
 		Selected: "selected",
@@ -398,7 +398,7 @@ func TestUsers_Groups_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *UsersGroupsOption
+		opt  *UsersGroupsOptions
 	}{
 		{
 			name: "nil option",
@@ -406,15 +406,15 @@ func TestUsers_Groups_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing login",
-			opt:  &UsersGroupsOption{},
+			opt:  &UsersGroupsOptions{},
 		},
 		{
 			name: "invalid selected",
-			opt:  &UsersGroupsOption{Login: "myuser", Selected: "invalid"},
+			opt:  &UsersGroupsOptions{Login: "myuser", Selected: "invalid"},
 		},
 		{
 			name: "invalid page size",
-			opt:  &UsersGroupsOption{Login: "myuser", PaginationArgs: PaginationArgs{PageSize: 1000}},
+			opt:  &UsersGroupsOptions{Login: "myuser", PaginationArgs: PaginationArgs{PageSize: 1000}},
 		},
 	}
 
@@ -518,7 +518,7 @@ func TestUsers_Search_WithFilters(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersSearchOption{
+	opt := &UsersSearchOptions{
 		Deactivated: true,
 		Query:       "test",
 		PaginationArgs: PaginationArgs{
@@ -536,7 +536,7 @@ func TestUsers_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Invalid page size should fail validation.
-	opt := &UsersSearchOption{
+	opt := &UsersSearchOptions{
 		PaginationArgs: PaginationArgs{PageSize: 1000},
 	}
 	_, _, err := client.Users.Search(opt)
@@ -547,7 +547,7 @@ func TestUsers_SetHomepage(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/set_homepage", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersSetHomepageOption{
+	opt := &UsersSetHomepageOptions{
 		Type:      "PROJECT",
 		Component: "my-project",
 	}
@@ -562,7 +562,7 @@ func TestUsers_SetHomepage_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *UsersSetHomepageOption
+		opt  *UsersSetHomepageOptions
 	}{
 		{
 			name: "nil option",
@@ -570,11 +570,11 @@ func TestUsers_SetHomepage_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing type",
-			opt:  &UsersSetHomepageOption{},
+			opt:  &UsersSetHomepageOptions{},
 		},
 		{
 			name: "invalid type",
-			opt:  &UsersSetHomepageOption{Type: "INVALID"},
+			opt:  &UsersSetHomepageOptions{Type: "INVALID"},
 		},
 	}
 
@@ -601,7 +601,7 @@ func TestUsers_Update(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/users/update", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersUpdateOption{
+	opt := &UsersUpdateOptions{
 		Login: "myuser",
 		Name:  "Updated Name",
 		Email: "updated@example.com",
@@ -622,7 +622,7 @@ func TestUsers_Update_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, _, err = client.Users.Update(&UsersUpdateOption{})
+	_, _, err = client.Users.Update(&UsersUpdateOptions{})
 	assert.Error(t, err)
 }
 
@@ -630,7 +630,7 @@ func TestUsers_UpdateIdentityProvider(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/update_identity_provider", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersUpdateIdentityProviderOption{
+	opt := &UsersUpdateIdentityProviderOptions{
 		Login:               "myuser",
 		NewExternalProvider: "github",
 		NewExternalIdentity: "github-user",
@@ -646,7 +646,7 @@ func TestUsers_UpdateIdentityProvider_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *UsersUpdateIdentityProviderOption
+		opt  *UsersUpdateIdentityProviderOptions
 	}{
 		{
 			name: "nil option",
@@ -654,11 +654,11 @@ func TestUsers_UpdateIdentityProvider_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing login",
-			opt:  &UsersUpdateIdentityProviderOption{NewExternalProvider: "github"},
+			opt:  &UsersUpdateIdentityProviderOptions{NewExternalProvider: "github"},
 		},
 		{
 			name: "missing newExternalProvider",
-			opt:  &UsersUpdateIdentityProviderOption{Login: "myuser"},
+			opt:  &UsersUpdateIdentityProviderOptions{Login: "myuser"},
 		},
 	}
 
@@ -674,7 +674,7 @@ func TestUsers_UpdateLogin(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/update_login", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &UsersUpdateLoginOption{
+	opt := &UsersUpdateLoginOptions{
 		Login:    "oldlogin",
 		NewLogin: "newlogin",
 	}
@@ -689,7 +689,7 @@ func TestUsers_UpdateLogin_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *UsersUpdateLoginOption
+		opt  *UsersUpdateLoginOptions
 	}{
 		{
 			name: "nil option",
@@ -697,15 +697,15 @@ func TestUsers_UpdateLogin_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing login",
-			opt:  &UsersUpdateLoginOption{NewLogin: "newlogin"},
+			opt:  &UsersUpdateLoginOptions{NewLogin: "newlogin"},
 		},
 		{
 			name: "missing newLogin",
-			opt:  &UsersUpdateLoginOption{Login: "oldlogin"},
+			opt:  &UsersUpdateLoginOptions{Login: "oldlogin"},
 		},
 		{
 			name: "newLogin too short",
-			opt:  &UsersUpdateLoginOption{Login: "oldlogin", NewLogin: "x"},
+			opt:  &UsersUpdateLoginOptions{Login: "oldlogin", NewLogin: "x"},
 		},
 	}
 

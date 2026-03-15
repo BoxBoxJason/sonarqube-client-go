@@ -25,7 +25,7 @@ func TestRules_Create(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/rules/create", 200, `{"rule":{"key":"java:MyRule","name":"My Rule"}}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesCreateOption{
+	opt := &RulesCreateOptions{
 		CustomKey:           "MyRule",
 		Name:                "My Rule",
 		MarkdownDescription: "Test description",
@@ -42,7 +42,7 @@ func TestRules_Delete(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/rules/delete", 204))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesDeleteOption{Key: "java:MyRule"}
+	opt := &RulesDeleteOptions{Key: "java:MyRule"}
 	resp, err := client.Rules.Delete(opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
@@ -52,7 +52,7 @@ func TestRules_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/search", 200, `{"paging":{"total":0},"rules":[],"actives":{}}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesSearchOption{Languages: []string{"java"}}
+	opt := &RulesSearchOptions{Languages: []string{"java"}}
 	result, resp, err := client.Rules.Search(opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
@@ -98,7 +98,7 @@ func TestRules_Show(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/show", 200, `{"rule":{"key":"java:S1067","name":"Test Rule"}}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesShowOption{Key: "java:S1067"}
+	opt := &RulesShowOptions{Key: "java:S1067"}
 	result, resp, err := client.Rules.Show(opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
@@ -110,7 +110,7 @@ func TestRules_Tags(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/tags", 200, `{"tags":["security","bug"]}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesTagsOption{PageSize: 100}
+	opt := &RulesTagsOptions{PageSize: 100}
 	result, resp, err := client.Rules.Tags(opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
@@ -122,7 +122,7 @@ func TestRules_Update(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/rules/update", 200, `{"rule":{"key":"java:MyRule","name":"Updated Rule"}}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesUpdateOption{Key: "java:MyRule", Name: "Updated Rule"}
+	opt := &RulesUpdateOptions{Key: "java:MyRule", Name: "Updated Rule"}
 	result, resp, err := client.Rules.Update(opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
@@ -139,7 +139,7 @@ func TestRules_UpdateClearTags(t *testing.T) {
 	}))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesUpdateOption{Key: "java:MyRule", Tags: []string{}}
+	opt := &RulesUpdateOptions{Key: "java:MyRule", Tags: []string{}}
 	result, resp, err := client.Rules.Update(opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
@@ -153,7 +153,7 @@ func TestRules_Repositories(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/repositories", 200, `{"repositories":[{"key":"java","language":"java","name":"SonarAnalyzer"}]}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesRepositoriesOption{}
+	opt := &RulesRepositoriesOptions{}
 	result, resp, err := client.Rules.Repositories(opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
@@ -165,7 +165,7 @@ func TestRules_List(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/list", 200, `{"rules":[]}`))
 	client := newTestClient(t, server.URL)
 
-	opt := &RulesListOption{
+	opt := &RulesListOptions{
 		PaginationArgs: PaginationArgs{
 			PageSize: 50,
 		},
@@ -182,7 +182,7 @@ func TestValidateCreateOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *RulesCreateOption
+		opt     *RulesCreateOptions
 		wantErr bool
 		errMsg  string
 	}{
@@ -194,7 +194,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "missing CustomKey",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				Name:                "Test",
 				MarkdownDescription: "Test",
 				TemplateKey:         "java:Template",
@@ -204,7 +204,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "missing Name",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				MarkdownDescription: "Test",
 				TemplateKey:         "java:Template",
@@ -214,7 +214,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "missing MarkdownDescription",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:   "MyRule",
 				Name:        "Test",
 				TemplateKey: "java:Template",
@@ -224,7 +224,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "missing TemplateKey",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				Name:                "Test",
 				MarkdownDescription: "Test",
@@ -234,7 +234,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "CustomKey too long",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           strings.Repeat("a", 201),
 				Name:                "Test",
 				MarkdownDescription: "Test",
@@ -245,7 +245,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Severity",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				Name:                "Test",
 				MarkdownDescription: "Test",
@@ -257,7 +257,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Status",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				Name:                "Test",
 				MarkdownDescription: "Test",
@@ -269,7 +269,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Type",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				Name:                "Test",
 				MarkdownDescription: "Test",
@@ -281,7 +281,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Impacts key",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				Name:                "Test",
 				MarkdownDescription: "Test",
@@ -295,7 +295,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Impacts value",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				Name:                "Test",
 				MarkdownDescription: "Test",
@@ -309,7 +309,7 @@ func TestValidateCreateOpt(t *testing.T) {
 		},
 		{
 			name: "valid option",
-			opt: &RulesCreateOption{
+			opt: &RulesCreateOptions{
 				CustomKey:           "MyRule",
 				Name:                "Test Rule",
 				MarkdownDescription: "Test description",
@@ -346,7 +346,7 @@ func TestValidateSearchOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *RulesSearchOption
+		opt     *RulesSearchOptions
 		wantErr bool
 		errMsg  string
 	}{
@@ -357,7 +357,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Page",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				PaginationArgs: PaginationArgs{Page: -1},
 			},
 			wantErr: true,
@@ -365,7 +365,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid PageSize",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				PaginationArgs: PaginationArgs{PageSize: 600},
 			},
 			wantErr: true,
@@ -373,7 +373,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "Query too short",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				Query: "a",
 			},
 			wantErr: true,
@@ -381,7 +381,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid ActiveSeverities",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				ActiveSeverities: []string{"INVALID"},
 			},
 			wantErr: true,
@@ -389,7 +389,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid CleanCodeAttributeCategories",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				CleanCodeAttributeCategories: []string{"INVALID"},
 			},
 			wantErr: true,
@@ -397,7 +397,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid ImpactSoftwareQualities",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				ImpactSoftwareQualities: []string{"INVALID"},
 			},
 			wantErr: true,
@@ -405,7 +405,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Inheritance",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				Inheritance: []string{"INVALID"},
 			},
 			wantErr: true,
@@ -413,7 +413,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid OwaspTop10",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				OwaspTop10: []string{"a11"},
 			},
 			wantErr: true,
@@ -421,7 +421,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Statuses",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				Statuses: []string{"INVALID"},
 			},
 			wantErr: true,
@@ -429,7 +429,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Types",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				Types: []string{"INVALID"},
 			},
 			wantErr: true,
@@ -437,7 +437,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Sort",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				Sort: "invalid",
 			},
 			wantErr: true,
@@ -445,7 +445,7 @@ func TestValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "valid option",
-			opt: &RulesSearchOption{
+			opt: &RulesSearchOptions{
 				PaginationArgs: PaginationArgs{Page: 1, PageSize: 50},
 				Query:          "test",
 				Languages:      []string{"java", "go"},
@@ -478,7 +478,7 @@ func TestValidateUpdateOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *RulesUpdateOption
+		opt     *RulesUpdateOptions
 		wantErr bool
 		errMsg  string
 	}{
@@ -490,13 +490,13 @@ func TestValidateUpdateOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Key",
-			opt:     &RulesUpdateOption{},
+			opt:     &RulesUpdateOptions{},
 			wantErr: true,
 			errMsg:  "Key",
 		},
 		{
 			name: "Key too long",
-			opt: &RulesUpdateOption{
+			opt: &RulesUpdateOptions{
 				Key: strings.Repeat("a", 201),
 			},
 			wantErr: true,
@@ -504,7 +504,7 @@ func TestValidateUpdateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Severity",
-			opt: &RulesUpdateOption{
+			opt: &RulesUpdateOptions{
 				Key:      "java:MyRule",
 				Severity: "INVALID",
 			},
@@ -513,7 +513,7 @@ func TestValidateUpdateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Status",
-			opt: &RulesUpdateOption{
+			opt: &RulesUpdateOptions{
 				Key:    "java:MyRule",
 				Status: "INVALID",
 			},
@@ -522,7 +522,7 @@ func TestValidateUpdateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid RemediationFnType",
-			opt: &RulesUpdateOption{
+			opt: &RulesUpdateOptions{
 				Key:               "java:MyRule",
 				RemediationFnType: "INVALID",
 			},
@@ -531,7 +531,7 @@ func TestValidateUpdateOpt(t *testing.T) {
 		},
 		{
 			name: "invalid Impacts key",
-			opt: &RulesUpdateOption{
+			opt: &RulesUpdateOptions{
 				Key: "java:MyRule",
 				Impacts: map[string]string{
 					"INVALID": "HIGH",
@@ -542,7 +542,7 @@ func TestValidateUpdateOpt(t *testing.T) {
 		},
 		{
 			name: "valid option",
-			opt: &RulesUpdateOption{
+			opt: &RulesUpdateOptions{
 				Key:      "java:MyRule",
 				Name:     "Updated Rule",
 				Severity: "CRITICAL",
@@ -576,7 +576,7 @@ func TestValidateShowOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *RulesShowOption
+		opt     *RulesShowOptions
 		wantErr bool
 		errMsg  string
 	}{
@@ -588,13 +588,13 @@ func TestValidateShowOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Key",
-			opt:     &RulesShowOption{},
+			opt:     &RulesShowOptions{},
 			wantErr: true,
 			errMsg:  "Key",
 		},
 		{
 			name: "valid option",
-			opt: &RulesShowOption{
+			opt: &RulesShowOptions{
 				Key:     "java:S1067",
 				Actives: true,
 			},
@@ -622,7 +622,7 @@ func TestValidateDeleteOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *RulesDeleteOption
+		opt     *RulesDeleteOptions
 		wantErr bool
 		errMsg  string
 	}{
@@ -634,13 +634,13 @@ func TestValidateDeleteOpt(t *testing.T) {
 		},
 		{
 			name:    "missing Key",
-			opt:     &RulesDeleteOption{},
+			opt:     &RulesDeleteOptions{},
 			wantErr: true,
 			errMsg:  "Key",
 		},
 		{
 			name: "valid option",
-			opt: &RulesDeleteOption{
+			opt: &RulesDeleteOptions{
 				Key: "java:MyRule",
 			},
 			wantErr: false,
@@ -667,7 +667,7 @@ func TestValidateTagsOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *RulesTagsOption
+		opt     *RulesTagsOptions
 		wantErr bool
 		errMsg  string
 	}{
@@ -678,7 +678,7 @@ func TestValidateTagsOpt(t *testing.T) {
 		},
 		{
 			name: "invalid PageSize - too large",
-			opt: &RulesTagsOption{
+			opt: &RulesTagsOptions{
 				PageSize: 600,
 			},
 			wantErr: true,
@@ -686,7 +686,7 @@ func TestValidateTagsOpt(t *testing.T) {
 		},
 		{
 			name: "invalid PageSize - negative",
-			opt: &RulesTagsOption{
+			opt: &RulesTagsOptions{
 				PageSize: -1,
 			},
 			wantErr: true,
@@ -694,7 +694,7 @@ func TestValidateTagsOpt(t *testing.T) {
 		},
 		{
 			name: "valid option",
-			opt: &RulesTagsOption{
+			opt: &RulesTagsOptions{
 				PageSize: 100,
 				Query:    "security",
 			},
@@ -722,7 +722,7 @@ func TestValidateTagsOpt(t *testing.T) {
 func TestConvertCreateOptForURL(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	opt := &RulesCreateOption{
+	opt := &RulesCreateOptions{
 		CustomKey:           "MyRule",
 		Name:                "Test Rule",
 		MarkdownDescription: "Description",
@@ -754,7 +754,7 @@ func TestConvertCreateOptForURL(t *testing.T) {
 func TestConvertSearchOptForURL(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	opt := &RulesSearchOption{
+	opt := &RulesSearchOptions{
 		PaginationArgs: PaginationArgs{Page: 1, PageSize: 50},
 		Languages:      []string{"java", "go"},
 		Severities:     []string{"MAJOR", "CRITICAL"},
@@ -776,7 +776,7 @@ func TestConvertSearchOptForURL(t *testing.T) {
 func TestConvertUpdateOptForURL(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	opt := &RulesUpdateOption{
+	opt := &RulesUpdateOptions{
 		Key:  "java:MyRule",
 		Name: "Updated",
 		Impacts: map[string]string{
@@ -834,7 +834,7 @@ func TestEmptySlicesAndMaps(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test with empty slices and maps
-	opt := &RulesSearchOption{
+	opt := &RulesSearchOptions{
 		Languages:  []string{},
 		Severities: []string{},
 		Tags:       []string{},

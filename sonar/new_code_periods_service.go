@@ -81,15 +81,15 @@ type NewCodePeriodsShow struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// NewCodePeriodsListOption contains parameters for the List method.
-type NewCodePeriodsListOption struct {
+// NewCodePeriodsListOptions contains parameters for the List method.
+type NewCodePeriodsListOptions struct {
 	// Project is the project key.
 	// This field is required.
 	Project string `url:"project"`
 }
 
-// NewCodePeriodsSetOption contains parameters for the Set method.
-type NewCodePeriodsSetOption struct {
+// NewCodePeriodsSetOptions contains parameters for the Set method.
+type NewCodePeriodsSetOptions struct {
 	// Branch is the branch key.
 	Branch string `url:"branch,omitempty"`
 	// Project is the project key.
@@ -110,16 +110,16 @@ type NewCodePeriodsSetOption struct {
 	Value string `url:"value,omitempty"`
 }
 
-// NewCodePeriodsShowOption contains parameters for the Show method.
-type NewCodePeriodsShowOption struct {
+// NewCodePeriodsShowOptions contains parameters for the Show method.
+type NewCodePeriodsShowOptions struct {
 	// Branch is the branch key.
 	Branch string `url:"branch,omitempty"`
 	// Project is the project key.
 	Project string `url:"project,omitempty"`
 }
 
-// NewCodePeriodsUnsetOption contains parameters for the Unset method.
-type NewCodePeriodsUnsetOption struct {
+// NewCodePeriodsUnsetOptions contains parameters for the Unset method.
+type NewCodePeriodsUnsetOptions struct {
 	// Branch is the branch key.
 	Branch string `url:"branch,omitempty"`
 	// Project is the project key.
@@ -131,7 +131,7 @@ type NewCodePeriodsUnsetOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateListOpt validates the options for the List method.
-func (s *NewCodePeriodsService) ValidateListOpt(opt *NewCodePeriodsListOption) error {
+func (s *NewCodePeriodsService) ValidateListOpt(opt *NewCodePeriodsListOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -145,7 +145,7 @@ func (s *NewCodePeriodsService) ValidateListOpt(opt *NewCodePeriodsListOption) e
 }
 
 // ValidateSetOpt validates the options for the Set method.
-func (s *NewCodePeriodsService) ValidateSetOpt(opt *NewCodePeriodsSetOption) error {
+func (s *NewCodePeriodsService) ValidateSetOpt(opt *NewCodePeriodsSetOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -175,13 +175,13 @@ func (s *NewCodePeriodsService) ValidateSetOpt(opt *NewCodePeriodsSetOption) err
 }
 
 // ValidateShowOpt validates the options for the Show method.
-func (s *NewCodePeriodsService) ValidateShowOpt(opt *NewCodePeriodsShowOption) error {
+func (s *NewCodePeriodsService) ValidateShowOpt(opt *NewCodePeriodsShowOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
 
 // ValidateUnsetOpt validates the options for the Unset method.
-func (s *NewCodePeriodsService) ValidateUnsetOpt(opt *NewCodePeriodsUnsetOption) error {
+func (s *NewCodePeriodsService) ValidateUnsetOpt(opt *NewCodePeriodsUnsetOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
@@ -195,7 +195,7 @@ func (s *NewCodePeriodsService) ValidateUnsetOpt(opt *NewCodePeriodsUnsetOption)
 //
 // API endpoint: GET /api/new_code_periods/list.
 // Since: 8.0.
-func (s *NewCodePeriodsService) List(opt *NewCodePeriodsListOption) (*NewCodePeriodsList, *http.Response, error) {
+func (s *NewCodePeriodsService) List(opt *NewCodePeriodsListOptions) (*NewCodePeriodsList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -227,7 +227,7 @@ func (s *NewCodePeriodsService) List(opt *NewCodePeriodsListOption) (*NewCodePer
 //
 // API endpoint: POST /api/new_code_periods/set.
 // Since: 8.0.
-func (s *NewCodePeriodsService) Set(opt *NewCodePeriodsSetOption) (*http.Response, error) {
+func (s *NewCodePeriodsService) Set(opt *NewCodePeriodsSetOptions) (*http.Response, error) {
 	err := s.ValidateSetOpt(opt)
 	if err != nil {
 		return nil, err
@@ -256,7 +256,7 @@ func (s *NewCodePeriodsService) Set(opt *NewCodePeriodsSetOption) (*http.Respons
 //
 // API endpoint: GET /api/new_code_periods/show.
 // Since: 8.0.
-func (s *NewCodePeriodsService) Show(opt *NewCodePeriodsShowOption) (*NewCodePeriodsShow, *http.Response, error) {
+func (s *NewCodePeriodsService) Show(opt *NewCodePeriodsShowOptions) (*NewCodePeriodsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -286,7 +286,7 @@ func (s *NewCodePeriodsService) Show(opt *NewCodePeriodsShowOption) (*NewCodePer
 //
 // API endpoint: POST /api/new_code_periods/unset.
 // Since: 8.0.
-func (s *NewCodePeriodsService) Unset(opt *NewCodePeriodsUnsetOption) (*http.Response, error) {
+func (s *NewCodePeriodsService) Unset(opt *NewCodePeriodsUnsetOptions) (*http.Response, error) {
 	err := s.ValidateUnsetOpt(opt)
 	if err != nil {
 		return nil, err
@@ -306,7 +306,7 @@ func (s *NewCodePeriodsService) Unset(opt *NewCodePeriodsUnsetOption) (*http.Res
 }
 
 // validateNumberOfDays validates the NUMBER_OF_DAYS type.
-func (s *NewCodePeriodsService) validateNumberOfDays(opt *NewCodePeriodsSetOption) error {
+func (s *NewCodePeriodsService) validateNumberOfDays(opt *NewCodePeriodsSetOptions) error {
 	// Convert Value to int64 and validate range
 	intValue, parseErr := strconv.ParseInt(opt.Value, 10, 64)
 	if parseErr != nil {
@@ -317,19 +317,19 @@ func (s *NewCodePeriodsService) validateNumberOfDays(opt *NewCodePeriodsSetOptio
 }
 
 // validateSpecificAnalysis validates the SPECIFIC_ANALYSIS type.
-func (s *NewCodePeriodsService) validateSpecificAnalysis(opt *NewCodePeriodsSetOption) error {
+func (s *NewCodePeriodsService) validateSpecificAnalysis(opt *NewCodePeriodsSetOptions) error {
 	// Branch is required
 	return ValidateRequired(opt.Branch, "Branch")
 }
 
 // validateReferenceBranch validates the REFERENCE_BRANCH type.
-func (s *NewCodePeriodsService) validateReferenceBranch(opt *NewCodePeriodsSetOption) error {
+func (s *NewCodePeriodsService) validateReferenceBranch(opt *NewCodePeriodsSetOptions) error {
 	// Project is required
 	return ValidateRequired(opt.Project, "Project")
 }
 
 // validatePreviousVersion validates the PREVIOUS_VERSION type.
-func (s *NewCodePeriodsService) validatePreviousVersion(opt *NewCodePeriodsSetOption) error {
+func (s *NewCodePeriodsService) validatePreviousVersion(opt *NewCodePeriodsSetOptions) error {
 	// No special requirements
 	return nil
 }

@@ -35,7 +35,7 @@ var _ = Describe("Emails Service", Ordered, func() {
 			})
 
 			It("should fail with missing to address", func() {
-				resp, err := client.Emails.Send(&sonar.EmailsSendOption{
+				resp, err := client.Emails.Send(&sonar.EmailsSendOptions{
 					Message: "Test message",
 				})
 				Expect(resp).To(BeNil())
@@ -44,7 +44,7 @@ var _ = Describe("Emails Service", Ordered, func() {
 			})
 
 			It("should fail with missing message", func() {
-				resp, err := client.Emails.Send(&sonar.EmailsSendOption{
+				resp, err := client.Emails.Send(&sonar.EmailsSendOptions{
 					To: "test@example.com",
 				})
 				Expect(resp).To(BeNil())
@@ -57,7 +57,7 @@ var _ = Describe("Emails Service", Ordered, func() {
 			It("should attempt to send test email with valid parameters", func() {
 				// Email sending requires SMTP to be configured
 				// If not configured, the API returns an error
-				resp, err := client.Emails.Send(&sonar.EmailsSendOption{
+				resp, err := client.Emails.Send(&sonar.EmailsSendOptions{
 					To:      "test@example.com",
 					Message: "Test message from e2e tests",
 					Subject: "Test Subject",

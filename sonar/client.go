@@ -100,9 +100,9 @@ type ServicesV2 struct {
 	UsersManagement *UsersManagementService
 }
 
-// ClientCreateOption contains options for creating a new Client.
+// ClientCreateOptions contains options for creating a new Client.
 // Everything is optional and will not throw an error if not provided.
-type ClientCreateOption struct {
+type ClientCreateOptions struct {
 	// URL is the base API URL for the SonarQube instance.
 	URL *string
 	// Username is the username for basic authentication.
@@ -129,7 +129,7 @@ type ClientOptionFunc func(*Client) error
 // provided via options.
 //
 //nolint:exhaustruct // Fields initialized dynamically via options and initServices
-func NewClient(createOpts *ClientCreateOption, options ...ClientOptionFunc) (*Client, error) {
+func NewClient(createOpts *ClientCreateOptions, options ...ClientOptionFunc) (*Client, error) {
 	client := &Client{}
 
 	err := applyCreateOptions(client, createOpts)
@@ -153,7 +153,7 @@ func NewClient(createOpts *ClientCreateOption, options ...ClientOptionFunc) (*Cl
 }
 
 // applyCreateOptions applies initial configuration options to the client.
-func applyCreateOptions(client *Client, createOpts *ClientCreateOption) error {
+func applyCreateOptions(client *Client, createOpts *ClientCreateOptions) error {
 	if createOpts == nil {
 		return nil
 	}

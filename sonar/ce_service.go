@@ -255,10 +255,10 @@ type CeWorkerCount struct {
 // Option Types
 // -----------------------------------------------------------------------------
 
-// CeActivityOption contains parameters for the Activity method.
+// CeActivityOptions contains parameters for the Activity method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type CeActivityOption struct {
+type CeActivityOptions struct {
 	CePaginationArgs
 
 	// Component is the key of the component (project) to filter on.
@@ -303,14 +303,14 @@ func (p *CePaginationArgs) Validate() error {
 	return nil
 }
 
-// CeActivityStatusOption contains parameters for the ActivityStatus method.
-type CeActivityStatusOption struct {
+// CeActivityStatusOptions contains parameters for the ActivityStatus method.
+type CeActivityStatusOptions struct {
 	// Component is the key of the component (project) to filter on.
 	Component string `url:"component,omitempty"`
 }
 
-// CeAnalysisStatusOption contains parameters for the AnalysisStatus method.
-type CeAnalysisStatusOption struct {
+// CeAnalysisStatusOptions contains parameters for the AnalysisStatus method.
+type CeAnalysisStatusOptions struct {
 	// Branch is the branch key.
 	Branch string `url:"branch,omitempty"`
 	// Component is the component key.
@@ -320,22 +320,22 @@ type CeAnalysisStatusOption struct {
 	PullRequest string `url:"pullRequest,omitempty"`
 }
 
-// CeCancelOption contains parameters for the Cancel method.
-type CeCancelOption struct {
+// CeCancelOptions contains parameters for the Cancel method.
+type CeCancelOptions struct {
 	// ID is the ID of the task to cancel.
 	// This field is required.
 	ID string `url:"id"`
 }
 
-// CeComponentOption contains parameters for the Component method.
-type CeComponentOption struct {
+// CeComponentOptions contains parameters for the Component method.
+type CeComponentOptions struct {
 	// Component is the component key.
 	// This field is required.
 	Component string `url:"component"`
 }
 
-// CeDismissAnalysisWarningOption contains parameters for the DismissAnalysisWarning method.
-type CeDismissAnalysisWarningOption struct {
+// CeDismissAnalysisWarningOptions contains parameters for the DismissAnalysisWarning method.
+type CeDismissAnalysisWarningOptions struct {
 	// Component is the key of the project.
 	// This field is required.
 	Component string `url:"component"`
@@ -344,10 +344,10 @@ type CeDismissAnalysisWarningOption struct {
 	Warning string `url:"warning"`
 }
 
-// CeSubmitOption contains parameters for the Submit method.
+// CeSubmitOptions contains parameters for the Submit method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type CeSubmitOption struct {
+type CeSubmitOptions struct {
 	// Characteristics contains optional characteristics of the analysis.
 	// Can contain multiple key=value pairs.
 	Characteristics []string `url:"characteristic,omitempty,comma"`
@@ -362,10 +362,10 @@ type CeSubmitOption struct {
 	Report string `url:"report"`
 }
 
-// CeTaskOption contains parameters for the Task method.
+// CeTaskOptions contains parameters for the Task method.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type CeTaskOption struct {
+type CeTaskOptions struct {
 	// AdditionalFields is a list of optional fields to be returned in response.
 	// Allowed values: stacktrace, scannerContext, warnings.
 	AdditionalFields []string `url:"additionalFields,omitempty,comma"`
@@ -379,7 +379,7 @@ type CeTaskOption struct {
 // -----------------------------------------------------------------------------
 
 // ValidateActivityOpt validates the options for the Activity method.
-func (s *CeService) ValidateActivityOpt(opt *CeActivityOption) error {
+func (s *CeService) ValidateActivityOpt(opt *CeActivityOptions) error {
 	if opt == nil {
 		// Activity with no options is valid
 		return nil
@@ -408,13 +408,13 @@ func (s *CeService) ValidateActivityOpt(opt *CeActivityOption) error {
 }
 
 // ValidateActivityStatusOpt validates the options for the ActivityStatus method.
-func (s *CeService) ValidateActivityStatusOpt(opt *CeActivityStatusOption) error {
+func (s *CeService) ValidateActivityStatusOpt(opt *CeActivityStatusOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
 
 // ValidateAnalysisStatusOpt validates the options for the AnalysisStatus method.
-func (s *CeService) ValidateAnalysisStatusOpt(opt *CeAnalysisStatusOption) error {
+func (s *CeService) ValidateAnalysisStatusOpt(opt *CeAnalysisStatusOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -428,7 +428,7 @@ func (s *CeService) ValidateAnalysisStatusOpt(opt *CeAnalysisStatusOption) error
 }
 
 // ValidateCancelOpt validates the options for the Cancel method.
-func (s *CeService) ValidateCancelOpt(opt *CeCancelOption) error {
+func (s *CeService) ValidateCancelOpt(opt *CeCancelOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -442,7 +442,7 @@ func (s *CeService) ValidateCancelOpt(opt *CeCancelOption) error {
 }
 
 // ValidateComponentOpt validates the options for the Component method.
-func (s *CeService) ValidateComponentOpt(opt *CeComponentOption) error {
+func (s *CeService) ValidateComponentOpt(opt *CeComponentOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -456,7 +456,7 @@ func (s *CeService) ValidateComponentOpt(opt *CeComponentOption) error {
 }
 
 // ValidateDismissAnalysisWarningOpt validates the options for the DismissAnalysisWarning method.
-func (s *CeService) ValidateDismissAnalysisWarningOpt(opt *CeDismissAnalysisWarningOption) error {
+func (s *CeService) ValidateDismissAnalysisWarningOpt(opt *CeDismissAnalysisWarningOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -475,7 +475,7 @@ func (s *CeService) ValidateDismissAnalysisWarningOpt(opt *CeDismissAnalysisWarn
 }
 
 // ValidateSubmitOpt validates the options for the Submit method.
-func (s *CeService) ValidateSubmitOpt(opt *CeSubmitOption) error {
+func (s *CeService) ValidateSubmitOpt(opt *CeSubmitOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -499,7 +499,7 @@ func (s *CeService) ValidateSubmitOpt(opt *CeSubmitOption) error {
 }
 
 // ValidateTaskOpt validates the options for the Task method.
-func (s *CeService) ValidateTaskOpt(opt *CeTaskOption) error {
+func (s *CeService) ValidateTaskOpt(opt *CeTaskOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -529,7 +529,7 @@ func (s *CeService) ValidateTaskOpt(opt *CeTaskOption) error {
 //
 // API endpoint: GET /api/ce/activity.
 // Since: 5.2.
-func (s *CeService) Activity(opt *CeActivityOption) (*CeActivity, *http.Response, error) {
+func (s *CeService) Activity(opt *CeActivityOptions) (*CeActivity, *http.Response, error) {
 	err := s.ValidateActivityOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -555,7 +555,7 @@ func (s *CeService) Activity(opt *CeActivityOption) (*CeActivity, *http.Response
 //
 // API endpoint: GET /api/ce/activity_status.
 // Since: 5.5.
-func (s *CeService) ActivityStatus(opt *CeActivityStatusOption) (*CeActivityStatus, *http.Response, error) {
+func (s *CeService) ActivityStatus(opt *CeActivityStatusOptions) (*CeActivityStatus, *http.Response, error) {
 	err := s.ValidateActivityStatusOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -581,7 +581,7 @@ func (s *CeService) ActivityStatus(opt *CeActivityStatusOption) (*CeActivityStat
 //
 // API endpoint: GET /api/ce/analysis_status.
 // Since: 7.4.
-func (s *CeService) AnalysisStatus(opt *CeAnalysisStatusOption) (*CeAnalysisStatus, *http.Response, error) {
+func (s *CeService) AnalysisStatus(opt *CeAnalysisStatusOptions) (*CeAnalysisStatus, *http.Response, error) {
 	err := s.ValidateAnalysisStatusOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -608,7 +608,7 @@ func (s *CeService) AnalysisStatus(opt *CeAnalysisStatusOption) (*CeAnalysisStat
 //
 // API endpoint: POST /api/ce/cancel.
 // Since: 5.2.
-func (s *CeService) Cancel(opt *CeCancelOption) (*http.Response, error) {
+func (s *CeService) Cancel(opt *CeCancelOptions) (*http.Response, error) {
 	err := s.ValidateCancelOpt(opt)
 	if err != nil {
 		return nil, err
@@ -652,7 +652,7 @@ func (s *CeService) CancelAll() (*http.Response, error) {
 //
 // API endpoint: GET /api/ce/component.
 // Since: 5.2.
-func (s *CeService) Component(opt *CeComponentOption) (*CeComponent, *http.Response, error) {
+func (s *CeService) Component(opt *CeComponentOptions) (*CeComponent, *http.Response, error) {
 	err := s.ValidateComponentOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -678,7 +678,7 @@ func (s *CeService) Component(opt *CeComponentOption) (*CeComponent, *http.Respo
 //
 // API endpoint: POST /api/ce/dismiss_analysis_warning.
 // Since: 8.5.
-func (s *CeService) DismissAnalysisWarning(opt *CeDismissAnalysisWarningOption) (*http.Response, error) {
+func (s *CeService) DismissAnalysisWarning(opt *CeDismissAnalysisWarningOptions) (*http.Response, error) {
 	err := s.ValidateDismissAnalysisWarningOpt(opt)
 	if err != nil {
 		return nil, err
@@ -782,7 +782,7 @@ func (s *CeService) Resume() (*http.Response, error) {
 //
 // API endpoint: POST /api/ce/submit.
 // Since: 5.2.
-func (s *CeService) Submit(opt *CeSubmitOption) (*CeSubmit, *http.Response, error) {
+func (s *CeService) Submit(opt *CeSubmitOptions) (*CeSubmit, *http.Response, error) {
 	err := s.ValidateSubmitOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -809,7 +809,7 @@ func (s *CeService) Submit(opt *CeSubmitOption) (*CeSubmit, *http.Response, erro
 //
 // API endpoint: GET /api/ce/task.
 // Since: 5.2.
-func (s *CeService) Task(opt *CeTaskOption) (*CeTaskDetails, *http.Response, error) {
+func (s *CeService) Task(opt *CeTaskOptions) (*CeTaskDetails, *http.Response, error) {
 	err := s.ValidateTaskOpt(opt)
 	if err != nil {
 		return nil, nil, err

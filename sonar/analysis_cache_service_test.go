@@ -30,7 +30,7 @@ func TestAnalysisCache_Clear_WithOptions(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AnalysisCacheClearOption{
+	opt := &AnalysisCacheClearOptions{
 		Project: "my-project",
 		Branch:  "feature",
 	}
@@ -56,7 +56,7 @@ func TestAnalysisCache_Get(t *testing.T) {
 
 	client := newTestClient(t, ts.URL+"/")
 
-	opt := &AnalysisCacheGetOption{
+	opt := &AnalysisCacheGetOptions{
 		Project: "my-project",
 	}
 
@@ -88,7 +88,7 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 
 	client := newTestClient(t, ts.URL+"/")
 
-	opt := &AnalysisCacheGetOption{
+	opt := &AnalysisCacheGetOptions{
 		Project: "my-project",
 		Branch:  "main",
 	}
@@ -109,11 +109,11 @@ func TestAnalysisCache_ValidateClearOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *AnalysisCacheClearOption
+		opt     *AnalysisCacheClearOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &AnalysisCacheClearOption{}, false},
+		{"empty option", &AnalysisCacheClearOptions{}, false},
 	}
 
 	for _, tt := range tests {
@@ -133,12 +133,12 @@ func TestAnalysisCache_ValidateGetOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *AnalysisCacheGetOption
+		opt     *AnalysisCacheGetOptions
 		wantErr bool
 	}{
 		{"nil option", nil, true},
-		{"empty option", &AnalysisCacheGetOption{}, true},
-		{"with Project", &AnalysisCacheGetOption{Project: "my-project"}, false},
+		{"empty option", &AnalysisCacheGetOptions{}, true},
+		{"with Project", &AnalysisCacheGetOptions{Project: "my-project"}, false},
 	}
 
 	for _, tt := range tests {

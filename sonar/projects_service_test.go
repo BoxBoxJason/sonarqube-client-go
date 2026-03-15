@@ -20,7 +20,7 @@ func TestProjectsService_BulkDelete(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsBulkDeleteOption{
+	opt := &ProjectsBulkDeleteOptions{
 		Projects: []string{"project1", "project2"},
 	}
 
@@ -34,12 +34,12 @@ func TestProjectsService_BulkDelete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test no filter provided
-	opt := &ProjectsBulkDeleteOption{}
+	opt := &ProjectsBulkDeleteOptions{}
 	_, err := client.Projects.BulkDelete(opt)
 	assert.Error(t, err)
 
 	// Test invalid qualifier
-	opt = &ProjectsBulkDeleteOption{
+	opt = &ProjectsBulkDeleteOptions{
 		Query:      "test",
 		Qualifiers: []string{"INVALID"},
 	}
@@ -61,7 +61,7 @@ func TestProjectsService_Create(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsCreateOption{
+	opt := &ProjectsCreateOptions{
 		Name:       "My Project",
 		Project:    "my-project",
 		Visibility: "private",
@@ -79,21 +79,21 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Name
-	opt := &ProjectsCreateOption{
+	opt := &ProjectsCreateOptions{
 		Project: "my-project",
 	}
 	_, _, err := client.Projects.Create(opt)
 	assert.Error(t, err)
 
 	// Test missing Project
-	opt = &ProjectsCreateOption{
+	opt = &ProjectsCreateOptions{
 		Name: "My Project",
 	}
 	_, _, err = client.Projects.Create(opt)
 	assert.Error(t, err)
 
 	// Test Name too long
-	opt = &ProjectsCreateOption{
+	opt = &ProjectsCreateOptions{
 		Name:    strings.Repeat("a", MaxProjectNameLength+1),
 		Project: "my-project",
 	}
@@ -101,7 +101,7 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test Project key too long
-	opt = &ProjectsCreateOption{
+	opt = &ProjectsCreateOptions{
 		Name:    "My Project",
 		Project: strings.Repeat("a", MaxProjectKeyLength+1),
 	}
@@ -109,7 +109,7 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid visibility
-	opt = &ProjectsCreateOption{
+	opt = &ProjectsCreateOptions{
 		Name:       "My Project",
 		Project:    "my-project",
 		Visibility: "invalid",
@@ -125,7 +125,7 @@ func TestProjectsService_Delete(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsDeleteOption{
+	opt := &ProjectsDeleteOptions{
 		Project: "my-project",
 	}
 
@@ -139,7 +139,7 @@ func TestProjectsService_Delete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Project
-	opt := &ProjectsDeleteOption{}
+	opt := &ProjectsDeleteOptions{}
 	_, err := client.Projects.Delete(opt)
 	assert.Error(t, err)
 }
@@ -169,7 +169,7 @@ func TestProjectsService_Search(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsSearchOption{
+	opt := &ProjectsSearchOptions{
 		Query:      "project",
 		Qualifiers: []string{"TRK"},
 	}
@@ -186,7 +186,7 @@ func TestProjectsService_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test invalid qualifier
-	opt := &ProjectsSearchOption{
+	opt := &ProjectsSearchOptions{
 		Qualifiers: []string{"INVALID"},
 	}
 	_, _, err := client.Projects.Search(opt)
@@ -210,7 +210,7 @@ func TestProjectsService_SearchMyProjects(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsSearchMyProjectsOption{}
+	opt := &ProjectsSearchMyProjectsOptions{}
 
 	result, resp, err := client.Projects.SearchMyProjects(opt)
 	require.NoError(t, err)
@@ -230,7 +230,7 @@ func TestProjectsService_SearchMyScannableProjects(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Projects.SearchMyScannableProjects(&ProjectsSearchMyScannableProjectsOption{})
+	result, resp, err := client.Projects.SearchMyScannableProjects(&ProjectsSearchMyScannableProjectsOptions{})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Projects, 2)
@@ -243,7 +243,7 @@ func TestProjectsService_UpdateDefaultVisibility(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsUpdateDefaultVisibilityOption{
+	opt := &ProjectsUpdateDefaultVisibilityOptions{
 		ProjectVisibility: "private",
 	}
 
@@ -257,12 +257,12 @@ func TestProjectsService_UpdateDefaultVisibility_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing ProjectVisibility
-	opt := &ProjectsUpdateDefaultVisibilityOption{}
+	opt := &ProjectsUpdateDefaultVisibilityOptions{}
 	_, err := client.Projects.UpdateDefaultVisibility(opt)
 	assert.Error(t, err)
 
 	// Test invalid visibility
-	opt = &ProjectsUpdateDefaultVisibilityOption{
+	opt = &ProjectsUpdateDefaultVisibilityOptions{
 		ProjectVisibility: "invalid",
 	}
 	_, err = client.Projects.UpdateDefaultVisibility(opt)
@@ -276,7 +276,7 @@ func TestProjectsService_UpdateKey(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsUpdateKeyOption{
+	opt := &ProjectsUpdateKeyOptions{
 		From: "old-project-key",
 		To:   "new-project-key",
 	}
@@ -291,14 +291,14 @@ func TestProjectsService_UpdateKey_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing From
-	opt := &ProjectsUpdateKeyOption{
+	opt := &ProjectsUpdateKeyOptions{
 		To: "new-key",
 	}
 	_, err := client.Projects.UpdateKey(opt)
 	assert.Error(t, err)
 
 	// Test missing To
-	opt = &ProjectsUpdateKeyOption{
+	opt = &ProjectsUpdateKeyOptions{
 		From: "old-key",
 	}
 	_, err = client.Projects.UpdateKey(opt)
@@ -312,7 +312,7 @@ func TestProjectsService_UpdateVisibility(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &ProjectsUpdateVisibilityOption{
+	opt := &ProjectsUpdateVisibilityOptions{
 		Project:    "my-project",
 		Visibility: "public",
 	}
@@ -327,21 +327,21 @@ func TestProjectsService_UpdateVisibility_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Project
-	opt := &ProjectsUpdateVisibilityOption{
+	opt := &ProjectsUpdateVisibilityOptions{
 		Visibility: "public",
 	}
 	_, err := client.Projects.UpdateVisibility(opt)
 	assert.Error(t, err)
 
 	// Test missing Visibility
-	opt = &ProjectsUpdateVisibilityOption{
+	opt = &ProjectsUpdateVisibilityOptions{
 		Project: "my-project",
 	}
 	_, err = client.Projects.UpdateVisibility(opt)
 	assert.Error(t, err)
 
 	// Test invalid visibility
-	opt = &ProjectsUpdateVisibilityOption{
+	opt = &ProjectsUpdateVisibilityOptions{
 		Project:    "my-project",
 		Visibility: "invalid",
 	}

@@ -24,7 +24,7 @@ func TestHotspots_AddComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.AddComment(&HotspotsAddCommentOption{
+	resp, err := client.Hotspots.AddComment(&HotspotsAddCommentOptions{
 		Hotspot: "hotspot123",
 		Comment: "This is a comment",
 	})
@@ -37,7 +37,7 @@ func TestHotspots_AddComment_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsAddCommentOption
+		opt  *HotspotsAddCommentOptions
 	}{
 		{
 			name: "nil option",
@@ -45,15 +45,15 @@ func TestHotspots_AddComment_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing hotspot",
-			opt:  &HotspotsAddCommentOption{Comment: "This is a comment"},
+			opt:  &HotspotsAddCommentOptions{Comment: "This is a comment"},
 		},
 		{
 			name: "missing comment",
-			opt:  &HotspotsAddCommentOption{Hotspot: "hotspot123"},
+			opt:  &HotspotsAddCommentOptions{Hotspot: "hotspot123"},
 		},
 		{
 			name: "comment too long",
-			opt: &HotspotsAddCommentOption{
+			opt: &HotspotsAddCommentOptions{
 				Hotspot: "hotspot123",
 				Comment: string(make([]byte, MaxHotspotCommentLength+1)),
 			},
@@ -84,7 +84,7 @@ func TestHotspots_Assign(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.Assign(&HotspotsAssignOption{
+	resp, err := client.Hotspots.Assign(&HotspotsAssignOptions{
 		Hotspot:  "hotspot123",
 		Assignee: "john.doe",
 	})
@@ -97,7 +97,7 @@ func TestHotspots_Assign_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsAssignOption
+		opt  *HotspotsAssignOptions
 	}{
 		{
 			name: "nil option",
@@ -105,7 +105,7 @@ func TestHotspots_Assign_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing hotspot",
-			opt:  &HotspotsAssignOption{Assignee: "john.doe"},
+			opt:  &HotspotsAssignOptions{Assignee: "john.doe"},
 		},
 	}
 
@@ -134,7 +134,7 @@ func TestHotspots_ChangeStatus(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.ChangeStatus(&HotspotsChangeStatusOption{
+	resp, err := client.Hotspots.ChangeStatus(&HotspotsChangeStatusOptions{
 		Hotspot:    "hotspot123",
 		Status:     "REVIEWED",
 		Resolution: "SAFE",
@@ -148,7 +148,7 @@ func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsChangeStatusOption
+		opt  *HotspotsChangeStatusOptions
 	}{
 		{
 			name: "nil option",
@@ -156,19 +156,19 @@ func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing hotspot",
-			opt:  &HotspotsChangeStatusOption{Status: "REVIEWED"},
+			opt:  &HotspotsChangeStatusOptions{Status: "REVIEWED"},
 		},
 		{
 			name: "missing status",
-			opt:  &HotspotsChangeStatusOption{Hotspot: "hotspot123"},
+			opt:  &HotspotsChangeStatusOptions{Hotspot: "hotspot123"},
 		},
 		{
 			name: "invalid status",
-			opt:  &HotspotsChangeStatusOption{Hotspot: "hotspot123", Status: "INVALID"},
+			opt:  &HotspotsChangeStatusOptions{Hotspot: "hotspot123", Status: "INVALID"},
 		},
 		{
 			name: "invalid resolution",
-			opt:  &HotspotsChangeStatusOption{Hotspot: "hotspot123", Status: "REVIEWED", Resolution: "INVALID"},
+			opt:  &HotspotsChangeStatusOptions{Hotspot: "hotspot123", Status: "REVIEWED", Resolution: "INVALID"},
 		},
 	}
 
@@ -195,7 +195,7 @@ func TestHotspots_DeleteComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.DeleteComment(&HotspotsDeleteCommentOption{
+	resp, err := client.Hotspots.DeleteComment(&HotspotsDeleteCommentOptions{
 		Comment: "comment123",
 	})
 	require.NoError(t, err)
@@ -207,7 +207,7 @@ func TestHotspots_DeleteComment_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsDeleteCommentOption
+		opt  *HotspotsDeleteCommentOptions
 	}{
 		{
 			name: "nil option",
@@ -215,7 +215,7 @@ func TestHotspots_DeleteComment_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing comment",
-			opt:  &HotspotsDeleteCommentOption{},
+			opt:  &HotspotsDeleteCommentOptions{},
 		},
 	}
 
@@ -243,7 +243,7 @@ func TestHotspots_EditComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.EditComment(&HotspotsEditCommentOption{
+	result, resp, err := client.Hotspots.EditComment(&HotspotsEditCommentOptions{
 		Comment: "comment123",
 		Text:    "Updated comment",
 	})
@@ -259,7 +259,7 @@ func TestHotspots_EditComment_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsEditCommentOption
+		opt  *HotspotsEditCommentOptions
 	}{
 		{
 			name: "nil option",
@@ -267,15 +267,15 @@ func TestHotspots_EditComment_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing comment",
-			opt:  &HotspotsEditCommentOption{Text: "Updated comment"},
+			opt:  &HotspotsEditCommentOptions{Text: "Updated comment"},
 		},
 		{
 			name: "missing text",
-			opt:  &HotspotsEditCommentOption{Comment: "comment123"},
+			opt:  &HotspotsEditCommentOptions{Comment: "comment123"},
 		},
 		{
 			name: "text too long",
-			opt: &HotspotsEditCommentOption{
+			opt: &HotspotsEditCommentOptions{
 				Comment: "comment123",
 				Text:    string(make([]byte, MaxHotspotCommentLength+1)),
 			},
@@ -320,7 +320,7 @@ func TestHotspots_List(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.List(&HotspotsListOption{
+	result, resp, err := client.Hotspots.List(&HotspotsListOptions{
 		Project: "my-project",
 	})
 	require.NoError(t, err)
@@ -335,7 +335,7 @@ func TestHotspots_List_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsListOption
+		opt  *HotspotsListOptions
 	}{
 		{
 			name: "nil option",
@@ -343,19 +343,19 @@ func TestHotspots_List_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing project",
-			opt:  &HotspotsListOption{},
+			opt:  &HotspotsListOptions{},
 		},
 		{
 			name: "invalid status",
-			opt:  &HotspotsListOption{Project: "my-project", Status: "INVALID"},
+			opt:  &HotspotsListOptions{Project: "my-project", Status: "INVALID"},
 		},
 		{
 			name: "invalid resolution",
-			opt:  &HotspotsListOption{Project: "my-project", Resolution: "INVALID"},
+			opt:  &HotspotsListOptions{Project: "my-project", Resolution: "INVALID"},
 		},
 		{
 			name: "page size too large",
-			opt:  &HotspotsListOption{Project: "my-project", PaginationArgs: PaginationArgs{PageSize: MaxHotspotListPageSize + 1}},
+			opt:  &HotspotsListOptions{Project: "my-project", PaginationArgs: PaginationArgs{PageSize: MaxHotspotListPageSize + 1}},
 		},
 	}
 
@@ -385,7 +385,7 @@ func TestHotspots_Pull(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.Pull(&HotspotsPullOption{
+	result, resp, err := client.Hotspots.Pull(&HotspotsPullOptions{
 		ProjectKey: "my-project",
 		BranchName: "main",
 	})
@@ -399,7 +399,7 @@ func TestHotspots_Pull_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsPullOption
+		opt  *HotspotsPullOptions
 	}{
 		{
 			name: "nil option",
@@ -407,11 +407,11 @@ func TestHotspots_Pull_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing project key",
-			opt:  &HotspotsPullOption{BranchName: "main"},
+			opt:  &HotspotsPullOptions{BranchName: "main"},
 		},
 		{
 			name: "missing branch name",
-			opt:  &HotspotsPullOption{ProjectKey: "my-project"},
+			opt:  &HotspotsPullOptions{ProjectKey: "my-project"},
 		},
 	}
 
@@ -453,7 +453,7 @@ func TestHotspots_Search_WithProject(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
+	result, resp, err := client.Hotspots.Search(&HotspotsSearchOptions{
 		Project: "my-project",
 	})
 	require.NoError(t, err)
@@ -475,7 +475,7 @@ func TestHotspots_Search_WithHotspots(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	_, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
+	_, resp, err := client.Hotspots.Search(&HotspotsSearchOptions{
 		Hotspots: []string{"hotspot1", "hotspot2"},
 	})
 	require.NoError(t, err)
@@ -498,7 +498,7 @@ func TestHotspots_Search_WithFilters(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	_, resp, err := client.Hotspots.Search(&HotspotsSearchOption{
+	_, resp, err := client.Hotspots.Search(&HotspotsSearchOptions{
 		Project:         "my-project",
 		Status:          "REVIEWED",
 		Resolution:      "SAFE",
@@ -514,7 +514,7 @@ func TestHotspots_Search_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsSearchOption
+		opt  *HotspotsSearchOptions
 	}{
 		{
 			name: "nil option",
@@ -522,27 +522,27 @@ func TestHotspots_Search_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing project and hotspots",
-			opt:  &HotspotsSearchOption{},
+			opt:  &HotspotsSearchOptions{},
 		},
 		{
 			name: "invalid status",
-			opt:  &HotspotsSearchOption{Project: "my-project", Status: "INVALID"},
+			opt:  &HotspotsSearchOptions{Project: "my-project", Status: "INVALID"},
 		},
 		{
 			name: "invalid resolution",
-			opt:  &HotspotsSearchOption{Project: "my-project", Resolution: "INVALID"},
+			opt:  &HotspotsSearchOptions{Project: "my-project", Resolution: "INVALID"},
 		},
 		{
 			name: "invalid owasp asvs level",
-			opt:  &HotspotsSearchOption{Project: "my-project", OwaspAsvsLevel: "5"},
+			opt:  &HotspotsSearchOptions{Project: "my-project", OwaspAsvsLevel: "5"},
 		},
 		{
 			name: "invalid owasp top 10",
-			opt:  &HotspotsSearchOption{Project: "my-project", OwaspTop10: []string{"a1", "invalid"}},
+			opt:  &HotspotsSearchOptions{Project: "my-project", OwaspTop10: []string{"a1", "invalid"}},
 		},
 		{
 			name: "invalid sans top 25",
-			opt:  &HotspotsSearchOption{Project: "my-project", SansTop25: []string{"insecure-interaction", "invalid"}},
+			opt:  &HotspotsSearchOptions{Project: "my-project", SansTop25: []string{"insecure-interaction", "invalid"}},
 		},
 	}
 
@@ -607,7 +607,7 @@ func TestHotspots_Show(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.Show(&HotspotsShowOption{
+	result, resp, err := client.Hotspots.Show(&HotspotsShowOptions{
 		Hotspot: "hotspot123",
 	})
 	require.NoError(t, err)
@@ -629,7 +629,7 @@ func TestHotspots_Show_ValidationError(t *testing.T) {
 
 	tests := []struct {
 		name string
-		opt  *HotspotsShowOption
+		opt  *HotspotsShowOptions
 	}{
 		{
 			name: "nil option",
@@ -637,7 +637,7 @@ func TestHotspots_Show_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing hotspot",
-			opt:  &HotspotsShowOption{},
+			opt:  &HotspotsShowOptions{},
 		},
 	}
 
@@ -658,12 +658,12 @@ func TestHotspots_ValidateAddCommentOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *HotspotsAddCommentOption
+		opt     *HotspotsAddCommentOptions
 		wantErr bool
 	}{
 		{
 			name: "valid option",
-			opt: &HotspotsAddCommentOption{
+			opt: &HotspotsAddCommentOptions{
 				Comment: "Valid comment",
 				Hotspot: "hotspot123",
 			},
@@ -676,14 +676,14 @@ func TestHotspots_ValidateAddCommentOpt(t *testing.T) {
 		},
 		{
 			name: "missing comment",
-			opt: &HotspotsAddCommentOption{
+			opt: &HotspotsAddCommentOptions{
 				Hotspot: "hotspot123",
 			},
 			wantErr: true,
 		},
 		{
 			name: "missing hotspot",
-			opt: &HotspotsAddCommentOption{
+			opt: &HotspotsAddCommentOptions{
 				Comment: "Valid comment",
 			},
 			wantErr: true,
@@ -707,12 +707,12 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *HotspotsChangeStatusOption
+		opt     *HotspotsChangeStatusOptions
 		wantErr bool
 	}{
 		{
 			name: "valid TO_REVIEW status",
-			opt: &HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOptions{
 				Hotspot: "hotspot123",
 				Status:  "TO_REVIEW",
 			},
@@ -720,7 +720,7 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "valid REVIEWED with SAFE resolution",
-			opt: &HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "SAFE",
@@ -729,7 +729,7 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "valid REVIEWED with FIXED resolution",
-			opt: &HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "FIXED",
@@ -738,7 +738,7 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "valid REVIEWED with ACKNOWLEDGED resolution",
-			opt: &HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "ACKNOWLEDGED",
@@ -752,7 +752,7 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "invalid status",
-			opt: &HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOptions{
 				Hotspot: "hotspot123",
 				Status:  "INVALID_STATUS",
 			},
@@ -760,7 +760,7 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 		},
 		{
 			name: "invalid resolution",
-			opt: &HotspotsChangeStatusOption{
+			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
 				Status:     "REVIEWED",
 				Resolution: "INVALID",
@@ -786,26 +786,26 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *HotspotsSearchOption
+		opt     *HotspotsSearchOptions
 		wantErr bool
 	}{
 		{
 			name: "valid with project",
-			opt: &HotspotsSearchOption{
+			opt: &HotspotsSearchOptions{
 				Project: "my-project",
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid with hotspots",
-			opt: &HotspotsSearchOption{
+			opt: &HotspotsSearchOptions{
 				Hotspots: []string{"hotspot1", "hotspot2"},
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid with all OWASP filters",
-			opt: &HotspotsSearchOption{
+			opt: &HotspotsSearchOptions{
 				Project:        "my-project",
 				OwaspTop10:     []string{"a1", "a2"},
 				OwaspTop102021: []string{"a3", "a4"},
@@ -815,7 +815,7 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "valid with SANS filter",
-			opt: &HotspotsSearchOption{
+			opt: &HotspotsSearchOptions{
 				Project:   "my-project",
 				SansTop25: []string{"insecure-interaction", "porous-defenses"},
 			},
@@ -828,12 +828,12 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name:    "missing project and hotspots",
-			opt:     &HotspotsSearchOption{},
+			opt:     &HotspotsSearchOptions{},
 			wantErr: true,
 		},
 		{
 			name: "invalid OwaspAsvsLevel",
-			opt: &HotspotsSearchOption{
+			opt: &HotspotsSearchOptions{
 				Project:        "my-project",
 				OwaspAsvsLevel: "4",
 			},
@@ -841,7 +841,7 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid OwaspTop10 value",
-			opt: &HotspotsSearchOption{
+			opt: &HotspotsSearchOptions{
 				Project:    "my-project",
 				OwaspTop10: []string{"a11"},
 			},
@@ -849,7 +849,7 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 		},
 		{
 			name: "invalid SansTop25 value",
-			opt: &HotspotsSearchOption{
+			opt: &HotspotsSearchOptions{
 				Project:   "my-project",
 				SansTop25: []string{"invalid-category"},
 			},
@@ -874,19 +874,19 @@ func TestHotspots_ValidateListOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *HotspotsListOption
+		opt     *HotspotsListOptions
 		wantErr bool
 	}{
 		{
 			name: "valid basic option",
-			opt: &HotspotsListOption{
+			opt: &HotspotsListOptions{
 				Project: "my-project",
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid with all optional params",
-			opt: &HotspotsListOption{
+			opt: &HotspotsListOptions{
 				Project:         "my-project",
 				Branch:          "main",
 				InNewCodePeriod: true,
@@ -898,7 +898,7 @@ func TestHotspots_ValidateListOpt(t *testing.T) {
 		},
 		{
 			name: "valid max page size",
-			opt: &HotspotsListOption{
+			opt: &HotspotsListOptions{
 				Project:        "my-project",
 				PaginationArgs: PaginationArgs{PageSize: MaxHotspotListPageSize},
 			},
@@ -911,12 +911,12 @@ func TestHotspots_ValidateListOpt(t *testing.T) {
 		},
 		{
 			name:    "missing project",
-			opt:     &HotspotsListOption{},
+			opt:     &HotspotsListOptions{},
 			wantErr: true,
 		},
 		{
 			name: "page size exceeds max",
-			opt: &HotspotsListOption{
+			opt: &HotspotsListOptions{
 				Project:        "my-project",
 				PaginationArgs: PaginationArgs{PageSize: MaxHotspotListPageSize + 1},
 			},
@@ -924,7 +924,7 @@ func TestHotspots_ValidateListOpt(t *testing.T) {
 		},
 		{
 			name: "invalid status",
-			opt: &HotspotsListOption{
+			opt: &HotspotsListOptions{
 				Project: "my-project",
 				Status:  "CLOSED",
 			},
@@ -932,7 +932,7 @@ func TestHotspots_ValidateListOpt(t *testing.T) {
 		},
 		{
 			name: "invalid resolution",
-			opt: &HotspotsListOption{
+			opt: &HotspotsListOptions{
 				Project:    "my-project",
 				Resolution: "WONTFIX",
 			},

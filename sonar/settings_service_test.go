@@ -38,7 +38,7 @@ func TestSettingsService_Encrypt(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SettingsEncryptOption{
+	opt := &SettingsEncryptOptions{
 		Value: "my-secret-value",
 	}
 
@@ -53,7 +53,7 @@ func TestSettingsService_Encrypt_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Value
-	opt := &SettingsEncryptOption{}
+	opt := &SettingsEncryptOptions{}
 	_, _, err := client.Settings.Encrypt(opt)
 	assert.Error(t, err)
 }
@@ -92,7 +92,7 @@ func TestSettingsService_ListDefinitions(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SettingsListDefinitionsOption{
+	opt := &SettingsListDefinitionsOptions{
 		Component: "my-project",
 	}
 
@@ -135,7 +135,7 @@ func TestSettingsService_Reset(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SettingsResetOption{
+	opt := &SettingsResetOptions{
 		Keys: []string{"sonar.test.key", "sonar.other.key"},
 	}
 
@@ -149,7 +149,7 @@ func TestSettingsService_Reset_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Keys
-	opt := &SettingsResetOption{}
+	opt := &SettingsResetOptions{}
 	_, err := client.Settings.Reset(opt)
 	assert.Error(t, err)
 }
@@ -171,7 +171,7 @@ func TestSettingsService_Set(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SettingsSetOption{
+	opt := &SettingsSetOptions{
 		Key:   "sonar.test.key",
 		Value: "test-value",
 	}
@@ -186,14 +186,14 @@ func TestSettingsService_Set_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test missing Key
-	opt := &SettingsSetOption{
+	opt := &SettingsSetOptions{
 		Value: "test-value",
 	}
 	_, err := client.Settings.Set(opt)
 	assert.Error(t, err)
 
 	// Test Value too long
-	opt = &SettingsSetOption{
+	opt = &SettingsSetOptions{
 		Key:   "sonar.test.key",
 		Value: strings.Repeat("a", MaxSettingValueLength+1),
 	}
@@ -201,7 +201,7 @@ func TestSettingsService_Set_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing Value, Values, and FieldValues
-	opt = &SettingsSetOption{
+	opt = &SettingsSetOptions{
 		Key: "sonar.test.key",
 	}
 	_, err = client.Settings.Set(opt)
@@ -227,7 +227,7 @@ func TestSettingsService_Set_WithMultiValues(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SettingsSetOption{
+	opt := &SettingsSetOptions{
 		Key:    "sonar.test.multikey",
 		Values: []string{"value1", "value2", "value3"},
 	}
@@ -265,7 +265,7 @@ func TestSettingsService_Set_WithFieldValues(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SettingsSetOption{
+	opt := &SettingsSetOptions{
 		Key: "sonar.test.fieldkey",
 		FieldValues: map[string]any{
 			"field1": "value1",
@@ -299,7 +299,7 @@ func TestSettingsService_Values(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	opt := &SettingsValuesOption{
+	opt := &SettingsValuesOptions{
 		Keys: []string{"sonar.test.key", "sonar.multi.key"},
 	}
 

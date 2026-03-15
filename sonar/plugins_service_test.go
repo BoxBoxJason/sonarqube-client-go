@@ -64,7 +64,7 @@ func TestPluginsService_Download(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Plugins.Download(&PluginsDownloadOption{
+		result, resp, err := client.Plugins.Download(&PluginsDownloadOptions{
 			Plugin: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -82,7 +82,7 @@ func TestPluginsService_Download(t *testing.T) {
 	t.Run("missing plugin", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Plugins.Download(&PluginsDownloadOption{})
+		_, _, err := client.Plugins.Download(&PluginsDownloadOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -97,7 +97,7 @@ func TestPluginsService_Install(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.Plugins.Install(&PluginsInstallOption{
+		resp, err := client.Plugins.Install(&PluginsInstallOptions{
 			Key: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -114,7 +114,7 @@ func TestPluginsService_Install(t *testing.T) {
 	t.Run("missing key", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Install(&PluginsInstallOption{})
+		_, err := client.Plugins.Install(&PluginsInstallOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -158,7 +158,7 @@ func TestPluginsService_Installed(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
+		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
 			Fields: []string{"category"},
 		})
 		require.NoError(t, err)
@@ -172,7 +172,7 @@ func TestPluginsService_Installed(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
+		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
 			Type: "BUNDLED",
 		})
 		require.NoError(t, err)
@@ -181,7 +181,7 @@ func TestPluginsService_Installed(t *testing.T) {
 	t.Run("invalid field", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
+		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
 			Fields: []string{"invalid"},
 		})
 		assert.Error(t, err)
@@ -190,7 +190,7 @@ func TestPluginsService_Installed(t *testing.T) {
 	t.Run("invalid type", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOption{
+		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
 			Type: "INVALID",
 		})
 		assert.Error(t, err)
@@ -230,7 +230,7 @@ func TestPluginsService_Uninstall(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.Plugins.Uninstall(&PluginsUninstallOption{
+		resp, err := client.Plugins.Uninstall(&PluginsUninstallOptions{
 			Key: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -247,7 +247,7 @@ func TestPluginsService_Uninstall(t *testing.T) {
 	t.Run("missing key", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Uninstall(&PluginsUninstallOption{})
+		_, err := client.Plugins.Uninstall(&PluginsUninstallOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -262,7 +262,7 @@ func TestPluginsService_Update(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.Plugins.Update(&PluginsUpdateOption{
+		resp, err := client.Plugins.Update(&PluginsUpdateOptions{
 			Key: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -279,7 +279,7 @@ func TestPluginsService_Update(t *testing.T) {
 	t.Run("missing key", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Update(&PluginsUpdateOption{})
+		_, err := client.Plugins.Update(&PluginsUpdateOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -326,12 +326,12 @@ func TestPluginsService_ValidateDownloadOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *PluginsDownloadOption
+		opt     *PluginsDownloadOptions
 		wantErr bool
 	}{
-		{"valid", &PluginsDownloadOption{Plugin: "sonar-java"}, false},
+		{"valid", &PluginsDownloadOptions{Plugin: "sonar-java"}, false},
 		{"nil option", nil, true},
-		{"empty plugin", &PluginsDownloadOption{}, true},
+		{"empty plugin", &PluginsDownloadOptions{}, true},
 	}
 
 	for _, tt := range tests {
@@ -351,12 +351,12 @@ func TestPluginsService_ValidateInstallOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *PluginsInstallOption
+		opt     *PluginsInstallOptions
 		wantErr bool
 	}{
-		{"valid", &PluginsInstallOption{Key: "sonar-java"}, false},
+		{"valid", &PluginsInstallOptions{Key: "sonar-java"}, false},
 		{"nil option", nil, true},
-		{"empty key", &PluginsInstallOption{}, true},
+		{"empty key", &PluginsInstallOptions{}, true},
 	}
 
 	for _, tt := range tests {
@@ -376,16 +376,16 @@ func TestPluginsService_ValidateInstalledOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *PluginsInstalledOption
+		opt     *PluginsInstalledOptions
 		wantErr bool
 	}{
 		{"nil option", nil, false},
-		{"empty option", &PluginsInstalledOption{}, false},
-		{"valid fields", &PluginsInstalledOption{Fields: []string{"category"}}, false},
-		{"invalid fields", &PluginsInstalledOption{Fields: []string{"invalid"}}, true},
-		{"valid type BUNDLED", &PluginsInstalledOption{Type: "BUNDLED"}, false},
-		{"valid type EXTERNAL", &PluginsInstalledOption{Type: "EXTERNAL"}, false},
-		{"invalid type", &PluginsInstalledOption{Type: "INVALID"}, true},
+		{"empty option", &PluginsInstalledOptions{}, false},
+		{"valid fields", &PluginsInstalledOptions{Fields: []string{"category"}}, false},
+		{"invalid fields", &PluginsInstalledOptions{Fields: []string{"invalid"}}, true},
+		{"valid type BUNDLED", &PluginsInstalledOptions{Type: "BUNDLED"}, false},
+		{"valid type EXTERNAL", &PluginsInstalledOptions{Type: "EXTERNAL"}, false},
+		{"invalid type", &PluginsInstalledOptions{Type: "INVALID"}, true},
 	}
 
 	for _, tt := range tests {
@@ -405,12 +405,12 @@ func TestPluginsService_ValidateUninstallOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *PluginsUninstallOption
+		opt     *PluginsUninstallOptions
 		wantErr bool
 	}{
-		{"valid", &PluginsUninstallOption{Key: "sonar-java"}, false},
+		{"valid", &PluginsUninstallOptions{Key: "sonar-java"}, false},
 		{"nil option", nil, true},
-		{"empty key", &PluginsUninstallOption{}, true},
+		{"empty key", &PluginsUninstallOptions{}, true},
 	}
 
 	for _, tt := range tests {
@@ -430,12 +430,12 @@ func TestPluginsService_ValidateUpdateOpt(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		opt     *PluginsUpdateOption
+		opt     *PluginsUpdateOptions
 		wantErr bool
 	}{
-		{"valid", &PluginsUpdateOption{Key: "sonar-java"}, false},
+		{"valid", &PluginsUpdateOptions{Key: "sonar-java"}, false},
 		{"nil option", nil, true},
-		{"empty key", &PluginsUpdateOption{}, true},
+		{"empty key", &PluginsUpdateOptions{}, true},
 	}
 
 	for _, tt := range tests {
