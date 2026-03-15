@@ -24,6 +24,169 @@ const (
 	MaxTokenNameLength = 100
 	// MaxBranchNameLength is the maximum length for a branch name.
 	MaxBranchNameLength = 255
+
+	// LanguageAzureResourceManager is the language key for Azure Resource Manager.
+	LanguageAzureResourceManager = "azureresourcemanager"
+	// LanguageCloudFormation is the language key for CloudFormation.
+	LanguageCloudFormation = "cloudformation"
+	// LanguageCS is the language key for C#.
+	LanguageCS = "cs"
+	// LanguageCSS is the language key for CSS.
+	LanguageCSS = "css"
+	// LanguageDocker is the language key for Docker.
+	LanguageDocker = "docker"
+	// LanguageFlex is the language key for Flex.
+	LanguageFlex = "flex"
+	// LanguageGo is the language key for Go.
+	LanguageGo = "go"
+	// LanguageIPYNB is the language key for Jupyter Notebooks.
+	LanguageIPYNB = "ipynb"
+	// LanguageJava is the language key for Java.
+	LanguageJava = "java"
+	// LanguageJS is the language key for JavaScript.
+	LanguageJS = "js"
+	// LanguageJSON is the language key for JSON.
+	LanguageJSON = "json"
+	// LanguageJSP is the language key for JSP.
+	LanguageJSP = "jsp"
+	// LanguageKotlin is the language key for Kotlin.
+	LanguageKotlin = "kotlin"
+	// LanguageKubernetes is the language key for Kubernetes.
+	LanguageKubernetes = "kubernetes"
+	// LanguagePHP is the language key for PHP.
+	LanguagePHP = "php"
+	// LanguagePython is the language key for Python.
+	LanguagePython = "py"
+	// LanguageRuby is the language key for Ruby On Rails.
+	LanguageRuby = "ruby"
+	// LanguageRust is the language key for Rust.
+	LanguageRust = "rust"
+	// LanguageScala is the language key for Scala.
+	LanguageScala = "scala"
+	// LanguageSecrets is the language key for Secrets.
+	LanguageSecrets = "secrets"
+	// LanguageTerraform is the language key for Terraform.
+	LanguageTerraform = "terraform"
+	// LanguageText is the language key for Text files.
+	LanguageText = "text"
+	// LanguageTypeScript is the language key for TypeScript.
+	LanguageTypeScript = "ts"
+	// LanguageVBNet is the language key for Visual Basic .NET.
+	LanguageVBNet = "vbnet"
+	// LanguageWeb is the language key for Web files.
+	LanguageWeb = "web"
+	// LanguageXML is the language key for XML.
+	LanguageXML = "xml"
+	// LanguageYAML is the language key for YAML.
+	LanguageYAML = "yaml"
+
+	// CleanCodeAttributeCategoryAdaptable is the Clean Code attribute category for adaptability.
+	CleanCodeAttributeCategoryAdaptable = "ADAPTABLE"
+	// CleanCodeAttributeCategoryConsistent is the Clean Code attribute category for consistency.
+	CleanCodeAttributeCategoryConsistent = "CONSISTENT"
+	// CleanCodeAttributeCategoryIntentional is the Clean Code attribute category for intentionality.
+	CleanCodeAttributeCategoryIntentional = "INTENTIONAL"
+	// CleanCodeAttributeCategoryResponsible is the Clean Code attribute category for responsibility.
+	CleanCodeAttributeCategoryResponsible = "RESPONSIBLE"
+
+	// CleanCodeAttributeConventional is the Clean Code attribute for conventional code.
+	CleanCodeAttributeConventional = "CONVENTIONAL"
+	// CleanCodeAttributeFormatted is the Clean Code attribute for formatted code.
+	CleanCodeAttributeFormatted = "FORMATTED"
+	// CleanCodeAttributeIdentifiable is the Clean Code attribute for identifiable code.
+	CleanCodeAttributeIdentifiable = "IDENTIFIABLE"
+	// CleanCodeAttributeClear is the Clean Code attribute for clear code.
+	CleanCodeAttributeClear = "CLEAR"
+	// CleanCodeAttributeComplete is the Clean Code attribute for complete code.
+	CleanCodeAttributeComplete = "COMPLETE"
+	// CleanCodeAttributeEfficient is the Clean Code attribute for efficient code.
+	CleanCodeAttributeEfficient = "EFFICIENT"
+	// CleanCodeAttributeLogical is the Clean Code attribute for logical code.
+	CleanCodeAttributeLogical = "LOGICAL"
+	// CleanCodeAttributeDistinct is the Clean Code attribute for distinct code.
+	CleanCodeAttributeDistinct = "DISTINCT"
+	// CleanCodeAttributeFocused is the Clean Code attribute for focused code.
+	CleanCodeAttributeFocused = "FOCUSED"
+	// CleanCodeAttributeModular is the Clean Code attribute for modular code.
+	CleanCodeAttributeModular = "MODULAR"
+	// CleanCodeAttributeTested is the Clean Code attribute for tested code.
+	CleanCodeAttributeTested = "TESTED"
+	// CleanCodeAttributeLawful is the Clean Code attribute for lawful code.
+	CleanCodeAttributeLawful = "LAWFUL"
+	// CleanCodeAttributeRespectful is the Clean Code attribute for respectful code.
+	CleanCodeAttributeRespectful = "RESPECTFUL"
+	// CleanCodeAttributeTrustworthy is the Clean Code attribute for trustworthy code.
+	CleanCodeAttributeTrustworthy = "TRUSTWORTHY"
+
+	// OwaspCategoryA1 is the OWASP category for Injection.
+	OwaspCategoryA1 = "a1"
+	// OwaspCategoryA2 is the OWASP category for Broken Authentication.
+	OwaspCategoryA2 = "a2"
+	// OwaspCategoryA3 is the OWASP category for Sensitive Data Exposure.
+	OwaspCategoryA3 = "a3"
+	// OwaspCategoryA4 is the OWASP category for XML External Entities (XXE).
+	OwaspCategoryA4 = "a4"
+	// OwaspCategoryA5 is the OWASP category for Broken Access Control.
+	OwaspCategoryA5 = "a5"
+	// OwaspCategoryA6 is the OWASP category for Security Misconfiguration.
+	OwaspCategoryA6 = "a6"
+	// OwaspCategoryA7 is the OWASP category for Cross-Site Scripting (XSS).
+	OwaspCategoryA7 = "a7"
+	// OwaspCategoryA8 is the OWASP category for Insecure Deserialization.
+	OwaspCategoryA8 = "a8"
+	// OwaspCategoryA9 is the OWASP category for Using Components with Known Vulnerabilities.
+	OwaspCategoryA9 = "a9"
+	// OwaspCategoryA10 is the OWASP category for Insufficient Logging & Monitoring.
+	OwaspCategoryA10 = "a10"
+
+	// OwaspMobileCategoryM1 is the OWASP Mobile category for Improper Platform Usage.
+	OwaspMobileCategoryM1 = "m1"
+	// OwaspMobileCategoryM2 is the OWASP Mobile category for Insecure Data Storage.
+	OwaspMobileCategoryM2 = "m2"
+	// OwaspMobileCategoryM3 is the OWASP Mobile category for Insecure Communication.
+	OwaspMobileCategoryM3 = "m3"
+	// OwaspMobileCategoryM4 is the OWASP Mobile category for Insecure Authentication.
+	OwaspMobileCategoryM4 = "m4"
+	// OwaspMobileCategoryM5 is the OWASP Mobile category for Insufficient Cryptography.
+	OwaspMobileCategoryM5 = "m5"
+	// OwaspMobileCategoryM6 is the OWASP Mobile category for Insecure Authorization.
+	OwaspMobileCategoryM6 = "m6"
+	// OwaspMobileCategoryM7 is the OWASP Mobile category for Client Code Quality.
+	OwaspMobileCategoryM7 = "m7"
+	// OwaspMobileCategoryM8 is the OWASP Mobile category for Code Tampering.
+	OwaspMobileCategoryM8 = "m8"
+	// OwaspMobileCategoryM9 is the OWASP Mobile category for Reverse Engineering.
+	OwaspMobileCategoryM9 = "m9"
+	// OwaspMobileCategoryM10 is the OWASP Mobile category for Extraneous Functionality.
+	OwaspMobileCategoryM10 = "m10"
+
+	// SansTop25CategoryInsecureInteraction is the SANS Top 25 category for Insecure Interaction.
+	SansTop25CategoryInsecureInteraction = "insecure-interaction"
+	// SansTop25CategoryRiskyResource is the SANS Top 25 category for Risky Resource.
+	SansTop25CategoryRiskyResource = "risky-resource"
+	// SansTop25CategoryPorousDefenses is the SANS Top 25 category for Porous Defenses.
+	SansTop25CategoryPorousDefenses = "porous-defenses"
+
+	// SoftwareQualityMaintainability is the software quality characteristic for maintainability.
+	SoftwareQualityMaintainability = "MAINTAINABILITY"
+	// SoftwareQualityReliability is the software quality characteristic for reliability.
+	SoftwareQualityReliability = "RELIABILITY"
+	// SoftwareQualitySecurity is the software quality characteristic for security.
+	SoftwareQualitySecurity = "SECURITY"
+
+	// InheritanceTypeNone represents no inheritance.
+	InheritanceTypeNone = "NONE"
+	// InheritanceTypeInherited represents inherited.
+	InheritanceTypeInherited = "INHERITED"
+	// InheritanceTypeOverrides represents overrides.
+	InheritanceTypeOverrides = "OVERRIDES"
+
+	// SelectionFilterAll represents the "all" selection filter.
+	SelectionFilterAll = "all"
+	// SelectionFilterSelected represents the "selected" selection filter.
+	SelectionFilterSelected = "selected"
+	// SelectionFilterDeselected represents the "deselected" selection filter.
+	SelectionFilterDeselected = "deselected"
 )
 
 type authType int
@@ -38,202 +201,202 @@ const (
 var (
 	// allowedLanguages is the set of supported programming languages.
 	allowedLanguages = map[string]struct{}{
-		"azureresourcemanager": {},
-		"cloudformation":       {},
-		"cs":                   {},
-		"css":                  {},
-		"docker":               {},
-		"flex":                 {},
-		"go":                   {},
-		"ipynb":                {},
-		"java":                 {},
-		"js":                   {},
-		"json":                 {},
-		"jsp":                  {},
-		"kotlin":               {},
-		"kubernetes":           {},
-		"php":                  {},
-		"py":                   {},
-		"ruby":                 {},
-		"rust":                 {},
-		"scala":                {},
-		"secrets":              {},
-		"terraform":            {},
-		"text":                 {},
-		"ts":                   {},
-		"vbnet":                {},
-		"web":                  {},
-		"xml":                  {},
-		"yaml":                 {},
+		LanguageAzureResourceManager: {},
+		LanguageCloudFormation:       {},
+		LanguageCS:                   {},
+		LanguageCSS:                  {},
+		LanguageDocker:               {},
+		LanguageFlex:                 {},
+		LanguageGo:                   {},
+		LanguageIPYNB:                {},
+		LanguageJava:                 {},
+		LanguageJS:                   {},
+		LanguageJSON:                 {},
+		LanguageJSP:                  {},
+		LanguageKotlin:               {},
+		LanguageKubernetes:           {},
+		LanguagePHP:                  {},
+		LanguagePython:               {},
+		LanguageRuby:                 {},
+		LanguageRust:                 {},
+		LanguageScala:                {},
+		LanguageSecrets:              {},
+		LanguageTerraform:            {},
+		LanguageText:                 {},
+		LanguageTypeScript:           {},
+		LanguageVBNet:                {},
+		LanguageWeb:                  {},
+		LanguageXML:                  {},
+		LanguageYAML:                 {},
 	}
 
-	// allowedSeverities is the set of supported severity levels.
-	allowedSeverities = map[string]struct{}{
-		"BLOCKER":  {},
-		"CRITICAL": {},
-		"MAJOR":    {},
-		"MINOR":    {},
-		"INFO":     {},
+	// allowedRuleSeverities is the set of supported severity levels.
+	allowedRuleSeverities = map[string]struct{}{
+		RuleSeverityBlocker:  {},
+		RuleSeverityCritical: {},
+		RuleSeverityMajor:    {},
+		RuleSeverityMinor:    {},
+		RuleSeverityInfo:     {},
 	}
 
-	// allowedImpactSeverities is the set of supported impact severity levels.
-	allowedImpactSeverities = map[string]struct{}{
-		"BLOCKER": {},
-		"HIGH":    {},
-		"MEDIUM":  {},
-		"LOW":     {},
-		"INFO":    {},
+	// allowedRuleImpactSeverities is the set of supported impact severity levels.
+	allowedRuleImpactSeverities = map[string]struct{}{
+		RuleImpactSeverityBlocker: {},
+		RuleImpactSeverityHigh:    {},
+		RuleImpactSeverityMedium:  {},
+		RuleImpactSeverityLow:     {},
+		RuleImpactSeverityInfo:    {},
 	}
 
 	// allowedCleanCodeAttributesCategories is the set of supported Clean Code attribute categories.
 	allowedCleanCodeAttributesCategories = map[string]struct{}{
-		"ADAPTABLE":   {},
-		"CONSISTENT":  {},
-		"INTENTIONAL": {},
-		"RESPONSIBLE": {},
+		CleanCodeAttributeCategoryAdaptable:   {},
+		CleanCodeAttributeCategoryConsistent:  {},
+		CleanCodeAttributeCategoryIntentional: {},
+		CleanCodeAttributeCategoryResponsible: {},
 	}
 
 	// allowedCleanCodeAttributes is the set of supported Clean Code attributes.
 	allowedCleanCodeAttributes = map[string]struct{}{
-		"CONVENTIONAL": {},
-		"FORMATTED":    {},
-		"IDENTIFIABLE": {},
-		"CLEAR":        {},
-		"COMPLETE":     {},
-		"EFFICIENT":    {},
-		"LOGICAL":      {},
-		"DISTINCT":     {},
-		"FOCUSED":      {},
-		"MODULAR":      {},
-		"TESTED":       {},
-		"LAWFUL":       {},
-		"RESPECTFUL":   {},
-		"TRUSTWORTHY":  {},
+		CleanCodeAttributeConventional: {},
+		CleanCodeAttributeFormatted:    {},
+		CleanCodeAttributeIdentifiable: {},
+		CleanCodeAttributeClear:        {},
+		CleanCodeAttributeComplete:     {},
+		CleanCodeAttributeEfficient:    {},
+		CleanCodeAttributeLogical:      {},
+		CleanCodeAttributeDistinct:     {},
+		CleanCodeAttributeFocused:      {},
+		CleanCodeAttributeModular:      {},
+		CleanCodeAttributeTested:       {},
+		CleanCodeAttributeLawful:       {},
+		CleanCodeAttributeRespectful:   {},
+		CleanCodeAttributeTrustworthy:  {},
 	}
 
 	// allowedImpactSoftwareQualities is the set of supported impact software qualities.
 	allowedImpactSoftwareQualities = map[string]struct{}{
-		"MAINTAINABILITY": {},
-		"RELIABILITY":     {},
-		"SECURITY":        {},
+		SoftwareQualityMaintainability: {},
+		SoftwareQualityReliability:     {},
+		SoftwareQualitySecurity:        {},
 	}
 
 	// allowedInheritanceTypes is the set of supported inheritance types.
 	allowedInheritanceTypes = map[string]struct{}{
-		"NONE":       {},
-		"INHERITED":  {},
-		"OVERRIDDES": {},
+		InheritanceTypeNone:      {},
+		InheritanceTypeInherited: {},
+		InheritanceTypeOverrides: {},
 	}
 
 	// allowedOwaspCategories is the set of supported OWASP categories.
 	allowedOwaspCategories = map[string]struct{}{
-		"a1":  {},
-		"a2":  {},
-		"a3":  {},
-		"a4":  {},
-		"a5":  {},
-		"a6":  {},
-		"a7":  {},
-		"a8":  {},
-		"a9":  {},
-		"a10": {},
+		OwaspCategoryA1:  {},
+		OwaspCategoryA2:  {},
+		OwaspCategoryA3:  {},
+		OwaspCategoryA4:  {},
+		OwaspCategoryA5:  {},
+		OwaspCategoryA6:  {},
+		OwaspCategoryA7:  {},
+		OwaspCategoryA8:  {},
+		OwaspCategoryA9:  {},
+		OwaspCategoryA10: {},
 	}
 
 	// allowedOwaspMobileCategories is the set of supported OWASP Mobile categories.
 	allowedOwaspMobileCategories = map[string]struct{}{
-		"m1":  {},
-		"m2":  {},
-		"m3":  {},
-		"m4":  {},
-		"m5":  {},
-		"m6":  {},
-		"m7":  {},
-		"m8":  {},
-		"m9":  {},
-		"m10": {},
+		OwaspMobileCategoryM1:  {},
+		OwaspMobileCategoryM2:  {},
+		OwaspMobileCategoryM3:  {},
+		OwaspMobileCategoryM4:  {},
+		OwaspMobileCategoryM5:  {},
+		OwaspMobileCategoryM6:  {},
+		OwaspMobileCategoryM7:  {},
+		OwaspMobileCategoryM8:  {},
+		OwaspMobileCategoryM9:  {},
+		OwaspMobileCategoryM10: {},
 	}
 
 	// allowedRulesStatuses is the set of supported statuses.
 	allowedRulesStatuses = map[string]struct{}{
-		"READY":      {},
-		"DEPRECATED": {},
-		"REMOVED":    {},
-		"BETA":       {},
+		RuleStatusReady:      {},
+		RuleStatusDeprecated: {},
+		RuleStatusRemoved:    {},
+		RuleStatusBeta:       {},
 	}
 
 	// allowedRulesExistingStatuses is the set of supported existing statuses.
 	allowedRulesExistingStatuses = map[string]struct{}{
-		"READY":      {},
-		"DEPRECATED": {},
-		"BETA":       {},
+		RuleStatusReady:      {},
+		RuleStatusDeprecated: {},
+		RuleStatusBeta:       {},
 	}
 
 	// allowedRulesTypes is the set of supported rule types.
 	allowedRulesTypes = map[string]struct{}{
-		"CODE_SMELL":       {},
-		"BUG":              {},
-		"VULNERABILITY":    {},
-		"SECURITY_HOTSPOT": {},
+		RuleTypeCodeSmell:       {},
+		RuleTypeBug:             {},
+		RuleTypeVulnerability:   {},
+		RuleTypeSecurityHotspot: {},
 	}
 
 	// allowedSansTop25Categories is the set of supported SANS Top 25 categories.
 	allowedSansTop25Categories = map[string]struct{}{
-		"insecure-interaction": {},
-		"risky-resource":       {},
-		"porous-defenses":      {},
+		SansTop25CategoryInsecureInteraction: {},
+		SansTop25CategoryRiskyResource:       {},
+		SansTop25CategoryPorousDefenses:      {},
 	}
 
 	// allowedSelectedFilters is the set of supported selected filters.
 	allowedSelectedFilters = map[string]struct{}{
-		"all":        {},
-		"selected":   {},
-		"deselected": {},
+		SelectionFilterAll:        {},
+		SelectionFilterSelected:   {},
+		SelectionFilterDeselected: {},
 	}
 
 	// allowedIssueTypes is the set of supported issue types.
 	allowedIssueTypes = map[string]struct{}{
-		"CODE_SMELL":       {},
-		"BUG":              {},
-		"VULNERABILITY":    {},
-		"SECURITY_HOTSPOT": {},
+		RuleTypeCodeSmell:       {},
+		RuleTypeBug:             {},
+		RuleTypeVulnerability:   {},
+		RuleTypeSecurityHotspot: {},
 	}
 
 	// allowedIssueTransitions is the set of supported issue transitions.
 	allowedIssueTransitions = map[string]struct{}{
-		"confirm":           {},
-		"unconfirm":         {},
-		"reopen":            {},
-		"resolve":           {},
-		"falsepositive":     {},
-		"wontfix":           {},
-		"accept":            {},
-		"close":             {},
-		"resolveasreviewed": {},
-		"resetastoreview":   {},
+		IssueTransitionConfirm:           {},
+		IssueTransitionUnconfirm:         {},
+		IssueTransitionReopen:            {},
+		IssueTransitionResolve:           {},
+		IssueTransitionFalsePositive:     {},
+		IssueTransitionWontFix:           {},
+		IssueTransitionAccept:            {},
+		IssueTransitionClose:             {},
+		IssueTransitionResolveAsReviewed: {},
+		IssueTransitionResetAsReviewed:   {},
 	}
 
 	// allowedIssueStatuses is the set of supported issue statuses.
 	allowedIssueStatuses = map[string]struct{}{
-		"OPEN":           {},
-		"CONFIRMED":      {},
-		"FALSE_POSITIVE": {},
-		"ACCEPTED":       {},
-		"FIXED":          {},
-		"IN_SANDBOX":     {},
+		IssueStatusOpen:          {},
+		IssueStatusConfirmed:     {},
+		IssueStatusFalsePositive: {},
+		IssueStatusAccepted:      {},
+		IssueStatusFixed:         {},
+		IssueStatusInSandbox:     {},
 	}
 
 	// allowedIssueResolutions is the set of supported issue resolutions.
 	allowedIssueResolutions = map[string]struct{}{
-		"FIXED":          {},
-		"REMOVED":        {},
-		"FALSE-POSITIVE": {},
-		"WONTFIX":        {},
+		IssueResolutionFixed:         {},
+		IssueResolutionRemoved:       {},
+		IssueResolutionFalsePositive: {},
+		IssueResolutionWontFix:       {},
 	}
 
 	// allowedIssueScopes is the set of supported issue scopes.
 	allowedIssueScopes = map[string]struct{}{
-		"MAIN": {},
-		"TEST": {},
+		IssueScopeMain: {},
+		IssueScopeTest: {},
 	}
 )
 

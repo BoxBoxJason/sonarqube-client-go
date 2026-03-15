@@ -4,6 +4,56 @@ import (
 	"net/http"
 )
 
+const (
+	// IssueTransitionConfirm represents the "confirm" transition for issues.
+	IssueTransitionConfirm = "confirm"
+	// IssueTransitionUnconfirm represents the "unconfirm" transition for issues.
+	IssueTransitionUnconfirm = "unconfirm"
+	// IssueTransitionReopen represents the "reopen" transition for issues.
+	IssueTransitionReopen = "reopen"
+	// IssueTransitionResolve represents the "resolve" transition for issues.
+	IssueTransitionResolve = "resolve"
+	// IssueTransitionFalsePositive represents the "falsepositive" transition for issues.
+	IssueTransitionFalsePositive = "falsepositive"
+	// IssueTransitionWontFix represents the "wontfix" transition for issues.
+	IssueTransitionWontFix = "wontfix"
+	// IssueTransitionAccept represents the "accept" transition for issues.
+	IssueTransitionAccept = "accept"
+	// IssueTransitionClose represents the "close" transition for issues.
+	IssueTransitionClose = "close"
+	// IssueTransitionResolveAsReviewed represents the "resolveasreviewed" transition for issues.
+	IssueTransitionResolveAsReviewed = "resolveasreviewed"
+	// IssueTransitionResetAsReviewed represents the "resetastoreview" transition for issues.
+	IssueTransitionResetAsReviewed = "resetastoreview"
+
+	// IssueStatusOpen represents the "OPEN" status for issues.
+	IssueStatusOpen = "OPEN"
+	// IssueStatusConfirmed represents the "CONFIRMED" status for issues.
+	IssueStatusConfirmed = "CONFIRMED"
+	// IssueStatusFalsePositive represents the "FALSE_POSITIVE" status for issues.
+	IssueStatusFalsePositive = "FALSE_POSITIVE"
+	// IssueStatusAccepted represents the "ACCEPTED" status for issues.
+	IssueStatusAccepted = "ACCEPTED"
+	// IssueStatusFixed represents the "FIXED" status for issues.
+	IssueStatusFixed = "FIXED"
+	// IssueStatusInSandbox represents the "IN_SANDBOX" status for issues.
+	IssueStatusInSandbox = "IN_SANDBOX"
+
+	// IssueResolutionFixed represents the "FIXED" resolution for issues.
+	IssueResolutionFixed = "FIXED"
+	// IssueResolutionRemoved represents the "REMOVED" resolution for issues.
+	IssueResolutionRemoved = "REMOVED"
+	// IssueResolutionFalsePositive represents the "FALSE-POSITIVE" resolution for issues.
+	IssueResolutionFalsePositive = "FALSE-POSITIVE"
+	// IssueResolutionWontFix represents the "WONTFIX" resolution for issues.
+	IssueResolutionWontFix = "WONTFIX"
+
+	// IssueScopeMain represents the "MAIN" scope for issues.
+	IssueScopeMain = "MAIN"
+	// IssueScopeTest represents the "TEST" scope for issues.
+	IssueScopeTest = "TEST"
+)
+
 // IssuesService handles communication with the Issues related methods of the SonarQube API.
 // Issues represent code problems detected by SonarQube during analysis.
 type IssuesService struct {
@@ -1252,7 +1302,7 @@ func (s *IssuesService) ValidateBulkChangeOpt(opt *IssuesBulkChangeOptions) erro
 
 	// Validate severity if set
 	if opt.SetSeverity != "" {
-		err := IsValueAuthorized(opt.SetSeverity, allowedSeverities, "SetSeverity")
+		err := IsValueAuthorized(opt.SetSeverity, allowedRuleSeverities, "SetSeverity")
 		if err != nil {
 			return err
 		}
@@ -1464,7 +1514,7 @@ func (s *IssuesService) ValidateSearchOpt(opt *IssuesSearchOptions) error {
 
 	// Validate impact severities
 	if len(opt.ImpactSeverities) > 0 {
-		err := AreValuesAuthorized(opt.ImpactSeverities, allowedImpactSeverities, "ImpactSeverities")
+		err := AreValuesAuthorized(opt.ImpactSeverities, allowedRuleImpactSeverities, "ImpactSeverities")
 		if err != nil {
 			return err
 		}
@@ -1488,7 +1538,7 @@ func (s *IssuesService) ValidateSearchOpt(opt *IssuesSearchOptions) error {
 
 	// Validate severities
 	if len(opt.Severities) > 0 {
-		err := AreValuesAuthorized(opt.Severities, allowedSeverities, "Severities")
+		err := AreValuesAuthorized(opt.Severities, allowedRuleSeverities, "Severities")
 		if err != nil {
 			return err
 		}
@@ -1590,7 +1640,7 @@ func (s *IssuesService) ValidateSetSeverityOpt(opt *IssuesSetSeverityOptions) er
 
 	// Validate severity if set
 	if opt.Severity != "" {
-		err := IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
+		err := IsValueAuthorized(opt.Severity, allowedRuleSeverities, "Severity")
 		if err != nil {
 			return err
 		}

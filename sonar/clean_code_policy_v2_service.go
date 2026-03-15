@@ -170,7 +170,7 @@ func validateRuleImpacts(impacts []RuleImpact) error {
 			return err
 		}
 
-		err = IsValueAuthorized(impact.Severity, allowedImpactSeverities, fmt.Sprintf("Impacts[%d].Severity", impactIdx))
+		err = IsValueAuthorized(impact.Severity, allowedRuleImpactSeverities, fmt.Sprintf("Impacts[%d].Severity", impactIdx))
 		if err != nil {
 			return err
 		}
@@ -230,7 +230,7 @@ func (s *CleanCodePolicyService) ValidateCreateRuleRequest(opt *CleanCodePolicyC
 		return err
 	}
 
-	err = IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
+	err = IsValueAuthorized(opt.Severity, allowedRuleSeverities, "Severity")
 	if err != nil {
 		return err
 	}

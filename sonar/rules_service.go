@@ -10,6 +10,53 @@ const (
 	MaxRuleKeyLength = 200
 	// MinSearchQueryLength is the minimum required length for search queries.
 	MinSearchQueryLength = 2
+
+	// RuleRemediationFnTypeConstant represents a constant remediation function type.
+	RuleRemediationFnTypeConstant = "CONSTANT_ISSUE"
+	// RuleRemediationFnTypeLinear represents a linear remediation function type.
+	RuleRemediationFnTypeLinear = "LINEAR"
+	// RuleRemediationFnTypeLinearOffset represents a linear offset remediation function type.
+	RuleRemediationFnTypeLinearOffset = "LINEAR_OFFSET"
+
+	// RuleSeverityInfo represents the INFO severity level for rules.
+	RuleSeverityInfo = "INFO"
+	// RuleSeverityMinor represents the MINOR severity level for rules.
+	RuleSeverityMinor = "MINOR"
+	// RuleSeverityMajor represents the MAJOR severity level for rules.
+	RuleSeverityMajor = "MAJOR"
+	// RuleSeverityCritical represents the CRITICAL severity level for rules.
+	RuleSeverityCritical = "CRITICAL"
+	// RuleSeverityBlocker represents the BLOCKER severity level for rules.
+	RuleSeverityBlocker = "BLOCKER"
+
+	// RuleImpactSeverityInfo represents the INFO severity level for rule impacts.
+	RuleImpactSeverityInfo = "INFO"
+	// RuleImpactSeverityLow represents the LOW severity level for rule impacts.
+	RuleImpactSeverityLow = "LOW"
+	// RuleImpactSeverityMedium represents the MEDIUM severity level for rule impacts.
+	RuleImpactSeverityMedium = "MEDIUM"
+	// RuleImpactSeverityHigh represents the HIGH severity level for rule impacts.
+	RuleImpactSeverityHigh = "HIGH"
+	// RuleImpactSeverityBlocker represents the BLOCKER severity level for rule impacts.
+	RuleImpactSeverityBlocker = "BLOCKER"
+
+	// RuleTypeCodeSmell represents the CODE_SMELL type for rules.
+	RuleTypeCodeSmell = "CODE_SMELL"
+	// RuleTypeBug represents the BUG type for rules.
+	RuleTypeBug = "BUG"
+	// RuleTypeVulnerability represents the VULNERABILITY type for rules.
+	RuleTypeVulnerability = "VULNERABILITY"
+	// RuleTypeSecurityHotspot represents the SECURITY_HOTSPOT type for rules.
+	RuleTypeSecurityHotspot = "SECURITY_HOTSPOT"
+
+	// RuleStatusReady represents the READY status for rules.
+	RuleStatusReady = "READY"
+	// RuleStatusDeprecated represents the DEPRECATED status for rules.
+	RuleStatusDeprecated = "DEPRECATED"
+	// RuleStatusBeta represents the BETA status for rules.
+	RuleStatusBeta = "BETA"
+	// RuleStatusRemoved represents the REMOVED status for rules.
+	RuleStatusRemoved = "REMOVED"
 )
 
 // RulesService handles communication with the Rules related methods of the SonarQube API.
@@ -502,7 +549,7 @@ type RulesUpdateOptions struct {
 	// RemediationFnBaseEffort is the base effort of the remediation function (e.g., '1d').
 	RemediationFnBaseEffort string `url:"remediation_fn_base_effort,omitempty"`
 	// RemediationFnType is the type of the remediation function.
-	// Allowed values: LINEAR, CONSTANT, LINEAR_OFFSET
+	// Allowed values: CONSTANT_ISSUE, LINEAR, LINEAR_OFFSET
 	RemediationFnType string `url:"remediation_fn_type,omitempty"`
 	// RemediationFyGapMultiplier is the gap multiplier of the remediation function (e.g., '2min').
 	RemediationFyGapMultiplier string `url:"remediation_fy_gap_multiplier,omitempty"`
@@ -781,7 +828,7 @@ func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOptions) error {
 	}
 
 	if opt.Severity != "" {
-		err := IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
+		err := IsValueAuthorized(opt.Severity, allowedRuleSeverities, "Severity")
 		if err != nil {
 			return err
 		}
@@ -808,7 +855,7 @@ func (s *RulesService) ValidateCreateOpt(opt *RulesCreateOptions) error {
 			return err
 		}
 
-		err = ValidateMapValues(opt.Impacts, allowedImpactSeverities, "Impacts")
+		err = ValidateMapValues(opt.Impacts, allowedRuleImpactSeverities, "Impacts")
 		if err != nil {
 			return err
 		}
@@ -881,22 +928,22 @@ func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOptions) error {
 	}
 
 	// Validate severity values
-	err = AreValuesAuthorized(opt.ActiveImpactSeverities, allowedImpactSeverities, "ActiveImpactSeverities")
+	err = AreValuesAuthorized(opt.ActiveImpactSeverities, allowedRuleImpactSeverities, "ActiveImpactSeverities")
 	if err != nil {
 		return err
 	}
 
-	err = AreValuesAuthorized(opt.ActiveSeverities, allowedSeverities, "ActiveSeverities")
+	err = AreValuesAuthorized(opt.ActiveSeverities, allowedRuleSeverities, "ActiveSeverities")
 	if err != nil {
 		return err
 	}
 
-	err = AreValuesAuthorized(opt.Severities, allowedSeverities, "Severities")
+	err = AreValuesAuthorized(opt.Severities, allowedRuleSeverities, "Severities")
 	if err != nil {
 		return err
 	}
 
-	err = AreValuesAuthorized(opt.ImpactSeverities, allowedImpactSeverities, "ImpactSeverities")
+	err = AreValuesAuthorized(opt.ImpactSeverities, allowedRuleImpactSeverities, "ImpactSeverities")
 	if err != nil {
 		return err
 	}
@@ -1021,7 +1068,7 @@ func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOptions) error {
 	}
 
 	// Value validations
-	err = IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
+	err = IsValueAuthorized(opt.Severity, allowedRuleSeverities, "Severity")
 	if err != nil {
 		return err
 	}
@@ -1034,7 +1081,7 @@ func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOptions) error {
 	}
 
 	if opt.RemediationFnType != "" {
-		allowed := map[string]struct{}{"LINEAR": {}, "CONSTANT": {}, "LINEAR_OFFSET": {}}
+		allowed := map[string]struct{}{RuleRemediationFnTypeConstant: {}, RuleRemediationFnTypeLinear: {}, RuleRemediationFnTypeLinearOffset: {}}
 
 		err = IsValueAuthorized(opt.RemediationFnType, allowed, "RemediationFnType")
 		if err != nil {
@@ -1049,7 +1096,7 @@ func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOptions) error {
 			return err
 		}
 
-		err = ValidateMapValues(opt.Impacts, allowedImpactSeverities, "Impacts")
+		err = ValidateMapValues(opt.Impacts, allowedRuleImpactSeverities, "Impacts")
 		if err != nil {
 			return err
 		}
