@@ -513,7 +513,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, _, err := client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     testGroupName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			found := false
@@ -642,7 +642,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, _, err := client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     testGroupName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			for _, u := range result.Users {
@@ -737,7 +737,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     testGroupName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -760,7 +760,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     testGroupName,
-				Selected: "all",
+				Selected: sonar.SelectionFilterAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -773,7 +773,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     testGroupName,
-				Selected: "deselected",
+				Selected: sonar.SelectionFilterDeselected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -789,7 +789,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			result, resp, err := client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     testGroupName,
 				Query:    testUserLogin,
-				Selected: "all",
+				Selected: sonar.SelectionFilterAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -894,7 +894,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			usersResult, _, err := client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     groupName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			found := false
@@ -926,7 +926,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			usersResult, _, err = client.UserGroups.Users(&sonar.UserGroupsUsersOptions{
 				Name:     groupName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			for _, u := range usersResult.Users {

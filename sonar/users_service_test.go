@@ -385,7 +385,7 @@ func TestUsers_Groups_WithFilter(t *testing.T) {
 	opt := &UsersGroupsOptions{
 		Login:    "myuser",
 		Query:    "admin",
-		Selected: "selected",
+		Selected: SelectionFilterSelected,
 	}
 
 	_, resp, err := client.Users.Groups(opt)

@@ -9,23 +9,32 @@ const (
 	MaxGroupNameLength = 255
 	// MaxGroupDescriptionLength is the maximum allowed length for group descriptions.
 	MaxGroupDescriptionLength = 200
+
+	// UserGroupFieldName represents the "name" field for user groups.
+	UserGroupFieldName = "name"
+	// UserGroupFieldDescription represents the "description" field for user groups.
+	UserGroupFieldDescription = "description"
+	// UserGroupFieldMembersCount represents the "membersCount" field for user groups.
+	UserGroupFieldMembersCount = "membersCount"
+	// UserGroupFieldManaged represents the "managed" field for user groups.
+	UserGroupFieldManaged = "managed"
 )
 
 //nolint:gochecknoglobals // these are constant sets of allowed values
 var (
 	// allowedUserGroupSearchFields is the set of fields that can be returned in search response.
 	allowedUserGroupSearchFields = map[string]struct{}{
-		"name":         {},
-		"description":  {},
-		"membersCount": {},
-		"managed":      {},
+		UserGroupFieldName:         {},
+		UserGroupFieldDescription:  {},
+		UserGroupFieldMembersCount: {},
+		UserGroupFieldManaged:      {},
 	}
 
 	// allowedUserGroupsUsersSelected is the set of allowed values for user selection filter.
 	allowedUserGroupsUsersSelected = map[string]struct{}{
-		"all":        {},
-		"deselected": {},
-		"selected":   {},
+		SelectionFilterAll:        {},
+		SelectionFilterDeselected: {},
+		SelectionFilterSelected:   {},
 	}
 )
 

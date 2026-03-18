@@ -4,19 +4,33 @@ import (
 	"net/http"
 )
 
+const (
+	// ProjectVisibilityPrivate represents private project visibility.
+	ProjectVisibilityPrivate = "private"
+	// ProjectVisibilityPublic represents public project visibility.
+	ProjectVisibilityPublic = "public"
+
+	// ProjectQualifierTRK represents the TRK project qualifier.
+	ProjectQualifierTRK = "TRK"
+	// ProjectQualifierVW represents the VW project qualifier.
+	ProjectQualifierVW = "VW"
+	// ProjectQualifierAPP represents the APP project qualifier.
+	ProjectQualifierAPP = "APP"
+)
+
 //nolint:gochecknoglobals // these are constant sets of allowed values
 var (
 	// allowedProjectQualifiers is the set of allowed values for project qualifiers.
 	allowedProjectQualifiers = map[string]struct{}{
-		"TRK": {},
-		"VW":  {},
-		"APP": {},
+		ProjectQualifierTRK: {},
+		ProjectQualifierVW:  {},
+		ProjectQualifierAPP: {},
 	}
 
 	// allowedProjectVisibility is the set of allowed values for project visibility.
 	allowedProjectVisibility = map[string]struct{}{
-		"private": {},
-		"public":  {},
+		ProjectVisibilityPrivate: {},
+		ProjectVisibilityPublic:  {},
 	}
 )
 

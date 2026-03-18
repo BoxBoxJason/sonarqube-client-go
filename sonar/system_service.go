@@ -8,25 +8,47 @@ import (
 // Constants
 // -----------------------------------------------------------------------------
 
+const (
+	// LogLevelTrace represents the TRACE log level.
+	LogLevelTrace = "TRACE"
+	// LogLevelDebug represents the DEBUG log level.
+	LogLevelDebug = "DEBUG"
+	// LogLevelInfo represents the INFO log level.
+	LogLevelInfo = "INFO"
+
+	// LogNameAccess represents the access log name.
+	LogNameAccess = "access"
+	// LogNameApp represents the app log name.
+	LogNameApp = "app"
+	// LogNameCE represents the Compute Engine log name.
+	LogNameCE = "ce"
+	// LogNameDeprecation represents the deprecation log name.
+	LogNameDeprecation = "deprecation"
+	// LogNameES represents the Elasticsearch log name.
+	LogNameES = "es"
+	// LogNameWeb represents the web log name.
+	LogNameWeb = "web"
+)
+
 // Allowed log levels for the ChangeLogLevel method.
 //
 //nolint:gochecknoglobals // these are constant sets of allowed values
 var (
 	// allowedLogLevels is the set of allowed log levels for system logging.
 	allowedLogLevels = map[string]struct{}{
-		"TRACE": {},
-		"DEBUG": {},
-		"INFO":  {},
+		LogLevelTrace: {},
+		LogLevelDebug: {},
+		LogLevelInfo:  {},
 	}
 
 	// allowedLogNames is the set of allowed log names for the Logs method.
 	allowedLogNames = map[string]struct{}{
-		"access":      {},
-		"app":         {},
-		"ce":          {},
-		"deprecation": {},
-		"es":          {},
-		"web":         {},
+		LogNameAccess:      {},
+		LogNameApp:         {},
+		LogNameCE:          {},
+		LogNameDeprecation: {},
+		LogNameES:          {},
+		LogNameWeb:         {},
 	}
 )
 

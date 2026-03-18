@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/boxboxjason/sonarqube-client-go/sonar"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -80,7 +81,7 @@ func TestBindFlags_SliceField(t *testing.T) {
 	assert.NotContains(t, f.Usage, "required")
 
 	require.NoError(t, cmd.Flags().Set("severities", "CRITICAL,MAJOR"))
-	assert.Equal(t, []string{"CRITICAL", "MAJOR"}, opt.Severities)
+	assert.Equal(t, []string{sonar.RuleSeverityCritical, sonar.RuleSeverityMajor}, opt.Severities)
 }
 
 // TestBindFlags_PointerBoolField tests binding of a *bool field (tri-state).

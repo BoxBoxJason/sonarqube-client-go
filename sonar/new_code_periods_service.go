@@ -5,6 +5,17 @@ import (
 	"strconv"
 )
 
+const (
+	// NewCodePeriodTypeSpecificAnalysis represents the "SPECIFIC_ANALYSIS" new code period type.
+	NewCodePeriodTypeSpecificAnalysis = "SPECIFIC_ANALYSIS"
+	// NewCodePeriodTypePreviousVersion represents the "PREVIOUS_VERSION" new code period type.
+	NewCodePeriodTypePreviousVersion = "PREVIOUS_VERSION"
+	// NewCodePeriodTypeNumberOfDays represents the "NUMBER_OF_DAYS" new code period type.
+	NewCodePeriodTypeNumberOfDays = "NUMBER_OF_DAYS"
+	// NewCodePeriodTypeReferenceBranch represents the "REFERENCE_BRANCH" new code period type.
+	NewCodePeriodTypeReferenceBranch = "REFERENCE_BRANCH"
+)
+
 // NewCodePeriodsService handles communication with the new code periods related methods
 // of the SonarQube API.
 // This service manages new code definitions.
@@ -17,10 +28,10 @@ type NewCodePeriodsService struct {
 var (
 	// allowedNewCodePeriodTypes is the set of supported new code period types.
 	allowedNewCodePeriodTypes = map[string]struct{}{
-		"SPECIFIC_ANALYSIS": {},
-		"PREVIOUS_VERSION":  {},
-		"NUMBER_OF_DAYS":    {},
-		"REFERENCE_BRANCH":  {},
+		NewCodePeriodTypeSpecificAnalysis: {},
+		NewCodePeriodTypePreviousVersion:  {},
+		NewCodePeriodTypeNumberOfDays:     {},
+		NewCodePeriodTypeReferenceBranch:  {},
 	}
 )
 

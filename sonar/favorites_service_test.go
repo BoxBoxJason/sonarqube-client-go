@@ -61,8 +61,8 @@ func TestFavorites_Remove_ValidationError(t *testing.T) {
 func TestFavorites_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/favorites/search", http.StatusOK, &FavoritesSearch{
 		Favorites: []Favorite{
-			{Key: "project-1", Name: "Project One", Qualifier: "TRK"},
-			{Key: "project-2", Name: "Project Two", Qualifier: "TRK"},
+			{Key: "project-1", Name: "Project One", Qualifier: ProjectQualifierTRK},
+			{Key: "project-2", Name: "Project Two", Qualifier: ProjectQualifierTRK},
 		},
 		Paging: Paging{
 			PageIndex: 1,

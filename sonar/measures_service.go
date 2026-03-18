@@ -4,6 +4,20 @@ import (
 	"net/http"
 )
 
+const (
+	// MeasureStrategyAll represents the "all" strategy for measures component tree.
+	MeasureStrategyAll = "all"
+	// MeasureStrategyChildren represents the "children" strategy for measures component tree.
+	MeasureStrategyChildren = "children"
+	// MeasureStrategyLeaves represents the "leaves" strategy for measures component tree.
+	MeasureStrategyLeaves = "leaves"
+
+	// MeasuresMetricSortFilterAll represents the "all" metric sort filter.
+	MeasuresMetricSortFilterAll = "all"
+	// MeasuresMetricSortFilterWithMeasuresOnly represents the "withMeasuresOnly" metric sort filter.
+	MeasuresMetricSortFilterWithMeasuresOnly = "withMeasuresOnly"
+)
+
 // MeasuresService handles communication with the Measures related methods of the SonarQube API.
 // Get components or children with specified measures.
 //
@@ -16,15 +30,15 @@ type MeasuresService struct {
 var (
 	// allowedMeasuresMetricSortFilter is the set of allowed values for metric sort filtering.
 	allowedMeasuresMetricSortFilter = map[string]struct{}{
-		"all":              {},
-		"withMeasuresOnly": {},
+		MeasuresMetricSortFilterAll:              {},
+		MeasuresMetricSortFilterWithMeasuresOnly: {},
 	}
 
 	// allowedMeasuresStrategy is the set of allowed values for strategy.
 	allowedMeasuresStrategy = map[string]struct{}{
-		"all":      {},
-		"children": {},
-		"leaves":   {},
+		MeasureStrategyAll:      {},
+		MeasureStrategyChildren: {},
+		MeasureStrategyLeaves:   {},
 	}
 )
 

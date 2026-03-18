@@ -7,6 +7,18 @@ const (
 	MaxHotspotCommentLength = 1000
 	// MaxHotspotListPageSize is the maximum page size for the List endpoint.
 	MaxHotspotListPageSize = 500
+
+	// HotspotStatusToReview represents the "TO_REVIEW" status for a hotspot.
+	HotspotStatusToReview = "TO_REVIEW"
+	// HotspotStatusReviewed represents the "REVIEWED" status for a hotspot.
+	HotspotStatusReviewed = "REVIEWED"
+
+	// HotspotResolutionFixed represents the "FIXED" resolution for a hotspot.
+	HotspotResolutionFixed = "FIXED"
+	// HotspotResolutionSafe represents the "SAFE" resolution for a hotspot.
+	HotspotResolutionSafe = "SAFE"
+	// HotspotResolutionAcknowledged represents the "ACKNOWLEDGED" resolution for a hotspot.
+	HotspotResolutionAcknowledged = "ACKNOWLEDGED"
 )
 
 // HotspotsService handles communication with the Security Hotspots related methods
@@ -26,15 +38,15 @@ type HotspotsService struct {
 var (
 	// allowedHotspotStatuses is the set of allowed hotspot statuses.
 	allowedHotspotStatuses = map[string]struct{}{
-		"TO_REVIEW": {},
-		"REVIEWED":  {},
+		HotspotStatusToReview: {},
+		HotspotStatusReviewed: {},
 	}
 
 	// allowedHotspotResolutions is the set of allowed hotspot resolutions.
 	allowedHotspotResolutions = map[string]struct{}{
-		"FIXED":        {},
-		"SAFE":         {},
-		"ACKNOWLEDGED": {},
+		HotspotResolutionFixed:        {},
+		HotspotResolutionSafe:         {},
+		HotspotResolutionAcknowledged: {},
 	}
 
 	// allowedOwaspAsvsLevels is the set of allowed OWASP ASVS levels.

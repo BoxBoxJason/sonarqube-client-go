@@ -287,7 +287,7 @@ func TestValidateCreateOpt(t *testing.T) {
 				MarkdownDescription: "Test",
 				TemplateKey:         "java:Template",
 				Impacts: map[string]string{
-					"INVALID": "HIGH",
+					"INVALID": RuleImpactSeverityHigh,
 				},
 			},
 			wantErr: true,
@@ -314,12 +314,12 @@ func TestValidateCreateOpt(t *testing.T) {
 				Name:                "Test Rule",
 				MarkdownDescription: "Test description",
 				TemplateKey:         "java:Template",
-				Severity:            "MAJOR",
-				Status:              "READY",
-				Type:                "BUG",
+				Severity:            RuleSeverityMajor,
+				Status:              RuleStatusReady,
+				Type:                RuleTypeBug,
 				Impacts: map[string]string{
-					"MAINTAINABILITY": "HIGH",
-					"SECURITY":        "LOW",
+					SoftwareQualityMaintainability: RuleImpactSeverityHigh,
+					SoftwareQualitySecurity:        RuleImpactSeverityLow,
 				},
 			},
 			wantErr: false,
@@ -449,9 +449,9 @@ func TestValidateSearchOpt(t *testing.T) {
 				PaginationArgs: PaginationArgs{Page: 1, PageSize: 50},
 				Query:          "test",
 				Languages:      []string{"java", "go"},
-				Severities:     []string{"MAJOR", "CRITICAL"},
-				Statuses:       []string{"READY", "DEPRECATED"},
-				Types:          []string{"BUG", "CODE_SMELL"},
+				Severities:     []string{RuleSeverityMajor, RuleSeverityCritical},
+				Statuses:       []string{RuleStatusReady, RuleStatusDeprecated},
+				Types:          []string{RuleTypeBug, RuleTypeCodeSmell},
 				Sort:           "name",
 			},
 			wantErr: false,
@@ -534,7 +534,7 @@ func TestValidateUpdateOpt(t *testing.T) {
 			opt: &RulesUpdateOptions{
 				Key: "java:MyRule",
 				Impacts: map[string]string{
-					"INVALID": "HIGH",
+					"INVALID": RuleImpactSeverityHigh,
 				},
 			},
 			wantErr: true,
@@ -545,10 +545,10 @@ func TestValidateUpdateOpt(t *testing.T) {
 			opt: &RulesUpdateOptions{
 				Key:      "java:MyRule",
 				Name:     "Updated Rule",
-				Severity: "CRITICAL",
-				Status:   "READY",
+				Severity: RuleSeverityCritical,
+				Status:   RuleStatusReady,
 				Impacts: map[string]string{
-					"SECURITY": "HIGH",
+					SoftwareQualitySecurity: RuleImpactSeverityHigh,
 				},
 				Tags: []string{"security", "bug"},
 			},
@@ -728,8 +728,8 @@ func TestConvertCreateOptForURL(t *testing.T) {
 		MarkdownDescription: "Description",
 		TemplateKey:         "java:Template",
 		Impacts: map[string]string{
-			"MAINTAINABILITY": "HIGH",
-			"SECURITY":        "LOW",
+			SoftwareQualityMaintainability: RuleImpactSeverityHigh,
+			SoftwareQualitySecurity:        RuleImpactSeverityLow,
 		},
 		Params: map[string]string{
 			"param1": "value1",
@@ -757,7 +757,7 @@ func TestConvertSearchOptForURL(t *testing.T) {
 	opt := &RulesSearchOptions{
 		PaginationArgs: PaginationArgs{Page: 1, PageSize: 50},
 		Languages:      []string{"java", "go"},
-		Severities:     []string{"MAJOR", "CRITICAL"},
+		Severities:     []string{RuleSeverityMajor, RuleSeverityCritical},
 		Tags:           []string{"security", "bug"},
 	}
 
@@ -780,7 +780,7 @@ func TestConvertUpdateOptForURL(t *testing.T) {
 		Key:  "java:MyRule",
 		Name: "Updated",
 		Impacts: map[string]string{
-			"SECURITY": "HIGH",
+			SoftwareQualitySecurity: RuleImpactSeverityHigh,
 		},
 		Params: map[string]string{
 			"key1": "val1",

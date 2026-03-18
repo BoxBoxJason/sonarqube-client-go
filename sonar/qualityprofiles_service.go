@@ -1628,7 +1628,7 @@ func (s *QualityprofilesService) ValidateActivateRuleOpt(opt *QualityprofilesAct
 	}
 
 	// Validate Severity if provided
-	err = IsValueAuthorized(opt.Severity, allowedSeverities, "Severity")
+	err = IsValueAuthorized(opt.Severity, allowedRuleSeverities, "Severity")
 	if err != nil {
 		return err
 	}
@@ -1639,7 +1639,7 @@ func (s *QualityprofilesService) ValidateActivateRuleOpt(opt *QualityprofilesAct
 		return err
 	}
 
-	err = ValidateMapValues(opt.Impacts, allowedImpactSeverities, "Impacts")
+	err = ValidateMapValues(opt.Impacts, allowedRuleImpactSeverities, "Impacts")
 	if err != nil {
 		return err
 	}
@@ -1661,27 +1661,27 @@ func (s *QualityprofilesService) ValidateActivateRulesOpt(opt *QualityprofilesAc
 	}
 
 	// Validate severity values
-	err = AreValuesAuthorized(opt.ActiveImpactSeverities, allowedImpactSeverities, "ActiveImpactSeverities")
+	err = AreValuesAuthorized(opt.ActiveImpactSeverities, allowedRuleImpactSeverities, "ActiveImpactSeverities")
 	if err != nil {
 		return err
 	}
 
-	err = AreValuesAuthorized(opt.ActiveSeverities, allowedSeverities, "ActiveSeverities")
+	err = AreValuesAuthorized(opt.ActiveSeverities, allowedRuleSeverities, "ActiveSeverities")
 	if err != nil {
 		return err
 	}
 
-	err = AreValuesAuthorized(opt.Severities, allowedSeverities, "Severities")
+	err = AreValuesAuthorized(opt.Severities, allowedRuleSeverities, "Severities")
 	if err != nil {
 		return err
 	}
 
-	err = AreValuesAuthorized(opt.ImpactSeverities, allowedImpactSeverities, "ImpactSeverities")
+	err = AreValuesAuthorized(opt.ImpactSeverities, allowedRuleImpactSeverities, "ImpactSeverities")
 	if err != nil {
 		return err
 	}
 
-	err = IsValueAuthorized(opt.TargetSeverity, allowedSeverities, "TargetSeverity")
+	err = IsValueAuthorized(opt.TargetSeverity, allowedRuleSeverities, "TargetSeverity")
 	if err != nil {
 		return err
 	}

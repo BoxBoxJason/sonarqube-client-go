@@ -126,8 +126,8 @@ func TestHotspots_ChangeStatus(t *testing.T) {
 		assert.Equal(t, http.MethodPost, r.Method)
 		assert.Equal(t, "/hotspots/change_status", r.URL.Path)
 		assert.Equal(t, "hotspot123", r.URL.Query().Get("hotspot"))
-		assert.Equal(t, "REVIEWED", r.URL.Query().Get("status"))
-		assert.Equal(t, "SAFE", r.URL.Query().Get("resolution"))
+		assert.Equal(t, HotspotStatusReviewed, r.URL.Query().Get("status"))
+		assert.Equal(t, HotspotResolutionSafe, r.URL.Query().Get("resolution"))
 
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -136,8 +136,8 @@ func TestHotspots_ChangeStatus(t *testing.T) {
 
 	resp, err := client.Hotspots.ChangeStatus(&HotspotsChangeStatusOptions{
 		Hotspot:    "hotspot123",
-		Status:     "REVIEWED",
-		Resolution: "SAFE",
+		Status:     HotspotStatusReviewed,
+		Resolution: HotspotResolutionSafe,
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -156,7 +156,7 @@ func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing hotspot",
-			opt:  &HotspotsChangeStatusOptions{Status: "REVIEWED"},
+			opt:  &HotspotsChangeStatusOptions{Status: HotspotStatusReviewed},
 		},
 		{
 			name: "missing status",
@@ -168,7 +168,7 @@ func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
 		},
 		{
 			name: "invalid resolution",
-			opt:  &HotspotsChangeStatusOptions{Hotspot: "hotspot123", Status: "REVIEWED", Resolution: "INVALID"},
+			opt:  &HotspotsChangeStatusOptions{Hotspot: "hotspot123", Status: HotspotStatusReviewed, Resolution: "INVALID"},
 		},
 	}
 
@@ -486,8 +486,8 @@ func TestHotspots_Search_WithFilters(t *testing.T) {
 	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodGet, r.Method)
 		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
-		assert.Equal(t, "REVIEWED", r.URL.Query().Get("status"))
-		assert.Equal(t, "SAFE", r.URL.Query().Get("resolution"))
+		assert.Equal(t, HotspotStatusReviewed, r.URL.Query().Get("status"))
+		assert.Equal(t, HotspotResolutionSafe, r.URL.Query().Get("resolution"))
 		assert.Equal(t, "true", r.URL.Query().Get("inNewCodePeriod"))
 		assert.Equal(t, "true", r.URL.Query().Get("onlyMine"))
 
@@ -500,8 +500,8 @@ func TestHotspots_Search_WithFilters(t *testing.T) {
 
 	_, resp, err := client.Hotspots.Search(&HotspotsSearchOptions{
 		Project:         "my-project",
-		Status:          "REVIEWED",
-		Resolution:      "SAFE",
+		Status:          HotspotStatusReviewed,
+		Resolution:      HotspotResolutionSafe,
 		InNewCodePeriod: true,
 		OnlyMine:        true,
 	})
@@ -538,11 +538,11 @@ func TestHotspots_Search_ValidationError(t *testing.T) {
 		},
 		{
 			name: "invalid owasp top 10",
-			opt:  &HotspotsSearchOptions{Project: "my-project", OwaspTop10: []string{"a1", "invalid"}},
+			opt:  &HotspotsSearchOptions{Project: "my-project", OwaspTop10: []string{OwaspCategoryA1, "invalid"}},
 		},
 		{
 			name: "invalid sans top 25",
-			opt:  &HotspotsSearchOptions{Project: "my-project", SansTop25: []string{"insecure-interaction", "invalid"}},
+			opt:  &HotspotsSearchOptions{Project: "my-project", SansTop25: []string{SansTop25CategoryInsecureInteraction, "invalid"}},
 		},
 	}
 
@@ -614,7 +614,7 @@ func TestHotspots_Show(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
 	assert.Equal(t, "hotspot123", result.Key)
-	assert.Equal(t, "TO_REVIEW", result.Status)
+	assert.Equal(t, HotspotStatusToReview, result.Status)
 	assert.True(t, result.CanChangeStatus)
 	assert.Len(t, result.Users, 1)
 	assert.Equal(t, "john.doe", result.Users[0].Login)
@@ -714,7 +714,7 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 			name: "valid TO_REVIEW status",
 			opt: &HotspotsChangeStatusOptions{
 				Hotspot: "hotspot123",
-				Status:  "TO_REVIEW",
+				Status:  HotspotStatusToReview,
 			},
 			wantErr: false,
 		},
@@ -722,8 +722,8 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 			name: "valid REVIEWED with SAFE resolution",
 			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
-				Status:     "REVIEWED",
-				Resolution: "SAFE",
+				Status:     HotspotStatusReviewed,
+				Resolution: HotspotResolutionSafe,
 			},
 			wantErr: false,
 		},
@@ -731,8 +731,8 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 			name: "valid REVIEWED with FIXED resolution",
 			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
-				Status:     "REVIEWED",
-				Resolution: "FIXED",
+				Status:     HotspotStatusReviewed,
+				Resolution: HotspotResolutionFixed,
 			},
 			wantErr: false,
 		},
@@ -740,8 +740,8 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 			name: "valid REVIEWED with ACKNOWLEDGED resolution",
 			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
-				Status:     "REVIEWED",
-				Resolution: "ACKNOWLEDGED",
+				Status:     HotspotStatusReviewed,
+				Resolution: HotspotResolutionAcknowledged,
 			},
 			wantErr: false,
 		},
@@ -762,7 +762,7 @@ func TestHotspots_ValidateChangeStatusOpt(t *testing.T) {
 			name: "invalid resolution",
 			opt: &HotspotsChangeStatusOptions{
 				Hotspot:    "hotspot123",
-				Status:     "REVIEWED",
+				Status:     HotspotStatusReviewed,
 				Resolution: "INVALID",
 			},
 			wantErr: true,
@@ -807,8 +807,8 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 			name: "valid with all OWASP filters",
 			opt: &HotspotsSearchOptions{
 				Project:        "my-project",
-				OwaspTop10:     []string{"a1", "a2"},
-				OwaspTop102021: []string{"a3", "a4"},
+				OwaspTop10:     []string{OwaspCategoryA1, OwaspCategoryA2},
+				OwaspTop102021: []string{OwaspCategoryA3, OwaspCategoryA4},
 				OwaspAsvsLevel: "2",
 			},
 			wantErr: false,
@@ -817,7 +817,7 @@ func TestHotspots_ValidateSearchOpt(t *testing.T) {
 			name: "valid with SANS filter",
 			opt: &HotspotsSearchOptions{
 				Project:   "my-project",
-				SansTop25: []string{"insecure-interaction", "porous-defenses"},
+				SansTop25: []string{SansTop25CategoryInsecureInteraction, SansTop25CategoryPorousDefenses},
 			},
 			wantErr: false,
 		},
@@ -890,8 +890,8 @@ func TestHotspots_ValidateListOpt(t *testing.T) {
 				Project:         "my-project",
 				Branch:          "main",
 				InNewCodePeriod: true,
-				Status:          "TO_REVIEW",
-				Resolution:      "SAFE",
+				Status:          HotspotStatusToReview,
+				Resolution:      HotspotResolutionSafe,
 				PaginationArgs:  PaginationArgs{PageSize: 100},
 			},
 			wantErr: false,

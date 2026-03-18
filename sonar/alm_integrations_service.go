@@ -26,9 +26,9 @@ const (
 var (
 	// allowedNewCodeDefinitionTypes is the set of allowed new code definition types.
 	allowedNewCodeDefinitionTypes = map[string]struct{}{
-		"PREVIOUS_VERSION": {},
-		"NUMBER_OF_DAYS":   {},
-		"REFERENCE_BRANCH": {},
+		NewCodePeriodTypePreviousVersion: {},
+		NewCodePeriodTypeNumberOfDays:    {},
+		NewCodePeriodTypeReferenceBranch: {},
 	}
 )
 

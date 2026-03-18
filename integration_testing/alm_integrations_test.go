@@ -118,7 +118,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOptions{
 					ProjectName:            "test-project",
 					RepositoryName:         "test-repo",
-					NewCodeDefinitionType:  "NUMBER_OF_DAYS",
+					NewCodeDefinitionType:  sonar.NewCodePeriodTypeNumberOfDays,
 					NewCodeDefinitionValue: 0,
 				})
 				Expect(err).To(HaveOccurred())
@@ -130,7 +130,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 				resp, err := client.AlmIntegrations.ImportAzureProject(&sonar.AlmIntegrationsImportAzureProjectOptions{
 					ProjectName:            "test-project",
 					RepositoryName:         "test-repo",
-					NewCodeDefinitionType:  "NUMBER_OF_DAYS",
+					NewCodeDefinitionType:  sonar.NewCodePeriodTypeNumberOfDays,
 					NewCodeDefinitionValue: 100,
 				})
 				Expect(err).To(HaveOccurred())

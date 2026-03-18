@@ -9,6 +9,33 @@ const (
 	MaxProjectKeyLength = 400
 	// MaxProjectNameLength is the maximum length for a project name (truncated if longer).
 	MaxProjectNameLength = 500
+
+	// TaskStatusSuccess represents a successful task status.
+	TaskStatusSuccess = "SUCCESS"
+	// TaskStatusFailed represents a failed task status.
+	TaskStatusFailed = "FAILED"
+	// TaskStatusCanceled represents a canceled task status.
+	TaskStatusCanceled = "CANCELED"
+	// TaskStatusPending represents a pending task status.
+	TaskStatusPending = "PENDING"
+	// TaskStatusInProgress represents an in-progress task status.
+	TaskStatusInProgress = "IN_PROGRESS"
+
+	// TaskTypeReport represents a report task type.
+	TaskTypeReport = "REPORT"
+	// TaskTypeIssueSync represents an issue synchronization task type.
+	TaskTypeIssueSync = "ISSUE_SYNC"
+	// TaskTypeAuditPurge represents an audit purge task type.
+	TaskTypeAuditPurge = "AUDIT_PURGE"
+	// TaskTypeProjectExport represents a project export task type.
+	TaskTypeProjectExport = "PROJECT_EXPORT"
+
+	// TaskFieldStacktrace represents the "stacktrace" additional field for task details.
+	TaskFieldStacktrace = "stacktrace"
+	// TaskFieldScannerContext represents the "scannerContext" additional field for task details.
+	TaskFieldScannerContext = "scannerContext"
+	// TaskFieldWarnings represents the "warnings" additional field for task details.
+	TaskFieldWarnings = "warnings"
 )
 
 // CeService handles communication with the Compute Engine related methods
@@ -24,26 +51,26 @@ type CeService struct {
 var (
 	// allowedTaskStatuses is the set of supported task statuses.
 	allowedTaskStatuses = map[string]struct{}{
-		"SUCCESS":     {},
-		"FAILED":      {},
-		"CANCELED":    {},
-		"PENDING":     {},
-		"IN_PROGRESS": {},
+		TaskStatusSuccess:    {},
+		TaskStatusFailed:     {},
+		TaskStatusCanceled:   {},
+		TaskStatusPending:    {},
+		TaskStatusInProgress: {},
 	}
 
 	// allowedTaskTypes is the set of supported task types.
 	allowedTaskTypes = map[string]struct{}{
-		"REPORT":         {},
-		"ISSUE_SYNC":     {},
-		"AUDIT_PURGE":    {},
-		"PROJECT_EXPORT": {},
+		TaskTypeReport:        {},
+		TaskTypeIssueSync:     {},
+		TaskTypeAuditPurge:    {},
+		TaskTypeProjectExport: {},
 	}
 
 	// allowedAdditionalFields is the set of supported additional fields for task queries.
 	allowedAdditionalFields = map[string]struct{}{
-		"stacktrace":     {},
-		"scannerContext": {},
-		"warnings":       {},
+		TaskFieldStacktrace:     {},
+		TaskFieldScannerContext: {},
+		TaskFieldWarnings:       {},
 	}
 )
 

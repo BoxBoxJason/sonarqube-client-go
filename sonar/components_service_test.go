@@ -112,7 +112,7 @@ func TestComponents_Search(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Components.Search(&ComponentsSearchOptions{
-		Qualifiers: []string{"TRK"},
+		Qualifiers: []string{ProjectQualifierTRK},
 		Query:      "sonar",
 	})
 	require.NoError(t, err)
@@ -147,7 +147,7 @@ func TestComponents_Search_ValidationError(t *testing.T) {
 		{
 			name: "query too short",
 			opt: &ComponentsSearchOptions{
-				Qualifiers: []string{"TRK"},
+				Qualifiers: []string{ProjectQualifierTRK},
 				Query:      "a",
 			},
 		},
@@ -407,7 +407,7 @@ func TestComponents_Tree(t *testing.T) {
 		assert.Equal(t, http.MethodGet, r.Method)
 		assert.Equal(t, "/components/tree", r.URL.Path)
 		assert.Equal(t, "my_project", r.URL.Query().Get("component"))
-		assert.Equal(t, "children", r.URL.Query().Get("strategy"))
+		assert.Equal(t, MeasureStrategyChildren, r.URL.Query().Get("strategy"))
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -444,7 +444,7 @@ func TestComponents_Tree(t *testing.T) {
 
 	result, resp, err := client.Components.Tree(&ComponentsTreeOptions{
 		Component: "my_project",
-		Strategy:  "children",
+		Strategy:  MeasureStrategyChildren,
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -492,7 +492,7 @@ func TestComponents_Tree_ValidationError(t *testing.T) {
 		},
 		{
 			name: "missing component",
-			opt:  &ComponentsTreeOptions{Strategy: "all"},
+			opt:  &ComponentsTreeOptions{Strategy: MeasureStrategyAll},
 		},
 		{
 			name: "query too short",
@@ -552,7 +552,7 @@ func TestComponents_Search_WithPagination(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	result, _, err := client.Components.Search(&ComponentsSearchOptions{
-		Qualifiers: []string{"TRK"},
+		Qualifiers: []string{ProjectQualifierTRK},
 		PaginationArgs: PaginationArgs{
 			Page:     2,
 			PageSize: 50,
@@ -583,7 +583,7 @@ func TestComponents_Tree_AllowedQualifiers(t *testing.T) {
 func TestComponents_Tree_AllowedStrategies(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	validStrategies := []string{"all", "children", "leaves"}
+	validStrategies := []string{MeasureStrategyAll, MeasureStrategyChildren, MeasureStrategyLeaves}
 	for _, s := range validStrategies {
 		opt := &ComponentsTreeOptions{
 			Component: "my_project",

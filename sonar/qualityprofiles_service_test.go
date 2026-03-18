@@ -46,8 +46,8 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key:      "AU-TpxcA-iU5OvuD2FL0",
 		Rule:     "squid:AvoidCycles",
-		Impacts:  map[string]string{"MAINTAINABILITY": "HIGH"},
-		Severity: "MAJOR",
+		Impacts:  map[string]string{SoftwareQualityMaintainability: RuleImpactSeverityHigh},
+		Severity: RuleSeverityMajor,
 	})
 	assert.Error(t, err)
 
@@ -63,7 +63,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key:     "AU-TpxcA-iU5OvuD2FL0",
 		Rule:    "squid:AvoidCycles",
-		Impacts: map[string]string{"INVALID_QUALITY": "HIGH"},
+		Impacts: map[string]string{"INVALID_QUALITY": RuleImpactSeverityHigh},
 	})
 	assert.Error(t, err)
 
@@ -71,7 +71,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
 		Key:     "AU-TpxcA-iU5OvuD2FL0",
 		Rule:    "squid:AvoidCycles",
-		Impacts: map[string]string{"MAINTAINABILITY": "INVALID_SEVERITY"},
+		Impacts: map[string]string{SoftwareQualityMaintainability: "INVALID_SEVERITY"},
 	})
 	assert.Error(t, err)
 }
@@ -1210,7 +1210,7 @@ func TestQualityprofiles_ConvertActivateRuleOptForURL(t *testing.T) {
 	opt := &QualityprofilesActivateRuleOptions{
 		Key:             "AU-TpxcA-iU5OvuD2FL0",
 		Rule:            "squid:AvoidCycles",
-		Impacts:         map[string]string{"MAINTAINABILITY": "HIGH", "SECURITY": "MEDIUM"},
+		Impacts:         map[string]string{SoftwareQualityMaintainability: RuleImpactSeverityHigh, SoftwareQualitySecurity: RuleImpactSeverityMedium},
 		Params:          map[string]string{"max": "10", "threshold": "5"},
 		PrioritizedRule: true,
 		Reset:           false,

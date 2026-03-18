@@ -83,7 +83,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 			It("should list CE tasks filtered by status", func() {
 				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
-					Statuses: []string{"SUCCESS"},
+					Statuses: []string{sonar.TaskStatusSuccess},
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -92,7 +92,7 @@ var _ = Describe("Ce Service", Ordered, func() {
 
 			It("should list CE tasks filtered by type", func() {
 				result, resp, err := client.Ce.Activity(&sonar.CeActivityOptions{
-					Type: "REPORT",
+					Type: sonar.TaskTypeReport,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))

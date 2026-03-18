@@ -53,8 +53,8 @@ func TestProjectsService_Create(t *testing.T) {
 		Project: Project{
 			Key:        "my-project",
 			Name:       "My Project",
-			Qualifier:  "TRK",
-			Visibility: "private",
+			Qualifier:  ProjectQualifierTRK,
+			Visibility: ProjectVisibilityPrivate,
 		},
 	}))
 	defer server.Close()
@@ -64,7 +64,7 @@ func TestProjectsService_Create(t *testing.T) {
 	opt := &ProjectsCreateOptions{
 		Name:       "My Project",
 		Project:    "my-project",
-		Visibility: "private",
+		Visibility: ProjectVisibilityPrivate,
 	}
 
 	result, resp, err := client.Projects.Create(opt)
@@ -152,15 +152,15 @@ func TestProjectsService_Search(t *testing.T) {
 			{
 				Key:              "project1",
 				Name:             "Project One",
-				Qualifier:        "TRK",
-				Visibility:       "public",
+				Qualifier:        ProjectQualifierTRK,
+				Visibility:       ProjectVisibilityPublic,
 				LastAnalysisDate: "2024-01-15T10:30:00+0000",
 			},
 			{
 				Key:        "project2",
 				Name:       "Project Two",
-				Qualifier:  "TRK",
-				Visibility: "private",
+				Qualifier:  ProjectQualifierTRK,
+				Visibility: ProjectVisibilityPrivate,
 				Managed:    true,
 			},
 		},
@@ -171,7 +171,7 @@ func TestProjectsService_Search(t *testing.T) {
 
 	opt := &ProjectsSearchOptions{
 		Query:      "project",
-		Qualifiers: []string{"TRK"},
+		Qualifiers: []string{ProjectQualifierTRK},
 	}
 
 	result, resp, err := client.Projects.Search(opt)
@@ -244,7 +244,7 @@ func TestProjectsService_UpdateDefaultVisibility(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &ProjectsUpdateDefaultVisibilityOptions{
-		ProjectVisibility: "private",
+		ProjectVisibility: ProjectVisibilityPrivate,
 	}
 
 	resp, err := client.Projects.UpdateDefaultVisibility(opt)
@@ -314,7 +314,7 @@ func TestProjectsService_UpdateVisibility(t *testing.T) {
 
 	opt := &ProjectsUpdateVisibilityOptions{
 		Project:    "my-project",
-		Visibility: "public",
+		Visibility: ProjectVisibilityPublic,
 	}
 
 	resp, err := client.Projects.UpdateVisibility(opt)
@@ -328,7 +328,7 @@ func TestProjectsService_UpdateVisibility_ValidationError(t *testing.T) {
 
 	// Test missing Project
 	opt := &ProjectsUpdateVisibilityOptions{
-		Visibility: "public",
+		Visibility: ProjectVisibilityPublic,
 	}
 	_, err := client.Projects.UpdateVisibility(opt)
 	assert.Error(t, err)

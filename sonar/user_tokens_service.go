@@ -2,6 +2,15 @@ package sonar
 
 import "net/http"
 
+const (
+	// TokenTypeUserToken represents a user token that can be used for authentication and project analysis.
+	TokenTypeUserToken = "USER_TOKEN"
+	// TokenTypeGlobalAnalysisToken represents a global analysis token.
+	TokenTypeGlobalAnalysisToken = "GLOBAL_ANALYSIS_TOKEN"
+	// TokenTypeProjectAnalysisToken represents a project analysis token.
+	TokenTypeProjectAnalysisToken = "PROJECT_ANALYSIS_TOKEN"
+)
+
 // UserTokensService handles communication with the user tokens related methods
 // of the SonarQube API.
 // This service lists, creates, and deletes a user's access tokens.
@@ -14,9 +23,9 @@ type UserTokensService struct {
 var (
 	// allowedTokenTypes is the set of supported token types.
 	allowedTokenTypes = map[string]struct{}{
-		"USER_TOKEN":             {},
-		"GLOBAL_ANALYSIS_TOKEN":  {},
-		"PROJECT_ANALYSIS_TOKEN": {},
+		TokenTypeUserToken:            {},
+		TokenTypeGlobalAnalysisToken:  {},
+		TokenTypeProjectAnalysisToken: {},
 	}
 )
 

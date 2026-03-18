@@ -127,7 +127,7 @@ func TestAlmIntegrations_ImportAzureProject_ValidationError(t *testing.T) {
 	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:           "project",
 		RepositoryName:        "repo",
-		NewCodeDefinitionType: "NUMBER_OF_DAYS",
+		NewCodeDefinitionType: NewCodePeriodTypeNumberOfDays,
 	})
 	assert.Error(t, err)
 
@@ -135,7 +135,7 @@ func TestAlmIntegrations_ImportAzureProject_ValidationError(t *testing.T) {
 	_, err = client.AlmIntegrations.ImportAzureProject(&AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:            "project",
 		RepositoryName:         "repo",
-		NewCodeDefinitionType:  "PREVIOUS_VERSION",
+		NewCodeDefinitionType:  NewCodePeriodTypePreviousVersion,
 		NewCodeDefinitionValue: 30,
 	})
 	assert.Error(t, err)
@@ -150,7 +150,7 @@ func TestAlmIntegrations_ImportAzureProject_WithNewCodeDefinition(t *testing.T) 
 	opt := &AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:           "project",
 		RepositoryName:        "repo",
-		NewCodeDefinitionType: "PREVIOUS_VERSION",
+		NewCodeDefinitionType: NewCodePeriodTypePreviousVersion,
 	}
 
 	resp, err := client.AlmIntegrations.ImportAzureProject(opt)
@@ -161,7 +161,7 @@ func TestAlmIntegrations_ImportAzureProject_WithNewCodeDefinition(t *testing.T) 
 	opt = &AlmIntegrationsImportAzureProjectOptions{
 		ProjectName:            "project",
 		RepositoryName:         "repo",
-		NewCodeDefinitionType:  "NUMBER_OF_DAYS",
+		NewCodeDefinitionType:  NewCodePeriodTypeNumberOfDays,
 		NewCodeDefinitionValue: 30,
 	}
 
@@ -735,37 +735,37 @@ func TestValidateNewCodeDefinition(t *testing.T) {
 		},
 		{
 			name:            "PREVIOUS_VERSION without value",
-			definitionType:  "PREVIOUS_VERSION",
+			definitionType:  NewCodePeriodTypePreviousVersion,
 			definitionValue: 0,
 			wantErr:         false,
 		},
 		{
 			name:            "PREVIOUS_VERSION with value is invalid",
-			definitionType:  "PREVIOUS_VERSION",
+			definitionType:  NewCodePeriodTypePreviousVersion,
 			definitionValue: 30,
 			wantErr:         true,
 		},
 		{
 			name:            "REFERENCE_BRANCH without value",
-			definitionType:  "REFERENCE_BRANCH",
+			definitionType:  NewCodePeriodTypeReferenceBranch,
 			definitionValue: 0,
 			wantErr:         false,
 		},
 		{
 			name:            "REFERENCE_BRANCH with value is invalid",
-			definitionType:  "REFERENCE_BRANCH",
+			definitionType:  NewCodePeriodTypeReferenceBranch,
 			definitionValue: 30,
 			wantErr:         true,
 		},
 		{
 			name:            "NUMBER_OF_DAYS with value",
-			definitionType:  "NUMBER_OF_DAYS",
+			definitionType:  NewCodePeriodTypeNumberOfDays,
 			definitionValue: 30,
 			wantErr:         false,
 		},
 		{
 			name:            "NUMBER_OF_DAYS without value is invalid",
-			definitionType:  "NUMBER_OF_DAYS",
+			definitionType:  NewCodePeriodTypeNumberOfDays,
 			definitionValue: 0,
 			wantErr:         true,
 		},

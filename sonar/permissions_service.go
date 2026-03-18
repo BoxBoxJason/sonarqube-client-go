@@ -5,6 +5,34 @@ import "net/http"
 const (
 	// MinPermissionQueryLength is the minimum required length for permission query strings.
 	MinPermissionQueryLength = 3
+
+	// PermissionGlobalAdmin is the global admin permission.
+	PermissionGlobalAdmin = "admin"
+	// PermissionGlobalGateAdmin is the global gate admin permission.
+	PermissionGlobalGateAdmin = "gateadmin"
+	// PermissionGlobalProfileAdmin is the global profile admin permission.
+	PermissionGlobalProfileAdmin = "profileadmin"
+	// PermissionGlobalProvisioning is the global provisioning permission.
+	PermissionGlobalProvisioning = "provisioning"
+	// PermissionGlobalScan is the global scan permission.
+	PermissionGlobalScan = "scan"
+	// PermissionGlobalApplicationCreator is the global application creator permission.
+	PermissionGlobalApplicationCreator = "applicationcreator"
+	// PermissionGlobalPortfolioCreator is the global portfolio creator permission.
+	PermissionGlobalPortfolioCreator = "portfoliocreator"
+
+	// PermissionProjectAdmin is the project admin permission.
+	PermissionProjectAdmin = "admin"
+	// PermissionProjectCodeViewer is the project code viewer permission.
+	PermissionProjectCodeViewer = "codeviewer"
+	// PermissionProjectIssueAdmin is the project issue admin permission.
+	PermissionProjectIssueAdmin = "issueadmin"
+	// PermissionProjectSecurityHotspotAdmin is the project security hotspot admin permission.
+	PermissionProjectSecurityHotspotAdmin = "securityhotspotadmin"
+	// PermissionProjectScan is the project scan permission.
+	PermissionProjectScan = "scan"
+	// PermissionProjectUser is the project user permission.
+	PermissionProjectUser = "user"
 )
 
 // PermissionsService handles communication with the permissions related methods
@@ -20,23 +48,23 @@ type PermissionsService struct {
 var (
 	// allowedGlobalPermissions is the set of supported global permissions.
 	allowedGlobalPermissions = map[string]struct{}{
-		"admin":              {},
-		"gateadmin":          {},
-		"profileadmin":       {},
-		"provisioning":       {},
-		"scan":               {},
-		"applicationcreator": {},
-		"portfoliocreator":   {},
+		PermissionGlobalAdmin:              {},
+		PermissionGlobalGateAdmin:          {},
+		PermissionGlobalProfileAdmin:       {},
+		PermissionGlobalProvisioning:       {},
+		PermissionGlobalScan:               {},
+		PermissionGlobalApplicationCreator: {},
+		PermissionGlobalPortfolioCreator:   {},
 	}
 
 	// allowedProjectPermissions is the set of supported project permissions.
 	allowedProjectPermissions = map[string]struct{}{
-		"admin":                {},
-		"codeviewer":           {},
-		"issueadmin":           {},
-		"securityhotspotadmin": {},
-		"scan":                 {},
-		"user":                 {},
+		PermissionProjectAdmin:                {},
+		PermissionProjectCodeViewer:           {},
+		PermissionProjectIssueAdmin:           {},
+		PermissionProjectSecurityHotspotAdmin: {},
+		PermissionProjectScan:                 {},
+		PermissionProjectUser:                 {},
 	}
 
 	// allowedQualifiers is the set of supported qualifiers for permissions.

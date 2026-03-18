@@ -873,7 +873,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 
 			result, resp, err := client.Qualitygates.Search(&sonar.QualitygatesSearchOptions{
 				GateName: gateName,
-				Selected: "all",
+				Selected: sonar.SelectionFilterAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -973,7 +973,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			// Verify the group was actually added
 			groupsResult, _, err := client.Qualitygates.SearchGroups(&sonar.QualitygatesSearchGroupsOptions{
 				GateName: gateName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			foundGroup := false
@@ -1029,7 +1029,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 
 			result, resp, err := client.Qualitygates.SearchGroups(&sonar.QualitygatesSearchGroupsOptions{
 				GateName: gateName,
-				Selected: "all",
+				Selected: sonar.SelectionFilterAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -1087,7 +1087,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			// Verify the group was actually removed
 			groupsResult, _, err := client.Qualitygates.SearchGroups(&sonar.QualitygatesSearchGroupsOptions{
 				GateName: gateName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			for _, group := range groupsResult.Groups {
@@ -1190,7 +1190,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 
 			result, resp, err := client.Qualitygates.SearchUsers(&sonar.QualitygatesSearchUsersOptions{
 				GateName: gateName,
-				Selected: "all",
+				Selected: sonar.SelectionFilterAll,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -1357,7 +1357,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			// Step 7: Search users
 			usersResult, _, err := client.Qualitygates.SearchUsers(&sonar.QualitygatesSearchUsersOptions{
 				GateName: gateName,
-				Selected: "selected",
+				Selected: sonar.SelectionFilterSelected,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(usersResult.Users).To(HaveLen(1))

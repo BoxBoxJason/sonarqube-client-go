@@ -13,6 +13,42 @@ const (
 	MaxEmailLength = 100
 	// MaxNameLength is the maximum length for a user name.
 	MaxNameLength = 200
+
+	// HomepageTypeProject represents the project homepage type.
+	HomepageTypeProject = "PROJECT"
+	// HomepageTypeProjects represents the projects homepage type.
+	HomepageTypeProjects = "PROJECTS"
+	// HomepageTypeIssues represents the issues homepage type.
+	HomepageTypeIssues = "ISSUES"
+	// HomepageTypePortfolios represents the portfolios homepage type.
+	HomepageTypePortfolios = "PORTFOLIOS"
+	// HomepageTypePortfolio represents the portfolio homepage type.
+	HomepageTypePortfolio = "PORTFOLIO"
+	// HomepageTypeApplication represents the application homepage type.
+	HomepageTypeApplication = "APPLICATION"
+
+	// NoticeTypeEducationPrinciples represents the education principles notice type.
+	NoticeTypeEducationPrinciples = "educationPrinciples"
+	// NoticeTypeSonarlintAd represents the SonarLint ad notice type.
+	NoticeTypeSonarlintAd = "sonarlintAd"
+	// NoticeTypeShowDesignAndArchitectureBanner represents the show design and architecture banner notice type.
+	NoticeTypeShowDesignAndArchitectureBanner = "showDesignAndArchitectureBanner"
+	// NoticeTypeShowNewModesBanner represents the show new modes banner notice type.
+	NoticeTypeShowNewModesBanner = "showNewModesBanner"
+	// NoticeTypeShowSandboxedIssuesIntro represents the show sandboxed issues intro notice type.
+	NoticeTypeShowSandboxedIssuesIntro = "showSandboxedIssuesIntro"
+	// NoticeTypeIssueCleanCodeGuide represents the issue clean code guide notice type.
+	NoticeTypeIssueCleanCodeGuide = "issueCleanCodeGuide"
+	// NoticeTypeIssueNewIssueStatusAndTransitionGuide represents the issue new issue status and transition guide notice type.
+	NoticeTypeIssueNewIssueStatusAndTransitionGuide = "issueNewIssueStatusAndTransitionGuide"
+	// NoticeTypeShowDesignAndArchitectureOptInBanner represents the show design and architecture opt-in banner notice type.
+	NoticeTypeShowDesignAndArchitectureOptInBanner = "showDesignAndArchitectureOptInBanner"
+	// NoticeTypeOverviewZeroNewIssuesSimplification represents the overview zero new issues simplification notice type.
+	NoticeTypeOverviewZeroNewIssuesSimplification = "overviewZeroNewIssuesSimplification"
+	// NoticeTypeShowDesignAndArchitectureTour represents the show design and architecture tour notice type.
+	NoticeTypeShowDesignAndArchitectureTour = "showDesignAndArchitectureTour"
+	// NoticeTypeShowEnableSca represents the show enable SCA notice type.
+	NoticeTypeShowEnableSca = "showEnableSca"
 )
 
 // UsersService handles communication with the user management related methods
@@ -27,27 +63,27 @@ type UsersService struct {
 var (
 	// allowedHomepageTypes is the set of supported homepage types.
 	allowedHomepageTypes = map[string]struct{}{
-		"PROJECT":     {},
-		"PROJECTS":    {},
-		"ISSUES":      {},
-		"PORTFOLIOS":  {},
-		"PORTFOLIO":   {},
-		"APPLICATION": {},
+		HomepageTypeProject:     {},
+		HomepageTypeProjects:    {},
+		HomepageTypeIssues:      {},
+		HomepageTypePortfolios:  {},
+		HomepageTypePortfolio:   {},
+		HomepageTypeApplication: {},
 	}
 
 	// allowedNoticeTypes is the set of supported notice types.
 	allowedNoticeTypes = map[string]struct{}{
-		"educationPrinciples":                   {},
-		"sonarlintAd":                           {},
-		"showDesignAndArchitectureBanner":       {},
-		"showNewModesBanner":                    {},
-		"showSandboxedIssuesIntro":              {},
-		"issueCleanCodeGuide":                   {},
-		"issueNewIssueStatusAndTransitionGuide": {},
-		"showDesignAndArchitectureOptInBanner":  {},
-		"overviewZeroNewIssuesSimplification":   {},
-		"showDesignAndArchitectureTour":         {},
-		"showEnableSca":                         {},
+		NoticeTypeEducationPrinciples:                   {},
+		NoticeTypeSonarlintAd:                           {},
+		NoticeTypeShowDesignAndArchitectureBanner:       {},
+		NoticeTypeShowNewModesBanner:                    {},
+		NoticeTypeShowSandboxedIssuesIntro:              {},
+		NoticeTypeIssueCleanCodeGuide:                   {},
+		NoticeTypeIssueNewIssueStatusAndTransitionGuide: {},
+		NoticeTypeShowDesignAndArchitectureOptInBanner:  {},
+		NoticeTypeOverviewZeroNewIssuesSimplification:   {},
+		NoticeTypeShowDesignAndArchitectureTour:         {},
+		NoticeTypeShowEnableSca:                         {},
 	}
 )
 
