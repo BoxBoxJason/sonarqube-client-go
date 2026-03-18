@@ -96,7 +96,7 @@ func TestCleanCodePolicyV2_CreateRule_MultipleImpacts(t *testing.T) {
 		Impacts: []RuleImpact{
 			{SoftwareQuality: SoftwareQualityMaintainability, Severity: RuleImpactSeverityMedium},
 			{SoftwareQuality: SoftwareQualityReliability, Severity: RuleImpactSeverityHigh},
-			{SoftwareQuality: SoftwareQualitySecurity, Severity: RuleSeverityBlocker},
+			{SoftwareQuality: SoftwareQualitySecurity, Severity: RuleImpactSeverityBlocker},
 		},
 	}
 	response := RuleV2{
@@ -105,7 +105,7 @@ func TestCleanCodePolicyV2_CreateRule_MultipleImpacts(t *testing.T) {
 		Impacts: []RuleImpact{
 			{SoftwareQuality: SoftwareQualityMaintainability, Severity: RuleImpactSeverityMedium},
 			{SoftwareQuality: SoftwareQualityReliability, Severity: RuleImpactSeverityHigh},
-			{SoftwareQuality: SoftwareQualitySecurity, Severity: RuleSeverityBlocker},
+			{SoftwareQuality: SoftwareQualitySecurity, Severity: RuleImpactSeverityBlocker},
 		},
 	}
 	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/clean-code-policy/rules", http.StatusOK, request, response))
