@@ -313,7 +313,7 @@ func TestCleanCodePolicyV2_CreateRule_AllCleanCodeAttributes(t *testing.T) {
 func TestCleanCodePolicyV2_CreateRule_AllImpactSeverities(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	validSeverities := []string{RuleSeverityInfo, RuleImpactSeverityLow, RuleImpactSeverityMedium, RuleImpactSeverityHigh, RuleSeverityBlocker}
+	validSeverities := []string{RuleImpactSeverityInfo, RuleImpactSeverityLow, RuleImpactSeverityMedium, RuleImpactSeverityHigh, RuleImpactSeverityBlocker}
 
 	for _, sev := range validSeverities {
 		t.Run(sev, func(t *testing.T) {
