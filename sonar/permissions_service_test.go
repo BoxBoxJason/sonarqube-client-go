@@ -730,9 +730,6 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 				},
 			},
 		},
-		DefaultTemplates: []DefaultTemplate{
-			{Qualifier: ProjectQualifierTRK, TemplateID: "template-1"},
-		},
 	}
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/search_templates", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
@@ -743,7 +740,34 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 	require.NotNil(t, result)
 	assert.Len(t, result.PermissionTemplates, 1)
 	assert.Equal(t, "my-template", result.PermissionTemplates[0].Name)
-	assert.Len(t, result.DefaultTemplates, 1)
+}
+
+func TestPermissions_ValidateSearchTemplatesOpt(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	tests := []struct {
+		name    string
+		opt     *PermissionsSearchTemplatesOptions
+		wantErr bool
+	}{
+		{name: "nil option", opt: nil, wantErr: false},
+		{name: "empty option", opt: &PermissionsSearchTemplatesOptions{}, wantErr: false},
+		{name: "query only", opt: &PermissionsSearchTemplatesOptions{Query: "template"}, wantErr: false},
+		{name: "valid pagination", opt: &PermissionsSearchTemplatesOptions{PaginationArgs: PaginationArgs{Page: 1, PageSize: 100}}, wantErr: false},
+		{name: "invalid page", opt: &PermissionsSearchTemplatesOptions{PaginationArgs: PaginationArgs{Page: -1, PageSize: 100}}, wantErr: true},
+		{name: "invalid page size", opt: &PermissionsSearchTemplatesOptions{PaginationArgs: PaginationArgs{Page: 1, PageSize: 501}}, wantErr: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := client.Permissions.ValidateSearchTemplatesOpt(tt.opt)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
 }
 
 // -----------------------------------------------------------------------------

@@ -3,7 +3,7 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "26.2.0.119303"
+    "version": "26.3.0.120487"
   },
   "servers": [
     {

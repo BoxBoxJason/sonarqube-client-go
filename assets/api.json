@@ -7290,8 +7290,27 @@
           "internal": false,
           "post": false,
           "hasResponseExample": true,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Add optional pagination support to search_templates API.",
+              "version": "2026.2"
+            }
+          ],
           "params": [
+            {
+              "key": "p",
+              "description": "1-based page number",
+              "required": false,
+              "internal": false,
+              "exampleValue": "2"
+            },
+            {
+              "key": "ps",
+              "description": "Page size. Must be greater than or equal to 0 and less or equal than 500. If this and p param are not provided, pagination is disabled and all results are returned. If pageSize\u003d0, no results are returned but the response will contain the total count of matching templates.",
+              "required": false,
+              "internal": false,
+              "exampleValue": "100"
+            },
             {
               "key": "q",
               "description": "Limit search to permission template names that contain the supplied string.",
@@ -8039,7 +8058,7 @@
             },
             {
               "key": "token",
-              "description": "Project badge token",
+              "description": "Project badge token. Required for private projects or if the \u0027sonar.forceAuthentication\u0027 setting is enabled.",
               "required": false,
               "internal": false,
               "exampleValue": "8bb493196edb5896ccb64582499895f187a2ae8f"
@@ -8071,7 +8090,7 @@
             },
             {
               "key": "token",
-              "description": "Project badge token",
+              "description": "Project badge token. Required for private projects or if the \u0027sonar.forceAuthentication\u0027 setting is enabled.",
               "required": false,
               "internal": false,
               "exampleValue": "8bb493196edb5896ccb64582499895f187a2ae8f"
@@ -8080,7 +8099,7 @@
         },
         {
           "key": "renew_token",
-          "description": "Creates new token replacing any existing token for project or application badge access for private projects and applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Administer\u0027 permission on the specified project or application.",
+          "description": "Creates new token replacing any existing token for project or application badge access for private projects and applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Administer\u0027 permission on the specified project or application.\u003cbr/\u003eIf the \u0027sonar.forceAuthentication\u0027 setting is enabled, then a token is required for public projects as well.",
           "since": "9.2",
           "internal": false,
           "post": true,
@@ -8103,7 +8122,7 @@
         },
         {
           "key": "token",
-          "description": "Retrieve a token to use for project or application badge access for private projects or applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Browse\u0027 permission on the specified project or application.",
+          "description": "Retrieve a token to use for project or application badge access for private projects or applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Browse\u0027 permission on the specified project or application.\u003cbr/\u003eIf the \u0027sonar.forceAuthentication\u0027 setting is enabled, then a token is required for public projects as well.",
           "since": "9.2",
           "internal": false,
           "post": false,
@@ -12560,6 +12579,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "Description-related fields in the response are obfuscated for anonymous users.",
+              "version": "2026.2"
+            },
+            {
               "description": "The facet \u0027complianceStandards\u0027 was added.",
               "version": "2025.6"
             },
@@ -13242,6 +13265,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Description-related fields in the response are obfuscated for anonymous users.",
+              "version": "2026.2"
+            },
             {
               "description": "The deprecated field \u0027htmlDesc\u0027 is not returned anymore, even if specified in the \u0027fields\u0027 parameter.",
               "version": "2025.1"

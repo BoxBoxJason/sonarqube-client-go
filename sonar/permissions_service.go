@@ -500,7 +500,10 @@ type PermissionsRemoveUserFromTemplateOptions struct {
 }
 
 // PermissionsSearchTemplatesOptions contains parameters for the SearchTemplates method.
-type PermissionsSearchTemplatesOptions struct {
+type PermissionsSearchTemplatesOptions struct { //nolint:govet // no point in this here
+	// PaginationArgs contains pagination parameters.
+	PaginationArgs `url:",inline"`
+
 	// Query limits search to permission template names containing the supplied string.
 	Query string `url:"q,omitempty"`
 }
@@ -950,7 +953,16 @@ func (s *PermissionsService) ValidateRemoveUserFromTemplateOpt(opt *PermissionsR
 
 // ValidateSearchTemplatesOpt validates the options for the SearchTemplates method.
 func (s *PermissionsService) ValidateSearchTemplatesOpt(opt *PermissionsSearchTemplatesOptions) error {
-	// Options are optional; nothing to validate.
+	// empty args means no filtering and default pagination, so not an error
+	if opt == nil {
+		return nil
+	}
+
+	paginationError := opt.Validate()
+	if paginationError != nil {
+		return NewValidationError("opt", "invalid pagination parameters", paginationError)
+	}
+
 	return nil
 }
 
@@ -1489,6 +1501,7 @@ func (s *PermissionsService) RemoveUserFromTemplate(opt *PermissionsRemoveUserFr
 
 // SearchTemplates lists permission templates.
 // Requires the following permission: 'Administer System'.
+// WARNING: passing an empty OR 0 PageSize argument will return NO templates, only the total count
 //
 // API endpoint: GET /api/permissions/search_templates.
 // Since: 5.2.
