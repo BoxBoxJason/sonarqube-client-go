@@ -4,7 +4,7 @@ cli_dirs := ./cmd/... ./internal/...
 endpoint := http://127.0.0.1:9000
 username := admin
 password := admin
-sonarqube_version := 26.2.0.119303-community
+sonarqube_version := 26.3.0.120487-community
 version := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 build_time := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
