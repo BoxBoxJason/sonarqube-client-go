@@ -1501,6 +1501,7 @@ func (s *PermissionsService) RemoveUserFromTemplate(opt *PermissionsRemoveUserFr
 
 // SearchTemplates lists permission templates.
 // Requires the following permission: 'Administer System'.
+// WARNING: passing an empty OR 0 PageSize argument will return NO templates, only the total count
 //
 // API endpoint: GET /api/permissions/search_templates.
 // Since: 5.2.
