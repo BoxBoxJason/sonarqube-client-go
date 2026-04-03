@@ -203,10 +203,16 @@ type PermissionsCreateTemplate struct {
 type PermissionTemplateBasic struct {
 	// Description is the template description.
 	Description string `json:"description,omitempty"`
+	// Id is the unique identifier of the template.
+	ID string `json:"id,omitempty"`
 	// Name is the template name.
 	Name string `json:"name,omitempty"`
 	// ProjectKeyPattern is the regex pattern for matching project keys.
 	ProjectKeyPattern string `json:"projectKeyPattern,omitempty"`
+	// CreatedAt is the template creation date.
+	CreatedAt string `json:"createdAt,omitempty"`
+	// UpdatedAt is the template last update date.
+	UpdatedAt string `json:"updatedAt,omitempty"`
 }
 
 // PermissionsGroups represents the response from listing groups with permissions.
