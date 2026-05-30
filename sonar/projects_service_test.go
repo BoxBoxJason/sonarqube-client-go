@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -24,7 +25,7 @@ func TestProjectsService_BulkDelete(t *testing.T) {
 		Projects: []string{"project1", "project2"},
 	}
 
-	resp, err := client.Projects.BulkDelete(opt)
+	resp, err := client.Projects.BulkDelete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -35,7 +36,7 @@ func TestProjectsService_BulkDelete_ValidationError(t *testing.T) {
 
 	// Test no filter provided
 	opt := &ProjectsBulkDeleteOptions{}
-	_, err := client.Projects.BulkDelete(opt)
+	_, err := client.Projects.BulkDelete(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test invalid qualifier
@@ -43,7 +44,7 @@ func TestProjectsService_BulkDelete_ValidationError(t *testing.T) {
 		Query:      "test",
 		Qualifiers: []string{"INVALID"},
 	}
-	_, err = client.Projects.BulkDelete(opt)
+	_, err = client.Projects.BulkDelete(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -67,7 +68,7 @@ func TestProjectsService_Create(t *testing.T) {
 		Visibility: ProjectVisibilityPrivate,
 	}
 
-	result, resp, err := client.Projects.Create(opt)
+	result, resp, err := client.Projects.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "my-project", result.Project.Key)
@@ -82,14 +83,14 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 	opt := &ProjectsCreateOptions{
 		Project: "my-project",
 	}
-	_, _, err := client.Projects.Create(opt)
+	_, _, err := client.Projects.Create(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing Project
 	opt = &ProjectsCreateOptions{
 		Name: "My Project",
 	}
-	_, _, err = client.Projects.Create(opt)
+	_, _, err = client.Projects.Create(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test Name too long
@@ -97,7 +98,7 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 		Name:    strings.Repeat("a", MaxProjectNameLength+1),
 		Project: "my-project",
 	}
-	_, _, err = client.Projects.Create(opt)
+	_, _, err = client.Projects.Create(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test Project key too long
@@ -105,7 +106,7 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 		Name:    "My Project",
 		Project: strings.Repeat("a", MaxProjectKeyLength+1),
 	}
-	_, _, err = client.Projects.Create(opt)
+	_, _, err = client.Projects.Create(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test invalid visibility
@@ -114,7 +115,7 @@ func TestProjectsService_Create_ValidationError(t *testing.T) {
 		Project:    "my-project",
 		Visibility: "invalid",
 	}
-	_, _, err = client.Projects.Create(opt)
+	_, _, err = client.Projects.Create(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -129,7 +130,7 @@ func TestProjectsService_Delete(t *testing.T) {
 		Project: "my-project",
 	}
 
-	resp, err := client.Projects.Delete(opt)
+	resp, err := client.Projects.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -140,7 +141,7 @@ func TestProjectsService_Delete_ValidationError(t *testing.T) {
 
 	// Test missing Project
 	opt := &ProjectsDeleteOptions{}
-	_, err := client.Projects.Delete(opt)
+	_, err := client.Projects.Delete(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -174,7 +175,7 @@ func TestProjectsService_Search(t *testing.T) {
 		Qualifiers: []string{ProjectQualifierTRK},
 	}
 
-	result, resp, err := client.Projects.Search(opt)
+	result, resp, err := client.Projects.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Components, 2)
@@ -189,7 +190,7 @@ func TestProjectsService_Search_ValidationError(t *testing.T) {
 	opt := &ProjectsSearchOptions{
 		Qualifiers: []string{"INVALID"},
 	}
-	_, _, err := client.Projects.Search(opt)
+	_, _, err := client.Projects.Search(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -212,7 +213,7 @@ func TestProjectsService_SearchMyProjects(t *testing.T) {
 
 	opt := &ProjectsSearchMyProjectsOptions{}
 
-	result, resp, err := client.Projects.SearchMyProjects(opt)
+	result, resp, err := client.Projects.SearchMyProjects(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Projects, 1)
@@ -230,7 +231,7 @@ func TestProjectsService_SearchMyScannableProjects(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Projects.SearchMyScannableProjects(&ProjectsSearchMyScannableProjectsOptions{})
+	result, resp, err := client.Projects.SearchMyScannableProjects(context.Background(), &ProjectsSearchMyScannableProjectsOptions{})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Projects, 2)
@@ -247,7 +248,7 @@ func TestProjectsService_UpdateDefaultVisibility(t *testing.T) {
 		ProjectVisibility: ProjectVisibilityPrivate,
 	}
 
-	resp, err := client.Projects.UpdateDefaultVisibility(opt)
+	resp, err := client.Projects.UpdateDefaultVisibility(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -258,14 +259,14 @@ func TestProjectsService_UpdateDefaultVisibility_ValidationError(t *testing.T) {
 
 	// Test missing ProjectVisibility
 	opt := &ProjectsUpdateDefaultVisibilityOptions{}
-	_, err := client.Projects.UpdateDefaultVisibility(opt)
+	_, err := client.Projects.UpdateDefaultVisibility(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test invalid visibility
 	opt = &ProjectsUpdateDefaultVisibilityOptions{
 		ProjectVisibility: "invalid",
 	}
-	_, err = client.Projects.UpdateDefaultVisibility(opt)
+	_, err = client.Projects.UpdateDefaultVisibility(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -281,7 +282,7 @@ func TestProjectsService_UpdateKey(t *testing.T) {
 		To:   "new-project-key",
 	}
 
-	resp, err := client.Projects.UpdateKey(opt)
+	resp, err := client.Projects.UpdateKey(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -294,14 +295,14 @@ func TestProjectsService_UpdateKey_ValidationError(t *testing.T) {
 	opt := &ProjectsUpdateKeyOptions{
 		To: "new-key",
 	}
-	_, err := client.Projects.UpdateKey(opt)
+	_, err := client.Projects.UpdateKey(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing To
 	opt = &ProjectsUpdateKeyOptions{
 		From: "old-key",
 	}
-	_, err = client.Projects.UpdateKey(opt)
+	_, err = client.Projects.UpdateKey(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -317,7 +318,7 @@ func TestProjectsService_UpdateVisibility(t *testing.T) {
 		Visibility: ProjectVisibilityPublic,
 	}
 
-	resp, err := client.Projects.UpdateVisibility(opt)
+	resp, err := client.Projects.UpdateVisibility(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -330,14 +331,14 @@ func TestProjectsService_UpdateVisibility_ValidationError(t *testing.T) {
 	opt := &ProjectsUpdateVisibilityOptions{
 		Visibility: ProjectVisibilityPublic,
 	}
-	_, err := client.Projects.UpdateVisibility(opt)
+	_, err := client.Projects.UpdateVisibility(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing Visibility
 	opt = &ProjectsUpdateVisibilityOptions{
 		Project: "my-project",
 	}
-	_, err = client.Projects.UpdateVisibility(opt)
+	_, err = client.Projects.UpdateVisibility(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test invalid visibility
@@ -345,6 +346,6 @@ func TestProjectsService_UpdateVisibility_ValidationError(t *testing.T) {
 		Project:    "my-project",
 		Visibility: "invalid",
 	}
-	_, err = client.Projects.UpdateVisibility(opt)
+	_, err = client.Projects.UpdateVisibility(context.Background(), opt)
 	assert.Error(t, err)
 }

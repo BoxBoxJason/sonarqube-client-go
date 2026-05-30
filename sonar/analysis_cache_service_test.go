@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"bytes"
 	"io"
 	"net/http"
@@ -16,7 +17,7 @@ func TestAnalysisCache_Clear(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	resp, err := client.AnalysisCache.Clear(nil)
+	resp, err := client.AnalysisCache.Clear(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -35,7 +36,7 @@ func TestAnalysisCache_Clear_WithOptions(t *testing.T) {
 		Branch:  "feature",
 	}
 
-	resp, err := client.AnalysisCache.Clear(opt)
+	resp, err := client.AnalysisCache.Clear(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -60,7 +61,7 @@ func TestAnalysisCache_Get(t *testing.T) {
 		Project: "my-project",
 	}
 
-	resp, err := client.AnalysisCache.Get(opt)
+	resp, err := client.AnalysisCache.Get(context.Background(), opt)
 	require.NoError(t, err)
 	defer resp.Body.Close()
 
@@ -93,7 +94,7 @@ func TestAnalysisCache_Get_WithOptions(t *testing.T) {
 		Branch:  "main",
 	}
 
-	resp, err := client.AnalysisCache.Get(opt)
+	resp, err := client.AnalysisCache.Get(context.Background(), opt)
 	require.NoError(t, err)
 	defer resp.Body.Close()
 

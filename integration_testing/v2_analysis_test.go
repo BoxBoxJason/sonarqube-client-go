@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"bytes"
 	"net/http"
 
@@ -37,7 +38,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 	// =========================================================================
 	Describe("GetVersion", func() {
 		It("should return the scanner engine version", func() {
-			version, resp, err := client.V2.Analysis.GetVersion()
+			version, resp, err := client.V2.Analysis.GetVersion(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(version).NotTo(BeNil())
@@ -51,7 +52,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 	Describe("GetJresMetadata", func() {
 		Context("without options", func() {
 			It("should return a list of available JREs", func() {
-				jres, resp, err := client.V2.Analysis.GetJresMetadata(nil)
+				jres, resp, err := client.V2.Analysis.GetJresMetadata(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(jres).NotTo(BeEmpty())
@@ -67,7 +68,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		Context("with OS filter", func() {
 			It("should filter JREs by operating system", func() {
-				jres, resp, err := client.V2.Analysis.GetJresMetadata(&sonar.AnalysisJresOptions{
+				jres, resp, err := client.V2.Analysis.GetJresMetadata(context.Background(), &sonar.AnalysisJresOptions{
 					Os: "linux",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -80,7 +81,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		Context("with OS and arch filter", func() {
 			It("should filter JREs by OS and architecture", func() {
-				jres, resp, err := client.V2.Analysis.GetJresMetadata(&sonar.AnalysisJresOptions{
+				jres, resp, err := client.V2.Analysis.GetJresMetadata(context.Background(), &sonar.AnalysisJresOptions{
 					Os:   "linux",
 					Arch: "x64",
 				})
@@ -100,13 +101,13 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 	Describe("GetJreMetadata", func() {
 		Context("with valid JRE ID", func() {
 			It("should return metadata for a specific JRE", func() {
-				jres, resp, err := client.V2.Analysis.GetJresMetadata(nil)
+				jres, resp, err := client.V2.Analysis.GetJresMetadata(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(jres).NotTo(BeEmpty())
 
 				jreID := jres[0].Id
-				jre, resp, err := client.V2.Analysis.GetJreMetadata(jreID)
+				jre, resp, err := client.V2.Analysis.GetJreMetadata(context.Background(), jreID)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(jre).NotTo(BeNil())
@@ -118,7 +119,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with empty JRE ID", func() {
-				jre, resp, err := client.V2.Analysis.GetJreMetadata("")
+				jre, resp, err := client.V2.Analysis.GetJreMetadata(context.Background(), "")
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(jre).To(BeNil())
@@ -132,7 +133,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 	Describe("DownloadJre", func() {
 		Context("with valid JRE ID", func() {
 			It("should download a JRE binary", func() {
-				jres, resp, err := client.V2.Analysis.GetJresMetadata(&sonar.AnalysisJresOptions{
+				jres, resp, err := client.V2.Analysis.GetJresMetadata(context.Background(), &sonar.AnalysisJresOptions{
 					Os:   "linux",
 					Arch: "x64",
 				})
@@ -143,7 +144,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 				}
 
 				var buf bytes.Buffer
-				resp, err = client.V2.Analysis.DownloadJre(jres[0].Id, &buf)
+				resp, err = client.V2.Analysis.DownloadJre(context.Background(), jres[0].Id, &buf)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -154,7 +155,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 		Context("parameter validation", func() {
 			It("should fail with empty JRE ID", func() {
 				var buf bytes.Buffer
-				resp, err := client.V2.Analysis.DownloadJre("", &buf)
+				resp, err := client.V2.Analysis.DownloadJre(context.Background(), "", &buf)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -166,7 +167,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 	// =========================================================================
 	Describe("GetScannerEngineMetadata", func() {
 		It("should return scanner engine metadata", func() {
-			engine, resp, err := client.V2.Analysis.GetScannerEngineMetadata()
+			engine, resp, err := client.V2.Analysis.GetScannerEngineMetadata(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(engine).NotTo(BeNil())
@@ -181,7 +182,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 	Describe("DownloadScannerEngine", func() {
 		It("should download the scanner engine binary", func() {
 			var buf bytes.Buffer
-			resp, err := client.V2.Analysis.DownloadScannerEngine(&buf)
+			resp, err := client.V2.Analysis.DownloadScannerEngine(context.Background(), &buf)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp).NotTo(BeNil())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -197,7 +198,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		BeforeAll(func() {
 			projectKey = helpers.UniqueResourceName("v2arproj")
-			_, resp, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, resp, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "V2 Active Rules Test",
 				Project: projectKey,
 			})
@@ -205,7 +206,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, cleanupErr := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, cleanupErr := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return helpers.IgnoreNotFoundError(cleanupErr)
@@ -214,7 +215,7 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		Context("with valid project key", func() {
 			It("should return active rules for the project", func() {
-				rules, resp, err := client.V2.Analysis.GetActiveRules(&sonar.AnalysisActiveRuleOptions{
+				rules, resp, err := client.V2.Analysis.GetActiveRules(context.Background(), &sonar.AnalysisActiveRuleOptions{
 					ProjectKey: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -225,14 +226,14 @@ var _ = Describe("V2 Analysis Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				rules, resp, err := client.V2.Analysis.GetActiveRules(nil)
+				rules, resp, err := client.V2.Analysis.GetActiveRules(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(rules).To(BeNil())
 			})
 
 			It("should fail with empty project key", func() {
-				rules, resp, err := client.V2.Analysis.GetActiveRules(&sonar.AnalysisActiveRuleOptions{})
+				rules, resp, err := client.V2.Analysis.GetActiveRules(context.Background(), &sonar.AnalysisActiveRuleOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(rules).To(BeNil())

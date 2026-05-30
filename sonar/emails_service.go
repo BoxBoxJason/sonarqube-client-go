@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // EmailsService handles communication with the email related methods
 // of the SonarQube API.
@@ -59,13 +62,13 @@ func (s *EmailsService) ValidateSendOpt(opt *EmailsSendOptions) error {
 //
 // API endpoint: POST /api/emails/send.
 // WARNING: This is an internal API and may change without notice.
-func (s *EmailsService) Send(opt *EmailsSendOptions) (*http.Response, error) {
+func (s *EmailsService) Send(ctx context.Context, opt *EmailsSendOptions) (*http.Response, error) {
 	err := s.ValidateSendOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "emails/send", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "emails/send", opt)
 	if err != nil {
 		return nil, err
 	}

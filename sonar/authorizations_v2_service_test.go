@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -28,7 +29,7 @@ func TestAuthorizationsV2_SearchGroups(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/authorizations/groups", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.SearchGroups(nil)
+	result, resp, err := client.V2.Authorizations.SearchGroups(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Groups, 2)
@@ -52,7 +53,7 @@ func TestAuthorizationsV2_SearchGroups_WithOptions(t *testing.T) {
 		response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.SearchGroups(&AuthorizationsSearchGroupsOptions{
+	result, resp, err := client.V2.Authorizations.SearchGroups(context.Background(), &AuthorizationsSearchGroupsOptions{
 		PaginationParamsV2: PaginationParamsV2{PageIndex: 2, PageSize: 10},
 		Managed:            &managed,
 		Query:              "admins",
@@ -66,7 +67,7 @@ func TestAuthorizationsV2_SearchGroups_WithOptions(t *testing.T) {
 func TestAuthorizationsV2_SearchGroups_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.Authorizations.SearchGroups(&AuthorizationsSearchGroupsOptions{
+	_, _, err := client.V2.Authorizations.SearchGroups(context.Background(), &AuthorizationsSearchGroupsOptions{
 		PaginationParamsV2: PaginationParamsV2{PageSize: 600},
 	})
 	assert.Error(t, err)
@@ -89,7 +90,7 @@ func TestAuthorizationsV2_CreateGroup(t *testing.T) {
 		}, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.CreateGroup(&AuthorizationsCreateGroupOptions{
+	result, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), &AuthorizationsCreateGroupOptions{
 		Name:        "new-group",
 		Description: "A new group",
 	})
@@ -113,7 +114,7 @@ func TestAuthorizationsV2_CreateGroup_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.Authorizations.CreateGroup(tt.opt)
+			_, _, err := client.V2.Authorizations.CreateGroup(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -131,7 +132,7 @@ func TestAuthorizationsV2_GetGroup(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/authorizations/groups/g1", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.GetGroup("g1")
+	result, resp, err := client.V2.Authorizations.GetGroup(context.Background(), "g1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "admins", result.Name)
@@ -140,7 +141,7 @@ func TestAuthorizationsV2_GetGroup(t *testing.T) {
 func TestAuthorizationsV2_GetGroup_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.Authorizations.GetGroup("")
+	_, _, err := client.V2.Authorizations.GetGroup(context.Background(), "")
 	assert.Error(t, err)
 }
 
@@ -152,7 +153,7 @@ func TestAuthorizationsV2_DeleteGroup(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodDelete, "/v2/authorizations/groups/g1", http.StatusNoContent))
 	client := newTestClient(t, server.url())
 
-	resp, err := client.V2.Authorizations.DeleteGroup("g1")
+	resp, err := client.V2.Authorizations.DeleteGroup(context.Background(), "g1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -160,7 +161,7 @@ func TestAuthorizationsV2_DeleteGroup(t *testing.T) {
 func TestAuthorizationsV2_DeleteGroup_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, err := client.V2.Authorizations.DeleteGroup("")
+	_, err := client.V2.Authorizations.DeleteGroup(context.Background(), "")
 	assert.Error(t, err)
 }
 
@@ -181,7 +182,7 @@ func TestAuthorizationsV2_UpdateGroup(t *testing.T) {
 		}, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.UpdateGroup("g1", &AuthorizationsUpdateGroupOptions{
+	result, resp, err := client.V2.Authorizations.UpdateGroup(context.Background(), "g1", &AuthorizationsUpdateGroupOptions{
 		Name:        "renamed-group",
 		Description: stringPtr("Updated description"),
 	})
@@ -206,7 +207,7 @@ func TestAuthorizationsV2_UpdateGroup_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.Authorizations.UpdateGroup(tt.id, tt.opt)
+			_, _, err := client.V2.Authorizations.UpdateGroup(context.Background(), tt.id, tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -226,7 +227,7 @@ func TestAuthorizationsV2_SearchGroupMemberships(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/authorizations/group-memberships", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.SearchGroupMemberships(nil)
+	result, resp, err := client.V2.Authorizations.SearchGroupMemberships(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.GroupMemberships, 1)
@@ -248,7 +249,7 @@ func TestAuthorizationsV2_SearchGroupMemberships_WithOptions(t *testing.T) {
 		response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.SearchGroupMemberships(&AuthorizationsSearchGroupMembershipsOptions{
+	result, resp, err := client.V2.Authorizations.SearchGroupMemberships(context.Background(), &AuthorizationsSearchGroupMembershipsOptions{
 		PaginationParamsV2: PaginationParamsV2{PageIndex: 2, PageSize: 10},
 		GroupId:            "g1",
 		UserId:             "u1",
@@ -261,7 +262,7 @@ func TestAuthorizationsV2_SearchGroupMemberships_WithOptions(t *testing.T) {
 func TestAuthorizationsV2_SearchGroupMemberships_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.Authorizations.SearchGroupMemberships(&AuthorizationsSearchGroupMembershipsOptions{
+	_, _, err := client.V2.Authorizations.SearchGroupMemberships(context.Background(), &AuthorizationsSearchGroupMembershipsOptions{
 		PaginationParamsV2: PaginationParamsV2{PageSize: 600},
 	})
 	assert.Error(t, err)
@@ -284,7 +285,7 @@ func TestAuthorizationsV2_CreateGroupMembership(t *testing.T) {
 		}, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.CreateGroupMembership(&AuthorizationsCreateGroupMembershipOptions{
+	result, resp, err := client.V2.Authorizations.CreateGroupMembership(context.Background(), &AuthorizationsCreateGroupMembershipOptions{
 		GroupId: "g1",
 		UserId:  "u1",
 	})
@@ -309,7 +310,7 @@ func TestAuthorizationsV2_CreateGroupMembership_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.Authorizations.CreateGroupMembership(tt.opt)
+			_, _, err := client.V2.Authorizations.CreateGroupMembership(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -323,7 +324,7 @@ func TestAuthorizationsV2_DeleteGroupMembership(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodDelete, "/v2/authorizations/group-memberships/m1", http.StatusNoContent))
 	client := newTestClient(t, server.url())
 
-	resp, err := client.V2.Authorizations.DeleteGroupMembership("m1")
+	resp, err := client.V2.Authorizations.DeleteGroupMembership(context.Background(), "m1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -331,6 +332,6 @@ func TestAuthorizationsV2_DeleteGroupMembership(t *testing.T) {
 func TestAuthorizationsV2_DeleteGroupMembership_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, err := client.V2.Authorizations.DeleteGroupMembership("")
+	_, err := client.V2.Authorizations.DeleteGroupMembership(context.Background(), "")
 	assert.Error(t, err)
 }

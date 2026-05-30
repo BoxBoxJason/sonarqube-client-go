@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -19,7 +20,7 @@ func TestQualityGates_AddGroup(t *testing.T) {
 		GroupName: "sonar-administrators",
 	}
 
-	resp, err := client.Qualitygates.AddGroup(opt)
+	resp, err := client.Qualitygates.AddGroup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -28,23 +29,23 @@ func TestQualityGates_AddGroup_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualitygates.AddGroup(nil)
+	_, err := client.Qualitygates.AddGroup(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing GateName
-	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOptions{
+	_, err = client.Qualitygates.AddGroup(context.Background(), &QualitygatesAddGroupOptions{
 		GroupName: "group",
 	})
 	assert.Error(t, err)
 
 	// Test missing GroupName
-	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOptions{
+	_, err = client.Qualitygates.AddGroup(context.Background(), &QualitygatesAddGroupOptions{
 		GateName: "gate",
 	})
 	assert.Error(t, err)
 
 	// Test GateName too long
-	_, err = client.Qualitygates.AddGroup(&QualitygatesAddGroupOptions{
+	_, err = client.Qualitygates.AddGroup(context.Background(), &QualitygatesAddGroupOptions{
 		GateName:  strings.Repeat("a", MaxQualityGateNameLength+1),
 		GroupName: "group",
 	})
@@ -60,7 +61,7 @@ func TestQualityGates_AddUser(t *testing.T) {
 		Login:    "john.doe",
 	}
 
-	resp, err := client.Qualitygates.AddUser(opt)
+	resp, err := client.Qualitygates.AddUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -74,7 +75,7 @@ func TestQualityGates_Copy(t *testing.T) {
 		SourceName: "SonarSource Way",
 	}
 
-	resp, err := client.Qualitygates.Copy(opt)
+	resp, err := client.Qualitygates.Copy(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -87,7 +88,7 @@ func TestQualityGates_Create(t *testing.T) {
 		Name: "My Quality Gate",
 	}
 
-	result, resp, err := client.Qualitygates.Create(opt)
+	result, resp, err := client.Qualitygates.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -105,7 +106,7 @@ func TestQualityGates_CreateCondition(t *testing.T) {
 		Op:       "LT",
 	}
 
-	result, resp, err := client.Qualitygates.CreateCondition(opt)
+	result, resp, err := client.Qualitygates.CreateCondition(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -116,7 +117,7 @@ func TestQualityGates_CreateCondition_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test invalid Op value
-	_, _, err := client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOptions{
+	_, _, err := client.Qualitygates.CreateCondition(context.Background(), &QualitygatesCreateConditionOptions{
 		Error:    "80",
 		GateName: "gate",
 		Metric:   "coverage",
@@ -125,7 +126,7 @@ func TestQualityGates_CreateCondition_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing required fields
-	_, _, err = client.Qualitygates.CreateCondition(&QualitygatesCreateConditionOptions{
+	_, _, err = client.Qualitygates.CreateCondition(context.Background(), &QualitygatesCreateConditionOptions{
 		GateName: "gate",
 		Metric:   "coverage",
 	})
@@ -140,7 +141,7 @@ func TestQualityGates_DeleteCondition(t *testing.T) {
 		ID: "1",
 	}
 
-	resp, err := client.Qualitygates.DeleteCondition(opt)
+	resp, err := client.Qualitygates.DeleteCondition(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -153,7 +154,7 @@ func TestQualityGates_Unassign(t *testing.T) {
 		ProjectKey: "my_project",
 	}
 
-	resp, err := client.Qualitygates.Unassign(opt)
+	resp, err := client.Qualitygates.Unassign(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -166,7 +167,7 @@ func TestQualityGates_Delete(t *testing.T) {
 		Name: "My Quality Gate",
 	}
 
-	resp, err := client.Qualitygates.Delete(opt)
+	resp, err := client.Qualitygates.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -179,7 +180,7 @@ func TestQualityGates_GetByProject(t *testing.T) {
 		Project: "my_project",
 	}
 
-	result, resp, err := client.Qualitygates.GetByProject(opt)
+	result, resp, err := client.Qualitygates.GetByProject(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -198,7 +199,7 @@ func TestQualityGates_List(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/list", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Qualitygates.List()
+	result, resp, err := client.Qualitygates.List(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -225,7 +226,7 @@ func TestQualityGates_ProjectStatus(t *testing.T) {
 		ProjectKey: "my_project",
 	}
 
-	result, resp, err := client.Qualitygates.ProjectStatus(opt)
+	result, resp, err := client.Qualitygates.ProjectStatus(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -238,11 +239,11 @@ func TestQualityGates_ProjectStatus_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualitygates.ProjectStatus(nil)
+	_, _, err := client.Qualitygates.ProjectStatus(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing all required fields
-	_, _, err = client.Qualitygates.ProjectStatus(&QualitygatesProjectStatusOptions{})
+	_, _, err = client.Qualitygates.ProjectStatus(context.Background(), &QualitygatesProjectStatusOptions{})
 	assert.Error(t, err)
 }
 
@@ -255,7 +256,7 @@ func TestQualityGates_RemoveGroup(t *testing.T) {
 		GroupName: "sonar-administrators",
 	}
 
-	resp, err := client.Qualitygates.RemoveGroup(opt)
+	resp, err := client.Qualitygates.RemoveGroup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -269,7 +270,7 @@ func TestQualityGates_RemoveUser(t *testing.T) {
 		Login:    "john.doe",
 	}
 
-	resp, err := client.Qualitygates.RemoveUser(opt)
+	resp, err := client.Qualitygates.RemoveUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -283,7 +284,7 @@ func TestQualityGates_Rename(t *testing.T) {
 		Name:        "New Name",
 	}
 
-	resp, err := client.Qualitygates.Rename(opt)
+	resp, err := client.Qualitygates.Rename(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -303,7 +304,7 @@ func TestQualityGates_Search(t *testing.T) {
 		GateName: "SonarSource Way",
 	}
 
-	result, resp, err := client.Qualitygates.Search(opt)
+	result, resp, err := client.Qualitygates.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -315,7 +316,7 @@ func TestQualityGates_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test invalid Selected value
-	_, _, err := client.Qualitygates.Search(&QualitygatesSearchOptions{
+	_, _, err := client.Qualitygates.Search(context.Background(), &QualitygatesSearchOptions{
 		GateName: "gate",
 		Selected: "invalid",
 	})
@@ -336,7 +337,7 @@ func TestQualityGates_SearchGroups(t *testing.T) {
 		GateName: "SonarSource Way",
 	}
 
-	result, resp, err := client.Qualitygates.SearchGroups(opt)
+	result, resp, err := client.Qualitygates.SearchGroups(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -358,7 +359,7 @@ func TestQualityGates_SearchUsers(t *testing.T) {
 		GateName: "SonarSource Way",
 	}
 
-	result, resp, err := client.Qualitygates.SearchUsers(opt)
+	result, resp, err := client.Qualitygates.SearchUsers(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -375,7 +376,7 @@ func TestQualityGates_Assign(t *testing.T) {
 		ProjectKey: "my_project",
 	}
 
-	resp, err := client.Qualitygates.Assign(opt)
+	resp, err := client.Qualitygates.Assign(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -388,7 +389,7 @@ func TestQualityGates_SetDefault(t *testing.T) {
 		Name: "SonarSource Way",
 	}
 
-	resp, err := client.Qualitygates.SetDefault(opt)
+	resp, err := client.Qualitygates.SetDefault(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -415,7 +416,7 @@ func TestQualityGates_Show(t *testing.T) {
 		Name: "SonarSource Way",
 	}
 
-	result, resp, err := client.Qualitygates.Show(opt)
+	result, resp, err := client.Qualitygates.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -438,7 +439,7 @@ func TestQualityGates_UpdateCondition(t *testing.T) {
 		Op:     "LT",
 	}
 
-	resp, err := client.Qualitygates.UpdateCondition(opt)
+	resp, err := client.Qualitygates.UpdateCondition(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -447,11 +448,11 @@ func TestQualityGates_UpdateCondition_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualitygates.UpdateCondition(nil)
+	_, err := client.Qualitygates.UpdateCondition(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test invalid Op value
-	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOptions{
+	_, err = client.Qualitygates.UpdateCondition(context.Background(), &QualitygatesUpdateConditionOptions{
 		Error:  "80",
 		ID:     "1",
 		Metric: "coverage",
@@ -460,7 +461,7 @@ func TestQualityGates_UpdateCondition_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing required fields
-	_, err = client.Qualitygates.UpdateCondition(&QualitygatesUpdateConditionOptions{
+	_, err = client.Qualitygates.UpdateCondition(context.Background(), &QualitygatesUpdateConditionOptions{
 		ID:     "1",
 		Metric: "coverage",
 	})

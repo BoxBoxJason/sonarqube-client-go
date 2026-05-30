@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // ProjectBranchesService handles communication with the project branches related methods
 // of the SonarQube API.
@@ -214,13 +217,13 @@ func (s *ProjectBranchesService) ValidateSetMainOpt(opt *ProjectBranchesSetMainO
 //
 // API endpoint: POST /api/project_branches/delete.
 // Since: 6.6.
-func (s *ProjectBranchesService) Delete(opt *ProjectBranchesDeleteOptions) (*http.Response, error) {
+func (s *ProjectBranchesService) Delete(ctx context.Context, opt *ProjectBranchesDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_branches/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -238,13 +241,13 @@ func (s *ProjectBranchesService) Delete(opt *ProjectBranchesDeleteOptions) (*htt
 //
 // API endpoint: GET /api/project_branches/list.
 // Since: 6.6.
-func (s *ProjectBranchesService) List(opt *ProjectBranchesListOptions) (*ProjectBranchesList, *http.Response, error) {
+func (s *ProjectBranchesService) List(ctx context.Context, opt *ProjectBranchesListOptions) (*ProjectBranchesList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_branches/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_branches/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -264,13 +267,13 @@ func (s *ProjectBranchesService) List(opt *ProjectBranchesListOptions) (*Project
 //
 // API endpoint: POST /api/project_branches/rename.
 // Since: 6.6.
-func (s *ProjectBranchesService) Rename(opt *ProjectBranchesRenameOptions) (*http.Response, error) {
+func (s *ProjectBranchesService) Rename(ctx context.Context, opt *ProjectBranchesRenameOptions) (*http.Response, error) {
 	err := s.ValidateRenameOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/rename", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_branches/rename", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -289,13 +292,13 @@ func (s *ProjectBranchesService) Rename(opt *ProjectBranchesRenameOptions) (*htt
 //
 // API endpoint: POST /api/project_branches/set_automatic_deletion_protection.
 // Since: 8.1.
-func (s *ProjectBranchesService) SetAutomaticDeletionProtection(opt *ProjectBranchesSetAutomaticDeletionProtectionOptions) (*http.Response, error) {
+func (s *ProjectBranchesService) SetAutomaticDeletionProtection(ctx context.Context, opt *ProjectBranchesSetAutomaticDeletionProtectionOptions) (*http.Response, error) {
 	err := s.ValidateSetAutomaticDeletionProtectionOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/set_automatic_deletion_protection", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_branches/set_automatic_deletion_protection", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -314,13 +317,13 @@ func (s *ProjectBranchesService) SetAutomaticDeletionProtection(opt *ProjectBran
 //
 // API endpoint: POST /api/project_branches/set_main.
 // Since: 10.2.
-func (s *ProjectBranchesService) SetMain(opt *ProjectBranchesSetMainOptions) (*http.Response, error) {
+func (s *ProjectBranchesService) SetMain(ctx context.Context, opt *ProjectBranchesSetMainOptions) (*http.Response, error) {
 	err := s.ValidateSetMainOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_branches/set_main", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_branches/set_main", opt)
 	if err != nil {
 		return nil, err
 	}

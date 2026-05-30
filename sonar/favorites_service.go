@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // FavoritesService handles communication with the favorites related methods
 // of the SonarQube API.
@@ -108,13 +111,13 @@ func (s *FavoritesService) ValidateSearchOpt(opt *FavoritesSearchOptions) error 
 //
 // API endpoint: POST /api/favorites/add.
 // Since: 6.3.
-func (s *FavoritesService) Add(opt *FavoritesAddOptions) (*http.Response, error) {
+func (s *FavoritesService) Add(ctx context.Context, opt *FavoritesAddOptions) (*http.Response, error) {
 	err := s.ValidateAddOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "favorites/add", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "favorites/add", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -132,13 +135,13 @@ func (s *FavoritesService) Add(opt *FavoritesAddOptions) (*http.Response, error)
 //
 // API endpoint: POST /api/favorites/remove.
 // Since: 6.3.
-func (s *FavoritesService) Remove(opt *FavoritesRemoveOptions) (*http.Response, error) {
+func (s *FavoritesService) Remove(ctx context.Context, opt *FavoritesRemoveOptions) (*http.Response, error) {
 	err := s.ValidateRemoveOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "favorites/remove", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "favorites/remove", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -156,13 +159,13 @@ func (s *FavoritesService) Remove(opt *FavoritesRemoveOptions) (*http.Response, 
 //
 // API endpoint: GET /api/favorites/search.
 // Since: 6.3.
-func (s *FavoritesService) Search(opt *FavoritesSearchOptions) (*FavoritesSearch, *http.Response, error) {
+func (s *FavoritesService) Search(ctx context.Context, opt *FavoritesSearchOptions) (*FavoritesSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "favorites/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "favorites/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}

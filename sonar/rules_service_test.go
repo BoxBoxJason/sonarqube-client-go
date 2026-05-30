@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -14,7 +15,7 @@ func TestRules_App(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/app", 200, `{"canWrite":true,"languages":{"java":"Java"}}`))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Rules.App()
+	result, resp, err := client.Rules.App(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -31,7 +32,7 @@ func TestRules_Create(t *testing.T) {
 		MarkdownDescription: "Test description",
 		TemplateKey:         "java:TemplateRule",
 	}
-	result, resp, err := client.Rules.Create(opt)
+	result, resp, err := client.Rules.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -43,7 +44,7 @@ func TestRules_Delete(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesDeleteOptions{Key: "java:MyRule"}
-	resp, err := client.Rules.Delete(opt)
+	resp, err := client.Rules.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -53,7 +54,7 @@ func TestRules_Search(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesSearchOptions{Languages: []string{"java"}}
-	result, resp, err := client.Rules.Search(opt)
+	result, resp, err := client.Rules.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -99,7 +100,7 @@ func TestRules_Show(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesShowOptions{Key: "java:S1067"}
-	result, resp, err := client.Rules.Show(opt)
+	result, resp, err := client.Rules.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -111,7 +112,7 @@ func TestRules_Tags(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesTagsOptions{PageSize: 100}
-	result, resp, err := client.Rules.Tags(opt)
+	result, resp, err := client.Rules.Tags(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -123,7 +124,7 @@ func TestRules_Update(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesUpdateOptions{Key: "java:MyRule", Name: "Updated Rule"}
-	result, resp, err := client.Rules.Update(opt)
+	result, resp, err := client.Rules.Update(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -140,7 +141,7 @@ func TestRules_UpdateClearTags(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesUpdateOptions{Key: "java:MyRule", Tags: []string{}}
-	result, resp, err := client.Rules.Update(opt)
+	result, resp, err := client.Rules.Update(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -154,7 +155,7 @@ func TestRules_Repositories(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &RulesRepositoriesOptions{}
-	result, resp, err := client.Rules.Repositories(opt)
+	result, resp, err := client.Rules.Repositories(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)
@@ -170,7 +171,7 @@ func TestRules_List(t *testing.T) {
 			PageSize: 50,
 		},
 	}
-	_, resp, err := client.Rules.List(opt)
+	_, resp, err := client.Rules.List(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 }

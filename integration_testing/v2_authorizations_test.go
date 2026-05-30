@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -37,7 +38,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 	Describe("SearchGroups", func() {
 		Context("without options", func() {
 			It("should return a list of groups", func() {
-				result, resp, err := client.V2.Authorizations.SearchGroups(nil)
+				result, resp, err := client.V2.Authorizations.SearchGroups(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -49,7 +50,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 		Context("with query filter", func() {
 			It("should filter groups by query", func() {
 				groupName := helpers.UniqueResourceName("v2srchg")
-				group, resp, err := client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+				group, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 					Name:        groupName,
 					Description: "Search test group",
 				})
@@ -57,11 +58,11 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 
 				cleanup.RegisterCleanup("v2-group-search", group.Id, func() error {
-					_, cleanupErr := client.V2.Authorizations.DeleteGroup(group.Id)
+					_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), group.Id)
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 
-				result, resp, err := client.V2.Authorizations.SearchGroups(&sonar.AuthorizationsSearchGroupsOptions{
+				result, resp, err := client.V2.Authorizations.SearchGroups(context.Background(), &sonar.AuthorizationsSearchGroupsOptions{
 					Query: groupName,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -80,7 +81,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("with pagination", func() {
 			It("should respect page size", func() {
-				result, resp, err := client.V2.Authorizations.SearchGroups(&sonar.AuthorizationsSearchGroupsOptions{
+				result, resp, err := client.V2.Authorizations.SearchGroups(context.Background(), &sonar.AuthorizationsSearchGroupsOptions{
 					PaginationParamsV2: sonar.PaginationParamsV2{
 						PageSize: 1,
 					},
@@ -98,7 +99,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 		Context("with valid parameters", func() {
 			It("should create a group", func() {
 				groupName := helpers.UniqueResourceName("v2grp")
-				group, resp, err := client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+				group, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 					Name:        groupName,
 					Description: "V2 integration test group",
 				})
@@ -110,14 +111,14 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 				Expect(group.Id).NotTo(BeEmpty())
 
 				cleanup.RegisterCleanup("v2-group-create", group.Id, func() error {
-					_, cleanupErr := client.V2.Authorizations.DeleteGroup(group.Id)
+					_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), group.Id)
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 			})
 
 			It("should create a group with name only", func() {
 				groupName := helpers.UniqueResourceName("v2grpmin")
-				group, resp, err := client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+				group, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 					Name: groupName,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -127,7 +128,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 				Expect(group.Id).NotTo(BeEmpty())
 
 				cleanup.RegisterCleanup("v2-group-min", group.Id, func() error {
-					_, cleanupErr := client.V2.Authorizations.DeleteGroup(group.Id)
+					_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), group.Id)
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 			})
@@ -135,14 +136,14 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil request", func() {
-				group, resp, err := client.V2.Authorizations.CreateGroup(nil)
+				group, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(group).To(BeNil())
 			})
 
 			It("should fail with empty name", func() {
-				group, resp, err := client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+				group, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 					Description: "No Name Group",
 				})
 				Expect(err).To(HaveOccurred())
@@ -159,7 +160,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			groupName := helpers.UniqueResourceName("v2gfetch")
 			var resp *http.Response
 			var err error
-			createdGroup, resp, err = client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+			createdGroup, resp, err = client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 				Name:        groupName,
 				Description: "Fetch test group",
 			})
@@ -167,14 +168,14 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 
 			cleanup.RegisterCleanup("v2-group-fetch", createdGroup.Id, func() error {
-				_, cleanupErr := client.V2.Authorizations.DeleteGroup(createdGroup.Id)
+				_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), createdGroup.Id)
 				return helpers.IgnoreNotFoundError(cleanupErr)
 			})
 		})
 
 		Context("with valid group ID", func() {
 			It("should fetch the group by ID", func() {
-				fetched, resp, err := client.V2.Authorizations.GetGroup(createdGroup.Id)
+				fetched, resp, err := client.V2.Authorizations.GetGroup(context.Background(), createdGroup.Id)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(fetched).NotTo(BeNil())
@@ -186,7 +187,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with empty group ID", func() {
-				group, resp, err := client.V2.Authorizations.GetGroup("")
+				group, resp, err := client.V2.Authorizations.GetGroup(context.Background(), "")
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(group).To(BeNil())
@@ -201,7 +202,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			groupName := helpers.UniqueResourceName("v2gupd")
 			var resp *http.Response
 			var err error
-			createdGroup, resp, err = client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+			createdGroup, resp, err = client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 				Name:        groupName,
 				Description: "Original description",
 			})
@@ -209,7 +210,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 
 			cleanup.RegisterCleanup("v2-group-update", createdGroup.Id, func() error {
-				_, cleanupErr := client.V2.Authorizations.DeleteGroup(createdGroup.Id)
+				_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), createdGroup.Id)
 				return helpers.IgnoreNotFoundError(cleanupErr)
 			})
 		})
@@ -217,7 +218,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 		Context("with valid parameters", func() {
 			It("should update group name", func() {
 				newName := helpers.UniqueResourceName("v2gnew")
-				updated, resp, err := client.V2.Authorizations.UpdateGroup(createdGroup.Id, &sonar.AuthorizationsUpdateGroupOptions{
+				updated, resp, err := client.V2.Authorizations.UpdateGroup(context.Background(), createdGroup.Id, &sonar.AuthorizationsUpdateGroupOptions{
 					Name: newName,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -228,7 +229,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 			It("should update group description", func() {
 				description := "Updated description"
-				updated, resp, err := client.V2.Authorizations.UpdateGroup(createdGroup.Id, &sonar.AuthorizationsUpdateGroupOptions{
+				updated, resp, err := client.V2.Authorizations.UpdateGroup(context.Background(), createdGroup.Id, &sonar.AuthorizationsUpdateGroupOptions{
 					Description: &description,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -240,7 +241,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with empty group ID", func() {
-				group, resp, err := client.V2.Authorizations.UpdateGroup("", &sonar.AuthorizationsUpdateGroupOptions{
+				group, resp, err := client.V2.Authorizations.UpdateGroup(context.Background(), "", &sonar.AuthorizationsUpdateGroupOptions{
 					Name: "Updated",
 				})
 				Expect(err).To(HaveOccurred())
@@ -249,7 +250,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			})
 
 			It("should fail with nil request", func() {
-				group, resp, err := client.V2.Authorizations.UpdateGroup(createdGroup.Id, nil)
+				group, resp, err := client.V2.Authorizations.UpdateGroup(context.Background(), createdGroup.Id, nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(group).To(BeNil())
@@ -261,18 +262,18 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 		Context("with valid group ID", func() {
 			It("should delete a group", func() {
 				groupName := helpers.UniqueResourceName("v2gdel")
-				group, resp, err := client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+				group, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 					Name: groupName,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 
 				cleanup.RegisterCleanup("v2-group-delete", group.Id, func() error {
-					_, cleanupErr := client.V2.Authorizations.DeleteGroup(group.Id)
+					_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), group.Id)
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 
-				resp, err = client.V2.Authorizations.DeleteGroup(group.Id)
+				resp, err = client.V2.Authorizations.DeleteGroup(context.Background(), group.Id)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(BeNumerically(">=", 200))
@@ -282,7 +283,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with empty group ID", func() {
-				resp, err := client.V2.Authorizations.DeleteGroup("")
+				resp, err := client.V2.Authorizations.DeleteGroup(context.Background(), "")
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -295,7 +296,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 	Describe("SearchGroupMemberships", func() {
 		Context("without options", func() {
 			It("should return a list of group memberships", func() {
-				result, resp, err := client.V2.Authorizations.SearchGroupMemberships(nil)
+				result, resp, err := client.V2.Authorizations.SearchGroupMemberships(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -305,13 +306,13 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("with group filter", func() {
 			It("should filter memberships by group ID", func() {
-				groups, resp, err := client.V2.Authorizations.SearchGroups(nil)
+				groups, resp, err := client.V2.Authorizations.SearchGroups(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(groups.Groups).NotTo(BeEmpty())
 
 				groupID := groups.Groups[0].Id
-				result, resp, err := client.V2.Authorizations.SearchGroupMemberships(&sonar.AuthorizationsSearchGroupMembershipsOptions{
+				result, resp, err := client.V2.Authorizations.SearchGroupMemberships(context.Background(), &sonar.AuthorizationsSearchGroupMembershipsOptions{
 					GroupId: groupID,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -334,19 +335,19 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			groupName := helpers.UniqueResourceName("v2gmem")
 			var resp *http.Response
 			var err error
-			createdGroup, resp, err = client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+			createdGroup, resp, err = client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 				Name: groupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 
 			cleanup.RegisterCleanup("v2-group-membership", createdGroup.Id, func() error {
-				_, cleanupErr := client.V2.Authorizations.DeleteGroup(createdGroup.Id)
+				_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), createdGroup.Id)
 				return helpers.IgnoreNotFoundError(cleanupErr)
 			})
 
 			login := helpers.UniqueResourceName("v2umem")
-			createdUser, resp, err = client.V2.UsersManagement.Create(&sonar.UsersCreateOptionsV2{
+			createdUser, resp, err = client.V2.UsersManagement.Create(context.Background(), &sonar.UsersCreateOptionsV2{
 				Login:    login,
 				Name:     "V2 Membership User",
 				Password: "testPassword123!",
@@ -355,7 +356,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 			cleanup.RegisterCleanup("v2-user-membership", createdUser.Id, func() error {
-				_, cleanupErr := client.V2.UsersManagement.Deactivate(&sonar.UsersDeactivateOptionsV2{
+				_, cleanupErr := client.V2.UsersManagement.Deactivate(context.Background(), &sonar.UsersDeactivateOptionsV2{
 					Id:        createdUser.Id,
 					Anonymize: true,
 				})
@@ -365,7 +366,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("with valid parameters", func() {
 			It("should create a group membership", func() {
-				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(&sonar.AuthorizationsCreateGroupMembershipOptions{
+				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(context.Background(), &sonar.AuthorizationsCreateGroupMembershipOptions{
 					GroupId: createdGroup.Id,
 					UserId:  createdUser.Id,
 				})
@@ -377,11 +378,11 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 				Expect(membership.Id).NotTo(BeEmpty())
 
 				cleanup.RegisterCleanup("v2-membership", membership.Id, func() error {
-					_, cleanupErr := client.V2.Authorizations.DeleteGroupMembership(membership.Id)
+					_, cleanupErr := client.V2.Authorizations.DeleteGroupMembership(context.Background(), membership.Id)
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 
-				result, resp, err := client.V2.Authorizations.SearchGroupMemberships(&sonar.AuthorizationsSearchGroupMembershipsOptions{
+				result, resp, err := client.V2.Authorizations.SearchGroupMemberships(context.Background(), &sonar.AuthorizationsSearchGroupMembershipsOptions{
 					GroupId: createdGroup.Id,
 					UserId:  createdUser.Id,
 				})
@@ -393,14 +394,14 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil request", func() {
-				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(nil)
+				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(membership).To(BeNil())
 			})
 
 			It("should fail with empty group ID", func() {
-				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(&sonar.AuthorizationsCreateGroupMembershipOptions{
+				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(context.Background(), &sonar.AuthorizationsCreateGroupMembershipOptions{
 					UserId: createdUser.Id,
 				})
 				Expect(err).To(HaveOccurred())
@@ -409,7 +410,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 			})
 
 			It("should fail with empty user ID", func() {
-				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(&sonar.AuthorizationsCreateGroupMembershipOptions{
+				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(context.Background(), &sonar.AuthorizationsCreateGroupMembershipOptions{
 					GroupId: createdGroup.Id,
 				})
 				Expect(err).To(HaveOccurred())
@@ -423,19 +424,19 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 		Context("with valid membership ID", func() {
 			It("should delete a group membership", func() {
 				groupName := helpers.UniqueResourceName("v2gmdel")
-				group, resp, err := client.V2.Authorizations.CreateGroup(&sonar.AuthorizationsCreateGroupOptions{
+				group, resp, err := client.V2.Authorizations.CreateGroup(context.Background(), &sonar.AuthorizationsCreateGroupOptions{
 					Name: groupName,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 
 				cleanup.RegisterCleanup("v2-group-delm", group.Id, func() error {
-					_, cleanupErr := client.V2.Authorizations.DeleteGroup(group.Id)
+					_, cleanupErr := client.V2.Authorizations.DeleteGroup(context.Background(), group.Id)
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 
 				login := helpers.UniqueResourceName("v2umdel")
-				user, resp, err := client.V2.UsersManagement.Create(&sonar.UsersCreateOptionsV2{
+				user, resp, err := client.V2.UsersManagement.Create(context.Background(), &sonar.UsersCreateOptionsV2{
 					Login:    login,
 					Name:     "V2 Del Membership User",
 					Password: "testPassword123!",
@@ -444,14 +445,14 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 				cleanup.RegisterCleanup("v2-user-delm", user.Id, func() error {
-					_, cleanupErr := client.V2.UsersManagement.Deactivate(&sonar.UsersDeactivateOptionsV2{
+					_, cleanupErr := client.V2.UsersManagement.Deactivate(context.Background(), &sonar.UsersDeactivateOptionsV2{
 						Id:        user.Id,
 						Anonymize: true,
 					})
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 
-				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(&sonar.AuthorizationsCreateGroupMembershipOptions{
+				membership, resp, err := client.V2.Authorizations.CreateGroupMembership(context.Background(), &sonar.AuthorizationsCreateGroupMembershipOptions{
 					GroupId: group.Id,
 					UserId:  user.Id,
 				})
@@ -459,11 +460,11 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusCreated))
 
 				cleanup.RegisterCleanup("v2-membership-del", membership.Id, func() error {
-					_, cleanupErr := client.V2.Authorizations.DeleteGroupMembership(membership.Id)
+					_, cleanupErr := client.V2.Authorizations.DeleteGroupMembership(context.Background(), membership.Id)
 					return helpers.IgnoreNotFoundError(cleanupErr)
 				})
 
-				resp, err = client.V2.Authorizations.DeleteGroupMembership(membership.Id)
+				resp, err = client.V2.Authorizations.DeleteGroupMembership(context.Background(), membership.Id)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(BeNumerically(">=", 200))
@@ -473,7 +474,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with empty membership ID", func() {
-				resp, err := client.V2.Authorizations.DeleteGroupMembership("")
+				resp, err := client.V2.Authorizations.DeleteGroupMembership(context.Background(), "")
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})

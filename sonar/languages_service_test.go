@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -20,7 +21,7 @@ func TestLanguages_List(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Languages.List(&LanguagesListOptions{})
+	result, resp, err := client.Languages.List(context.Background(), &LanguagesListOptions{})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -35,7 +36,7 @@ func TestLanguages_List_WithQuery(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Languages.List(&LanguagesListOptions{Query: "java"})
+	result, resp, err := client.Languages.List(context.Background(), &LanguagesListOptions{Query: "java"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Languages, 1)
@@ -46,7 +47,7 @@ func TestLanguages_List_NilOption(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Languages.List(nil)
+	result, resp, err := client.Languages.List(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

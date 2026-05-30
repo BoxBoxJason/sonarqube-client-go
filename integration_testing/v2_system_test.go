@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -25,7 +26,7 @@ var _ = Describe("V2 System Service", Ordered, func() {
 	// =========================================================================
 	Describe("GetMigrationsStatus", func() {
 		It("should return migration status", func() {
-			result, resp, err := client.V2.System.GetMigrationsStatus()
+			result, resp, err := client.V2.System.GetMigrationsStatus(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -39,7 +40,7 @@ var _ = Describe("V2 System Service", Ordered, func() {
 	Describe("CheckLiveness", func() {
 		Context("without passcode", func() {
 			It("should return a successful liveness check", func() {
-				resp, err := client.V2.System.CheckLiveness(nil)
+				resp, err := client.V2.System.CheckLiveness(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(BeNumerically(">=", 200))
@@ -49,7 +50,7 @@ var _ = Describe("V2 System Service", Ordered, func() {
 
 		Context("with empty passcode", func() {
 			It("should return a successful liveness check", func() {
-				resp, err := client.V2.System.CheckLiveness(&sonar.SystemPasscodeOptionV2{})
+				resp, err := client.V2.System.CheckLiveness(context.Background(), &sonar.SystemPasscodeOptionV2{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(BeNumerically(">=", 200))
@@ -64,7 +65,7 @@ var _ = Describe("V2 System Service", Ordered, func() {
 	Describe("GetHealth", func() {
 		Context("without passcode", func() {
 			It("should return system health", func() {
-				result, resp, err := client.V2.System.GetHealth(nil)
+				result, resp, err := client.V2.System.GetHealth(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -75,7 +76,7 @@ var _ = Describe("V2 System Service", Ordered, func() {
 
 		Context("with empty passcode", func() {
 			It("should return system health", func() {
-				result, resp, err := client.V2.System.GetHealth(&sonar.SystemPasscodeOptionV2{})
+				result, resp, err := client.V2.System.GetHealth(context.Background(), &sonar.SystemPasscodeOptionV2{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())

@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // WebservicesService handles communication with the webservices related methods
 // of the SonarQube API.
@@ -158,13 +161,13 @@ func (s *WebservicesService) ValidateResponseExampleOpt(opt *WebservicesResponse
 //
 // API endpoint: GET /api/webservices/list.
 // Since: 4.2.
-func (s *WebservicesService) List(opt *WebservicesListOptions) (*WebservicesList, *http.Response, error) {
+func (s *WebservicesService) List(ctx context.Context, opt *WebservicesListOptions) (*WebservicesList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webservices/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "webservices/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -184,13 +187,13 @@ func (s *WebservicesService) List(opt *WebservicesListOptions) (*WebservicesList
 //
 // API endpoint: GET /api/webservices/response_example.
 // Since: 4.4.
-func (s *WebservicesService) ResponseExample(opt *WebservicesResponseExampleOptions) (*string, *http.Response, error) {
+func (s *WebservicesService) ResponseExample(ctx context.Context, opt *WebservicesResponseExampleOptions) (*string, *http.Response, error) {
 	err := s.ValidateResponseExampleOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webservices/response_example", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "webservices/response_example", opt)
 	if err != nil {
 		return nil, nil, err
 	}

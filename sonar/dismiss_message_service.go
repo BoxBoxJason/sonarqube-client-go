@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // DismissMessageService handles communication with the message dismissal related methods
 // of the SonarQube API.
@@ -94,13 +97,13 @@ func (s *DismissMessageService) ValidateDismissOpt(opt *DismissMessageDismissOpt
 //
 // API endpoint: GET /api/dismiss_message/check.
 // Since: 10.2.
-func (s *DismissMessageService) Check(opt *DismissMessageCheckOptions) (*DismissMessageCheck, *http.Response, error) {
+func (s *DismissMessageService) Check(ctx context.Context, opt *DismissMessageCheckOptions) (*DismissMessageCheck, *http.Response, error) {
 	err := s.ValidateCheckOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "dismiss_message/check", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "dismiss_message/check", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -119,13 +122,13 @@ func (s *DismissMessageService) Check(opt *DismissMessageCheckOptions) (*Dismiss
 //
 // API endpoint: POST /api/dismiss_message/dismiss.
 // Since: 10.2.
-func (s *DismissMessageService) Dismiss(opt *DismissMessageDismissOptions) (*http.Response, error) {
+func (s *DismissMessageService) Dismiss(ctx context.Context, opt *DismissMessageDismissOptions) (*http.Response, error) {
 	err := s.ValidateDismissOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "dismiss_message/dismiss", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "dismiss_message/dismiss", opt)
 	if err != nil {
 		return nil, err
 	}

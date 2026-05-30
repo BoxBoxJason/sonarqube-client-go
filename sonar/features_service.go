@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // FeaturesService handles communication with the features related methods
 // of the SonarQube API.
@@ -26,8 +29,8 @@ type FeaturesList []string
 //
 // API endpoint: GET /api/features/list.
 // WARNING: This is an internal API and may change without notice.
-func (s *FeaturesService) List() (*FeaturesList, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "features/list", nil)
+func (s *FeaturesService) List(ctx context.Context) (*FeaturesList, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "features/list", nil)
 	if err != nil {
 		return nil, nil, err
 	}

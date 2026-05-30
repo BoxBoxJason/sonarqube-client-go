@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -13,7 +14,7 @@ func TestServer_Version(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	version, resp, err := client.Server.Version()
+	version, resp, err := client.Server.Version(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, version)
@@ -25,7 +26,7 @@ func TestServer_Version_ErrorResponse(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	version, resp, err := client.Server.Version()
+	version, resp, err := client.Server.Version(context.Background(), )
 	require.Error(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)

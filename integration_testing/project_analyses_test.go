@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -27,13 +28,13 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 
 		// Create a test project for project analyses operations
 		projectKey := helpers.UniqueResourceName("proj-analyses")
-		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		testProject, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    projectKey,
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -53,7 +54,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 	Describe("Search", func() {
 		Context("Functional Tests", func() {
 			It("should search project analyses", func() {
-				result, resp, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{
+				result, resp, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -63,7 +64,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 			})
 
 			It("should search project analyses with pagination", func() {
-				result, resp, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{
+				result, resp, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project: testProject.Project.Key,
 					PaginationArgs: sonar.PaginationArgs{
 						Page:     1,
@@ -76,7 +77,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 			})
 
 			It("should search project analyses with category filter", func() {
-				result, resp, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{
+				result, resp, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project:  testProject.Project.Key,
 					Category: "VERSION",
 				})
@@ -86,7 +87,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 			})
 
 			It("should search project analyses with date range", func() {
-				result, resp, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{
+				result, resp, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project: testProject.Project.Key,
 					From:    "2020-01-01",
 					To:      "2030-12-31",
@@ -99,17 +100,17 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing project", func() {
-				_, _, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{})
+				_, _, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with nil options", func() {
-				_, _, err := client.ProjectAnalyses.Search(nil)
+				_, _, err := client.ProjectAnalyses.Search(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with invalid category", func() {
-				_, _, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{
+				_, _, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project:  testProject.Project.Key,
 					Category: "INVALID_CATEGORY",
 				})
@@ -117,7 +118,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 			})
 
 			It("should fail with invalid date format", func() {
-				_, _, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{
+				_, _, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project: testProject.Project.Key,
 					From:    "invalid-date",
 				})
@@ -125,7 +126,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent project", func() {
-				_, resp, err := client.ProjectAnalyses.Search(&sonar.ProjectAnalysesSearchOptions{
+				_, resp, err := client.ProjectAnalyses.Search(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project: "non-existent-project-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -141,7 +142,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 	Describe("SearchAll", func() {
 		Context("Functional Tests", func() {
 			It("should search all project analyses", func() {
-				result, resp, err := client.ProjectAnalyses.SearchAll(&sonar.ProjectAnalysesSearchOptions{
+				result, resp, err := client.ProjectAnalyses.SearchAll(context.Background(), &sonar.ProjectAnalysesSearchOptions{
 					Project: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -153,12 +154,12 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing project", func() {
-				_, _, err := client.ProjectAnalyses.SearchAll(&sonar.ProjectAnalysesSearchOptions{})
+				_, _, err := client.ProjectAnalyses.SearchAll(context.Background(), &sonar.ProjectAnalysesSearchOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with nil options", func() {
-				_, _, err := client.ProjectAnalyses.SearchAll(nil)
+				_, _, err := client.ProjectAnalyses.SearchAll(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 		})
@@ -170,26 +171,26 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 	Describe("CreateEvent", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing analysis", func() {
-				_, _, err := client.ProjectAnalyses.CreateEvent(&sonar.ProjectAnalysesCreateEventOptions{
+				_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), &sonar.ProjectAnalysesCreateEventOptions{
 					Name: "test-event",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing name", func() {
-				_, _, err := client.ProjectAnalyses.CreateEvent(&sonar.ProjectAnalysesCreateEventOptions{
+				_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), &sonar.ProjectAnalysesCreateEventOptions{
 					Analysis: "some-analysis-key",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with nil options", func() {
-				_, _, err := client.ProjectAnalyses.CreateEvent(nil)
+				_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with invalid category", func() {
-				_, _, err := client.ProjectAnalyses.CreateEvent(&sonar.ProjectAnalysesCreateEventOptions{
+				_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), &sonar.ProjectAnalysesCreateEventOptions{
 					Analysis: "some-analysis-key",
 					Name:     "test-event",
 					Category: "INVALID_CATEGORY",
@@ -198,7 +199,7 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent analysis", func() {
-				_, resp, err := client.ProjectAnalyses.CreateEvent(&sonar.ProjectAnalysesCreateEventOptions{
+				_, resp, err := client.ProjectAnalyses.CreateEvent(context.Background(), &sonar.ProjectAnalysesCreateEventOptions{
 					Analysis: "non-existent-analysis-12345",
 					Name:     "test-event",
 					Category: "VERSION",
@@ -216,26 +217,26 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 	Describe("UpdateEvent", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing event", func() {
-				_, _, err := client.ProjectAnalyses.UpdateEvent(&sonar.ProjectAnalysesUpdateEventOptions{
+				_, _, err := client.ProjectAnalyses.UpdateEvent(context.Background(), &sonar.ProjectAnalysesUpdateEventOptions{
 					Name: "updated-name",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing name", func() {
-				_, _, err := client.ProjectAnalyses.UpdateEvent(&sonar.ProjectAnalysesUpdateEventOptions{
+				_, _, err := client.ProjectAnalyses.UpdateEvent(context.Background(), &sonar.ProjectAnalysesUpdateEventOptions{
 					Event: "some-event-key",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with nil options", func() {
-				_, _, err := client.ProjectAnalyses.UpdateEvent(nil)
+				_, _, err := client.ProjectAnalyses.UpdateEvent(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with non-existent event", func() {
-				_, resp, err := client.ProjectAnalyses.UpdateEvent(&sonar.ProjectAnalysesUpdateEventOptions{
+				_, resp, err := client.ProjectAnalyses.UpdateEvent(context.Background(), &sonar.ProjectAnalysesUpdateEventOptions{
 					Event: "non-existent-event-12345",
 					Name:  "updated-name",
 				})
@@ -252,17 +253,17 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 	Describe("DeleteEvent", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing event", func() {
-				_, err := client.ProjectAnalyses.DeleteEvent(&sonar.ProjectAnalysesDeleteEventOptions{})
+				_, err := client.ProjectAnalyses.DeleteEvent(context.Background(), &sonar.ProjectAnalysesDeleteEventOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with nil options", func() {
-				_, err := client.ProjectAnalyses.DeleteEvent(nil)
+				_, err := client.ProjectAnalyses.DeleteEvent(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with non-existent event", func() {
-				resp, err := client.ProjectAnalyses.DeleteEvent(&sonar.ProjectAnalysesDeleteEventOptions{
+				resp, err := client.ProjectAnalyses.DeleteEvent(context.Background(), &sonar.ProjectAnalysesDeleteEventOptions{
 					Event: "non-existent-event-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -278,17 +279,17 @@ var _ = Describe("ProjectAnalyses Service", Ordered, func() {
 	Describe("Delete", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing analysis", func() {
-				_, err := client.ProjectAnalyses.Delete(&sonar.ProjectAnalysesDeleteOptions{})
+				_, err := client.ProjectAnalyses.Delete(context.Background(), &sonar.ProjectAnalysesDeleteOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with nil options", func() {
-				_, err := client.ProjectAnalyses.Delete(nil)
+				_, err := client.ProjectAnalyses.Delete(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with non-existent analysis", func() {
-				resp, err := client.ProjectAnalyses.Delete(&sonar.ProjectAnalysesDeleteOptions{
+				resp, err := client.ProjectAnalyses.Delete(context.Background(), &sonar.ProjectAnalysesDeleteOptions{
 					Analysis: "non-existent-analysis-12345",
 				})
 				Expect(err).To(HaveOccurred())

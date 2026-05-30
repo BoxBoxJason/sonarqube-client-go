@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -943,7 +944,7 @@ type QualityprofilesShowOptions struct {
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) ActivateRule(opt *QualityprofilesActivateRuleOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) ActivateRule(ctx context.Context, opt *QualityprofilesActivateRuleOptions) (resp *http.Response, err error) {
 	err = s.ValidateActivateRuleOpt(opt)
 	if err != nil {
 		return
@@ -952,7 +953,7 @@ func (s *QualityprofilesService) ActivateRule(opt *QualityprofilesActivateRuleOp
 	// Convert map fields to URL-encodable format
 	urlOpt := s.convertActivateRuleOptForURL(opt)
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/activate_rule", urlOpt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/activate_rule", urlOpt)
 	if err != nil {
 		return
 	}
@@ -969,13 +970,13 @@ func (s *QualityprofilesService) ActivateRule(opt *QualityprofilesActivateRuleOp
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) ActivateRules(opt *QualityprofilesActivateRulesOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) ActivateRules(ctx context.Context, opt *QualityprofilesActivateRulesOptions) (resp *http.Response, err error) {
 	err = s.ValidateActivateRulesOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/activate_rules", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/activate_rules", opt)
 	if err != nil {
 		return
 	}
@@ -992,13 +993,13 @@ func (s *QualityprofilesService) ActivateRules(opt *QualityprofilesActivateRules
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) AddGroup(opt *QualityprofilesAddGroupOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) AddGroup(ctx context.Context, opt *QualityprofilesAddGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddGroupOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/add_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/add_group", opt)
 	if err != nil {
 		return
 	}
@@ -1015,13 +1016,13 @@ func (s *QualityprofilesService) AddGroup(opt *QualityprofilesAddGroupOptions) (
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Administer right on the specified project
-func (s *QualityprofilesService) AddProject(opt *QualityprofilesAddProjectOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) AddProject(ctx context.Context, opt *QualityprofilesAddProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/add_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/add_project", opt)
 	if err != nil {
 		return
 	}
@@ -1038,13 +1039,13 @@ func (s *QualityprofilesService) AddProject(opt *QualityprofilesAddProjectOption
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) AddUser(opt *QualityprofilesAddUserOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) AddUser(ctx context.Context, opt *QualityprofilesAddUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/add_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/add_user", opt)
 	if err != nil {
 		return
 	}
@@ -1059,13 +1060,13 @@ func (s *QualityprofilesService) AddUser(opt *QualityprofilesAddUserOptions) (re
 
 // Backup backs up a quality profile in XML form.
 // The exported profile can be restored through Restore.
-func (s *QualityprofilesService) Backup(opt *QualityprofilesBackupOptions) (v *string, resp *http.Response, err error) {
+func (s *QualityprofilesService) Backup(ctx context.Context, opt *QualityprofilesBackupOptions) (v *string, resp *http.Response, err error) {
 	err = s.ValidateBackupOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/backup", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/backup", opt)
 	if err != nil {
 		return
 	}
@@ -1084,13 +1085,13 @@ func (s *QualityprofilesService) Backup(opt *QualityprofilesBackupOptions) (v *s
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) ChangeParent(opt *QualityprofilesChangeParentOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) ChangeParent(ctx context.Context, opt *QualityprofilesChangeParentOptions) (resp *http.Response, err error) {
 	err = s.ValidateChangeParentOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/change_parent", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/change_parent", opt)
 	if err != nil {
 		return
 	}
@@ -1105,13 +1106,13 @@ func (s *QualityprofilesService) ChangeParent(opt *QualityprofilesChangeParentOp
 
 // Changelog gets the history of changes on a quality profile.
 // Events are ordered by date in descending order (most recent first).
-func (s *QualityprofilesService) Changelog(opt *QualityprofilesChangelogOptions) (v *QualityprofilesChangelog, resp *http.Response, err error) {
+func (s *QualityprofilesService) Changelog(ctx context.Context, opt *QualityprofilesChangelogOptions) (v *QualityprofilesChangelog, resp *http.Response, err error) {
 	err = s.ValidateChangelogOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/changelog", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/changelog", opt)
 	if err != nil {
 		return
 	}
@@ -1127,13 +1128,13 @@ func (s *QualityprofilesService) Changelog(opt *QualityprofilesChangelogOptions)
 }
 
 // Compare compares two quality profiles.
-func (s *QualityprofilesService) Compare(opt *QualityprofilesCompareOptions) (v *QualityprofilesCompare, resp *http.Response, err error) {
+func (s *QualityprofilesService) Compare(ctx context.Context, opt *QualityprofilesCompareOptions) (v *QualityprofilesCompare, resp *http.Response, err error) {
 	err = s.ValidateCompareOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/compare", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/compare", opt)
 	if err != nil {
 		return
 	}
@@ -1150,13 +1151,13 @@ func (s *QualityprofilesService) Compare(opt *QualityprofilesCompareOptions) (v 
 
 // Copy copies a quality profile.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) Copy(opt *QualityprofilesCopyOptions) (v *QualityprofilesCopy, resp *http.Response, err error) {
+func (s *QualityprofilesService) Copy(ctx context.Context, opt *QualityprofilesCopyOptions) (v *QualityprofilesCopy, resp *http.Response, err error) {
 	err = s.ValidateCopyOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/copy", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/copy", opt)
 	if err != nil {
 		return
 	}
@@ -1173,13 +1174,13 @@ func (s *QualityprofilesService) Copy(opt *QualityprofilesCopyOptions) (v *Quali
 
 // Create creates a quality profile.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) Create(opt *QualityprofilesCreateOptions) (v *QualityprofilesCreate, resp *http.Response, err error) {
+func (s *QualityprofilesService) Create(ctx context.Context, opt *QualityprofilesCreateOptions) (v *QualityprofilesCreate, resp *http.Response, err error) {
 	err = s.ValidateCreateOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/create", opt)
 	if err != nil {
 		return
 	}
@@ -1198,13 +1199,13 @@ func (s *QualityprofilesService) Create(opt *QualityprofilesCreateOptions) (v *Q
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) DeactivateRule(opt *QualityprofilesDeactivateRuleOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) DeactivateRule(ctx context.Context, opt *QualityprofilesDeactivateRuleOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeactivateRuleOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/deactivate_rule", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/deactivate_rule", opt)
 	if err != nil {
 		return
 	}
@@ -1221,13 +1222,13 @@ func (s *QualityprofilesService) DeactivateRule(opt *QualityprofilesDeactivateRu
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) DeactivateRules(opt *QualityprofilesDeactivateRulesOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) DeactivateRules(ctx context.Context, opt *QualityprofilesDeactivateRulesOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeactivateRulesOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/deactivate_rules", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/deactivate_rules", opt)
 	if err != nil {
 		return
 	}
@@ -1245,13 +1246,13 @@ func (s *QualityprofilesService) DeactivateRules(opt *QualityprofilesDeactivateR
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) Delete(opt *QualityprofilesDeleteOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) Delete(ctx context.Context, opt *QualityprofilesDeleteOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/delete", opt)
 	if err != nil {
 		return
 	}
@@ -1267,13 +1268,13 @@ func (s *QualityprofilesService) Delete(opt *QualityprofilesDeleteOptions) (resp
 // Export exports a quality profile.
 //
 // Deprecated: Since SonarQube 25.4. Use Backup instead.
-func (s *QualityprofilesService) Export(opt *QualityprofilesExportOptions) (v *string, resp *http.Response, err error) {
+func (s *QualityprofilesService) Export(ctx context.Context, opt *QualityprofilesExportOptions) (v *string, resp *http.Response, err error) {
 	err = s.ValidateExportOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/export", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/export", opt)
 	if err != nil {
 		return
 	}
@@ -1291,8 +1292,8 @@ func (s *QualityprofilesService) Export(opt *QualityprofilesExportOptions) (v *s
 // Exporters lists quality profile exporters.
 //
 // Deprecated: No more custom profile exporters since SonarQube 25.4.
-func (s *QualityprofilesService) Exporters() (v *QualityprofilesExporters, resp *http.Response, err error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/exporters", nil)
+func (s *QualityprofilesService) Exporters(ctx context.Context) (v *QualityprofilesExporters, resp *http.Response, err error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/exporters", nil)
 	if err != nil {
 		return
 	}
@@ -1310,8 +1311,8 @@ func (s *QualityprofilesService) Exporters() (v *QualityprofilesExporters, resp 
 // Importers lists supported quality profile importers.
 //
 // Deprecated: Since SonarQube 25.4.
-func (s *QualityprofilesService) Importers() (v *QualityprofilesImporters, resp *http.Response, err error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/importers", nil)
+func (s *QualityprofilesService) Importers(ctx context.Context) (v *QualityprofilesImporters, resp *http.Response, err error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/importers", nil)
 	if err != nil {
 		return
 	}
@@ -1327,13 +1328,13 @@ func (s *QualityprofilesService) Importers() (v *QualityprofilesImporters, resp 
 }
 
 // Inheritance shows a quality profile's ancestors and children.
-func (s *QualityprofilesService) Inheritance(opt *QualityprofilesInheritanceOptions) (v *QualityprofilesInheritance, resp *http.Response, err error) {
+func (s *QualityprofilesService) Inheritance(ctx context.Context, opt *QualityprofilesInheritanceOptions) (v *QualityprofilesInheritance, resp *http.Response, err error) {
 	err = s.ValidateInheritanceOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/inheritance", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/inheritance", opt)
 	if err != nil {
 		return
 	}
@@ -1350,13 +1351,13 @@ func (s *QualityprofilesService) Inheritance(opt *QualityprofilesInheritanceOpti
 
 // Projects lists projects with their association status regarding a quality profile.
 // Only projects explicitly bound to the profile are returned.
-func (s *QualityprofilesService) Projects(opt *QualityprofilesProjectsOptions) (v *QualityprofilesProjects, resp *http.Response, err error) {
+func (s *QualityprofilesService) Projects(ctx context.Context, opt *QualityprofilesProjectsOptions) (v *QualityprofilesProjects, resp *http.Response, err error) {
 	err = s.ValidateProjectsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/projects", opt)
 	if err != nil {
 		return
 	}
@@ -1375,13 +1376,13 @@ func (s *QualityprofilesService) Projects(opt *QualityprofilesProjectsOptions) (
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) RemoveGroup(opt *QualityprofilesRemoveGroupOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) RemoveGroup(ctx context.Context, opt *QualityprofilesRemoveGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveGroupOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/remove_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/remove_group", opt)
 	if err != nil {
 		return
 	}
@@ -1399,13 +1400,13 @@ func (s *QualityprofilesService) RemoveGroup(opt *QualityprofilesRemoveGroupOpti
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
 //   - Administer right on the specified project
-func (s *QualityprofilesService) RemoveProject(opt *QualityprofilesRemoveProjectOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) RemoveProject(ctx context.Context, opt *QualityprofilesRemoveProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/remove_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/remove_project", opt)
 	if err != nil {
 		return
 	}
@@ -1422,13 +1423,13 @@ func (s *QualityprofilesService) RemoveProject(opt *QualityprofilesRemoveProject
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) RemoveUser(opt *QualityprofilesRemoveUserOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) RemoveUser(ctx context.Context, opt *QualityprofilesRemoveUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/remove_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/remove_user", opt)
 	if err != nil {
 		return
 	}
@@ -1445,13 +1446,13 @@ func (s *QualityprofilesService) RemoveUser(opt *QualityprofilesRemoveUserOption
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) Rename(opt *QualityprofilesRenameOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) Rename(ctx context.Context, opt *QualityprofilesRenameOptions) (resp *http.Response, err error) {
 	err = s.ValidateRenameOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/rename", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/rename", opt)
 	if err != nil {
 		return
 	}
@@ -1468,13 +1469,13 @@ func (s *QualityprofilesService) Rename(opt *QualityprofilesRenameOptions) (resp
 // The restored profile name is taken from the backup file.
 // If a profile with the same name and language exists, it will be overwritten.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) Restore(opt *QualityprofilesRestoreOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) Restore(ctx context.Context, opt *QualityprofilesRestoreOptions) (resp *http.Response, err error) {
 	err = s.ValidateRestoreOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/restore", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/restore", opt)
 	if err != nil {
 		return
 	}
@@ -1488,13 +1489,13 @@ func (s *QualityprofilesService) Restore(opt *QualityprofilesRestoreOptions) (re
 }
 
 // Search searches for quality profiles.
-func (s *QualityprofilesService) Search(opt *QualityprofilesSearchOptions) (v *QualityprofilesSearch, resp *http.Response, err error) {
+func (s *QualityprofilesService) Search(ctx context.Context, opt *QualityprofilesSearchOptions) (v *QualityprofilesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/search", opt)
 	if err != nil {
 		return
 	}
@@ -1513,13 +1514,13 @@ func (s *QualityprofilesService) Search(opt *QualityprofilesSearchOptions) (v *Q
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) SearchGroups(opt *QualityprofilesSearchGroupsOptions) (v *QualityprofilesSearchGroups, resp *http.Response, err error) {
+func (s *QualityprofilesService) SearchGroups(ctx context.Context, opt *QualityprofilesSearchGroupsOptions) (v *QualityprofilesSearchGroups, resp *http.Response, err error) {
 	err = s.ValidateSearchGroupsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/search_groups", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/search_groups", opt)
 	if err != nil {
 		return
 	}
@@ -1538,13 +1539,13 @@ func (s *QualityprofilesService) SearchGroups(opt *QualityprofilesSearchGroupsOp
 // Requires one of the following permissions:
 //   - 'Administer Quality Profiles'
 //   - Edit right on the specified quality profile
-func (s *QualityprofilesService) SearchUsers(opt *QualityprofilesSearchUsersOptions) (v *QualityprofilesSearchUsers, resp *http.Response, err error) {
+func (s *QualityprofilesService) SearchUsers(ctx context.Context, opt *QualityprofilesSearchUsersOptions) (v *QualityprofilesSearchUsers, resp *http.Response, err error) {
 	err = s.ValidateSearchUsersOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/search_users", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/search_users", opt)
 	if err != nil {
 		return
 	}
@@ -1561,13 +1562,13 @@ func (s *QualityprofilesService) SearchUsers(opt *QualityprofilesSearchUsersOpti
 
 // SetDefault selects the default profile for a given language.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *QualityprofilesService) SetDefault(opt *QualityprofilesSetDefaultOptions) (resp *http.Response, err error) {
+func (s *QualityprofilesService) SetDefault(ctx context.Context, opt *QualityprofilesSetDefaultOptions) (resp *http.Response, err error) {
 	err = s.ValidateSetDefaultOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualityprofiles/set_default", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualityprofiles/set_default", opt)
 	if err != nil {
 		return
 	}
@@ -1581,13 +1582,13 @@ func (s *QualityprofilesService) SetDefault(opt *QualityprofilesSetDefaultOption
 }
 
 // Show shows a quality profile.
-func (s *QualityprofilesService) Show(opt *QualityprofilesShowOptions) (v *QualityprofilesShow, resp *http.Response, err error) {
+func (s *QualityprofilesService) Show(ctx context.Context, opt *QualityprofilesShowOptions) (v *QualityprofilesShow, resp *http.Response, err error) {
 	err = s.ValidateShowOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualityprofiles/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualityprofiles/show", opt)
 	if err != nil {
 		return
 	}

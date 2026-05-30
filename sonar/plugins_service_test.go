@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -36,7 +37,7 @@ func TestPluginsService_Available(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/available", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Plugins.Available()
+	result, resp, err := client.Plugins.Available(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -49,7 +50,7 @@ func TestPluginsService_CancelAll(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/plugins/cancel_all", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Plugins.CancelAll()
+	resp, err := client.Plugins.CancelAll(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -64,7 +65,7 @@ func TestPluginsService_Download(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Plugins.Download(&PluginsDownloadOptions{
+		result, resp, err := client.Plugins.Download(context.Background(), &PluginsDownloadOptions{
 			Plugin: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -75,14 +76,14 @@ func TestPluginsService_Download(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Plugins.Download(nil)
+		_, _, err := client.Plugins.Download(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing plugin", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Plugins.Download(&PluginsDownloadOptions{})
+		_, _, err := client.Plugins.Download(context.Background(), &PluginsDownloadOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -97,7 +98,7 @@ func TestPluginsService_Install(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.Plugins.Install(&PluginsInstallOptions{
+		resp, err := client.Plugins.Install(context.Background(), &PluginsInstallOptions{
 			Key: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -107,14 +108,14 @@ func TestPluginsService_Install(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Install(nil)
+		_, err := client.Plugins.Install(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing key", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Install(&PluginsInstallOptions{})
+		_, err := client.Plugins.Install(context.Background(), &PluginsInstallOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -141,7 +142,7 @@ func TestPluginsService_Installed(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/installed", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Plugins.Installed(nil)
+		result, resp, err := client.Plugins.Installed(context.Background(), nil)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		require.NotNil(t, result)
@@ -158,7 +159,7 @@ func TestPluginsService_Installed(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
+		_, _, err := client.Plugins.Installed(context.Background(), &PluginsInstalledOptions{
 			Fields: []string{"category"},
 		})
 		require.NoError(t, err)
@@ -172,7 +173,7 @@ func TestPluginsService_Installed(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
+		_, _, err := client.Plugins.Installed(context.Background(), &PluginsInstalledOptions{
 			Type: "BUNDLED",
 		})
 		require.NoError(t, err)
@@ -181,7 +182,7 @@ func TestPluginsService_Installed(t *testing.T) {
 	t.Run("invalid field", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
+		_, _, err := client.Plugins.Installed(context.Background(), &PluginsInstalledOptions{
 			Fields: []string{"invalid"},
 		})
 		assert.Error(t, err)
@@ -190,7 +191,7 @@ func TestPluginsService_Installed(t *testing.T) {
 	t.Run("invalid type", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Plugins.Installed(&PluginsInstalledOptions{
+		_, _, err := client.Plugins.Installed(context.Background(), &PluginsInstalledOptions{
 			Type: "INVALID",
 		})
 		assert.Error(t, err)
@@ -212,7 +213,7 @@ func TestPluginsService_Pending(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/pending", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Plugins.Pending()
+	result, resp, err := client.Plugins.Pending(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -230,7 +231,7 @@ func TestPluginsService_Uninstall(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.Plugins.Uninstall(&PluginsUninstallOptions{
+		resp, err := client.Plugins.Uninstall(context.Background(), &PluginsUninstallOptions{
 			Key: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -240,14 +241,14 @@ func TestPluginsService_Uninstall(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Uninstall(nil)
+		_, err := client.Plugins.Uninstall(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing key", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Uninstall(&PluginsUninstallOptions{})
+		_, err := client.Plugins.Uninstall(context.Background(), &PluginsUninstallOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -262,7 +263,7 @@ func TestPluginsService_Update(t *testing.T) {
 		})
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.Plugins.Update(&PluginsUpdateOptions{
+		resp, err := client.Plugins.Update(context.Background(), &PluginsUpdateOptions{
 			Key: "sonar-java",
 		})
 		require.NoError(t, err)
@@ -272,14 +273,14 @@ func TestPluginsService_Update(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Update(nil)
+		_, err := client.Plugins.Update(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing key", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.Plugins.Update(&PluginsUpdateOptions{})
+		_, err := client.Plugins.Update(context.Background(), &PluginsUpdateOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -311,7 +312,7 @@ func TestPluginsService_Updates(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/updates", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Plugins.Updates()
+	result, resp, err := client.Plugins.Updates(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

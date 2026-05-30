@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 )
@@ -327,13 +328,13 @@ func isValidDateTime(dateTimeStr string) bool {
 //
 // API endpoint: POST /api/project_analyses/create_event.
 // Since: 6.3.
-func (s *ProjectAnalysesService) CreateEvent(opt *ProjectAnalysesCreateEventOptions) (*ProjectAnalysesEvent, *http.Response, error) {
+func (s *ProjectAnalysesService) CreateEvent(ctx context.Context, opt *ProjectAnalysesCreateEventOptions) (*ProjectAnalysesEvent, *http.Response, error) {
 	err := s.ValidateCreateEventOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/create_event", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_analyses/create_event", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -353,13 +354,13 @@ func (s *ProjectAnalysesService) CreateEvent(opt *ProjectAnalysesCreateEventOpti
 //
 // API endpoint: POST /api/project_analyses/delete.
 // Since: 6.3.
-func (s *ProjectAnalysesService) Delete(opt *ProjectAnalysesDeleteOptions) (*http.Response, error) {
+func (s *ProjectAnalysesService) Delete(ctx context.Context, opt *ProjectAnalysesDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_analyses/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -378,13 +379,13 @@ func (s *ProjectAnalysesService) Delete(opt *ProjectAnalysesDeleteOptions) (*htt
 //
 // API endpoint: POST /api/project_analyses/delete_event.
 // Since: 6.3.
-func (s *ProjectAnalysesService) DeleteEvent(opt *ProjectAnalysesDeleteEventOptions) (*http.Response, error) {
+func (s *ProjectAnalysesService) DeleteEvent(ctx context.Context, opt *ProjectAnalysesDeleteEventOptions) (*http.Response, error) {
 	err := s.ValidateDeleteEventOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/delete_event", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_analyses/delete_event", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -402,13 +403,13 @@ func (s *ProjectAnalysesService) DeleteEvent(opt *ProjectAnalysesDeleteEventOpti
 //
 // API endpoint: GET /api/project_analyses/search.
 // Since: 6.3.
-func (s *ProjectAnalysesService) Search(opt *ProjectAnalysesSearchOptions) (*ProjectAnalysesSearch, *http.Response, error) {
+func (s *ProjectAnalysesService) Search(ctx context.Context, opt *ProjectAnalysesSearchOptions) (*ProjectAnalysesSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_analyses/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_analyses/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -425,7 +426,7 @@ func (s *ProjectAnalysesService) Search(opt *ProjectAnalysesSearchOptions) (*Pro
 
 // SearchAll is a convenience method to iterate over all analyses.
 // It handles pagination automatically.
-func (s *ProjectAnalysesService) SearchAll(opt *ProjectAnalysesSearchOptions) ([]ProjectAnalysis, *http.Response, error) {
+func (s *ProjectAnalysesService) SearchAll(ctx context.Context, opt *ProjectAnalysesSearchOptions) ([]ProjectAnalysis, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -442,7 +443,7 @@ func (s *ProjectAnalysesService) SearchAll(opt *ProjectAnalysesSearchOptions) ([
 	}
 
 	for {
-		result, resp, err := s.Search(&searchOpt)
+		result, resp, err := s.Search(ctx, &searchOpt)
 		if err != nil {
 			return nil, resp, err
 		}
@@ -463,13 +464,13 @@ func (s *ProjectAnalysesService) SearchAll(opt *ProjectAnalysesSearchOptions) ([
 //
 // API endpoint: POST /api/project_analyses/update_event.
 // Since: 6.3.
-func (s *ProjectAnalysesService) UpdateEvent(opt *ProjectAnalysesUpdateEventOptions) (*ProjectAnalysesEvent, *http.Response, error) {
+func (s *ProjectAnalysesService) UpdateEvent(ctx context.Context, opt *ProjectAnalysesUpdateEventOptions) (*ProjectAnalysesEvent, *http.Response, error) {
 	err := s.ValidateUpdateEventOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_analyses/update_event", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_analyses/update_event", opt)
 	if err != nil {
 		return nil, nil, err
 	}

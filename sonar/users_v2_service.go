@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -302,13 +303,13 @@ func validateUsersV2ExternalFields(opt *UsersUpdateOptionsV2) error {
 
 // Search returns a list of users matching the search criteria.
 // By default, only active users are returned.
-func (s *UsersManagementService) Search(opt *UsersSearchOptionV2) (*UsersSearchV2, *http.Response, error) {
+func (s *UsersManagementService) Search(ctx context.Context, opt *UsersSearchOptionV2) (*UsersSearchV2, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "users-management/users", opt, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "users-management/users", opt, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -326,13 +327,13 @@ func (s *UsersManagementService) Search(opt *UsersSearchOptionV2) (*UsersSearchV
 // Create creates a new user. If a deactivated user account exists with the
 // given login, it will be reactivated.
 // Requires Administer System permission.
-func (s *UsersManagementService) Create(opt *UsersCreateOptionsV2) (*UserV2, *http.Response, error) {
+func (s *UsersManagementService) Create(ctx context.Context, opt *UsersCreateOptionsV2) (*UserV2, *http.Response, error) {
 	err := s.ValidateCreateRequest(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPost, "users-management/users", nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "users-management/users", nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -348,13 +349,13 @@ func (s *UsersManagementService) Create(opt *UsersCreateOptionsV2) (*UserV2, *ht
 }
 
 // Get retrieves a single user by ID.
-func (s *UsersManagementService) Get(userID string) (*UserV2, *http.Response, error) {
+func (s *UsersManagementService) Get(ctx context.Context, userID string) (*UserV2, *http.Response, error) {
 	err := ValidateRequired(userID, "Id")
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "users-management/users/"+userID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "users-management/users/"+userID, nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -371,13 +372,13 @@ func (s *UsersManagementService) Get(userID string) (*UserV2, *http.Response, er
 
 // Deactivate deactivates a user.
 // Requires Administer System permission.
-func (s *UsersManagementService) Deactivate(opt *UsersDeactivateOptionsV2) (*http.Response, error) {
+func (s *UsersManagementService) Deactivate(ctx context.Context, opt *UsersDeactivateOptionsV2) (*http.Response, error) {
 	err := s.ValidateDeactivateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodDelete, "users-management/users/"+opt.Id, opt, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "users-management/users/"+opt.Id, opt, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -391,13 +392,13 @@ func (s *UsersManagementService) Deactivate(opt *UsersDeactivateOptionsV2) (*htt
 }
 
 // Update updates a user's attributes.
-func (s *UsersManagementService) Update(userID string, opt *UsersUpdateOptionsV2) (*UserV2, *http.Response, error) {
+func (s *UsersManagementService) Update(ctx context.Context, userID string, opt *UsersUpdateOptionsV2) (*UserV2, *http.Response, error) {
 	err := s.ValidateUpdateRequest(userID, opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPatch, "users-management/users/"+userID, nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "users-management/users/"+userID, nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

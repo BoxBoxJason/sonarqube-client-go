@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -128,13 +129,13 @@ func (s *DopTranslationService) ValidateCreateBoundProjectRequest(opt *DopTransl
 // repository, or updates the binding if the project already exists.
 // This is an idempotent operation.
 // Requires the 'Create Projects' permission and a configured Personal Access Token.
-func (s *DopTranslationService) CreateOrUpdateBoundProject(opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
+func (s *DopTranslationService) CreateOrUpdateBoundProject(ctx context.Context, opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
 	err := s.ValidateCreateBoundProjectRequest(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPut, "dop-translation/bound-projects", nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPut, "dop-translation/bound-projects", nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -152,13 +153,13 @@ func (s *DopTranslationService) CreateOrUpdateBoundProject(opt *DopTranslationBo
 // CreateBoundProject creates a SonarQube project with the information from the
 // provided DevOps platform project.
 // Requires the 'Create Projects' permission and a configured Personal Access Token.
-func (s *DopTranslationService) CreateBoundProject(opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
+func (s *DopTranslationService) CreateBoundProject(ctx context.Context, opt *DopTranslationBoundProjectOptions) (*DopTranslationBoundProject, *http.Response, error) {
 	err := s.ValidateCreateBoundProjectRequest(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPost, "dop-translation/bound-projects", nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "dop-translation/bound-projects", nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -175,8 +176,8 @@ func (s *DopTranslationService) CreateBoundProject(opt *DopTranslationBoundProje
 
 // GetDopSettings lists all DevOps Platform Integration settings.
 // Requires the 'Create Projects' permission.
-func (s *DopTranslationService) GetDopSettings() (*DopTranslationDopSettings, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "dop-translation/dop-settings", nil, nil)
+func (s *DopTranslationService) GetDopSettings(ctx context.Context) (*DopTranslationDopSettings, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "dop-translation/dop-settings", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

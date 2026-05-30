@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -61,8 +62,8 @@ type SystemPasscodeOptionV2 struct {
 
 // GetMigrationsStatus returns the detailed status of ongoing database migrations.
 // If no migration is ongoing or needed, it still returns appropriate information.
-func (s *SystemServiceV2) GetMigrationsStatus() (*SystemDbMigrationsStatusV2, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "system/migrations-status", nil, nil)
+func (s *SystemServiceV2) GetMigrationsStatus(ctx context.Context) (*SystemDbMigrationsStatusV2, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "system/migrations-status", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -80,8 +81,8 @@ func (s *SystemServiceV2) GetMigrationsStatus() (*SystemDbMigrationsStatusV2, *h
 // CheckLiveness provides liveness of SonarQube, meant to be used as a liveness
 // probe on Kubernetes. Returns a 204 status when alive.
 // Requires 'Administer System' permission or authentication with passcode.
-func (s *SystemServiceV2) CheckLiveness(opt *SystemPasscodeOptionV2) (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "system/liveness", nil, nil)
+func (s *SystemServiceV2) CheckLiveness(ctx context.Context, opt *SystemPasscodeOptionV2) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "system/liveness", nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -100,8 +101,8 @@ func (s *SystemServiceV2) CheckLiveness(opt *SystemPasscodeOptionV2) (*http.Resp
 
 // GetHealth returns the health status of the SonarQube instance.
 // Requires 'Administer System' permission or authentication with passcode.
-func (s *SystemServiceV2) GetHealth(opt *SystemPasscodeOptionV2) (*SystemHealthV2, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "system/health", nil, nil)
+func (s *SystemServiceV2) GetHealth(ctx context.Context, opt *SystemPasscodeOptionV2) (*SystemHealthV2, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "system/health", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

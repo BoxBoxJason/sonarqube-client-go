@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -24,7 +25,7 @@ func TestHotspots_AddComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.AddComment(&HotspotsAddCommentOptions{
+	resp, err := client.Hotspots.AddComment(context.Background(), &HotspotsAddCommentOptions{
 		Hotspot: "hotspot123",
 		Comment: "This is a comment",
 	})
@@ -62,7 +63,7 @@ func TestHotspots_AddComment_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Hotspots.AddComment(tt.opt)
+			_, err := client.Hotspots.AddComment(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -84,7 +85,7 @@ func TestHotspots_Assign(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.Assign(&HotspotsAssignOptions{
+	resp, err := client.Hotspots.Assign(context.Background(), &HotspotsAssignOptions{
 		Hotspot:  "hotspot123",
 		Assignee: "john.doe",
 	})
@@ -111,7 +112,7 @@ func TestHotspots_Assign_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Hotspots.Assign(tt.opt)
+			_, err := client.Hotspots.Assign(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -134,7 +135,7 @@ func TestHotspots_ChangeStatus(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.ChangeStatus(&HotspotsChangeStatusOptions{
+	resp, err := client.Hotspots.ChangeStatus(context.Background(), &HotspotsChangeStatusOptions{
 		Hotspot:    "hotspot123",
 		Status:     HotspotStatusReviewed,
 		Resolution: HotspotResolutionSafe,
@@ -174,7 +175,7 @@ func TestHotspots_ChangeStatus_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Hotspots.ChangeStatus(tt.opt)
+			_, err := client.Hotspots.ChangeStatus(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -195,7 +196,7 @@ func TestHotspots_DeleteComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Hotspots.DeleteComment(&HotspotsDeleteCommentOptions{
+	resp, err := client.Hotspots.DeleteComment(context.Background(), &HotspotsDeleteCommentOptions{
 		Comment: "comment123",
 	})
 	require.NoError(t, err)
@@ -221,7 +222,7 @@ func TestHotspots_DeleteComment_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Hotspots.DeleteComment(tt.opt)
+			_, err := client.Hotspots.DeleteComment(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -243,7 +244,7 @@ func TestHotspots_EditComment(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.EditComment(&HotspotsEditCommentOptions{
+	result, resp, err := client.Hotspots.EditComment(context.Background(), &HotspotsEditCommentOptions{
 		Comment: "comment123",
 		Text:    "Updated comment",
 	})
@@ -284,7 +285,7 @@ func TestHotspots_EditComment_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Hotspots.EditComment(tt.opt)
+			_, _, err := client.Hotspots.EditComment(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -320,7 +321,7 @@ func TestHotspots_List(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.List(&HotspotsListOptions{
+	result, resp, err := client.Hotspots.List(context.Background(), &HotspotsListOptions{
 		Project: "my-project",
 	})
 	require.NoError(t, err)
@@ -361,7 +362,7 @@ func TestHotspots_List_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Hotspots.List(tt.opt)
+			_, _, err := client.Hotspots.List(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -385,7 +386,7 @@ func TestHotspots_Pull(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.Pull(&HotspotsPullOptions{
+	result, resp, err := client.Hotspots.Pull(context.Background(), &HotspotsPullOptions{
 		ProjectKey: "my-project",
 		BranchName: "main",
 	})
@@ -417,7 +418,7 @@ func TestHotspots_Pull_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Hotspots.Pull(tt.opt)
+			_, _, err := client.Hotspots.Pull(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -453,7 +454,7 @@ func TestHotspots_Search_WithProject(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.Search(&HotspotsSearchOptions{
+	result, resp, err := client.Hotspots.Search(context.Background(), &HotspotsSearchOptions{
 		Project: "my-project",
 	})
 	require.NoError(t, err)
@@ -475,7 +476,7 @@ func TestHotspots_Search_WithHotspots(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	_, resp, err := client.Hotspots.Search(&HotspotsSearchOptions{
+	_, resp, err := client.Hotspots.Search(context.Background(), &HotspotsSearchOptions{
 		Hotspots: []string{"hotspot1", "hotspot2"},
 	})
 	require.NoError(t, err)
@@ -498,7 +499,7 @@ func TestHotspots_Search_WithFilters(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	_, resp, err := client.Hotspots.Search(&HotspotsSearchOptions{
+	_, resp, err := client.Hotspots.Search(context.Background(), &HotspotsSearchOptions{
 		Project:         "my-project",
 		Status:          HotspotStatusReviewed,
 		Resolution:      HotspotResolutionSafe,
@@ -548,7 +549,7 @@ func TestHotspots_Search_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Hotspots.Search(tt.opt)
+			_, _, err := client.Hotspots.Search(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -607,7 +608,7 @@ func TestHotspots_Show(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Hotspots.Show(&HotspotsShowOptions{
+	result, resp, err := client.Hotspots.Show(context.Background(), &HotspotsShowOptions{
 		Hotspot: "hotspot123",
 	})
 	require.NoError(t, err)
@@ -643,7 +644,7 @@ func TestHotspots_Show_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Hotspots.Show(tt.opt)
+			_, _, err := client.Hotspots.Show(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}

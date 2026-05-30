@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -16,7 +17,7 @@ func TestViewsService_AddApplication(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/add_application", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.AddApplication(&ViewsAddApplicationOptions{
+	resp, err := client.Views.AddApplication(context.Background(), &ViewsAddApplicationOptions{
 		Portfolio:   "my-portfolio",
 		Application: "my-application",
 	})
@@ -27,15 +28,15 @@ func TestViewsService_AddApplication(t *testing.T) {
 func TestViewsService_AddApplication_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.AddApplication(nil)
+	resp, err := client.Views.AddApplication(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddApplication(&ViewsAddApplicationOptions{Application: "my-app"})
+	resp, err = client.Views.AddApplication(context.Background(), &ViewsAddApplicationOptions{Application: "my-app"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddApplication(&ViewsAddApplicationOptions{Portfolio: "my-portfolio"})
+	resp, err = client.Views.AddApplication(context.Background(), &ViewsAddApplicationOptions{Portfolio: "my-portfolio"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -44,7 +45,7 @@ func TestViewsService_RemoveApplication(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/remove_application", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.RemoveApplication(&ViewsRemoveApplicationOptions{
+	resp, err := client.Views.RemoveApplication(context.Background(), &ViewsRemoveApplicationOptions{
 		Portfolio:   "my-portfolio",
 		Application: "my-application",
 	})
@@ -55,15 +56,15 @@ func TestViewsService_RemoveApplication(t *testing.T) {
 func TestViewsService_RemoveApplication_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.RemoveApplication(nil)
+	resp, err := client.Views.RemoveApplication(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.RemoveApplication(&ViewsRemoveApplicationOptions{Application: "my-app"})
+	resp, err = client.Views.RemoveApplication(context.Background(), &ViewsRemoveApplicationOptions{Application: "my-app"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.RemoveApplication(&ViewsRemoveApplicationOptions{Portfolio: "my-portfolio"})
+	resp, err = client.Views.RemoveApplication(context.Background(), &ViewsRemoveApplicationOptions{Portfolio: "my-portfolio"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -76,7 +77,7 @@ func TestViewsService_AddApplicationBranch(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/add_application_branch", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.AddApplicationBranch(&ViewsAddApplicationBranchOptions{
+	resp, err := client.Views.AddApplicationBranch(context.Background(), &ViewsAddApplicationBranchOptions{
 		Application: "my-app",
 		Branch:      "main",
 		Key:         "my-portfolio",
@@ -88,19 +89,19 @@ func TestViewsService_AddApplicationBranch(t *testing.T) {
 func TestViewsService_AddApplicationBranch_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.AddApplicationBranch(nil)
+	resp, err := client.Views.AddApplicationBranch(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddApplicationBranch(&ViewsAddApplicationBranchOptions{Branch: "main", Key: "pf"})
+	resp, err = client.Views.AddApplicationBranch(context.Background(), &ViewsAddApplicationBranchOptions{Branch: "main", Key: "pf"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddApplicationBranch(&ViewsAddApplicationBranchOptions{Application: "app", Key: "pf"})
+	resp, err = client.Views.AddApplicationBranch(context.Background(), &ViewsAddApplicationBranchOptions{Application: "app", Key: "pf"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddApplicationBranch(&ViewsAddApplicationBranchOptions{Application: "app", Branch: "main"})
+	resp, err = client.Views.AddApplicationBranch(context.Background(), &ViewsAddApplicationBranchOptions{Application: "app", Branch: "main"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -109,7 +110,7 @@ func TestViewsService_RemoveApplicationBranch(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/remove_application_branch", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.RemoveApplicationBranch(&ViewsRemoveApplicationBranchOptions{
+	resp, err := client.Views.RemoveApplicationBranch(context.Background(), &ViewsRemoveApplicationBranchOptions{
 		Application: "my-app",
 		Branch:      "main",
 		Key:         "my-portfolio",
@@ -121,7 +122,7 @@ func TestViewsService_RemoveApplicationBranch(t *testing.T) {
 func TestViewsService_RemoveApplicationBranch_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.RemoveApplicationBranch(nil)
+	resp, err := client.Views.RemoveApplicationBranch(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -134,7 +135,7 @@ func TestViewsService_AddPortfolio(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/add_portfolio", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.AddPortfolio(&ViewsAddPortfolioOptions{
+	resp, err := client.Views.AddPortfolio(context.Background(), &ViewsAddPortfolioOptions{
 		Portfolio: "parent-portfolio",
 		Reference: "ref-portfolio",
 	})
@@ -145,15 +146,15 @@ func TestViewsService_AddPortfolio(t *testing.T) {
 func TestViewsService_AddPortfolio_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.AddPortfolio(nil)
+	resp, err := client.Views.AddPortfolio(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddPortfolio(&ViewsAddPortfolioOptions{Reference: "ref"})
+	resp, err = client.Views.AddPortfolio(context.Background(), &ViewsAddPortfolioOptions{Reference: "ref"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddPortfolio(&ViewsAddPortfolioOptions{Portfolio: "parent"})
+	resp, err = client.Views.AddPortfolio(context.Background(), &ViewsAddPortfolioOptions{Portfolio: "parent"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -162,7 +163,7 @@ func TestViewsService_RemovePortfolio(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/remove_portfolio", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.RemovePortfolio(&ViewsRemovePortfolioOptions{
+	resp, err := client.Views.RemovePortfolio(context.Background(), &ViewsRemovePortfolioOptions{
 		Portfolio: "parent-portfolio",
 		Reference: "sub-portfolio",
 	})
@@ -173,15 +174,15 @@ func TestViewsService_RemovePortfolio(t *testing.T) {
 func TestViewsService_RemovePortfolio_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.RemovePortfolio(nil)
+	resp, err := client.Views.RemovePortfolio(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.RemovePortfolio(&ViewsRemovePortfolioOptions{Reference: "sub"})
+	resp, err = client.Views.RemovePortfolio(context.Background(), &ViewsRemovePortfolioOptions{Reference: "sub"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.RemovePortfolio(&ViewsRemovePortfolioOptions{Portfolio: "parent"})
+	resp, err = client.Views.RemovePortfolio(context.Background(), &ViewsRemovePortfolioOptions{Portfolio: "parent"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -194,7 +195,7 @@ func TestViewsService_AddProject(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/add_project", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.AddProject(&ViewsAddProjectOptions{
+	resp, err := client.Views.AddProject(context.Background(), &ViewsAddProjectOptions{
 		Key:     "my-portfolio",
 		Project: "my-project",
 	})
@@ -205,15 +206,15 @@ func TestViewsService_AddProject(t *testing.T) {
 func TestViewsService_AddProject_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.AddProject(nil)
+	resp, err := client.Views.AddProject(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddProject(&ViewsAddProjectOptions{Project: "my-project"})
+	resp, err = client.Views.AddProject(context.Background(), &ViewsAddProjectOptions{Project: "my-project"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddProject(&ViewsAddProjectOptions{Key: "my-portfolio"})
+	resp, err = client.Views.AddProject(context.Background(), &ViewsAddProjectOptions{Key: "my-portfolio"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -222,7 +223,7 @@ func TestViewsService_RemoveProject(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/remove_project", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.RemoveProject(&ViewsRemoveProjectOptions{
+	resp, err := client.Views.RemoveProject(context.Background(), &ViewsRemoveProjectOptions{
 		Key:     "my-portfolio",
 		Project: "my-project",
 	})
@@ -233,15 +234,15 @@ func TestViewsService_RemoveProject(t *testing.T) {
 func TestViewsService_RemoveProject_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.RemoveProject(nil)
+	resp, err := client.Views.RemoveProject(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.RemoveProject(&ViewsRemoveProjectOptions{Project: "my-project"})
+	resp, err = client.Views.RemoveProject(context.Background(), &ViewsRemoveProjectOptions{Project: "my-project"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.RemoveProject(&ViewsRemoveProjectOptions{Key: "my-portfolio"})
+	resp, err = client.Views.RemoveProject(context.Background(), &ViewsRemoveProjectOptions{Key: "my-portfolio"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -254,7 +255,7 @@ func TestViewsService_AddProjectBranch(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/add_project_branch", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.AddProjectBranch(&ViewsAddProjectBranchOptions{
+	resp, err := client.Views.AddProjectBranch(context.Background(), &ViewsAddProjectBranchOptions{
 		Branch:  "main",
 		Key:     "my-portfolio",
 		Project: "my-project",
@@ -266,11 +267,11 @@ func TestViewsService_AddProjectBranch(t *testing.T) {
 func TestViewsService_AddProjectBranch_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.AddProjectBranch(nil)
+	resp, err := client.Views.AddProjectBranch(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.AddProjectBranch(&ViewsAddProjectBranchOptions{Key: "pf", Project: "proj"})
+	resp, err = client.Views.AddProjectBranch(context.Background(), &ViewsAddProjectBranchOptions{Key: "pf", Project: "proj"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -279,7 +280,7 @@ func TestViewsService_RemoveProjectBranch(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/remove_project_branch", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.RemoveProjectBranch(&ViewsRemoveProjectBranchOptions{
+	resp, err := client.Views.RemoveProjectBranch(context.Background(), &ViewsRemoveProjectBranchOptions{
 		Branch:  "main",
 		Key:     "my-portfolio",
 		Project: "my-project",
@@ -291,7 +292,7 @@ func TestViewsService_RemoveProjectBranch(t *testing.T) {
 func TestViewsService_RemoveProjectBranch_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.RemoveProjectBranch(nil)
+	resp, err := client.Views.RemoveProjectBranch(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -309,7 +310,7 @@ func TestViewsService_Applications(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/applications", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.Applications(&ViewsApplicationsOptions{
+	result, resp, err := client.Views.Applications(context.Background(), &ViewsApplicationsOptions{
 		Portfolio: "my-portfolio",
 	})
 	require.NoError(t, err)
@@ -322,10 +323,10 @@ func TestViewsService_Applications(t *testing.T) {
 func TestViewsService_Applications_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Views.Applications(nil)
+	_, _, err := client.Views.Applications(context.Background(), nil)
 	assert.Error(t, err)
 
-	_, _, err = client.Views.Applications(&ViewsApplicationsOptions{})
+	_, _, err = client.Views.Applications(context.Background(), &ViewsApplicationsOptions{})
 	assert.Error(t, err)
 }
 
@@ -338,7 +339,7 @@ func TestViewsService_SubPortfolios(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/portfolios", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.SubPortfolios(&ViewsSubViewsOptions{
+	result, resp, err := client.Views.SubPortfolios(context.Background(), &ViewsSubViewsOptions{
 		Portfolio: "my-portfolio",
 	})
 	require.NoError(t, err)
@@ -350,10 +351,10 @@ func TestViewsService_SubPortfolios(t *testing.T) {
 func TestViewsService_SubPortfolios_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Views.SubPortfolios(nil)
+	_, _, err := client.Views.SubPortfolios(context.Background(), nil)
 	assert.Error(t, err)
 
-	_, _, err = client.Views.SubPortfolios(&ViewsSubViewsOptions{})
+	_, _, err = client.Views.SubPortfolios(context.Background(), &ViewsSubViewsOptions{})
 	assert.Error(t, err)
 }
 
@@ -365,7 +366,7 @@ func TestViewsService_Create(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/create", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Create(&ViewsCreateOptions{
+	resp, err := client.Views.Create(context.Background(), &ViewsCreateOptions{
 		Name: "My Portfolio",
 		Key:  "my-portfolio",
 	})
@@ -377,7 +378,7 @@ func TestViewsService_Create_WithParent(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/create", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Create(&ViewsCreateOptions{
+	resp, err := client.Views.Create(context.Background(), &ViewsCreateOptions{
 		Name:   "Sub Portfolio",
 		Parent: "parent-portfolio",
 	})
@@ -389,7 +390,7 @@ func TestViewsService_Create_WithVisibility(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/create", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Create(&ViewsCreateOptions{
+	resp, err := client.Views.Create(context.Background(), &ViewsCreateOptions{
 		Name:        "My Portfolio",
 		Description: "A test portfolio",
 		Visibility:  "private",
@@ -401,15 +402,15 @@ func TestViewsService_Create_WithVisibility(t *testing.T) {
 func TestViewsService_Create_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.Create(nil)
+	resp, err := client.Views.Create(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.Create(&ViewsCreateOptions{})
+	resp, err = client.Views.Create(context.Background(), &ViewsCreateOptions{})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.Create(&ViewsCreateOptions{Name: "My Portfolio", Visibility: "invalid"})
+	resp, err = client.Views.Create(context.Background(), &ViewsCreateOptions{Name: "My Portfolio", Visibility: "invalid"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -422,7 +423,7 @@ func TestViewsService_Delete(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/delete", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Delete(&ViewsDeleteOptions{
+	resp, err := client.Views.Delete(context.Background(), &ViewsDeleteOptions{
 		Key: "my-portfolio",
 	})
 	require.NoError(t, err)
@@ -432,11 +433,11 @@ func TestViewsService_Delete(t *testing.T) {
 func TestViewsService_Delete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.Delete(nil)
+	resp, err := client.Views.Delete(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.Delete(&ViewsDeleteOptions{})
+	resp, err = client.Views.Delete(context.Background(), &ViewsDeleteOptions{})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -455,7 +456,7 @@ func TestViewsService_List(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/list", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.List()
+	result, resp, err := client.Views.List(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -469,7 +470,7 @@ func TestViewsService_List_Empty(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/list", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.List()
+	result, resp, err := client.Views.List(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -484,7 +485,7 @@ func TestViewsService_Move(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/move", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Move(&ViewsMoveOptions{
+	resp, err := client.Views.Move(context.Background(), &ViewsMoveOptions{
 		Key:         "my-portfolio",
 		Destination: "destination-portfolio",
 	})
@@ -495,15 +496,15 @@ func TestViewsService_Move(t *testing.T) {
 func TestViewsService_Move_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.Move(nil)
+	resp, err := client.Views.Move(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.Move(&ViewsMoveOptions{Destination: "dest"})
+	resp, err = client.Views.Move(context.Background(), &ViewsMoveOptions{Destination: "dest"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.Move(&ViewsMoveOptions{Key: "my-portfolio"})
+	resp, err = client.Views.Move(context.Background(), &ViewsMoveOptions{Key: "my-portfolio"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -522,7 +523,7 @@ func TestViewsService_MoveOptions(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/move_options", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.MoveOptions(&ViewsMoveOptionsOptions{
+	result, resp, err := client.Views.MoveOptions(context.Background(), &ViewsMoveOptionsOptions{
 		Key: "my-portfolio",
 	})
 	require.NoError(t, err)
@@ -535,10 +536,10 @@ func TestViewsService_MoveOptions(t *testing.T) {
 func TestViewsService_MoveOptions_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Views.MoveOptions(nil)
+	_, _, err := client.Views.MoveOptions(context.Background(), nil)
 	assert.Error(t, err)
 
-	_, _, err = client.Views.MoveOptions(&ViewsMoveOptionsOptions{})
+	_, _, err = client.Views.MoveOptions(context.Background(), &ViewsMoveOptionsOptions{})
 	assert.Error(t, err)
 }
 
@@ -557,7 +558,7 @@ func TestViewsService_Projects(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/projects", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.Projects(&ViewsProjectsOptions{
+	result, resp, err := client.Views.Projects(context.Background(), &ViewsProjectsOptions{
 		Key:      "my-portfolio",
 		Selected: "all",
 	})
@@ -571,13 +572,13 @@ func TestViewsService_Projects(t *testing.T) {
 func TestViewsService_Projects_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Views.Projects(nil)
+	_, _, err := client.Views.Projects(context.Background(), nil)
 	assert.Error(t, err)
 
-	_, _, err = client.Views.Projects(&ViewsProjectsOptions{})
+	_, _, err = client.Views.Projects(context.Background(), &ViewsProjectsOptions{})
 	assert.Error(t, err)
 
-	_, _, err = client.Views.Projects(&ViewsProjectsOptions{Key: "pf", Selected: "invalid"})
+	_, _, err = client.Views.Projects(context.Background(), &ViewsProjectsOptions{Key: "pf", Selected: "invalid"})
 	assert.Error(t, err)
 }
 
@@ -591,7 +592,7 @@ func TestViewsService_ProjectsStatus(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/projects_status", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.ProjectsStatus(&ViewsProjectsStatusOptions{
+	result, resp, err := client.Views.ProjectsStatus(context.Background(), &ViewsProjectsStatusOptions{
 		Portfolio: "my-portfolio",
 	})
 	require.NoError(t, err)
@@ -604,10 +605,10 @@ func TestViewsService_ProjectsStatus(t *testing.T) {
 func TestViewsService_ProjectsStatus_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Views.ProjectsStatus(nil)
+	_, _, err := client.Views.ProjectsStatus(context.Background(), nil)
 	assert.Error(t, err)
 
-	_, _, err = client.Views.ProjectsStatus(&ViewsProjectsStatusOptions{})
+	_, _, err = client.Views.ProjectsStatus(context.Background(), &ViewsProjectsStatusOptions{})
 	assert.Error(t, err)
 }
 
@@ -619,7 +620,7 @@ func TestViewsService_Refresh(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/refresh", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Refresh(nil)
+	resp, err := client.Views.Refresh(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -628,7 +629,7 @@ func TestViewsService_Refresh_WithKey(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/refresh", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Refresh(&ViewsRefreshOptions{Key: "my-portfolio"})
+	resp, err := client.Views.Refresh(context.Background(), &ViewsRefreshOptions{Key: "my-portfolio"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -647,7 +648,7 @@ func TestViewsService_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.Search(&ViewsSearchOptions{Q: "Portfolio"})
+	result, resp, err := client.Views.Search(context.Background(), &ViewsSearchOptions{Q: "Portfolio"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -660,7 +661,7 @@ func TestViewsService_Search_Nil(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.Search(nil)
+	result, resp, err := client.Views.Search(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -669,7 +670,7 @@ func TestViewsService_Search_Nil(t *testing.T) {
 func TestViewsService_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Views.Search(&ViewsSearchOptions{PaginationArgs: PaginationArgs{Page: -1}})
+	_, _, err := client.Views.Search(context.Background(), &ViewsSearchOptions{PaginationArgs: PaginationArgs{Page: -1}})
 	assert.Error(t, err)
 }
 
@@ -681,7 +682,7 @@ func TestViewsService_SetManualMode(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/set_manual_mode", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.SetManualMode(&ViewsSetManualModeOptions{Portfolio: "my-portfolio"})
+	resp, err := client.Views.SetManualMode(context.Background(), &ViewsSetManualModeOptions{Portfolio: "my-portfolio"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -689,11 +690,11 @@ func TestViewsService_SetManualMode(t *testing.T) {
 func TestViewsService_SetManualMode_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.SetManualMode(nil)
+	resp, err := client.Views.SetManualMode(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.SetManualMode(&ViewsSetManualModeOptions{})
+	resp, err = client.Views.SetManualMode(context.Background(), &ViewsSetManualModeOptions{})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -702,7 +703,7 @@ func TestViewsService_SetNoneMode(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/set_none_mode", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.SetNoneMode(&ViewsSetNoneModeOptions{Portfolio: "my-portfolio"})
+	resp, err := client.Views.SetNoneMode(context.Background(), &ViewsSetNoneModeOptions{Portfolio: "my-portfolio"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -710,7 +711,7 @@ func TestViewsService_SetNoneMode(t *testing.T) {
 func TestViewsService_SetNoneMode_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.SetNoneMode(nil)
+	resp, err := client.Views.SetNoneMode(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -719,7 +720,7 @@ func TestViewsService_SetRegexpMode(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/set_regexp_mode", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.SetRegexpMode(&ViewsSetRegexpModeOptions{
+	resp, err := client.Views.SetRegexpMode(context.Background(), &ViewsSetRegexpModeOptions{
 		Portfolio: "my-portfolio",
 		Regexp:    ".*my-project.*",
 	})
@@ -730,15 +731,15 @@ func TestViewsService_SetRegexpMode(t *testing.T) {
 func TestViewsService_SetRegexpMode_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.SetRegexpMode(nil)
+	resp, err := client.Views.SetRegexpMode(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.SetRegexpMode(&ViewsSetRegexpModeOptions{Portfolio: "pf"})
+	resp, err = client.Views.SetRegexpMode(context.Background(), &ViewsSetRegexpModeOptions{Portfolio: "pf"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.SetRegexpMode(&ViewsSetRegexpModeOptions{Regexp: ".*"})
+	resp, err = client.Views.SetRegexpMode(context.Background(), &ViewsSetRegexpModeOptions{Regexp: ".*"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -747,7 +748,7 @@ func TestViewsService_SetRemainingProjectsMode(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/set_remaining_projects_mode", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.SetRemainingProjectsMode(&ViewsSetRemainingProjectsModeOptions{
+	resp, err := client.Views.SetRemainingProjectsMode(context.Background(), &ViewsSetRemainingProjectsModeOptions{
 		Portfolio: "my-portfolio",
 	})
 	require.NoError(t, err)
@@ -757,7 +758,7 @@ func TestViewsService_SetRemainingProjectsMode(t *testing.T) {
 func TestViewsService_SetRemainingProjectsMode_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.SetRemainingProjectsMode(nil)
+	resp, err := client.Views.SetRemainingProjectsMode(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -766,7 +767,7 @@ func TestViewsService_SetTagsMode(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/set_tags_mode", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.SetTagsMode(&ViewsSetTagsModeOptions{
+	resp, err := client.Views.SetTagsMode(context.Background(), &ViewsSetTagsModeOptions{
 		Portfolio: "my-portfolio",
 		Tags:      "java,security",
 	})
@@ -777,11 +778,11 @@ func TestViewsService_SetTagsMode(t *testing.T) {
 func TestViewsService_SetTagsMode_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.SetTagsMode(nil)
+	resp, err := client.Views.SetTagsMode(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.SetTagsMode(&ViewsSetTagsModeOptions{Portfolio: "pf"})
+	resp, err = client.Views.SetTagsMode(context.Background(), &ViewsSetTagsModeOptions{Portfolio: "pf"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -805,7 +806,7 @@ func TestViewsService_Show(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/show", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.Show(&ViewsShowOptions{Key: "pf-1"})
+	result, resp, err := client.Views.Show(context.Background(), &ViewsShowOptions{Key: "pf-1"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -817,10 +818,10 @@ func TestViewsService_Show(t *testing.T) {
 func TestViewsService_Show_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Views.Show(nil)
+	_, _, err := client.Views.Show(context.Background(), nil)
 	assert.Error(t, err)
 
-	_, _, err = client.Views.Show(&ViewsShowOptions{})
+	_, _, err = client.Views.Show(context.Background(), &ViewsShowOptions{})
 	assert.Error(t, err)
 }
 
@@ -832,7 +833,7 @@ func TestViewsService_Update(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/views/update", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Views.Update(&ViewsUpdateOptions{
+	resp, err := client.Views.Update(context.Background(), &ViewsUpdateOptions{
 		Key:  "my-portfolio",
 		Name: "My Renamed Portfolio",
 	})
@@ -843,15 +844,15 @@ func TestViewsService_Update(t *testing.T) {
 func TestViewsService_Update_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Views.Update(nil)
+	resp, err := client.Views.Update(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.Update(&ViewsUpdateOptions{Name: "New Name"})
+	resp, err = client.Views.Update(context.Background(), &ViewsUpdateOptions{Name: "New Name"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Views.Update(&ViewsUpdateOptions{Key: "my-portfolio"})
+	resp, err = client.Views.Update(context.Background(), &ViewsUpdateOptions{Key: "my-portfolio"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }

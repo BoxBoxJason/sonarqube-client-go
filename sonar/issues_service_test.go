@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -33,7 +34,7 @@ func TestIssues_AddComment(t *testing.T) {
 		Issue: "AU-Tpxb--iU5OvuD2FLy",
 		Text:  "This is a comment",
 	}
-	result, resp, err := client.Issues.AddComment(opt)
+	result, resp, err := client.Issues.AddComment(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "AU-Tpxb--iU5OvuD2FLy", result.Issue.Key)
@@ -62,7 +63,7 @@ func TestIssues_AddComment_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Issues.AddComment(tt.opt)
+			_, _, err := client.Issues.AddComment(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -93,7 +94,7 @@ func TestIssues_Assign(t *testing.T) {
 		Issue:    "test-key",
 		Assignee: "admin",
 	}
-	result, resp, err := client.Issues.Assign(opt)
+	result, resp, err := client.Issues.Assign(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "admin", result.Issue.Assignee)
@@ -119,7 +120,7 @@ func TestIssues_Authors(t *testing.T) {
 		Project:  "my-project",
 		PageSize: 50,
 	}
-	result, resp, err := client.Issues.Authors(opt)
+	result, resp, err := client.Issues.Authors(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Authors, 2)
@@ -128,7 +129,7 @@ func TestIssues_Authors(t *testing.T) {
 func TestIssues_Authors_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Issues.Authors(&IssuesAuthorsOptions{PageSize: 150})
+	_, _, err := client.Issues.Authors(context.Background(), &IssuesAuthorsOptions{PageSize: 150})
 	assert.Error(t, err)
 }
 
@@ -153,7 +154,7 @@ func TestIssues_BulkChange(t *testing.T) {
 		SetSeverity: RuleSeverityMajor,
 		AddTags:     []string{"tag1", "tag2"},
 	}
-	result, resp, err := client.Issues.BulkChange(opt)
+	result, resp, err := client.Issues.BulkChange(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, int64(8), result.Success)
@@ -199,7 +200,7 @@ func TestIssues_BulkChange_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Issues.BulkChange(tt.opt)
+			_, _, err := client.Issues.BulkChange(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -233,7 +234,7 @@ func TestIssues_Changelog(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &IssuesChangelogOptions{Issue: "test-key"}
-	result, resp, err := client.Issues.Changelog(opt)
+	result, resp, err := client.Issues.Changelog(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Changelog, 1)
@@ -256,7 +257,7 @@ func TestIssues_ComponentTags(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &IssuesComponentTagsOptions{ComponentUuid: "uuid-123"}
-	result, resp, err := client.Issues.ComponentTags(opt)
+	result, resp, err := client.Issues.ComponentTags(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Tags, 1)
@@ -279,7 +280,7 @@ func TestIssues_DeleteComment(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &IssuesDeleteCommentOptions{Comment: "comment-key"}
-	result, resp, err := client.Issues.DeleteComment(opt)
+	result, resp, err := client.Issues.DeleteComment(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "test-key", result.Issue.Key)
@@ -305,7 +306,7 @@ func TestIssues_DoTransition(t *testing.T) {
 		Issue:      "test-key",
 		Transition: IssueTransitionConfirm,
 	}
-	result, resp, err := client.Issues.DoTransition(opt)
+	result, resp, err := client.Issues.DoTransition(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "test-key", result.Issue.Key)
@@ -314,7 +315,7 @@ func TestIssues_DoTransition(t *testing.T) {
 func TestIssues_DoTransition_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Issues.DoTransition(&IssuesDoTransitionOptions{
+	_, _, err := client.Issues.DoTransition(context.Background(), &IssuesDoTransitionOptions{
 		Issue:      "test-key",
 		Transition: "invalid",
 	})
@@ -341,7 +342,7 @@ func TestIssues_EditComment(t *testing.T) {
 		Comment: "comment-key",
 		Text:    "Updated comment",
 	}
-	result, resp, err := client.Issues.EditComment(opt)
+	result, resp, err := client.Issues.EditComment(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "test-key", result.Issue.Key)
@@ -370,7 +371,7 @@ func TestIssues_List(t *testing.T) {
 	opt := &IssuesListOptions{
 		Project: "my-project",
 	}
-	result, resp, err := client.Issues.List(opt)
+	result, resp, err := client.Issues.List(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Issues, 1)
@@ -402,7 +403,7 @@ func TestIssues_List_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Issues.List(tt.opt)
+			_, _, err := client.Issues.List(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -437,7 +438,7 @@ func TestIssues_Search(t *testing.T) {
 		Types:            []string{RuleTypeBug},
 		ImpactSeverities: []string{RuleImpactSeverityHigh},
 	}
-	result, resp, err := client.Issues.Search(opt)
+	result, resp, err := client.Issues.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Issues, 1)
@@ -484,7 +485,7 @@ func TestIssues_Search_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Issues.Search(tt.opt)
+			_, _, err := client.Issues.Search(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -510,7 +511,7 @@ func TestIssues_SetSeverity(t *testing.T) {
 		Issue:    "test-key",
 		Severity: RuleSeverityBlocker,
 	}
-	result, resp, err := client.Issues.SetSeverity(opt)
+	result, resp, err := client.Issues.SetSeverity(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, RuleSeverityBlocker, result.Issue.Severity)
@@ -519,7 +520,7 @@ func TestIssues_SetSeverity(t *testing.T) {
 func TestIssues_SetSeverity_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.Issues.SetSeverity(&IssuesSetSeverityOptions{
+	_, _, err := client.Issues.SetSeverity(context.Background(), &IssuesSetSeverityOptions{
 		Issue:    "test-key",
 		Severity: "INVALID",
 	})
@@ -546,7 +547,7 @@ func TestIssues_SetTags(t *testing.T) {
 		Issue: "test-key",
 		Tags:  []string{"security", "cwe"},
 	}
-	result, resp, err := client.Issues.SetTags(opt)
+	result, resp, err := client.Issues.SetTags(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Issue.Tags, 2)
@@ -572,7 +573,7 @@ func TestIssues_SetType(t *testing.T) {
 		Issue: "test-key",
 		Type:  RuleTypeBug,
 	}
-	result, resp, err := client.Issues.SetType(opt)
+	result, resp, err := client.Issues.SetType(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, RuleTypeBug, result.Issue.Type)
@@ -604,7 +605,7 @@ func TestIssues_SetType_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Issues.SetType(tt.opt)
+			_, _, err := client.Issues.SetType(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -630,7 +631,7 @@ func TestIssues_Tags(t *testing.T) {
 		Project:  "my-project",
 		PageSize: 100,
 	}
-	result, resp, err := client.Issues.Tags(opt)
+	result, resp, err := client.Issues.Tags(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Tags, 3)
@@ -656,7 +657,7 @@ func TestIssues_Pull(t *testing.T) {
 		ProjectKey: "my-project",
 		BranchName: "main",
 	}
-	result, resp, err := client.Issues.Pull(opt)
+	result, resp, err := client.Issues.Pull(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.NotNil(t, result)
@@ -688,7 +689,7 @@ func TestIssues_Pull_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Issues.Pull(tt.opt)
+			_, _, err := client.Issues.Pull(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -714,7 +715,7 @@ func TestIssues_PullTaint(t *testing.T) {
 		ProjectKey: "my-project",
 		BranchName: "main",
 	}
-	result, resp, err := client.Issues.PullTaint(opt)
+	result, resp, err := client.Issues.PullTaint(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.NotNil(t, result)
@@ -735,7 +736,7 @@ func TestIssues_Reindex(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &IssuesReindexOptions{Project: "my-project"}
-	resp, err := client.Issues.Reindex(opt)
+	resp, err := client.Issues.Reindex(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -755,7 +756,7 @@ func TestIssues_AnticipatedTransitions(t *testing.T) {
 	client := newTestClient(t, server.URL)
 
 	opt := &IssuesAnticipatedTransitionsOptions{ProjectKey: "my-project"}
-	resp, err := client.Issues.AnticipatedTransitions(opt)
+	resp, err := client.Issues.AnticipatedTransitions(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 }
@@ -779,7 +780,7 @@ func TestIssues_AnticipatedTransitions_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Issues.AnticipatedTransitions(tt.opt)
+			_, err := client.Issues.AnticipatedTransitions(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}

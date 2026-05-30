@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -18,7 +19,7 @@ func TestUserGroups_AddUser(t *testing.T) {
 		Login: "g.hopper",
 	}
 
-	resp, err := client.UserGroups.AddUser(opt)
+	resp, err := client.UserGroups.AddUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -27,11 +28,11 @@ func TestUserGroups_AddUser_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.UserGroups.AddUser(nil)
+	_, err := client.UserGroups.AddUser(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.UserGroups.AddUser(&UserGroupsAddUserOptions{
+	_, err = client.UserGroups.AddUser(context.Background(), &UserGroupsAddUserOptions{
 		Login: "user",
 	})
 	assert.Error(t, err)
@@ -56,7 +57,7 @@ func TestUserGroups_Create(t *testing.T) {
 		Description: "Default group",
 	}
 
-	result, resp, err := client.UserGroups.Create(opt)
+	result, resp, err := client.UserGroups.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "sonar-users", result.Group.Name)
@@ -66,23 +67,23 @@ func TestUserGroups_Create_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.UserGroups.Create(nil)
+	_, _, err := client.UserGroups.Create(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.UserGroups.Create(&UserGroupsCreateOptions{
+	_, _, err = client.UserGroups.Create(context.Background(), &UserGroupsCreateOptions{
 		Description: "test",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, _, err = client.UserGroups.Create(&UserGroupsCreateOptions{
+	_, _, err = client.UserGroups.Create(context.Background(), &UserGroupsCreateOptions{
 		Name: strings.Repeat("a", MaxGroupNameLength+1),
 	})
 	assert.Error(t, err)
 
 	// Test Description too long
-	_, _, err = client.UserGroups.Create(&UserGroupsCreateOptions{
+	_, _, err = client.UserGroups.Create(context.Background(), &UserGroupsCreateOptions{
 		Name:        "test",
 		Description: strings.Repeat("a", MaxGroupDescriptionLength+1),
 	})
@@ -97,7 +98,7 @@ func TestUserGroups_Delete(t *testing.T) {
 		Name: "sonar-users",
 	}
 
-	resp, err := client.UserGroups.Delete(opt)
+	resp, err := client.UserGroups.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -106,11 +107,11 @@ func TestUserGroups_Delete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.UserGroups.Delete(nil)
+	_, err := client.UserGroups.Delete(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.UserGroups.Delete(&UserGroupsDeleteOptions{})
+	_, err = client.UserGroups.Delete(context.Background(), &UserGroupsDeleteOptions{})
 	assert.Error(t, err)
 }
 
@@ -123,7 +124,7 @@ func TestUserGroups_RemoveUser(t *testing.T) {
 		Login: "g.hopper",
 	}
 
-	resp, err := client.UserGroups.RemoveUser(opt)
+	resp, err := client.UserGroups.RemoveUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -154,7 +155,7 @@ func TestUserGroups_Search(t *testing.T) {
 		Fields: []string{"name", "description"},
 	}
 
-	result, resp, err := client.UserGroups.Search(opt)
+	result, resp, err := client.UserGroups.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Groups, 1)
@@ -164,11 +165,11 @@ func TestUserGroups_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.UserGroups.Search(nil)
+	_, _, err := client.UserGroups.Search(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test invalid field
-	_, _, err = client.UserGroups.Search(&UserGroupsSearchOptions{
+	_, _, err = client.UserGroups.Search(context.Background(), &UserGroupsSearchOptions{
 		Fields: []string{"invalid_field"},
 	})
 	assert.Error(t, err)
@@ -184,7 +185,7 @@ func TestUserGroups_Update(t *testing.T) {
 		Description: "Updated description",
 	}
 
-	resp, err := client.UserGroups.Update(opt)
+	resp, err := client.UserGroups.Update(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -193,11 +194,11 @@ func TestUserGroups_Update_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.UserGroups.Update(nil)
+	_, err := client.UserGroups.Update(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing CurrentName
-	_, err = client.UserGroups.Update(&UserGroupsUpdateOptions{
+	_, err = client.UserGroups.Update(context.Background(), &UserGroupsUpdateOptions{
 		Name: "new-group",
 	})
 	assert.Error(t, err)
@@ -228,7 +229,7 @@ func TestUserGroups_Users(t *testing.T) {
 		Selected: SelectionFilterSelected,
 	}
 
-	result, resp, err := client.UserGroups.Users(opt)
+	result, resp, err := client.UserGroups.Users(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Users, 1)
@@ -238,15 +239,15 @@ func TestUserGroups_Users_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.UserGroups.Users(nil)
+	_, _, err := client.UserGroups.Users(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.UserGroups.Users(&UserGroupsUsersOptions{})
+	_, _, err = client.UserGroups.Users(context.Background(), &UserGroupsUsersOptions{})
 	assert.Error(t, err)
 
 	// Test invalid Selected value
-	_, _, err = client.UserGroups.Users(&UserGroupsUsersOptions{
+	_, _, err = client.UserGroups.Users(context.Background(), &UserGroupsUsersOptions{
 		Name:     "test",
 		Selected: "invalid",
 	})

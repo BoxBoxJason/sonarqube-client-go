@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -38,7 +39,7 @@ func TestMeasuresService_Component(t *testing.T) {
 		MetricKeys: []string{"coverage", "bugs", "vulnerabilities"},
 	}
 
-	result, resp, err := client.Measures.Component(opt)
+	result, resp, err := client.Measures.Component(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "my-project", result.Component.Key)
@@ -53,14 +54,14 @@ func TestMeasuresService_Component_ValidationError(t *testing.T) {
 	opt := &MeasuresComponentOptions{
 		MetricKeys: []string{"coverage"},
 	}
-	_, _, err := client.Measures.Component(opt)
+	_, _, err := client.Measures.Component(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing MetricKeys
 	opt = &MeasuresComponentOptions{
 		Component: "my-project",
 	}
-	_, _, err = client.Measures.Component(opt)
+	_, _, err = client.Measures.Component(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -99,7 +100,7 @@ func TestMeasuresService_ComponentTree(t *testing.T) {
 		Strategy:   MeasureStrategyAll,
 	}
 
-	result, resp, err := client.Measures.ComponentTree(opt)
+	result, resp, err := client.Measures.ComponentTree(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "my-project", result.BaseComponent.Key)
@@ -114,14 +115,14 @@ func TestMeasuresService_ComponentTree_ValidationError(t *testing.T) {
 	opt := &MeasuresComponentTreeOptions{
 		MetricKeys: []string{"coverage"},
 	}
-	_, _, err := client.Measures.ComponentTree(opt)
+	_, _, err := client.Measures.ComponentTree(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing MetricKeys
 	opt = &MeasuresComponentTreeOptions{
 		Component: "my-project",
 	}
-	_, _, err = client.Measures.ComponentTree(opt)
+	_, _, err = client.Measures.ComponentTree(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test invalid Strategy
@@ -130,7 +131,7 @@ func TestMeasuresService_ComponentTree_ValidationError(t *testing.T) {
 		MetricKeys: []string{"coverage"},
 		Strategy:   "invalid",
 	}
-	_, _, err = client.Measures.ComponentTree(opt)
+	_, _, err = client.Measures.ComponentTree(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test invalid MetricSortFilter
@@ -139,7 +140,7 @@ func TestMeasuresService_ComponentTree_ValidationError(t *testing.T) {
 		MetricKeys:       []string{"coverage"},
 		MetricSortFilter: "invalid",
 	}
-	_, _, err = client.Measures.ComponentTree(opt)
+	_, _, err = client.Measures.ComponentTree(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -160,7 +161,7 @@ func TestMeasuresService_Search(t *testing.T) {
 		ProjectKeys: []string{"project1", "project2"},
 	}
 
-	result, resp, err := client.Measures.Search(opt)
+	result, resp, err := client.Measures.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Measures, 2)
@@ -174,14 +175,14 @@ func TestMeasuresService_Search_ValidationError(t *testing.T) {
 	opt := &MeasuresSearchOptions{
 		ProjectKeys: []string{"project1"},
 	}
-	_, _, err := client.Measures.Search(opt)
+	_, _, err := client.Measures.Search(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing ProjectKeys
 	opt = &MeasuresSearchOptions{
 		MetricKeys: []string{"coverage"},
 	}
-	_, _, err = client.Measures.Search(opt)
+	_, _, err = client.Measures.Search(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -211,7 +212,7 @@ func TestMeasuresService_SearchHistory(t *testing.T) {
 		To:        "2024-03-01",
 	}
 
-	result, resp, err := client.Measures.SearchHistory(opt)
+	result, resp, err := client.Measures.SearchHistory(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Measures, 1)
@@ -226,13 +227,13 @@ func TestMeasuresService_SearchHistory_ValidationError(t *testing.T) {
 	opt := &MeasuresSearchHistoryOptions{
 		Metrics: []string{"coverage"},
 	}
-	_, _, err := client.Measures.SearchHistory(opt)
+	_, _, err := client.Measures.SearchHistory(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing Metrics
 	opt = &MeasuresSearchHistoryOptions{
 		Component: "my-project",
 	}
-	_, _, err = client.Measures.SearchHistory(opt)
+	_, _, err = client.Measures.SearchHistory(context.Background(), opt)
 	assert.Error(t, err)
 }

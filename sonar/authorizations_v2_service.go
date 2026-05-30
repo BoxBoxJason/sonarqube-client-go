@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -226,13 +227,13 @@ func (s *AuthorizationsService) ValidateCreateGroupMembershipRequest(opt *Author
 
 // SearchGroups returns a list of groups matching the search criteria.
 // The results are sorted alphabetically by group name.
-func (s *AuthorizationsService) SearchGroups(opt *AuthorizationsSearchGroupsOptions) (*AuthorizationsGroupsSearch, *http.Response, error) {
+func (s *AuthorizationsService) SearchGroups(ctx context.Context, opt *AuthorizationsSearchGroupsOptions) (*AuthorizationsGroupsSearch, *http.Response, error) {
 	err := s.ValidateSearchGroupsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "authorizations/groups", opt, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "authorizations/groups", opt, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -248,13 +249,13 @@ func (s *AuthorizationsService) SearchGroups(opt *AuthorizationsSearchGroupsOpti
 }
 
 // CreateGroup creates a new group.
-func (s *AuthorizationsService) CreateGroup(opt *AuthorizationsCreateGroupOptions) (*AuthorizationsGroup, *http.Response, error) {
+func (s *AuthorizationsService) CreateGroup(ctx context.Context, opt *AuthorizationsCreateGroupOptions) (*AuthorizationsGroup, *http.Response, error) {
 	err := s.ValidateCreateGroupRequest(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPost, "authorizations/groups", nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "authorizations/groups", nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -270,13 +271,13 @@ func (s *AuthorizationsService) CreateGroup(opt *AuthorizationsCreateGroupOption
 }
 
 // GetGroup retrieves a single group by ID.
-func (s *AuthorizationsService) GetGroup(groupID string) (*AuthorizationsGroup, *http.Response, error) {
+func (s *AuthorizationsService) GetGroup(ctx context.Context, groupID string) (*AuthorizationsGroup, *http.Response, error) {
 	err := ValidateRequired(groupID, "Id")
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "authorizations/groups/"+groupID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "authorizations/groups/"+groupID, nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -292,13 +293,13 @@ func (s *AuthorizationsService) GetGroup(groupID string) (*AuthorizationsGroup, 
 }
 
 // DeleteGroup deletes a group by ID.
-func (s *AuthorizationsService) DeleteGroup(groupID string) (*http.Response, error) {
+func (s *AuthorizationsService) DeleteGroup(ctx context.Context, groupID string) (*http.Response, error) {
 	err := ValidateRequired(groupID, "Id")
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodDelete, "authorizations/groups/"+groupID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "authorizations/groups/"+groupID, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -312,13 +313,13 @@ func (s *AuthorizationsService) DeleteGroup(groupID string) (*http.Response, err
 }
 
 // UpdateGroup updates a group's name or description.
-func (s *AuthorizationsService) UpdateGroup(groupID string, opt *AuthorizationsUpdateGroupOptions) (*AuthorizationsGroup, *http.Response, error) {
+func (s *AuthorizationsService) UpdateGroup(ctx context.Context, groupID string, opt *AuthorizationsUpdateGroupOptions) (*AuthorizationsGroup, *http.Response, error) {
 	err := s.ValidateUpdateGroupRequest(groupID, opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPatch, "authorizations/groups/"+groupID, nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "authorizations/groups/"+groupID, nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -334,13 +335,13 @@ func (s *AuthorizationsService) UpdateGroup(groupID string, opt *AuthorizationsU
 }
 
 // SearchGroupMemberships returns a list of group memberships matching the search criteria.
-func (s *AuthorizationsService) SearchGroupMemberships(opt *AuthorizationsSearchGroupMembershipsOptions) (*AuthorizationsGroupMembershipsSearch, *http.Response, error) {
+func (s *AuthorizationsService) SearchGroupMemberships(ctx context.Context, opt *AuthorizationsSearchGroupMembershipsOptions) (*AuthorizationsGroupMembershipsSearch, *http.Response, error) {
 	err := s.ValidateSearchGroupMembershipsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "authorizations/group-memberships", opt, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "authorizations/group-memberships", opt, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -356,13 +357,13 @@ func (s *AuthorizationsService) SearchGroupMemberships(opt *AuthorizationsSearch
 }
 
 // CreateGroupMembership adds a user to a group.
-func (s *AuthorizationsService) CreateGroupMembership(opt *AuthorizationsCreateGroupMembershipOptions) (*AuthorizationsGroupMembership, *http.Response, error) {
+func (s *AuthorizationsService) CreateGroupMembership(ctx context.Context, opt *AuthorizationsCreateGroupMembershipOptions) (*AuthorizationsGroupMembership, *http.Response, error) {
 	err := s.ValidateCreateGroupMembershipRequest(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPost, "authorizations/group-memberships", nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "authorizations/group-memberships", nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -378,13 +379,13 @@ func (s *AuthorizationsService) CreateGroupMembership(opt *AuthorizationsCreateG
 }
 
 // DeleteGroupMembership removes a user from a group.
-func (s *AuthorizationsService) DeleteGroupMembership(membershipID string) (*http.Response, error) {
+func (s *AuthorizationsService) DeleteGroupMembership(ctx context.Context, membershipID string) (*http.Response, error) {
 	err := ValidateRequired(membershipID, "Id")
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodDelete, "authorizations/group-memberships/"+membershipID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "authorizations/group-memberships/"+membershipID, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

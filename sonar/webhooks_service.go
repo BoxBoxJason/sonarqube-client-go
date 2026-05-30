@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -325,13 +326,13 @@ func (s *WebhooksService) ValidateUpdateOpt(opt *WebhooksUpdateOptions) error {
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*WebhooksCreate, *http.Response, error) {
+func (s *WebhooksService) Create(ctx context.Context, opt *WebhooksCreateOptions) (*WebhooksCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "webhooks/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "webhooks/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -350,13 +351,13 @@ func (s *WebhooksService) Create(opt *WebhooksCreateOptions) (*WebhooksCreate, *
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) Delete(opt *WebhooksDeleteOptions) (*http.Response, error) {
+func (s *WebhooksService) Delete(ctx context.Context, opt *WebhooksDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "webhooks/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "webhooks/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -374,13 +375,13 @@ func (s *WebhooksService) Delete(opt *WebhooksDeleteOptions) (*http.Response, er
 // Note that additional information is returned by api/webhooks/delivery.
 //
 // Since: 6.2.
-func (s *WebhooksService) Deliveries(opt *WebhooksDeliveriesOptions) (*WebhooksDeliveries, *http.Response, error) {
+func (s *WebhooksService) Deliveries(ctx context.Context, opt *WebhooksDeliveriesOptions) (*WebhooksDeliveries, *http.Response, error) {
 	err := s.ValidateDeliveriesOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webhooks/deliveries", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "webhooks/deliveries", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -399,13 +400,13 @@ func (s *WebhooksService) Deliveries(opt *WebhooksDeliveriesOptions) (*WebhooksD
 // Requires 'Administer System' permission.
 //
 // Since: 6.2.
-func (s *WebhooksService) Delivery(opt *WebhooksDeliveryOptions) (*WebhooksDelivery, *http.Response, error) {
+func (s *WebhooksService) Delivery(ctx context.Context, opt *WebhooksDeliveryOptions) (*WebhooksDelivery, *http.Response, error) {
 	err := s.ValidateDeliveryOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webhooks/delivery", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "webhooks/delivery", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -425,13 +426,13 @@ func (s *WebhooksService) Delivery(opt *WebhooksDeliveryOptions) (*WebhooksDeliv
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) List(opt *WebhooksListOptions) (*WebhooksList, *http.Response, error) {
+func (s *WebhooksService) List(ctx context.Context, opt *WebhooksListOptions) (*WebhooksList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "webhooks/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "webhooks/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -450,13 +451,13 @@ func (s *WebhooksService) List(opt *WebhooksListOptions) (*WebhooksList, *http.R
 // Requires 'Administer' permission on the specified project, or global 'Administer' permission.
 //
 // Since: 7.1.
-func (s *WebhooksService) Update(opt *WebhooksUpdateOptions) (*http.Response, error) {
+func (s *WebhooksService) Update(ctx context.Context, opt *WebhooksUpdateOptions) (*http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "webhooks/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "webhooks/update", opt)
 	if err != nil {
 		return nil, err
 	}

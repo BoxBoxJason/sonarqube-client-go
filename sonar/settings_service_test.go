@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -23,7 +24,7 @@ func TestSettingsService_CheckSecretKey(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Settings.CheckSecretKey()
+	result, resp, err := client.Settings.CheckSecretKey(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.True(t, result.SecretKeyAvailable)
@@ -42,7 +43,7 @@ func TestSettingsService_Encrypt(t *testing.T) {
 		Value: "my-secret-value",
 	}
 
-	result, resp, err := client.Settings.Encrypt(opt)
+	result, resp, err := client.Settings.Encrypt(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "{aes-gcm}encrypted-secret", result.EncryptedValue)
@@ -54,7 +55,7 @@ func TestSettingsService_Encrypt_ValidationError(t *testing.T) {
 
 	// Test missing Value
 	opt := &SettingsEncryptOptions{}
-	_, _, err := client.Settings.Encrypt(opt)
+	_, _, err := client.Settings.Encrypt(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -67,7 +68,7 @@ func TestSettingsService_GenerateSecretKey(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Settings.GenerateSecretKey()
+	result, resp, err := client.Settings.GenerateSecretKey(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "AaBbCcDdEeFfGgHhIiJjKk==", result.SecretKey)
@@ -96,7 +97,7 @@ func TestSettingsService_ListDefinitions(t *testing.T) {
 		Component: "my-project",
 	}
 
-	result, resp, err := client.Settings.ListDefinitions(opt)
+	result, resp, err := client.Settings.ListDefinitions(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Definitions, 1)
@@ -113,7 +114,7 @@ func TestSettingsService_LoginMessage(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Settings.LoginMessage()
+	result, resp, err := client.Settings.LoginMessage(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "Welcome to SonarQube!", result.Message)
@@ -139,7 +140,7 @@ func TestSettingsService_Reset(t *testing.T) {
 		Keys: []string{"sonar.test.key", "sonar.other.key"},
 	}
 
-	resp, err := client.Settings.Reset(opt)
+	resp, err := client.Settings.Reset(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -150,7 +151,7 @@ func TestSettingsService_Reset_ValidationError(t *testing.T) {
 
 	// Test missing Keys
 	opt := &SettingsResetOptions{}
-	_, err := client.Settings.Reset(opt)
+	_, err := client.Settings.Reset(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -176,7 +177,7 @@ func TestSettingsService_Set(t *testing.T) {
 		Value: "test-value",
 	}
 
-	resp, err := client.Settings.Set(opt)
+	resp, err := client.Settings.Set(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -189,7 +190,7 @@ func TestSettingsService_Set_ValidationError(t *testing.T) {
 	opt := &SettingsSetOptions{
 		Value: "test-value",
 	}
-	_, err := client.Settings.Set(opt)
+	_, err := client.Settings.Set(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test Value too long
@@ -197,14 +198,14 @@ func TestSettingsService_Set_ValidationError(t *testing.T) {
 		Key:   "sonar.test.key",
 		Value: strings.Repeat("a", MaxSettingValueLength+1),
 	}
-	_, err = client.Settings.Set(opt)
+	_, err = client.Settings.Set(context.Background(), opt)
 	assert.Error(t, err)
 
 	// Test missing Value, Values, and FieldValues
 	opt = &SettingsSetOptions{
 		Key: "sonar.test.key",
 	}
-	_, err = client.Settings.Set(opt)
+	_, err = client.Settings.Set(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -232,7 +233,7 @@ func TestSettingsService_Set_WithMultiValues(t *testing.T) {
 		Values: []string{"value1", "value2", "value3"},
 	}
 
-	resp, err := client.Settings.Set(opt)
+	resp, err := client.Settings.Set(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -273,7 +274,7 @@ func TestSettingsService_Set_WithFieldValues(t *testing.T) {
 		},
 	}
 
-	resp, err := client.Settings.Set(opt)
+	resp, err := client.Settings.Set(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -303,7 +304,7 @@ func TestSettingsService_Values(t *testing.T) {
 		Keys: []string{"sonar.test.key", "sonar.multi.key"},
 	}
 
-	result, resp, err := client.Settings.Values(opt)
+	result, resp, err := client.Settings.Values(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Settings, 2)

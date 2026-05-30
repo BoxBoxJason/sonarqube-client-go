@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -29,7 +30,7 @@ func TestProjectLinks_Create(t *testing.T) {
 		URL:        "https://example.com",
 	}
 
-	result, resp, err := client.ProjectLinks.Create(opt)
+	result, resp, err := client.ProjectLinks.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -41,25 +42,25 @@ func TestProjectLinks_Create_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectLinks.Create(nil)
+	_, _, err := client.ProjectLinks.Create(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOptions{
+	_, _, err = client.ProjectLinks.Create(context.Background(), &ProjectLinksCreateOptions{
 		ProjectKey: "my-project",
 		URL:        "https://example.com",
 	})
 	assert.Error(t, err)
 
 	// Missing URL should fail validation.
-	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOptions{
+	_, _, err = client.ProjectLinks.Create(context.Background(), &ProjectLinksCreateOptions{
 		Name:       "Homepage",
 		ProjectKey: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing ProjectID and ProjectKey should fail validation.
-	_, _, err = client.ProjectLinks.Create(&ProjectLinksCreateOptions{
+	_, _, err = client.ProjectLinks.Create(context.Background(), &ProjectLinksCreateOptions{
 		Name: "Homepage",
 		URL:  "https://example.com",
 	})
@@ -76,7 +77,7 @@ func TestProjectLinks_Delete(t *testing.T) {
 		ID: "1",
 	}
 
-	resp, err := client.ProjectLinks.Delete(opt)
+	resp, err := client.ProjectLinks.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -85,11 +86,11 @@ func TestProjectLinks_Delete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.ProjectLinks.Delete(nil)
+	_, err := client.ProjectLinks.Delete(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing ID should fail validation.
-	_, err = client.ProjectLinks.Delete(&ProjectLinksDeleteOptions{})
+	_, err = client.ProjectLinks.Delete(context.Background(), &ProjectLinksDeleteOptions{})
 	assert.Error(t, err)
 }
 
@@ -110,7 +111,7 @@ func TestProjectLinks_Search(t *testing.T) {
 		ProjectKey: "my-project",
 	}
 
-	result, resp, err := client.ProjectLinks.Search(opt)
+	result, resp, err := client.ProjectLinks.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -122,11 +123,11 @@ func TestProjectLinks_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectLinks.Search(nil)
+	_, _, err := client.ProjectLinks.Search(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing ProjectID and ProjectKey should fail validation.
-	_, _, err = client.ProjectLinks.Search(&ProjectLinksSearchOptions{})
+	_, _, err = client.ProjectLinks.Search(context.Background(), &ProjectLinksSearchOptions{})
 	assert.Error(t, err)
 }
 

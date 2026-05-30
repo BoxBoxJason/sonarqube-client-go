@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // L10NService handles communication with the localization related methods
 // of the SonarQube API.
@@ -54,13 +57,13 @@ func (s *L10NService) ValidateGetIndexOpt(opt *L10NIndexOptions) error {
 //
 // API endpoint: GET /api/l10n/index.
 // Warning: This API is internal and may change without notice.
-func (s *L10NService) GetIndex(opt *L10NIndexOptions) (*L10NIndex, *http.Response, error) {
+func (s *L10NService) GetIndex(ctx context.Context, opt *L10NIndexOptions) (*L10NIndex, *http.Response, error) {
 	err := s.ValidateGetIndexOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "l10n/index", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "l10n/index", opt)
 	if err != nil {
 		return nil, nil, err
 	}

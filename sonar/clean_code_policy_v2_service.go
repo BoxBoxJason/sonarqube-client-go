@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -254,13 +255,13 @@ func (s *CleanCodePolicyService) ValidateCreateRuleRequest(opt *CleanCodePolicyC
 
 // CreateRule creates a custom rule based on a template.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *CleanCodePolicyService) CreateRule(opt *CleanCodePolicyCreateRuleOptions) (*RuleV2, *http.Response, error) {
+func (s *CleanCodePolicyService) CreateRule(ctx context.Context, opt *CleanCodePolicyCreateRuleOptions) (*RuleV2, *http.Response, error) {
 	err := s.ValidateCreateRuleRequest(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPost, "clean-code-policy/rules", nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "clean-code-policy/rules", nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

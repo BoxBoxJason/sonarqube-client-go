@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -22,7 +23,7 @@ func TestNotifications_Add(t *testing.T) {
 		Type: "NewIssues",
 	}
 
-	resp, err := client.Notifications.Add(opt)
+	resp, err := client.Notifications.Add(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -45,7 +46,7 @@ func TestNotifications_Add_WithAllOptions(t *testing.T) {
 		Login:   "admin",
 	}
 
-	resp, err := client.Notifications.Add(opt)
+	resp, err := client.Notifications.Add(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -54,11 +55,11 @@ func TestNotifications_Add_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Notifications.Add(nil)
+	_, err := client.Notifications.Add(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Type should fail validation.
-	_, err = client.Notifications.Add(&NotificationsAddOptions{})
+	_, err = client.Notifications.Add(context.Background(), &NotificationsAddOptions{})
 	assert.Error(t, err)
 }
 
@@ -79,7 +80,7 @@ func TestNotifications_List(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Notifications.List(nil)
+	result, resp, err := client.Notifications.List(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -104,7 +105,7 @@ func TestNotifications_List_WithLogin(t *testing.T) {
 		Login: "admin",
 	}
 
-	_, resp, err := client.Notifications.List(opt)
+	_, resp, err := client.Notifications.List(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -123,7 +124,7 @@ func TestNotifications_Remove(t *testing.T) {
 		Type: "NewIssues",
 	}
 
-	resp, err := client.Notifications.Remove(opt)
+	resp, err := client.Notifications.Remove(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -132,11 +133,11 @@ func TestNotifications_Remove_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Notifications.Remove(nil)
+	_, err := client.Notifications.Remove(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Type should fail validation.
-	_, err = client.Notifications.Remove(&NotificationsRemoveOptions{})
+	_, err = client.Notifications.Remove(context.Background(), &NotificationsRemoveOptions{})
 	assert.Error(t, err)
 }
 

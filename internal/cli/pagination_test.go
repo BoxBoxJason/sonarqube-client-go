@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"net/http"
 	"reflect"
 	"testing"
@@ -141,7 +142,7 @@ type paginatedService struct {
 }
 
 // Search simulates a paginated method that returns pages of results.
-func (s *paginatedService) Search(opt *paginatedOptions) (*paginatedResponse, *http.Response, error) {
+func (s *paginatedService) Search(ctx context.Context, opt *paginatedOptions) (*paginatedResponse, *http.Response, error) {
 	s.callCount++
 
 	// Return different data based on page.

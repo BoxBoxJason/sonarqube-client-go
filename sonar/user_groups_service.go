@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -310,13 +311,13 @@ func (s *UserGroupsService) ValidateUsersOpt(opt *UserGroupsUsersOptions) error 
 // Deprecated: Since 10.4. Use POST /api/v2/authorizations/group-memberships instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) AddUser(opt *UserGroupsAddUserOptions) (*http.Response, error) {
+func (s *UserGroupsService) AddUser(ctx context.Context, opt *UserGroupsAddUserOptions) (*http.Response, error) {
 	err := s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/add_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "user_groups/add_user", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -335,13 +336,13 @@ func (s *UserGroupsService) AddUser(opt *UserGroupsAddUserOptions) (*http.Respon
 // Deprecated: Since 10.4. Use POST /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Create(opt *UserGroupsCreateOptions) (*UserGroupsCreate, *http.Response, error) {
+func (s *UserGroupsService) Create(ctx context.Context, opt *UserGroupsCreateOptions) (*UserGroupsCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "user_groups/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -363,13 +364,13 @@ func (s *UserGroupsService) Create(opt *UserGroupsCreateOptions) (*UserGroupsCre
 // Deprecated: Since 10.4. Use DELETE /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOptions) (*http.Response, error) {
+func (s *UserGroupsService) Delete(ctx context.Context, opt *UserGroupsDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "user_groups/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -389,13 +390,13 @@ func (s *UserGroupsService) Delete(opt *UserGroupsDeleteOptions) (*http.Response
 // Deprecated: Since 10.4. Use DELETE /api/v2/authorizations/group-memberships instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOptions) (*http.Response, error) {
+func (s *UserGroupsService) RemoveUser(ctx context.Context, opt *UserGroupsRemoveUserOptions) (*http.Response, error) {
 	err := s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/remove_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "user_groups/remove_user", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -414,13 +415,13 @@ func (s *UserGroupsService) RemoveUser(opt *UserGroupsRemoveUserOptions) (*http.
 // Deprecated: Since 10.4. Use GET /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Search(opt *UserGroupsSearchOptions) (*UserGroupsSearch, *http.Response, error) {
+func (s *UserGroupsService) Search(ctx context.Context, opt *UserGroupsSearchOptions) (*UserGroupsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "user_groups/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "user_groups/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -441,13 +442,13 @@ func (s *UserGroupsService) Search(opt *UserGroupsSearchOptions) (*UserGroupsSea
 // Deprecated: Since 10.4. Use PATCH /api/v2/authorizations/groups instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Update(opt *UserGroupsUpdateOptions) (*http.Response, error) {
+func (s *UserGroupsService) Update(ctx context.Context, opt *UserGroupsUpdateOptions) (*http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_groups/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "user_groups/update", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -466,13 +467,13 @@ func (s *UserGroupsService) Update(opt *UserGroupsUpdateOptions) (*http.Response
 // Deprecated: Since 10.4. Use GET /api/v2/authorizations/group-memberships instead.
 //
 // Since: 5.2.
-func (s *UserGroupsService) Users(opt *UserGroupsUsersOptions) (*UserGroupsUsers, *http.Response, error) {
+func (s *UserGroupsService) Users(ctx context.Context, opt *UserGroupsUsersOptions) (*UserGroupsUsers, *http.Response, error) {
 	err := s.ValidateUsersOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "user_groups/users", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "user_groups/users", opt)
 	if err != nil {
 		return nil, nil, err
 	}

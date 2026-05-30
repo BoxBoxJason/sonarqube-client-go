@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // ProjectTagsService handles communication with the project tags related methods
 // of the SonarQube API.
@@ -84,13 +87,13 @@ func (s *ProjectTagsService) ValidateSetOpt(opt *ProjectTagsSetOptions) error {
 //
 // API endpoint: GET /api/project_tags/search.
 // Since: 6.4.
-func (s *ProjectTagsService) Search(opt *ProjectTagsSearchOptions) (*ProjectTagsSearch, *http.Response, error) {
+func (s *ProjectTagsService) Search(ctx context.Context, opt *ProjectTagsSearchOptions) (*ProjectTagsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_tags/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_tags/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -110,13 +113,13 @@ func (s *ProjectTagsService) Search(opt *ProjectTagsSearchOptions) (*ProjectTags
 //
 // API endpoint: POST /api/project_tags/set.
 // Since: 6.4.
-func (s *ProjectTagsService) Set(opt *ProjectTagsSetOptions) (*http.Response, error) {
+func (s *ProjectTagsService) Set(ctx context.Context, opt *ProjectTagsSetOptions) (*http.Response, error) {
 	err := s.ValidateSetOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_tags/set", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_tags/set", opt)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -20,7 +21,7 @@ func TestMarketplaceV2_BillAzureAccount(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodPost, "/v2/marketplace/azure/billing", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Marketplace.BillAzureAccount()
+	result, resp, err := client.V2.Marketplace.BillAzureAccount(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.True(t, result.Success)

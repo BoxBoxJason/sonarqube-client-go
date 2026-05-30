@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 const (
 	// MaxAlmKeyLength is the maximum length for DevOps Platform setting keys.
@@ -960,13 +963,13 @@ func (s *AlmSettingsService) ValidateValidateOpt(opt *AlmSettingsValidateOptions
 //
 // API endpoint: GET /api/alm_settings/count_binding.
 // Since: 8.1.
-func (s *AlmSettingsService) CountBinding(opt *AlmSettingsCountBindingOptions) (*AlmSettingsCountBinding, *http.Response, error) {
+func (s *AlmSettingsService) CountBinding(ctx context.Context, opt *AlmSettingsCountBindingOptions) (*AlmSettingsCountBinding, *http.Response, error) {
 	err := s.ValidateCountBindingOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/count_binding", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_settings/count_binding", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -986,13 +989,13 @@ func (s *AlmSettingsService) CountBinding(opt *AlmSettingsCountBindingOptions) (
 //
 // API endpoint: POST /api/alm_settings/create_azure.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateAzure(opt *AlmSettingsCreateAzureOptions) (*http.Response, error) {
+func (s *AlmSettingsService) CreateAzure(ctx context.Context, opt *AlmSettingsCreateAzureOptions) (*http.Response, error) {
 	err := s.ValidateCreateAzureOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_azure", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/create_azure", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1010,13 +1013,13 @@ func (s *AlmSettingsService) CreateAzure(opt *AlmSettingsCreateAzureOptions) (*h
 //
 // API endpoint: POST /api/alm_settings/create_bitbucket.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateBitbucket(opt *AlmSettingsCreateBitbucketOptions) (*http.Response, error) {
+func (s *AlmSettingsService) CreateBitbucket(ctx context.Context, opt *AlmSettingsCreateBitbucketOptions) (*http.Response, error) {
 	err := s.ValidateCreateBitbucketOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_bitbucket", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/create_bitbucket", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1034,13 +1037,13 @@ func (s *AlmSettingsService) CreateBitbucket(opt *AlmSettingsCreateBitbucketOpti
 //
 // API endpoint: POST /api/alm_settings/create_bitbucketcloud.
 // Since: 8.7.
-func (s *AlmSettingsService) CreateBitbucketCloud(opt *AlmSettingsCreateBitbucketCloudOptions) (*http.Response, error) {
+func (s *AlmSettingsService) CreateBitbucketCloud(ctx context.Context, opt *AlmSettingsCreateBitbucketCloudOptions) (*http.Response, error) {
 	err := s.ValidateCreateBitbucketCloudOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_bitbucketcloud", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/create_bitbucketcloud", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1058,13 +1061,13 @@ func (s *AlmSettingsService) CreateBitbucketCloud(opt *AlmSettingsCreateBitbucke
 //
 // API endpoint: POST /api/alm_settings/create_github.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateGithub(opt *AlmSettingsCreateGithubOptions) (*http.Response, error) {
+func (s *AlmSettingsService) CreateGithub(ctx context.Context, opt *AlmSettingsCreateGithubOptions) (*http.Response, error) {
 	err := s.ValidateCreateGithubOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_github", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/create_github", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1082,13 +1085,13 @@ func (s *AlmSettingsService) CreateGithub(opt *AlmSettingsCreateGithubOptions) (
 //
 // API endpoint: POST /api/alm_settings/create_gitlab.
 // Since: 8.1.
-func (s *AlmSettingsService) CreateGitlab(opt *AlmSettingsCreateGitlabOptions) (*http.Response, error) {
+func (s *AlmSettingsService) CreateGitlab(ctx context.Context, opt *AlmSettingsCreateGitlabOptions) (*http.Response, error) {
 	err := s.ValidateCreateGitlabOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/create_gitlab", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/create_gitlab", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1106,13 +1109,13 @@ func (s *AlmSettingsService) CreateGitlab(opt *AlmSettingsCreateGitlabOptions) (
 //
 // API endpoint: POST /api/alm_settings/delete.
 // Since: 8.1.
-func (s *AlmSettingsService) Delete(opt *AlmSettingsDeleteOptions) (*http.Response, error) {
+func (s *AlmSettingsService) Delete(ctx context.Context, opt *AlmSettingsDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1130,13 +1133,13 @@ func (s *AlmSettingsService) Delete(opt *AlmSettingsDeleteOptions) (*http.Respon
 //
 // API endpoint: GET /api/alm_settings/get_binding.
 // Since: 8.1.
-func (s *AlmSettingsService) GetBinding(opt *AlmSettingsGetBindingOptions) (*AlmSettingsGetBinding, *http.Response, error) {
+func (s *AlmSettingsService) GetBinding(ctx context.Context, opt *AlmSettingsGetBindingOptions) (*AlmSettingsGetBinding, *http.Response, error) {
 	err := s.ValidateGetBindingOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/get_binding", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_settings/get_binding", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1157,13 +1160,13 @@ func (s *AlmSettingsService) GetBinding(opt *AlmSettingsGetBindingOptions) (*Alm
 //
 // API endpoint: GET /api/alm_settings/list.
 // Since: 8.1.
-func (s *AlmSettingsService) List(opt *AlmSettingsListOptions) (*AlmSettingsList, *http.Response, error) {
+func (s *AlmSettingsService) List(ctx context.Context, opt *AlmSettingsListOptions) (*AlmSettingsList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_settings/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1183,8 +1186,8 @@ func (s *AlmSettingsService) List(opt *AlmSettingsListOptions) (*AlmSettingsList
 //
 // API endpoint: GET /api/alm_settings/list_definitions.
 // Since: 8.1.
-func (s *AlmSettingsService) ListDefinitions() (*AlmSettingsListDefinitions, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/list_definitions", nil)
+func (s *AlmSettingsService) ListDefinitions(ctx context.Context) (*AlmSettingsListDefinitions, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_settings/list_definitions", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1204,13 +1207,13 @@ func (s *AlmSettingsService) ListDefinitions() (*AlmSettingsListDefinitions, *ht
 //
 // API endpoint: POST /api/alm_settings/update_azure.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateAzure(opt *AlmSettingsUpdateAzureOptions) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateAzure(ctx context.Context, opt *AlmSettingsUpdateAzureOptions) (*http.Response, error) {
 	err := s.ValidateUpdateAzureOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_azure", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/update_azure", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1228,13 +1231,13 @@ func (s *AlmSettingsService) UpdateAzure(opt *AlmSettingsUpdateAzureOptions) (*h
 //
 // API endpoint: POST /api/alm_settings/update_bitbucket.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateBitbucket(opt *AlmSettingsUpdateBitbucketOptions) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateBitbucket(ctx context.Context, opt *AlmSettingsUpdateBitbucketOptions) (*http.Response, error) {
 	err := s.ValidateUpdateBitbucketOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_bitbucket", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/update_bitbucket", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1252,13 +1255,13 @@ func (s *AlmSettingsService) UpdateBitbucket(opt *AlmSettingsUpdateBitbucketOpti
 //
 // API endpoint: POST /api/alm_settings/update_bitbucketcloud.
 // Since: 8.7.
-func (s *AlmSettingsService) UpdateBitbucketCloud(opt *AlmSettingsUpdateBitbucketCloudOptions) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateBitbucketCloud(ctx context.Context, opt *AlmSettingsUpdateBitbucketCloudOptions) (*http.Response, error) {
 	err := s.ValidateUpdateBitbucketCloudOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_bitbucketcloud", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/update_bitbucketcloud", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1276,13 +1279,13 @@ func (s *AlmSettingsService) UpdateBitbucketCloud(opt *AlmSettingsUpdateBitbucke
 //
 // API endpoint: POST /api/alm_settings/update_github.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateGithub(opt *AlmSettingsUpdateGithubOptions) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateGithub(ctx context.Context, opt *AlmSettingsUpdateGithubOptions) (*http.Response, error) {
 	err := s.ValidateUpdateGithubOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_github", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/update_github", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1300,13 +1303,13 @@ func (s *AlmSettingsService) UpdateGithub(opt *AlmSettingsUpdateGithubOptions) (
 //
 // API endpoint: POST /api/alm_settings/update_gitlab.
 // Since: 8.1.
-func (s *AlmSettingsService) UpdateGitlab(opt *AlmSettingsUpdateGitlabOptions) (*http.Response, error) {
+func (s *AlmSettingsService) UpdateGitlab(ctx context.Context, opt *AlmSettingsUpdateGitlabOptions) (*http.Response, error) {
 	err := s.ValidateUpdateGitlabOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_settings/update_gitlab", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/update_gitlab", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1324,13 +1327,13 @@ func (s *AlmSettingsService) UpdateGitlab(opt *AlmSettingsUpdateGitlabOptions) (
 //
 // API endpoint: GET /api/alm_settings/validate.
 // Since: 8.6.
-func (s *AlmSettingsService) Validate(opt *AlmSettingsValidateOptions) (*AlmSettingsValidation, *http.Response, error) {
+func (s *AlmSettingsService) Validate(ctx context.Context, opt *AlmSettingsValidateOptions) (*AlmSettingsValidation, *http.Response, error) {
 	err := s.ValidateValidateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_settings/validate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_settings/validate", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // AnalysisReportsService handles communication with the analysis reports related methods
 // of the SonarQube API.
@@ -29,8 +32,8 @@ type AnalysisReportsQueueStatus struct {
 //
 // API endpoint: GET /api/analysis_reports/is_queue_empty.
 // WARNING: this is an internal API and may change without notice.
-func (s *AnalysisReportsService) QueueStatus() (*AnalysisReportsQueueStatus, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "analysis_reports/is_queue_empty", nil)
+func (s *AnalysisReportsService) QueueStatus(ctx context.Context) (*AnalysisReportsQueueStatus, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "analysis_reports/is_queue_empty", nil)
 	if err != nil {
 		return nil, nil, err
 	}

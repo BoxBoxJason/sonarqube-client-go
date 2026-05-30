@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -27,7 +28,7 @@ var _ = Describe("V2 Marketplace Service", Ordered, func() {
 			// typically not available in local test environments. We verify
 			// the API call completes (successfully or with a meaningful server
 			// error) without panicking.
-			result, resp, err := client.V2.Marketplace.BillAzureAccount()
+			result, resp, err := client.V2.Marketplace.BillAzureAccount(context.Background(), )
 			if err != nil {
 				// Expected in non-Azure environments: verify we got a server
 				// error response rather than a client-side failure

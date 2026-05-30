@@ -433,7 +433,7 @@ type SonarAPIRequestParameters struct {
 // For most use cases, prefer the version-specific helpers:
 //   - NewSonarQubeV1APIRequest for V1 API endpoints (go-querystring encoding).
 //   - NewSonarQubeV2APIRequest for V2 API endpoints (JSON-tag encoding, body support).
-func (c *Client) NewSonarQubeAPIRequest(params SonarAPIRequestParameters) (*http.Request, error) {
+func (c *Client) NewSonarQubeAPIRequest(ctx context.Context, params SonarAPIRequestParameters) (*http.Request, error) {
 	method := http.MethodGet
 	if params.Method != "" {
 		method = params.Method
@@ -450,7 +450,7 @@ func (c *Client) NewSonarQubeAPIRequest(params SonarAPIRequestParameters) (*http
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(context.Background(), method, requestURL, bodyReader)
+	req, err := http.NewRequestWithContext(ctx, method, requestURL, bodyReader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -464,7 +464,7 @@ func (c *Client) NewSonarQubeAPIRequest(params SonarAPIRequestParameters) (*http
 // relative to the client base URL. If opt is non-nil, it is encoded as URL
 // query parameters using go-querystring struct tags and appended to the
 // request URL.
-func (c *Client) NewSonarQubeV1APIRequest(method, path string, opt any) (*http.Request, error) {
+func (c *Client) NewSonarQubeV1APIRequest(ctx context.Context, method, path string, opt any) (*http.Request, error) {
 	var rawQuery url.Values
 
 	if opt != nil {
@@ -477,7 +477,7 @@ func (c *Client) NewSonarQubeV1APIRequest(method, path string, opt any) (*http.R
 	}
 
 	//nolint:exhaustruct // Headers and Body intentionally unset for V1 requests
-	return c.NewSonarQubeAPIRequest(SonarAPIRequestParameters{
+	return c.NewSonarQubeAPIRequest(ctx, SonarAPIRequestParameters{
 		Method:   method,
 		Path:     path,
 		RawQuery: rawQuery,
@@ -489,7 +489,7 @@ func (c *Client) NewSonarQubeV1APIRequest(method, path string, opt any) (*http.R
 // prepended. If queryOpt is non-nil, it is encoded as URL query parameters
 // using JSON struct tags. If body is non-nil, it is JSON-marshaled and used
 // as the request body.
-func (c *Client) NewSonarQubeV2APIRequest(method, path string, queryOpt any, body any) (*http.Request, error) {
+func (c *Client) NewSonarQubeV2APIRequest(ctx context.Context, method, path string, queryOpt any, body any) (*http.Request, error) {
 	var rawQuery url.Values
 
 	if queryOpt != nil {
@@ -502,7 +502,7 @@ func (c *Client) NewSonarQubeV2APIRequest(method, path string, queryOpt any, bod
 	}
 
 	//nolint:exhaustruct // Headers intentionally unset for V2 requests
-	return c.NewSonarQubeAPIRequest(SonarAPIRequestParameters{
+	return c.NewSonarQubeAPIRequest(ctx, SonarAPIRequestParameters{
 		Method:   method,
 		Path:     v2BasePath + path,
 		RawQuery: rawQuery,

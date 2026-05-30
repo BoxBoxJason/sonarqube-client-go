@@ -1,6 +1,8 @@
 package integration_testing_test
 
 import (
+	"context"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -32,7 +34,7 @@ var _ = Describe("License Service", Ordered, func() {
 	Describe("ActivateGracePeriod", func() {
 		Context("Functional Tests", func() {
 			It("should activate grace period or return an error on community edition", func() {
-				resp, err := client.Editions.ActivateGracePeriod()
+				resp, err := client.Editions.ActivateGracePeriod(context.Background())
 				if err != nil {
 					// Community edition does not expose this endpoint;
 					// a 404 or 403 is acceptable.
@@ -50,7 +52,7 @@ var _ = Describe("License Service", Ordered, func() {
 	Describe("Get", func() {
 		Context("Functional Tests", func() {
 			It("should return license information or an error on community edition", func() {
-				result, resp, err := client.Editions.Get()
+				result, resp, err := client.Editions.Get(context.Background())
 				if err != nil {
 					// Community edition does not expose the license endpoint;
 					// a 404 or 403 is acceptable.
@@ -69,7 +71,7 @@ var _ = Describe("License Service", Ordered, func() {
 	Describe("IsValidLicense", func() {
 		Context("Functional Tests", func() {
 			It("should return license validity or an error on community edition", func() {
-				result, resp, err := client.Editions.IsValidLicense()
+				result, resp, err := client.Editions.IsValidLicense(context.Background())
 				if err != nil {
 					// Community edition does not expose this endpoint;
 					// a 404 or 403 is acceptable.
@@ -88,14 +90,14 @@ var _ = Describe("License Service", Ordered, func() {
 	Describe("Set", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Editions.Set(nil)
+				resp, err := client.Editions.Set(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without license key", func() {
-				resp, err := client.Editions.Set(&sonar.LicenseSetOptions{})
+				resp, err := client.Editions.Set(context.Background(), &sonar.LicenseSetOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("License"))
 				Expect(resp).To(BeNil())
@@ -104,7 +106,7 @@ var _ = Describe("License Service", Ordered, func() {
 
 		Context("Functional Tests", func() {
 			It("should fail with an invalid license key", func() {
-				resp, err := client.Editions.Set(&sonar.LicenseSetOptions{
+				resp, err := client.Editions.Set(context.Background(), &sonar.LicenseSetOptions{
 					License: "invalid-license-key",
 				})
 				// Expect an error because the license key is invalid.
@@ -121,7 +123,7 @@ var _ = Describe("License Service", Ordered, func() {
 	Describe("UnsetLicense", func() {
 		Context("Functional Tests", func() {
 			It("should unset the license or return an error on community edition", func() {
-				resp, err := client.Editions.UnsetLicense()
+				resp, err := client.Editions.UnsetLicense(context.Background())
 				if err != nil {
 					// Community edition does not expose this endpoint;
 					// a 404 or 403 is acceptable.

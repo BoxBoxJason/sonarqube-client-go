@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -480,13 +481,13 @@ type QualitygatesUpdateConditionOptions struct {
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) AddGroup(opt *QualitygatesAddGroupOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) AddGroup(ctx context.Context, opt *QualitygatesAddGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddGroupOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/add_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/add_group", opt)
 	if err != nil {
 		return
 	}
@@ -503,13 +504,13 @@ func (s *QualitygatesService) AddGroup(opt *QualitygatesAddGroupOptions) (resp *
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) AddUser(opt *QualitygatesAddUserOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) AddUser(ctx context.Context, opt *QualitygatesAddUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/add_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/add_user", opt)
 	if err != nil {
 		return
 	}
@@ -524,13 +525,13 @@ func (s *QualitygatesService) AddUser(opt *QualitygatesAddUserOptions) (resp *ht
 
 // Copy copies a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Copy(opt *QualitygatesCopyOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) Copy(ctx context.Context, opt *QualitygatesCopyOptions) (resp *http.Response, err error) {
 	err = s.ValidateCopyOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/copy", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/copy", opt)
 	if err != nil {
 		return
 	}
@@ -545,13 +546,13 @@ func (s *QualitygatesService) Copy(opt *QualitygatesCopyOptions) (resp *http.Res
 
 // Create creates a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Create(opt *QualitygatesCreateOptions) (v *QualitygatesCreate, resp *http.Response, err error) {
+func (s *QualitygatesService) Create(ctx context.Context, opt *QualitygatesCreateOptions) (v *QualitygatesCreate, resp *http.Response, err error) {
 	err = s.ValidateCreateOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/create", opt)
 	if err != nil {
 		return
 	}
@@ -568,13 +569,13 @@ func (s *QualitygatesService) Create(opt *QualitygatesCreateOptions) (v *Quality
 
 // CreateCondition adds a new condition to a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) CreateCondition(opt *QualitygatesCreateConditionOptions) (v *QualitygatesCreateCondition, resp *http.Response, err error) {
+func (s *QualitygatesService) CreateCondition(ctx context.Context, opt *QualitygatesCreateConditionOptions) (v *QualitygatesCreateCondition, resp *http.Response, err error) {
 	err = s.ValidateCreateConditionOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/create_condition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/create_condition", opt)
 	if err != nil {
 		return
 	}
@@ -591,13 +592,13 @@ func (s *QualitygatesService) CreateCondition(opt *QualitygatesCreateConditionOp
 
 // DeleteCondition deletes a condition from a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) DeleteCondition(opt *QualitygatesDeleteConditionOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) DeleteCondition(ctx context.Context, opt *QualitygatesDeleteConditionOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeleteConditionOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/delete_condition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/delete_condition", opt)
 	if err != nil {
 		return
 	}
@@ -614,13 +615,13 @@ func (s *QualitygatesService) DeleteCondition(opt *QualitygatesDeleteConditionOp
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - 'Administer' rights on the project
-func (s *QualitygatesService) Unassign(opt *QualitygatesUnassignOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) Unassign(ctx context.Context, opt *QualitygatesUnassignOptions) (resp *http.Response, err error) {
 	err = s.ValidateUnassignOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/deselect", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/deselect", opt)
 	if err != nil {
 		return
 	}
@@ -635,13 +636,13 @@ func (s *QualitygatesService) Unassign(opt *QualitygatesUnassignOptions) (resp *
 
 // Delete deletes a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Delete(opt *QualitygatesDeleteOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) Delete(ctx context.Context, opt *QualitygatesDeleteOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/destroy", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/destroy", opt)
 	if err != nil {
 		return
 	}
@@ -659,13 +660,13 @@ func (s *QualitygatesService) Delete(opt *QualitygatesDeleteOptions) (resp *http
 //   - 'Administer System'
 //   - 'Administer' rights on the specified project
 //   - 'Browse' on the specified project
-func (s *QualitygatesService) GetByProject(opt *QualitygatesGetByProjectOptions) (v *QualitygatesGetByProject, resp *http.Response, err error) {
+func (s *QualitygatesService) GetByProject(ctx context.Context, opt *QualitygatesGetByProjectOptions) (v *QualitygatesGetByProject, resp *http.Response, err error) {
 	err = s.ValidateGetByProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/get_by_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualitygates/get_by_project", opt)
 	if err != nil {
 		return
 	}
@@ -681,8 +682,8 @@ func (s *QualitygatesService) GetByProject(opt *QualitygatesGetByProjectOptions)
 }
 
 // List gets a list of quality gates.
-func (s *QualitygatesService) List() (v *QualitygatesList, resp *http.Response, err error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/list", nil)
+func (s *QualitygatesService) List(ctx context.Context) (v *QualitygatesList, resp *http.Response, err error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualitygates/list", nil)
 	if err != nil {
 		return
 	}
@@ -706,13 +707,13 @@ func (s *QualitygatesService) List() (v *QualitygatesList, resp *http.Response, 
 //   - 'Administer' rights on the specified project
 //   - 'Browse' on the specified project
 //   - 'Execute Analysis' on the specified project
-func (s *QualitygatesService) ProjectStatus(opt *QualitygatesProjectStatusOptions) (v *QualitygatesProjectStatus, resp *http.Response, err error) {
+func (s *QualitygatesService) ProjectStatus(ctx context.Context, opt *QualitygatesProjectStatusOptions) (v *QualitygatesProjectStatus, resp *http.Response, err error) {
 	err = s.ValidateProjectStatusOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/project_status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualitygates/project_status", opt)
 	if err != nil {
 		return
 	}
@@ -731,13 +732,13 @@ func (s *QualitygatesService) ProjectStatus(opt *QualitygatesProjectStatusOption
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) RemoveGroup(opt *QualitygatesRemoveGroupOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) RemoveGroup(ctx context.Context, opt *QualitygatesRemoveGroupOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveGroupOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/remove_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/remove_group", opt)
 	if err != nil {
 		return
 	}
@@ -754,13 +755,13 @@ func (s *QualitygatesService) RemoveGroup(opt *QualitygatesRemoveGroupOptions) (
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) RemoveUser(opt *QualitygatesRemoveUserOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) RemoveUser(ctx context.Context, opt *QualitygatesRemoveUserOptions) (resp *http.Response, err error) {
 	err = s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/remove_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/remove_user", opt)
 	if err != nil {
 		return
 	}
@@ -775,13 +776,13 @@ func (s *QualitygatesService) RemoveUser(opt *QualitygatesRemoveUserOptions) (re
 
 // Rename renames a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Rename(opt *QualitygatesRenameOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) Rename(ctx context.Context, opt *QualitygatesRenameOptions) (resp *http.Response, err error) {
 	err = s.ValidateRenameOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/rename", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/rename", opt)
 	if err != nil {
 		return
 	}
@@ -796,13 +797,13 @@ func (s *QualitygatesService) Rename(opt *QualitygatesRenameOptions) (resp *http
 
 // Search searches for projects associated (or not) to a quality gate.
 // Only authorized projects for the current user will be returned.
-func (s *QualitygatesService) Search(opt *QualitygatesSearchOptions) (v *QualitygatesSearch, resp *http.Response, err error) {
+func (s *QualitygatesService) Search(ctx context.Context, opt *QualitygatesSearchOptions) (v *QualitygatesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualitygates/search", opt)
 	if err != nil {
 		return
 	}
@@ -821,13 +822,13 @@ func (s *QualitygatesService) Search(opt *QualitygatesSearchOptions) (v *Quality
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) SearchGroups(opt *QualitygatesSearchGroupsOptions) (v *QualitygatesSearchGroups, resp *http.Response, err error) {
+func (s *QualitygatesService) SearchGroups(ctx context.Context, opt *QualitygatesSearchGroupsOptions) (v *QualitygatesSearchGroups, resp *http.Response, err error) {
 	err = s.ValidateSearchGroupsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/search_groups", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualitygates/search_groups", opt)
 	if err != nil {
 		return
 	}
@@ -846,13 +847,13 @@ func (s *QualitygatesService) SearchGroups(opt *QualitygatesSearchGroupsOptions)
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - Edit right on the specified quality gate
-func (s *QualitygatesService) SearchUsers(opt *QualitygatesSearchUsersOptions) (v *QualitygatesSearchUsers, resp *http.Response, err error) {
+func (s *QualitygatesService) SearchUsers(ctx context.Context, opt *QualitygatesSearchUsersOptions) (v *QualitygatesSearchUsers, resp *http.Response, err error) {
 	err = s.ValidateSearchUsersOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/search_users", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualitygates/search_users", opt)
 	if err != nil {
 		return
 	}
@@ -871,13 +872,13 @@ func (s *QualitygatesService) SearchUsers(opt *QualitygatesSearchUsersOptions) (
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - 'Administer' right on the specified project
-func (s *QualitygatesService) Assign(opt *QualitygatesAssignOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) Assign(ctx context.Context, opt *QualitygatesAssignOptions) (resp *http.Response, err error) {
 	err = s.ValidateAssignOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/select", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/select", opt)
 	if err != nil {
 		return
 	}
@@ -892,13 +893,13 @@ func (s *QualitygatesService) Assign(opt *QualitygatesAssignOptions) (resp *http
 
 // SetDefault sets a quality gate as the default quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) SetDefault(opt *QualitygatesSetDefaultOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) SetDefault(ctx context.Context, opt *QualitygatesSetDefaultOptions) (resp *http.Response, err error) {
 	err = s.ValidateSetDefaultOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/set_as_default", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/set_as_default", opt)
 	if err != nil {
 		return
 	}
@@ -912,13 +913,13 @@ func (s *QualitygatesService) SetDefault(opt *QualitygatesSetDefaultOptions) (re
 }
 
 // Show displays the details of a quality gate.
-func (s *QualitygatesService) Show(opt *QualitygatesShowOptions) (v *QualitygatesShow, resp *http.Response, err error) {
+func (s *QualitygatesService) Show(ctx context.Context, opt *QualitygatesShowOptions) (v *QualitygatesShow, resp *http.Response, err error) {
 	err = s.ValidateShowOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "qualitygates/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "qualitygates/show", opt)
 	if err != nil {
 		return
 	}
@@ -935,13 +936,13 @@ func (s *QualitygatesService) Show(opt *QualitygatesShowOptions) (v *Qualitygate
 
 // UpdateCondition updates a condition attached to a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) UpdateCondition(opt *QualitygatesUpdateConditionOptions) (resp *http.Response, err error) {
+func (s *QualitygatesService) UpdateCondition(ctx context.Context, opt *QualitygatesUpdateConditionOptions) (resp *http.Response, err error) {
 	err = s.ValidateUpdateConditionOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "qualitygates/update_condition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "qualitygates/update_condition", opt)
 	if err != nil {
 		return
 	}

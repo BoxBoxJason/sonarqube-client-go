@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -28,13 +29,13 @@ var _ = Describe("Developers Service", Ordered, func() {
 
 		// Create a uniquely named test project for developer events to avoid collisions across runs.
 		projectKey := helpers.UniqueResourceName("developers")
-		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		testProject, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    projectKey,
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -55,7 +56,7 @@ var _ = Describe("Developers Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should search developer events with valid parameters", func() {
 				fromDate := time.Now().UTC().Add(-24 * time.Hour).Format("2006-01-02T15:04:05-0700")
-				result, resp, err := client.Developers.SearchEvents(&sonar.DevelopersSearchEventsOptions{
+				result, resp, err := client.Developers.SearchEvents(context.Background(), &sonar.DevelopersSearchEventsOptions{
 					From:     []string{fromDate},
 					Projects: []string{testProject.Project.Key},
 				})
@@ -77,7 +78,7 @@ var _ = Describe("Developers Service", Ordered, func() {
 
 		Context("Error Handling", func() {
 			It("should fail with missing from date", func() {
-				_, resp, err := client.Developers.SearchEvents(&sonar.DevelopersSearchEventsOptions{
+				_, resp, err := client.Developers.SearchEvents(context.Background(), &sonar.DevelopersSearchEventsOptions{
 					Projects: []string{testProject.Project.Key},
 				})
 				Expect(err).To(HaveOccurred())
@@ -86,7 +87,7 @@ var _ = Describe("Developers Service", Ordered, func() {
 
 			It("should fail with missing projects", func() {
 				fromDate := time.Now().UTC().Add(-24 * time.Hour).Format("2006-01-02T15:04:05-0700")
-				_, resp, err := client.Developers.SearchEvents(&sonar.DevelopersSearchEventsOptions{
+				_, resp, err := client.Developers.SearchEvents(context.Background(), &sonar.DevelopersSearchEventsOptions{
 					From: []string{fromDate},
 				})
 				Expect(err).To(HaveOccurred())
@@ -94,7 +95,7 @@ var _ = Describe("Developers Service", Ordered, func() {
 			})
 
 			It("should fail with nil options", func() {
-				_, resp, err := client.Developers.SearchEvents(nil)
+				_, resp, err := client.Developers.SearchEvents(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})

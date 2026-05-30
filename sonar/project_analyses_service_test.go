@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -30,7 +31,7 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
+		result, resp, err := client.ProjectAnalyses.CreateEvent(context.Background(), &ProjectAnalysesCreateEventOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 			Category: "VERSION",
 			Name:     "1.0",
@@ -43,14 +44,14 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.CreateEvent(nil)
+		_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing analysis", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
+		_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), &ProjectAnalysesCreateEventOptions{
 			Name: "1.0",
 		})
 		assert.Error(t, err)
@@ -59,7 +60,7 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 	t.Run("missing name", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
+		_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), &ProjectAnalysesCreateEventOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 		})
 		assert.Error(t, err)
@@ -68,7 +69,7 @@ func TestProjectAnalysesService_CreateEvent(t *testing.T) {
 	t.Run("invalid category", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.CreateEvent(&ProjectAnalysesCreateEventOptions{
+		_, _, err := client.ProjectAnalyses.CreateEvent(context.Background(), &ProjectAnalysesCreateEventOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 			Category: "INVALID",
 			Name:     "1.0",
@@ -88,7 +89,7 @@ func TestProjectAnalysesService_Delete(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOptions{
+		resp, err := client.ProjectAnalyses.Delete(context.Background(), &ProjectAnalysesDeleteOptions{
 			Analysis: "AU-TpxcA-iU5OvuD2FL0",
 		})
 		require.NoError(t, err)
@@ -98,14 +99,14 @@ func TestProjectAnalysesService_Delete(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectAnalyses.Delete(nil)
+		_, err := client.ProjectAnalyses.Delete(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing analysis", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectAnalyses.Delete(&ProjectAnalysesDeleteOptions{})
+		_, err := client.ProjectAnalyses.Delete(context.Background(), &ProjectAnalysesDeleteOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -121,7 +122,7 @@ func TestProjectAnalysesService_DeleteEvent(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		resp, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOptions{
+		resp, err := client.ProjectAnalyses.DeleteEvent(context.Background(), &ProjectAnalysesDeleteEventOptions{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 		})
 		require.NoError(t, err)
@@ -131,14 +132,14 @@ func TestProjectAnalysesService_DeleteEvent(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectAnalyses.DeleteEvent(nil)
+		_, err := client.ProjectAnalyses.DeleteEvent(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing event", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectAnalyses.DeleteEvent(&ProjectAnalysesDeleteEventOptions{})
+		_, err := client.ProjectAnalyses.DeleteEvent(context.Background(), &ProjectAnalysesDeleteEventOptions{})
 		assert.Error(t, err)
 	})
 }
@@ -176,7 +177,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
+		result, resp, err := client.ProjectAnalyses.Search(context.Background(), &ProjectAnalysesSearchOptions{
 			Project: "my-project",
 		})
 		require.NoError(t, err)
@@ -200,7 +201,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
+		_, _, err := client.ProjectAnalyses.Search(context.Background(), &ProjectAnalysesSearchOptions{
 			Project:  "my-project",
 			Branch:   "main",
 			Category: "VERSION",
@@ -218,7 +219,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
+		_, _, err := client.ProjectAnalyses.Search(context.Background(), &ProjectAnalysesSearchOptions{
 			Project: "my-project",
 			From:    "2022-01-01T00:00:00Z",
 			To:      "2022-12-31T23:59:59Z",
@@ -229,21 +230,21 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(nil)
+		_, _, err := client.ProjectAnalyses.Search(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing project", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{})
+		_, _, err := client.ProjectAnalyses.Search(context.Background(), &ProjectAnalysesSearchOptions{})
 		assert.Error(t, err)
 	})
 
 	t.Run("invalid category", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
+		_, _, err := client.ProjectAnalyses.Search(context.Background(), &ProjectAnalysesSearchOptions{
 			Project:  "my-project",
 			Category: "INVALID",
 		})
@@ -253,7 +254,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 	t.Run("invalid from date", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
+		_, _, err := client.ProjectAnalyses.Search(context.Background(), &ProjectAnalysesSearchOptions{
 			Project: "my-project",
 			From:    "invalid-date",
 		})
@@ -263,7 +264,7 @@ func TestProjectAnalysesService_Search(t *testing.T) {
 	t.Run("invalid to date", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.Search(&ProjectAnalysesSearchOptions{
+		_, _, err := client.ProjectAnalyses.Search(context.Background(), &ProjectAnalysesSearchOptions{
 			Project: "my-project",
 			To:      "invalid-date",
 		})
@@ -297,7 +298,7 @@ func TestProjectAnalysesService_SearchAll(t *testing.T) {
 		}
 		opt.PageSize = 1
 
-		result, _, err := client.ProjectAnalyses.SearchAll(opt)
+		result, _, err := client.ProjectAnalyses.SearchAll(context.Background(), opt)
 		require.NoError(t, err)
 		assert.Len(t, result, 2)
 		assert.Equal(t, 2, callCount)
@@ -306,7 +307,7 @@ func TestProjectAnalysesService_SearchAll(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.SearchAll(nil)
+		_, _, err := client.ProjectAnalyses.SearchAll(context.Background(), nil)
 		assert.Error(t, err)
 	})
 }
@@ -331,7 +332,7 @@ func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOptions{
+		result, resp, err := client.ProjectAnalyses.UpdateEvent(context.Background(), &ProjectAnalysesUpdateEventOptions{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 			Name:  "2.0",
 		})
@@ -343,14 +344,14 @@ func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 	t.Run("nil option", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.UpdateEvent(nil)
+		_, _, err := client.ProjectAnalyses.UpdateEvent(context.Background(), nil)
 		assert.Error(t, err)
 	})
 
 	t.Run("missing event", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOptions{
+		_, _, err := client.ProjectAnalyses.UpdateEvent(context.Background(), &ProjectAnalysesUpdateEventOptions{
 			Name: "2.0",
 		})
 		assert.Error(t, err)
@@ -359,7 +360,7 @@ func TestProjectAnalysesService_UpdateEvent(t *testing.T) {
 	t.Run("missing name", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.ProjectAnalyses.UpdateEvent(&ProjectAnalysesUpdateEventOptions{
+		_, _, err := client.ProjectAnalyses.UpdateEvent(context.Background(), &ProjectAnalysesUpdateEventOptions{
 			Event: "AU-TpxcA-iU5OvuD2FL1",
 		})
 		assert.Error(t, err)

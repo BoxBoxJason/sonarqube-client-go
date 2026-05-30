@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -40,7 +41,7 @@ func TestComponents_App(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.App(&ComponentsAppOptions{
+	result, resp, err := client.Components.App(context.Background(), &ComponentsAppOptions{
 		Component: "my_project:src/file.go",
 		Branch:    "feature/my_branch",
 	})
@@ -77,7 +78,7 @@ func TestComponents_App_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Components.App(tt.opt)
+			_, _, err := client.Components.App(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -111,7 +112,7 @@ func TestComponents_Search(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Search(&ComponentsSearchOptions{
+	result, resp, err := client.Components.Search(context.Background(), &ComponentsSearchOptions{
 		Qualifiers: []string{ProjectQualifierTRK},
 		Query:      "sonar",
 	})
@@ -155,7 +156,7 @@ func TestComponents_Search_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Components.Search(tt.opt)
+			_, _, err := client.Components.Search(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -201,7 +202,7 @@ func TestComponents_SearchProjects(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.SearchProjects(&ComponentsSearchProjectsOptions{
+	result, resp, err := client.Components.SearchProjects(context.Background(), &ComponentsSearchProjectsOptions{
 		Facets: []string{"alert_status"},
 		Filter: "coverage >= 80",
 	})
@@ -243,7 +244,7 @@ func TestComponents_SearchProjects_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Components.SearchProjects(tt.opt)
+			_, _, err := client.Components.SearchProjects(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -286,7 +287,7 @@ func TestComponents_Show(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Show(&ComponentsShowOptions{
+	result, resp, err := client.Components.Show(context.Background(), &ComponentsShowOptions{
 		Component: "my_project:src/file.go",
 	})
 	require.NoError(t, err)
@@ -315,7 +316,7 @@ func TestComponents_Show_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Components.Show(tt.opt)
+			_, _, err := client.Components.Show(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -353,7 +354,7 @@ func TestComponents_Suggestions(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Suggestions(&ComponentsSuggestionsOptions{
+	result, resp, err := client.Components.Suggestions(context.Background(), &ComponentsSuggestionsOptions{
 		Search: "sonar",
 	})
 	require.NoError(t, err)
@@ -392,7 +393,7 @@ func TestComponents_Suggestions_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Components.Suggestions(tt.opt)
+			_, _, err := client.Components.Suggestions(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -442,7 +443,7 @@ func TestComponents_Tree(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Components.Tree(&ComponentsTreeOptions{
+	result, resp, err := client.Components.Tree(context.Background(), &ComponentsTreeOptions{
 		Component: "my_project",
 		Strategy:  MeasureStrategyChildren,
 	})
@@ -470,7 +471,7 @@ func TestComponents_Tree_WithQualifiers(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	_, resp, err := client.Components.Tree(&ComponentsTreeOptions{
+	_, resp, err := client.Components.Tree(context.Background(), &ComponentsTreeOptions{
 		Component:  "my_project",
 		Qualifiers: []string{"FIL", "UTS"},
 		Sort:       []string{"name", "path"},
@@ -526,7 +527,7 @@ func TestComponents_Tree_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Components.Tree(tt.opt)
+			_, _, err := client.Components.Tree(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -551,7 +552,7 @@ func TestComponents_Search_WithPagination(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, _, err := client.Components.Search(&ComponentsSearchOptions{
+	result, _, err := client.Components.Search(context.Background(), &ComponentsSearchOptions{
 		Qualifiers: []string{ProjectQualifierTRK},
 		PaginationArgs: PaginationArgs{
 			Page:     2,

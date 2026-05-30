@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"bytes"
 	"io"
 	"net/http"
@@ -18,7 +19,7 @@ func TestAnalysisV2_GetVersion(t *testing.T) {
 	server := newTestServer(t, mockTextHandler(t, http.MethodGet, "/v2/analysis/version", http.StatusOK, "10.5.0.12345"))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetVersion()
+	result, resp, err := client.V2.Analysis.GetVersion(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "10.5.0.12345", *result)
@@ -36,7 +37,7 @@ func TestAnalysisV2_GetJresMetadata(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/analysis/jres", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetJresMetadata(nil)
+	result, resp, err := client.V2.Analysis.GetJresMetadata(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result, 2)
@@ -53,7 +54,7 @@ func TestAnalysisV2_GetJresMetadata_WithFilter(t *testing.T) {
 		response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetJresMetadata(&AnalysisJresOptions{
+	result, resp, err := client.V2.Analysis.GetJresMetadata(context.Background(), &AnalysisJresOptions{
 		Os:   "linux",
 		Arch: "x64",
 	})
@@ -73,7 +74,7 @@ func TestAnalysisV2_DownloadJre(t *testing.T) {
 	client := newTestClient(t, server.url())
 
 	var buf bytes.Buffer
-	resp, err := client.V2.Analysis.DownloadJre("jre-1", &buf)
+	resp, err := client.V2.Analysis.DownloadJre(context.Background(), "jre-1", &buf)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, binaryData, buf.Bytes())
@@ -93,7 +94,7 @@ func TestAnalysisV2_DownloadJre_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp, err := client.V2.Analysis.DownloadJre(tt.jreID, tt.writer)
+			resp, err := client.V2.Analysis.DownloadJre(context.Background(), tt.jreID, tt.writer)
 			assert.Error(t, err)
 			assert.Nil(t, resp)
 		})
@@ -116,7 +117,7 @@ func TestAnalysisV2_GetJreMetadata(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/analysis/jres/jre-1", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetJreMetadata("jre-1")
+	result, resp, err := client.V2.Analysis.GetJreMetadata(context.Background(), "jre-1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "jre-1", result.Id)
@@ -126,7 +127,7 @@ func TestAnalysisV2_GetJreMetadata(t *testing.T) {
 func TestAnalysisV2_GetJreMetadata_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.Analysis.GetJreMetadata("")
+	_, _, err := client.V2.Analysis.GetJreMetadata(context.Background(), "")
 	assert.Error(t, err)
 }
 
@@ -141,7 +142,7 @@ func TestAnalysisV2_DownloadScannerEngine(t *testing.T) {
 	client := newTestClient(t, server.url())
 
 	var buf bytes.Buffer
-	resp, err := client.V2.Analysis.DownloadScannerEngine(&buf)
+	resp, err := client.V2.Analysis.DownloadScannerEngine(context.Background(), &buf)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, binaryData, buf.Bytes())
@@ -150,7 +151,7 @@ func TestAnalysisV2_DownloadScannerEngine(t *testing.T) {
 func TestAnalysisV2_DownloadScannerEngine_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.V2.Analysis.DownloadScannerEngine(nil)
+	resp, err := client.V2.Analysis.DownloadScannerEngine(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -167,7 +168,7 @@ func TestAnalysisV2_GetScannerEngineMetadata(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/analysis/engine", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetScannerEngineMetadata()
+	result, resp, err := client.V2.Analysis.GetScannerEngineMetadata(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "scanner-engine.jar", result.Filename)
@@ -195,7 +196,7 @@ func TestAnalysisV2_GetActiveRules(t *testing.T) {
 		response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetActiveRules(&AnalysisActiveRuleOptions{
+	result, resp, err := client.V2.Analysis.GetActiveRules(context.Background(), &AnalysisActiveRuleOptions{
 		ProjectKey: "my-project",
 	})
 	require.NoError(t, err)
@@ -219,7 +220,7 @@ func TestAnalysisV2_GetActiveRules_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.Analysis.GetActiveRules(tt.opt)
+			_, _, err := client.V2.Analysis.GetActiveRules(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}

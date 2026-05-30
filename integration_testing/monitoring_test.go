@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -35,7 +36,7 @@ var _ = Describe("Monitoring Service", Ordered, func() {
 	Describe("Metrics", func() {
 		Context("Functional Tests", func() {
 			It("should get monitoring metrics", func() {
-				result, resp, err := client.Monitoring.Metrics()
+				result, resp, err := client.Monitoring.Metrics(context.Background(), )
 				checkAuthRequired(resp)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -43,7 +44,7 @@ var _ = Describe("Monitoring Service", Ordered, func() {
 			})
 
 			It("should return Prometheus format metrics with specific metric categories", func() {
-				result, resp, err := client.Monitoring.Metrics()
+				result, resp, err := client.Monitoring.Metrics(context.Background(), )
 				checkAuthRequired(resp)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -54,12 +55,12 @@ var _ = Describe("Monitoring Service", Ordered, func() {
 			})
 
 			It("should return consistent results on multiple calls", func() {
-				result1, resp1, err := client.Monitoring.Metrics()
+				result1, resp1, err := client.Monitoring.Metrics(context.Background(), )
 				checkAuthRequired(resp1)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
-				result2, resp2, err := client.Monitoring.Metrics()
+				result2, resp2, err := client.Monitoring.Metrics(context.Background(), )
 				checkAuthRequired(resp2)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))

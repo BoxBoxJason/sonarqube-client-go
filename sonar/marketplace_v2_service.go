@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -30,8 +31,8 @@ type MarketplaceAzureBillingV2 struct {
 
 // BillAzureAccount bills the user's Azure account with the cost of the
 // SonarQube Server license. Used by admins.
-func (s *MarketplaceService) BillAzureAccount() (*MarketplaceAzureBillingV2, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodPost, "marketplace/azure/billing", nil, nil)
+func (s *MarketplaceService) BillAzureAccount(ctx context.Context) (*MarketplaceAzureBillingV2, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "marketplace/azure/billing", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

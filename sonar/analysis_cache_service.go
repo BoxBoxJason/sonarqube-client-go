@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -74,13 +75,13 @@ func (s *AnalysisCacheService) ValidateGetOpt(opt *AnalysisCacheGetOptions) erro
 //
 // API endpoint: POST /api/analysis_cache/clear.
 // WARNING: This is an internal API and may change without notice.
-func (s *AnalysisCacheService) Clear(opt *AnalysisCacheClearOptions) (*http.Response, error) {
+func (s *AnalysisCacheService) Clear(ctx context.Context, opt *AnalysisCacheClearOptions) (*http.Response, error) {
 	err := s.ValidateClearOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "analysis_cache/clear", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "analysis_cache/clear", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -99,13 +100,13 @@ func (s *AnalysisCacheService) Clear(opt *AnalysisCacheClearOptions) (*http.Resp
 // The response body contains the raw binary data; the caller is responsible for reading and closing it.
 //
 // API endpoint: GET /api/analysis_cache/get.
-func (s *AnalysisCacheService) Get(opt *AnalysisCacheGetOptions) (*http.Response, error) {
+func (s *AnalysisCacheService) Get(ctx context.Context, opt *AnalysisCacheGetOptions) (*http.Response, error) {
 	err := s.ValidateGetOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "analysis_cache/get", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "analysis_cache/get", opt)
 	if err != nil {
 		return nil, err
 	}

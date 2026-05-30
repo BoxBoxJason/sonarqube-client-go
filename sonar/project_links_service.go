@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // ProjectLinksService handles communication with the project links related methods
 // of the SonarQube API.
@@ -154,13 +157,13 @@ func (s *ProjectLinksService) ValidateSearchOpt(opt *ProjectLinksSearchOptions) 
 //
 // API endpoint: POST /api/project_links/create.
 // Since: 6.1.
-func (s *ProjectLinksService) Create(opt *ProjectLinksCreateOptions) (*ProjectLinksCreate, *http.Response, error) {
+func (s *ProjectLinksService) Create(ctx context.Context, opt *ProjectLinksCreateOptions) (*ProjectLinksCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_links/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_links/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -180,13 +183,13 @@ func (s *ProjectLinksService) Create(opt *ProjectLinksCreateOptions) (*ProjectLi
 //
 // API endpoint: POST /api/project_links/delete.
 // Since: 6.1.
-func (s *ProjectLinksService) Delete(opt *ProjectLinksDeleteOptions) (*http.Response, error) {
+func (s *ProjectLinksService) Delete(ctx context.Context, opt *ProjectLinksDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_links/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_links/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -208,13 +211,13 @@ func (s *ProjectLinksService) Delete(opt *ProjectLinksDeleteOptions) (*http.Resp
 //
 // API endpoint: GET /api/project_links/search.
 // Since: 6.1.
-func (s *ProjectLinksService) Search(opt *ProjectLinksSearchOptions) (*ProjectLinksSearch, *http.Response, error) {
+func (s *ProjectLinksService) Search(ctx context.Context, opt *ProjectLinksSearchOptions) (*ProjectLinksSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_links/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_links/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}

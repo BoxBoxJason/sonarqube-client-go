@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -26,14 +27,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 		// Create a test project for project-scoped webhooks
 		projectKey = helpers.UniqueResourceName("webhook")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    "Webhooks Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -53,7 +54,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 	Describe("List", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Webhooks.List(nil)
+				result, resp, err := client.Webhooks.List(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -63,14 +64,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should list global webhooks", func() {
-				result, resp, err := client.Webhooks.List(&sonar.WebhooksListOptions{})
+				result, resp, err := client.Webhooks.List(context.Background(), &sonar.WebhooksListOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 			})
 
 			It("should list project webhooks", func() {
-				result, resp, err := client.Webhooks.List(&sonar.WebhooksListOptions{
+				result, resp, err := client.Webhooks.List(context.Background(), &sonar.WebhooksListOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -86,7 +87,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 	Describe("Create", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Webhooks.Create(nil)
+				result, resp, err := client.Webhooks.Create(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -94,7 +95,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			})
 
 			It("should fail without required name", func() {
-				result, resp, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				result, resp, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					URL: "https://example.com/webhook",
 				})
 				Expect(err).To(HaveOccurred())
@@ -104,7 +105,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			})
 
 			It("should fail without required URL", func() {
-				result, resp, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				result, resp, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					Name: "Test Webhook",
 				})
 				Expect(err).To(HaveOccurred())
@@ -114,7 +115,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			})
 
 			It("should fail with secret too short", func() {
-				result, resp, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				result, resp, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					Name:   "Test Webhook",
 					URL:    "https://example.com/webhook",
 					Secret: "short",
@@ -129,7 +130,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 		Context("Valid Requests", func() {
 			It("should create a global webhook", func() {
 				webhookName := helpers.UniqueResourceName("wh")
-				result, resp, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				result, resp, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					Name: webhookName,
 					URL:  "https://example.com/webhook",
 				})
@@ -140,14 +141,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 				Expect(result.Webhook.Name).To(Equal(webhookName))
 
 				// Clean up
-				_, _ = client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{
+				_, _ = client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{
 					Webhook: result.Webhook.Key,
 				})
 			})
 
 			It("should create a project webhook", func() {
 				webhookName := helpers.UniqueResourceName("wh")
-				result, resp, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				result, resp, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					Name:    webhookName,
 					URL:     "https://example.com/webhook",
 					Project: projectKey,
@@ -158,14 +159,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 				Expect(result.Webhook.Key).NotTo(BeEmpty())
 
 				// Clean up
-				_, _ = client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{
+				_, _ = client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{
 					Webhook: result.Webhook.Key,
 				})
 			})
 
 			It("should create a webhook with secret", func() {
 				webhookName := helpers.UniqueResourceName("wh")
-				result, resp, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				result, resp, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					Name:   webhookName,
 					URL:    "https://example.com/webhook",
 					Secret: "super-secret-key-16chars",
@@ -176,7 +177,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 				Expect(result.Webhook.HasSecret).To(BeTrue())
 
 				// Clean up
-				_, _ = client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{
+				_, _ = client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{
 					Webhook: result.Webhook.Key,
 				})
 			})
@@ -189,14 +190,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 	Describe("Update", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Webhooks.Update(nil)
+				resp, err := client.Webhooks.Update(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required webhook key", func() {
-				resp, err := client.Webhooks.Update(&sonar.WebhooksUpdateOptions{
+				resp, err := client.Webhooks.Update(context.Background(), &sonar.WebhooksUpdateOptions{
 					Name: "Updated Name",
 					URL:  "https://example.com/updated",
 				})
@@ -206,7 +207,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			})
 
 			It("should fail without required name", func() {
-				resp, err := client.Webhooks.Update(&sonar.WebhooksUpdateOptions{
+				resp, err := client.Webhooks.Update(context.Background(), &sonar.WebhooksUpdateOptions{
 					Webhook: "some-key",
 					URL:     "https://example.com/updated",
 				})
@@ -216,7 +217,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			})
 
 			It("should fail without required URL", func() {
-				resp, err := client.Webhooks.Update(&sonar.WebhooksUpdateOptions{
+				resp, err := client.Webhooks.Update(context.Background(), &sonar.WebhooksUpdateOptions{
 					Webhook: "some-key",
 					Name:    "Updated Name",
 				})
@@ -230,7 +231,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			It("should update a webhook", func() {
 				// Create a webhook first
 				webhookName := helpers.UniqueResourceName("wh")
-				createResult, _, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				createResult, _, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					Name: webhookName,
 					URL:  "https://example.com/webhook",
 				})
@@ -238,7 +239,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 				// Update it
 				updatedName := webhookName + "-updated"
-				resp, err := client.Webhooks.Update(&sonar.WebhooksUpdateOptions{
+				resp, err := client.Webhooks.Update(context.Background(), &sonar.WebhooksUpdateOptions{
 					Webhook: createResult.Webhook.Key,
 					Name:    updatedName,
 					URL:     "https://example.com/updated",
@@ -247,7 +248,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up
-				_, _ = client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{
+				_, _ = client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{
 					Webhook: createResult.Webhook.Key,
 				})
 			})
@@ -255,7 +256,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 		Context("Non-Existent Webhook", func() {
 			It("should fail for non-existent webhook", func() {
-				resp, err := client.Webhooks.Update(&sonar.WebhooksUpdateOptions{
+				resp, err := client.Webhooks.Update(context.Background(), &sonar.WebhooksUpdateOptions{
 					Webhook: "non-existent-webhook-key",
 					Name:    "Updated Name",
 					URL:     "https://example.com/updated",
@@ -274,14 +275,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 	Describe("Delete", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Webhooks.Delete(nil)
+				resp, err := client.Webhooks.Delete(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required webhook key", func() {
-				resp, err := client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{})
+				resp, err := client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Webhook"))
 				Expect(resp).To(BeNil())
@@ -292,14 +293,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			It("should delete a webhook", func() {
 				// Create a webhook first
 				webhookName := helpers.UniqueResourceName("wh")
-				createResult, _, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+				createResult, _, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 					Name: webhookName,
 					URL:  "https://example.com/webhook",
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				// Delete it
-				resp, err := client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{
+				resp, err := client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{
 					Webhook: createResult.Webhook.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -309,7 +310,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 		Context("Non-Existent Webhook", func() {
 			It("should fail for non-existent webhook", func() {
-				resp, err := client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{
+				resp, err := client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{
 					Webhook: "non-existent-webhook-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -326,7 +327,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 	Describe("Deliveries", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Webhooks.Deliveries(nil)
+				result, resp, err := client.Webhooks.Deliveries(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -336,7 +337,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should list deliveries for a project", func() {
-				result, resp, err := client.Webhooks.Deliveries(&sonar.WebhooksDeliveriesOptions{
+				result, resp, err := client.Webhooks.Deliveries(context.Background(), &sonar.WebhooksDeliveriesOptions{
 					ComponentKey: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -345,7 +346,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			})
 
 			It("should list deliveries with pagination", func() {
-				result, resp, err := client.Webhooks.Deliveries(&sonar.WebhooksDeliveriesOptions{
+				result, resp, err := client.Webhooks.Deliveries(context.Background(), &sonar.WebhooksDeliveriesOptions{
 					ComponentKey: projectKey,
 					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 10,
@@ -365,7 +366,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 	Describe("Delivery", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Webhooks.Delivery(nil)
+				result, resp, err := client.Webhooks.Delivery(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -373,7 +374,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			})
 
 			It("should fail without required DeliveryID", func() {
-				result, resp, err := client.Webhooks.Delivery(&sonar.WebhooksDeliveryOptions{})
+				result, resp, err := client.Webhooks.Delivery(context.Background(), &sonar.WebhooksDeliveryOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("DeliveryID"))
 				Expect(result).To(BeNil())
@@ -383,7 +384,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 		Context("Non-Existent Delivery", func() {
 			It("should fail for non-existent delivery", func() {
-				result, resp, err := client.Webhooks.Delivery(&sonar.WebhooksDeliveryOptions{
+				result, resp, err := client.Webhooks.Delivery(context.Background(), &sonar.WebhooksDeliveryOptions{
 					DeliveryID: "non-existent-delivery-id",
 				})
 				Expect(err).To(HaveOccurred())
@@ -402,7 +403,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 		It("should create, list, update, and delete a webhook", func() {
 			// Create a webhook
 			webhookName := helpers.UniqueResourceName("wh")
-			createResult, resp, err := client.Webhooks.Create(&sonar.WebhooksCreateOptions{
+			createResult, resp, err := client.Webhooks.Create(context.Background(), &sonar.WebhooksCreateOptions{
 				Name: webhookName,
 				URL:  "https://example.com/webhook",
 			})
@@ -412,7 +413,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			webhookKey := createResult.Webhook.Key
 
 			// List and verify it's there
-			listResult, resp, err := client.Webhooks.List(&sonar.WebhooksListOptions{})
+			listResult, resp, err := client.Webhooks.List(context.Background(), &sonar.WebhooksListOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
@@ -428,7 +429,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 
 			// Update the webhook
 			updatedName := webhookName + "-updated"
-			resp, err = client.Webhooks.Update(&sonar.WebhooksUpdateOptions{
+			resp, err = client.Webhooks.Update(context.Background(), &sonar.WebhooksUpdateOptions{
 				Webhook: webhookKey,
 				Name:    updatedName,
 				URL:     "https://example.com/updated",
@@ -437,7 +438,7 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify update
-			listResult, _, err = client.Webhooks.List(&sonar.WebhooksListOptions{})
+			listResult, _, err = client.Webhooks.List(context.Background(), &sonar.WebhooksListOptions{})
 			Expect(err).NotTo(HaveOccurred())
 
 			for _, w := range listResult.Webhooks {
@@ -449,14 +450,14 @@ var _ = Describe("Webhooks Service", Ordered, func() {
 			}
 
 			// Delete the webhook
-			resp, err = client.Webhooks.Delete(&sonar.WebhooksDeleteOptions{
+			resp, err = client.Webhooks.Delete(context.Background(), &sonar.WebhooksDeleteOptions{
 				Webhook: webhookKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify it's gone
-			listResult, _, err = client.Webhooks.List(&sonar.WebhooksListOptions{})
+			listResult, _, err = client.Webhooks.List(context.Background(), &sonar.WebhooksListOptions{})
 			Expect(err).NotTo(HaveOccurred())
 
 			found = false

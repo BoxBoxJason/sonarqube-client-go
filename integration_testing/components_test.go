@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -36,7 +37,7 @@ var _ = Describe("Components Service", Ordered, func() {
 	// =========================================================================
 	Describe("Search", func() {
 		It("should search for projects", func() {
-			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOptions{
+			result, resp, err := client.Components.Search(context.Background(), &sonar.ComponentsSearchOptions{
 				Qualifiers: []string{sonar.ProjectQualifierTRK},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -46,7 +47,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should search projects with pagination", func() {
-			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOptions{
+			result, resp, err := client.Components.Search(context.Background(), &sonar.ComponentsSearchOptions{
 				Qualifiers: []string{sonar.ProjectQualifierTRK},
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
@@ -60,14 +61,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should search projects by query", func() {
 			// First create a project to search for
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
@@ -80,7 +81,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			}
 
 			// Search for it
-			result, resp, err := client.Components.Search(&sonar.ComponentsSearchOptions{
+			result, resp, err := client.Components.Search(context.Background(), &sonar.ComponentsSearchOptions{
 				Qualifiers: []string{sonar.ProjectQualifierTRK},
 				Query:      query,
 			})
@@ -91,13 +92,13 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Components.Search(nil)
+				_, resp, err := client.Components.Search(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing qualifiers", func() {
-				_, resp, err := client.Components.Search(&sonar.ComponentsSearchOptions{})
+				_, resp, err := client.Components.Search(context.Background(), &sonar.ComponentsSearchOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -109,14 +110,14 @@ var _ = Describe("Components Service", Ordered, func() {
 	// =========================================================================
 	Describe("SearchProjects", func() {
 		It("should search for projects", func() {
-			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOptions{})
+			result, resp, err := client.Components.SearchProjects(context.Background(), &sonar.ComponentsSearchProjectsOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 		})
 
 		It("should search projects with pagination", func() {
-			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOptions{
+			result, resp, err := client.Components.SearchProjects(context.Background(), &sonar.ComponentsSearchProjectsOptions{
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 5,
 				},
@@ -129,14 +130,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should search projects with filter by name", func() {
 			// First create a project to search for
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
@@ -149,7 +150,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			}
 
 			// Search with filter
-			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOptions{
+			result, resp, err := client.Components.SearchProjects(context.Background(), &sonar.ComponentsSearchProjectsOptions{
 				Filter: "query = \"" + filterPrefix + "\"",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -158,7 +159,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should search projects with facets", func() {
-			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOptions{
+			result, resp, err := client.Components.SearchProjects(context.Background(), &sonar.ComponentsSearchProjectsOptions{
 				Facets: []string{"languages", "tags"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -167,7 +168,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should search projects sorted by name", func() {
-			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOptions{
+			result, resp, err := client.Components.SearchProjects(context.Background(), &sonar.ComponentsSearchProjectsOptions{
 				Sort:      sonar.FieldName,
 				Ascending: true,
 			})
@@ -178,7 +179,7 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Components.SearchProjects(nil)
+				_, resp, err := client.Components.SearchProjects(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -194,14 +195,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		BeforeAll(func() {
 			// Create a project for Show tests
 			projectKey = helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
@@ -209,7 +210,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should show component details", func() {
-			result, resp, err := client.Components.Show(&sonar.ComponentsShowOptions{
+			result, resp, err := client.Components.Show(context.Background(), &sonar.ComponentsShowOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -220,7 +221,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should return ancestors for project", func() {
-			result, resp, err := client.Components.Show(&sonar.ComponentsShowOptions{
+			result, resp, err := client.Components.Show(context.Background(), &sonar.ComponentsShowOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -231,19 +232,19 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Components.Show(nil)
+				_, resp, err := client.Components.Show(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing component", func() {
-				_, resp, err := client.Components.Show(&sonar.ComponentsShowOptions{})
+				_, resp, err := client.Components.Show(context.Background(), &sonar.ComponentsShowOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent component", func() {
-				_, resp, err := client.Components.Show(&sonar.ComponentsShowOptions{
+				_, resp, err := client.Components.Show(context.Background(), &sonar.ComponentsShowOptions{
 					Component: "non-existent-component-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -261,14 +262,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		BeforeAll(func() {
 			// Create a project for Tree tests
 			projectKey = helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
@@ -276,7 +277,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get component tree", func() {
-			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+			result, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -286,7 +287,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with all strategy", func() {
-			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+			result, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 				Component: projectKey,
 				Strategy:  sonar.MeasureStrategyAll,
 			})
@@ -296,7 +297,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with children strategy", func() {
-			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+			result, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 				Component: projectKey,
 				Strategy:  sonar.MeasureStrategyChildren,
 			})
@@ -306,7 +307,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with leaves strategy", func() {
-			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+			result, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 				Component: projectKey,
 				Strategy:  sonar.MeasureStrategyLeaves,
 			})
@@ -316,7 +317,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with pagination", func() {
-			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+			result, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 				Component: projectKey,
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 10,
@@ -328,7 +329,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree with qualifiers filter", func() {
-			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+			result, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 				Component:  projectKey,
 				Qualifiers: []string{"FIL", "DIR"},
 			})
@@ -338,7 +339,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get tree sorted by name", func() {
-			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+			result, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 				Component: projectKey,
 				Sort:      []string{sonar.FieldName},
 				Ascending: true,
@@ -350,19 +351,19 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Components.Tree(nil)
+				_, resp, err := client.Components.Tree(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing component", func() {
-				_, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{})
+				_, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid strategy", func() {
-				_, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
+				_, resp, err := client.Components.Tree(context.Background(), &sonar.ComponentsTreeOptions{
 					Component: projectKey,
 					Strategy:  "invalid-strategy",
 				})
@@ -377,7 +378,7 @@ var _ = Describe("Components Service", Ordered, func() {
 	// =========================================================================
 	Describe("Suggestions", func() {
 		It("should get suggestions without search query", func() {
-			result, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOptions{})
+			result, resp, err := client.Components.Suggestions(context.Background(), &sonar.ComponentsSuggestionsOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -386,14 +387,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should get suggestions with search query", func() {
 			// First create a project
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
@@ -406,7 +407,7 @@ var _ = Describe("Components Service", Ordered, func() {
 			}
 
 			// Search for suggestions
-			result, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOptions{
+			result, resp, err := client.Components.Suggestions(context.Background(), &sonar.ComponentsSuggestionsOptions{
 				Search: searchQuery, // Min 2 chars
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -415,7 +416,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get more suggestions for TRK qualifier", func() {
-			result, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOptions{
+			result, resp, err := client.Components.Suggestions(context.Background(), &sonar.ComponentsSuggestionsOptions{
 				More: sonar.ProjectQualifierTRK,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -425,13 +426,13 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Components.Suggestions(nil)
+				_, resp, err := client.Components.Suggestions(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid more qualifier", func() {
-				_, resp, err := client.Components.Suggestions(&sonar.ComponentsSuggestionsOptions{
+				_, resp, err := client.Components.Suggestions(context.Background(), &sonar.ComponentsSuggestionsOptions{
 					More: "INVALID",
 				})
 				Expect(err).To(HaveOccurred())
@@ -449,14 +450,14 @@ var _ = Describe("Components Service", Ordered, func() {
 		BeforeAll(func() {
 			// Create a project for App tests
 			projectKey = helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
@@ -464,7 +465,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should get app data for component", func() {
-			result, resp, err := client.Components.App(&sonar.ComponentsAppOptions{
+			result, resp, err := client.Components.App(context.Background(), &sonar.ComponentsAppOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -474,7 +475,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		})
 
 		It("should return component info", func() {
-			result, resp, err := client.Components.App(&sonar.ComponentsAppOptions{
+			result, resp, err := client.Components.App(context.Background(), &sonar.ComponentsAppOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -485,19 +486,19 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Components.App(nil)
+				_, resp, err := client.Components.App(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing component", func() {
-				_, resp, err := client.Components.App(&sonar.ComponentsAppOptions{})
+				_, resp, err := client.Components.App(context.Background(), &sonar.ComponentsAppOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with both branch and pullRequest", func() {
-				_, resp, err := client.Components.App(&sonar.ComponentsAppOptions{
+				_, resp, err := client.Components.App(context.Background(), &sonar.ComponentsAppOptions{
 					Component:   projectKey,
 					Branch:      "main",
 					PullRequest: "123",

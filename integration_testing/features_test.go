@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -28,7 +29,7 @@ var _ = Describe("Features Service", Ordered, func() {
 	Describe("List", func() {
 		Context("Valid Requests", func() {
 			It("should list supported features with non-empty values", func() {
-				result, resp, err := client.Features.List()
+				result, resp, err := client.Features.List(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -43,11 +44,11 @@ var _ = Describe("Features Service", Ordered, func() {
 			})
 
 			It("should return consistent results on multiple calls", func() {
-				result1, resp1, err := client.Features.List()
+				result1, resp1, err := client.Features.List(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
-				result2, resp2, err := client.Features.List()
+				result2, resp2, err := client.Features.List(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 

@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -481,13 +482,13 @@ type AlmIntegrationsSetPatOptions struct {
 
 // CheckPat checks the validity of a Personal Access Token for the given DevOps Platform setting.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOptions) (v *AlmIntegrationsCheckPat, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) CheckPat(ctx context.Context, opt *AlmIntegrationsCheckPatOptions) (v *AlmIntegrationsCheckPat, resp *http.Response, err error) {
 	err = s.ValidateCheckPatOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/check_pat", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/check_pat", opt)
 	if err != nil {
 		return
 	}
@@ -504,13 +505,13 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOptions) (
 
 // GetGithubClientID gets the client ID of a GitHub Integration.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) GetGithubClientID(opt *AlmIntegrationsGetGithubClientIDOptions) (v *AlmIntegrationsGetGithubClientID, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) GetGithubClientID(ctx context.Context, opt *AlmIntegrationsGetGithubClientIDOptions) (v *AlmIntegrationsGetGithubClientID, resp *http.Response, err error) {
 	err = s.ValidateGetGithubClientIDOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/get_github_client_id", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/get_github_client_id", opt)
 	if err != nil {
 		return
 	}
@@ -530,13 +531,13 @@ func (s *AlmIntegrationsService) GetGithubClientID(opt *AlmIntegrationsGetGithub
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportAzureProject(opt *AlmIntegrationsImportAzureProjectOptions) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportAzureProject(ctx context.Context, opt *AlmIntegrationsImportAzureProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportAzureProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_azure_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_integrations/import_azure_project", opt)
 	if err != nil {
 		return
 	}
@@ -554,13 +555,13 @@ func (s *AlmIntegrationsService) ImportAzureProject(opt *AlmIntegrationsImportAz
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportBitbucketCloudRepo(opt *AlmIntegrationsImportBitbucketCloudRepoOptions) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportBitbucketCloudRepo(ctx context.Context, opt *AlmIntegrationsImportBitbucketCloudRepoOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportBitbucketCloudRepoOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_bitbucketcloud_repo", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_integrations/import_bitbucketcloud_repo", opt)
 	if err != nil {
 		return
 	}
@@ -578,13 +579,13 @@ func (s *AlmIntegrationsService) ImportBitbucketCloudRepo(opt *AlmIntegrationsIm
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportBitbucketServerProject(opt *AlmIntegrationsImportBitbucketServerProjectOptions) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportBitbucketServerProject(ctx context.Context, opt *AlmIntegrationsImportBitbucketServerProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportBitbucketServerProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_bitbucketserver_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_integrations/import_bitbucketserver_project", opt)
 	if err != nil {
 		return
 	}
@@ -603,13 +604,13 @@ func (s *AlmIntegrationsService) ImportBitbucketServerProject(opt *AlmIntegratio
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportGithubProjectOptions) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportGithubProject(ctx context.Context, opt *AlmIntegrationsImportGithubProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportGithubProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_github_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_integrations/import_github_project", opt)
 	if err != nil {
 		return
 	}
@@ -626,13 +627,13 @@ func (s *AlmIntegrationsService) ImportGithubProject(opt *AlmIntegrationsImportG
 // Requires the 'Create Projects' permission.
 //
 // Deprecated: Since 10.5 - use /api/v2/dop-translation/bound-projects instead.
-func (s *AlmIntegrationsService) ImportGitlabProject(opt *AlmIntegrationsImportGitlabProjectOptions) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ImportGitlabProject(ctx context.Context, opt *AlmIntegrationsImportGitlabProjectOptions) (resp *http.Response, err error) {
 	err = s.ValidateImportGitlabProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/import_gitlab_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_integrations/import_gitlab_project", opt)
 	if err != nil {
 		return
 	}
@@ -647,13 +648,13 @@ func (s *AlmIntegrationsService) ImportGitlabProject(opt *AlmIntegrationsImportG
 
 // ListAzureProjects lists Azure projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzureProjectsOptions) (v *AlmIntegrationsListAzureProjects, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListAzureProjects(ctx context.Context, opt *AlmIntegrationsListAzureProjectsOptions) (v *AlmIntegrationsListAzureProjects, resp *http.Response, err error) {
 	err = s.ValidateListAzureProjectsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_azure_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/list_azure_projects", opt)
 	if err != nil {
 		return
 	}
@@ -670,13 +671,13 @@ func (s *AlmIntegrationsService) ListAzureProjects(opt *AlmIntegrationsListAzure
 
 // ListBitbucketServerProjects lists the Bitbucket Server projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegrationsListBitbucketServerProjectsOptions) (v *AlmIntegrationsListBitbucketServerProjects, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListBitbucketServerProjects(ctx context.Context, opt *AlmIntegrationsListBitbucketServerProjectsOptions) (v *AlmIntegrationsListBitbucketServerProjects, resp *http.Response, err error) {
 	err = s.ValidateListBitbucketServerProjectsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_bitbucketserver_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/list_bitbucketserver_projects", opt)
 	if err != nil {
 		return
 	}
@@ -693,13 +694,13 @@ func (s *AlmIntegrationsService) ListBitbucketServerProjects(opt *AlmIntegration
 
 // ListGithubOrganizations lists GitHub organizations.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsListGithubOrganizationsOptions) (v *AlmIntegrationsListGithubOrganizations, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListGithubOrganizations(ctx context.Context, opt *AlmIntegrationsListGithubOrganizationsOptions) (v *AlmIntegrationsListGithubOrganizations, resp *http.Response, err error) {
 	err = s.ValidateListGithubOrganizationsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_github_organizations", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/list_github_organizations", opt)
 	if err != nil {
 		return
 	}
@@ -716,13 +717,13 @@ func (s *AlmIntegrationsService) ListGithubOrganizations(opt *AlmIntegrationsLis
 
 // ListGithubRepositories lists the GitHub repositories for an organization.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsListGithubRepositoriesOptions) (v *AlmIntegrationsListGithubRepositories, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) ListGithubRepositories(ctx context.Context, opt *AlmIntegrationsListGithubRepositoriesOptions) (v *AlmIntegrationsListGithubRepositories, resp *http.Response, err error) {
 	err = s.ValidateListGithubRepositoriesOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/list_github_repositories", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/list_github_repositories", opt)
 	if err != nil {
 		return
 	}
@@ -739,13 +740,13 @@ func (s *AlmIntegrationsService) ListGithubRepositories(opt *AlmIntegrationsList
 
 // SearchAzureRepos searches the Azure repositories.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzureReposOptions) (v *AlmIntegrationsSearchAzureRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchAzureRepos(ctx context.Context, opt *AlmIntegrationsSearchAzureReposOptions) (v *AlmIntegrationsSearchAzureRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchAzureReposOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_azure_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/search_azure_repos", opt)
 	if err != nil {
 		return
 	}
@@ -762,13 +763,13 @@ func (s *AlmIntegrationsService) SearchAzureRepos(opt *AlmIntegrationsSearchAzur
 
 // SearchBitbucketCloudRepos searches the Bitbucket Cloud repositories.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsSearchBitbucketCloudReposOptions) (v *AlmIntegrationsSearchBitbucketCloudRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(ctx context.Context, opt *AlmIntegrationsSearchBitbucketCloudReposOptions) (v *AlmIntegrationsSearchBitbucketCloudRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchBitbucketCloudReposOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_bitbucketcloud_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/search_bitbucketcloud_repos", opt)
 	if err != nil {
 		return
 	}
@@ -785,13 +786,13 @@ func (s *AlmIntegrationsService) SearchBitbucketCloudRepos(opt *AlmIntegrationsS
 
 // SearchBitbucketServerRepos searches the Bitbucket Server repositories with REPO_ADMIN access.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrationsSearchBitbucketServerReposOptions) (v *AlmIntegrationsSearchBitbucketServerRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchBitbucketServerRepos(ctx context.Context, opt *AlmIntegrationsSearchBitbucketServerReposOptions) (v *AlmIntegrationsSearchBitbucketServerRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchBitbucketServerReposOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_bitbucketserver_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/search_bitbucketserver_repos", opt)
 	if err != nil {
 		return
 	}
@@ -808,13 +809,13 @@ func (s *AlmIntegrationsService) SearchBitbucketServerRepos(opt *AlmIntegrations
 
 // SearchGitlabRepos searches the GitLab projects.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGitlabReposOptions) (v *AlmIntegrationsSearchGitlabRepos, resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SearchGitlabRepos(ctx context.Context, opt *AlmIntegrationsSearchGitlabReposOptions) (v *AlmIntegrationsSearchGitlabRepos, resp *http.Response, err error) {
 	err = s.ValidateSearchGitlabReposOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "alm_integrations/search_gitlab_repos", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "alm_integrations/search_gitlab_repos", opt)
 	if err != nil {
 		return
 	}
@@ -831,13 +832,13 @@ func (s *AlmIntegrationsService) SearchGitlabRepos(opt *AlmIntegrationsSearchGit
 
 // SetPat sets a Personal Access Token for the given DevOps Platform setting.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) SetPat(opt *AlmIntegrationsSetPatOptions) (resp *http.Response, err error) {
+func (s *AlmIntegrationsService) SetPat(ctx context.Context, opt *AlmIntegrationsSetPatOptions) (resp *http.Response, err error) {
 	err = s.ValidateSetPatOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "alm_integrations/set_pat", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_integrations/set_pat", opt)
 	if err != nil {
 		return
 	}

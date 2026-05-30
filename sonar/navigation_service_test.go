@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"testing"
@@ -35,7 +36,7 @@ func TestNavigationService_Component(t *testing.T) {
 			Component: "my-project",
 		}
 
-		result, resp, err := client.Navigation.Component(opt)
+		result, resp, err := client.Navigation.Component(context.Background(), opt)
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		assert.Equal(t, "my-project", result.Key)
@@ -60,7 +61,7 @@ func TestNavigationService_Component(t *testing.T) {
 			Branch:    "feature/my-branch",
 		}
 
-		_, _, err := client.Navigation.Component(opt)
+		_, _, err := client.Navigation.Component(context.Background(), opt)
 		require.NoError(t, err)
 	})
 
@@ -68,7 +69,7 @@ func TestNavigationService_Component(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/component", http.StatusOK, NavigationComponent{}))
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Navigation.Component(nil)
+		_, _, err := client.Navigation.Component(context.Background(), nil)
 		require.NoError(t, err)
 	})
 }
@@ -90,7 +91,7 @@ func TestNavigationService_Global(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/global", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Navigation.Global()
+		result, resp, err := client.Navigation.Global(context.Background(), )
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		assert.Equal(t, "10.5.0", result.Version)
@@ -108,7 +109,7 @@ func TestNavigationService_Marketplace(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/marketplace", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Navigation.Marketplace()
+		result, resp, err := client.Navigation.Marketplace(context.Background(), )
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		assert.Equal(t, int64(1000000), result.Ncloc)
@@ -127,7 +128,7 @@ func TestNavigationService_Settings(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/settings", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Navigation.Settings()
+		result, resp, err := client.Navigation.Settings(context.Background(), )
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		assert.True(t, result.ShowUpdateCenter)

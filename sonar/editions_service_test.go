@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -13,7 +14,7 @@ func TestEditionsService_ActivateGracePeriod(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Editions.ActivateGracePeriod()
+	resp, err := client.Editions.ActivateGracePeriod(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -40,7 +41,7 @@ func TestEditionsService_Get(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Editions.Get()
+	result, resp, err := client.Editions.Get(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -58,7 +59,7 @@ func TestEditionsService_Get_Empty(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Editions.Get()
+	result, resp, err := client.Editions.Get(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -70,7 +71,7 @@ func TestEditionsService_IsValidLicense(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Editions.IsValidLicense()
+	result, resp, err := client.Editions.IsValidLicense(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -83,7 +84,7 @@ func TestEditionsService_IsValidLicense_Invalid(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Editions.IsValidLicense()
+	result, resp, err := client.Editions.IsValidLicense(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -95,7 +96,7 @@ func TestEditionsService_Set(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Editions.Set(&LicenseSetOptions{
+	resp, err := client.Editions.Set(context.Background(), &LicenseSetOptions{
 		License: "my-license-key",
 	})
 	require.NoError(t, err)
@@ -106,12 +107,12 @@ func TestEditionsService_Set_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	resp, err := client.Editions.Set(nil)
+	resp, err := client.Editions.Set(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
 	// Missing License key should fail validation.
-	resp, err = client.Editions.Set(&LicenseSetOptions{})
+	resp, err = client.Editions.Set(context.Background(), &LicenseSetOptions{})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
@@ -121,7 +122,7 @@ func TestEditionsService_UnsetLicense(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Editions.UnsetLicense()
+	resp, err := client.Editions.UnsetLicense(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }

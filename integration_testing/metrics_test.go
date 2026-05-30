@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -28,7 +29,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 	Describe("Search", func() {
 		Context("Functional Tests", func() {
 			It("should search all metrics with nil options", func() {
-				result, resp, err := client.Metrics.Search(nil)
+				result, resp, err := client.Metrics.Search(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -36,7 +37,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should search metrics with empty options", func() {
-				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOptions{})
+				result, resp, err := client.Metrics.Search(context.Background(), &sonar.MetricsSearchOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -44,7 +45,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should return metrics with valid properties", func() {
-				result, resp, err := client.Metrics.Search(nil)
+				result, resp, err := client.Metrics.Search(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -57,7 +58,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should find common metrics", func() {
-				result, resp, err := client.Metrics.Search(nil)
+				result, resp, err := client.Metrics.Search(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -80,7 +81,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should support pagination", func() {
-				result, resp, err := client.Metrics.Search(&sonar.MetricsSearchOptions{
+				result, resp, err := client.Metrics.Search(context.Background(), &sonar.MetricsSearchOptions{
 					PaginationArgs: sonar.PaginationArgs{
 						PageSize: 5,
 					},
@@ -99,7 +100,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 	Describe("Types", func() {
 		Context("Functional Tests", func() {
 			It("should list metric types", func() {
-				result, resp, err := client.Metrics.Types()
+				result, resp, err := client.Metrics.Types(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -107,7 +108,7 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should return common metric types", func() {
-				result, resp, err := client.Metrics.Types()
+				result, resp, err := client.Metrics.Types(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -125,11 +126,11 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 
 			It("should return consistent results on multiple calls", func() {
-				result1, resp1, err := client.Metrics.Types()
+				result1, resp1, err := client.Metrics.Types(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
-				result2, resp2, err := client.Metrics.Types()
+				result2, resp2, err := client.Metrics.Types(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 

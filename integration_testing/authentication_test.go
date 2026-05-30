@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 	"net/http/cookiejar"
 
@@ -28,7 +29,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 	Describe("Validate", func() {
 		Context("with valid credentials", func() {
 			It("should return valid=true for authenticated client", func() {
-				result, resp, err := client.Authentication.Validate()
+				result, resp, err := client.Authentication.Validate(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -46,7 +47,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(basicAuthClient).NotTo(BeNil())
 
-				result, resp, err := basicAuthClient.Authentication.Validate()
+				result, resp, err := basicAuthClient.Authentication.Validate(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -63,7 +64,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(anonClient).NotTo(BeNil())
 
-				result, resp, err := anonClient.Authentication.Validate()
+				result, resp, err := anonClient.Authentication.Validate(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -87,7 +88,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Password: cfg.Password,
 				}
 
-				resp, err := loginClient.Authentication.Login(opt)
+				resp, err := loginClient.Authentication.Login(context.Background(), opt)
 				Expect(err).NotTo(HaveOccurred())
 				// SonarQube may return 200 OK or 204 No Content depending on version
 				Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
@@ -108,7 +109,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Password: "wrongpassword",
 				}
 
-				resp, err := loginClient.Authentication.Login(opt)
+				resp, err := loginClient.Authentication.Login(context.Background(), opt)
 				Expect(err).To(HaveOccurred())
 				// Login failure returns 401 Unauthorized
 				if resp != nil {
@@ -129,7 +130,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Password: "somepassword",
 				}
 
-				resp, err := loginClient.Authentication.Login(opt)
+				resp, err := loginClient.Authentication.Login(context.Background(), opt)
 				Expect(err).To(HaveOccurred())
 				// Login failure returns 401 Unauthorized
 				if resp != nil {
@@ -140,7 +141,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Authentication.Login(nil)
+				resp, err := client.Authentication.Login(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -150,7 +151,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Password: "somepassword",
 				}
 
-				resp, err := client.Authentication.Login(opt)
+				resp, err := client.Authentication.Login(context.Background(), opt)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -160,7 +161,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Login: "someuser",
 				}
 
-				resp, err := client.Authentication.Login(opt)
+				resp, err := client.Authentication.Login(context.Background(), opt)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -171,7 +172,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Password: "somepassword",
 				}
 
-				resp, err := client.Authentication.Login(opt)
+				resp, err := client.Authentication.Login(context.Background(), opt)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -182,7 +183,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Password: "",
 				}
 
-				resp, err := client.Authentication.Login(opt)
+				resp, err := client.Authentication.Login(context.Background(), opt)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -209,13 +210,13 @@ var _ = Describe("Authentication Service", Ordered, func() {
 					Password: cfg.Password,
 				}
 
-				resp, err := sessionClient.Authentication.Login(loginOpt)
+				resp, err := sessionClient.Authentication.Login(context.Background(), loginOpt)
 				Expect(err).NotTo(HaveOccurred())
 				// SonarQube may return 200 OK or 204 No Content depending on version
 				Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
 
 				// Now logout
-				resp, err = sessionClient.Authentication.Logout()
+				resp, err = sessionClient.Authentication.Logout(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				// SonarQube may return 200 OK or 204 No Content depending on version
 				Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
@@ -232,7 +233,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Expect(anonClient).NotTo(BeNil())
 
 				// Logout should still succeed (no-op for unauthenticated)
-				resp, err := anonClient.Authentication.Logout()
+				resp, err := anonClient.Authentication.Logout(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				// SonarQube may return 200 OK or 204 No Content depending on version
 				Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
@@ -254,7 +255,7 @@ var _ = Describe("Authentication Service", Ordered, func() {
 			Expect(sessionClient).NotTo(BeNil())
 
 			// Step 1: Validate should show not authenticated
-			result, resp, err := sessionClient.Authentication.Validate()
+			result, resp, err := sessionClient.Authentication.Validate(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -266,26 +267,26 @@ var _ = Describe("Authentication Service", Ordered, func() {
 				Password: cfg.Password,
 			}
 
-			resp, err = sessionClient.Authentication.Login(loginOpt)
+			resp, err = sessionClient.Authentication.Login(context.Background(), loginOpt)
 			Expect(err).NotTo(HaveOccurred())
 			// SonarQube may return 200 OK or 204 No Content depending on version
 			Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
 
 			// Step 3: Validate should now show authenticated
-			result, resp, err = sessionClient.Authentication.Validate()
+			result, resp, err = sessionClient.Authentication.Validate(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 			Expect(result.Valid).To(BeTrue()) // Session should be established after login
 
 			// Step 4: Logout
-			resp, err = sessionClient.Authentication.Logout()
+			resp, err = sessionClient.Authentication.Logout(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			// SonarQube may return 200 OK or 204 No Content depending on version
 			Expect(resp.StatusCode).To(BeElementOf(http.StatusOK, http.StatusNoContent))
 
 			// Step 5: Validate should show not authenticated after logout
-			result, resp, err = sessionClient.Authentication.Validate()
+			result, resp, err = sessionClient.Authentication.Validate(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())

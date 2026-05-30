@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -30,7 +31,7 @@ func TestDuplications_Show(t *testing.T) {
 		Key: "com.example:MyFile.java",
 	}
 
-	result, resp, err := client.Duplications.Show(opt)
+	result, resp, err := client.Duplications.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -55,7 +56,7 @@ func TestDuplications_Show_WithBranch(t *testing.T) {
 		Branch: "feature",
 	}
 
-	_, resp, err := client.Duplications.Show(opt)
+	_, resp, err := client.Duplications.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -70,7 +71,7 @@ func TestDuplications_Show_WithPullRequest(t *testing.T) {
 		PullRequest: "123",
 	}
 
-	_, resp, err := client.Duplications.Show(opt)
+	_, resp, err := client.Duplications.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -94,7 +95,7 @@ func TestDuplications_Show_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Duplications.Show(tt.opt)
+			_, _, err := client.Duplications.Show(context.Background(), tt.opt)
 			require.Error(t, err)
 		})
 	}

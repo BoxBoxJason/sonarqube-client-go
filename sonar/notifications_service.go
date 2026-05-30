@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // NotificationsService handles communication with the notifications related methods
 // of the SonarQube API.
@@ -127,13 +130,13 @@ func (s *NotificationsService) ValidateRemoveOpt(opt *NotificationsRemoveOptions
 //
 // API endpoint: POST /api/notifications/add.
 // Since: 6.3.
-func (s *NotificationsService) Add(opt *NotificationsAddOptions) (*http.Response, error) {
+func (s *NotificationsService) Add(ctx context.Context, opt *NotificationsAddOptions) (*http.Response, error) {
 	err := s.ValidateAddOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "notifications/add", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "notifications/add", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -152,13 +155,13 @@ func (s *NotificationsService) Add(opt *NotificationsAddOptions) (*http.Response
 //
 // API endpoint: GET /api/notifications/list.
 // Since: 6.3.
-func (s *NotificationsService) List(opt *NotificationsListOptions) (*NotificationsList, *http.Response, error) {
+func (s *NotificationsService) List(ctx context.Context, opt *NotificationsListOptions) (*NotificationsList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "notifications/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "notifications/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -179,13 +182,13 @@ func (s *NotificationsService) List(opt *NotificationsListOptions) (*Notificatio
 //
 // API endpoint: POST /api/notifications/remove.
 // Since: 6.3.
-func (s *NotificationsService) Remove(opt *NotificationsRemoveOptions) (*http.Response, error) {
+func (s *NotificationsService) Remove(ctx context.Context, opt *NotificationsRemoveOptions) (*http.Response, error) {
 	err := s.ValidateRemoveOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "notifications/remove", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "notifications/remove", opt)
 	if err != nil {
 		return nil, err
 	}

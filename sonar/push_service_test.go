@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -19,7 +20,7 @@ func TestPush_SonarlintEvents(t *testing.T) {
 		ProjectKeys: []string{"my-project"},
 	}
 
-	resp, err := client.Push.SonarlintEvents(opt)
+	resp, err := client.Push.SonarlintEvents(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -39,7 +40,7 @@ func TestPush_SonarlintEvents_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Push.SonarlintEvents(tt.opt)
+			_, err := client.Push.SonarlintEvents(context.Background(), tt.opt)
 			require.Error(t, err)
 
 			var validationErr *ValidationError

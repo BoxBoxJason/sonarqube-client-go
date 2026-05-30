@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"reflect"
@@ -18,35 +19,35 @@ type fakeResponse struct {
 // fakeService is a mock service for testing InvokeMethod.
 type fakeService struct{}
 
-// ResponseBodyMethod simulates a (*Response, *http.Response, error) method.
-func (f *fakeService) ResponseBodyMethod(opt *struct{}) (*fakeResponse, *http.Response, error) {
+// ResponseBodyMethod simulates a (ctx, *Options) -> (*Response, *http.Response, error) method.
+func (f *fakeService) ResponseBodyMethod(ctx context.Context, opt *struct{}) (*fakeResponse, *http.Response, error) {
 	return &fakeResponse{Name: "ok"}, nil, nil
 }
 
-// NoBodyMethod simulates a (*http.Response, error) method.
-func (f *fakeService) NoBodyMethod() (*http.Response, error) {
+// NoBodyMethod simulates a (ctx) -> (*http.Response, error) method.
+func (f *fakeService) NoBodyMethod(ctx context.Context) (*http.Response, error) {
 	return nil, nil
 }
 
-// RawBytesMethod simulates a ([]byte, *http.Response, error) method.
-func (f *fakeService) RawBytesMethod(opt *struct{}) ([]byte, *http.Response, error) {
+// RawBytesMethod simulates a (ctx, *Options) -> ([]byte, *http.Response, error) method.
+func (f *fakeService) RawBytesMethod(ctx context.Context, opt *struct{}) ([]byte, *http.Response, error) {
 	return []byte("hello"), nil, nil
 }
 
-// RawStringMethod simulates a (*string, *http.Response, error) method.
-func (f *fakeService) RawStringMethod(opt *struct{}) (*string, *http.Response, error) {
+// RawStringMethod simulates a (ctx, *Options) -> (*string, *http.Response, error) method.
+func (f *fakeService) RawStringMethod(ctx context.Context, opt *struct{}) (*string, *http.Response, error) {
 	s := "world"
 
 	return &s, nil, nil
 }
 
-// SliceMethod simulates a ([]SomeStruct, *http.Response, error) method.
-func (f *fakeService) SliceMethod(opt *struct{}) ([]fakeResponse, *http.Response, error) {
+// SliceMethod simulates a (ctx, *Options) -> ([]SomeStruct, *http.Response, error) method.
+func (f *fakeService) SliceMethod(ctx context.Context, opt *struct{}) ([]fakeResponse, *http.Response, error) {
 	return []fakeResponse{{Name: "a"}, {Name: "b"}}, nil, nil
 }
 
 // ErrorMethod simulates a method that returns an error.
-func (f *fakeService) ErrorMethod(opt *struct{}) (*fakeResponse, *http.Response, error) {
+func (f *fakeService) ErrorMethod(ctx context.Context, opt *struct{}) (*fakeResponse, *http.Response, error) {
 	return nil, nil, errors.New("something failed")
 }
 

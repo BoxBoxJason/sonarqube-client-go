@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -17,7 +18,7 @@ func TestProjectBadges_Measure(t *testing.T) {
 		Metric:  "coverage",
 	}
 
-	result, resp, err := client.ProjectBadges.Measure(opt)
+	result, resp, err := client.ProjectBadges.Measure(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -28,23 +29,23 @@ func TestProjectBadges_Measure_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectBadges.Measure(nil)
+	_, _, err := client.ProjectBadges.Measure(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOptions{
+	_, _, err = client.ProjectBadges.Measure(context.Background(), &ProjectBadgesMeasureOptions{
 		Metric: "coverage",
 	})
 	assert.Error(t, err)
 
 	// Missing Metric should fail validation.
-	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOptions{
+	_, _, err = client.ProjectBadges.Measure(context.Background(), &ProjectBadgesMeasureOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Invalid Metric should fail validation.
-	_, _, err = client.ProjectBadges.Measure(&ProjectBadgesMeasureOptions{
+	_, _, err = client.ProjectBadges.Measure(context.Background(), &ProjectBadgesMeasureOptions{
 		Project: "my-project",
 		Metric:  "invalid_metric",
 	})
@@ -59,7 +60,7 @@ func TestProjectBadges_QualityGate(t *testing.T) {
 		Project: "my-project",
 	}
 
-	result, resp, err := client.ProjectBadges.QualityGate(opt)
+	result, resp, err := client.ProjectBadges.QualityGate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -69,11 +70,11 @@ func TestProjectBadges_QualityGate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectBadges.QualityGate(nil)
+	_, _, err := client.ProjectBadges.QualityGate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBadges.QualityGate(&ProjectBadgesQualityGateOptions{})
+	_, _, err = client.ProjectBadges.QualityGate(context.Background(), &ProjectBadgesQualityGateOptions{})
 	assert.Error(t, err)
 }
 
@@ -85,7 +86,7 @@ func TestProjectBadges_RenewToken(t *testing.T) {
 		Project: "my-project",
 	}
 
-	resp, err := client.ProjectBadges.RenewToken(opt)
+	resp, err := client.ProjectBadges.RenewToken(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -94,11 +95,11 @@ func TestProjectBadges_RenewToken_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.ProjectBadges.RenewToken(nil)
+	_, err := client.ProjectBadges.RenewToken(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBadges.RenewToken(&ProjectBadgesRenewTokenOptions{})
+	_, err = client.ProjectBadges.RenewToken(context.Background(), &ProjectBadgesRenewTokenOptions{})
 	assert.Error(t, err)
 }
 
@@ -112,7 +113,7 @@ func TestProjectBadges_Token(t *testing.T) {
 		Project: "my-project",
 	}
 
-	result, resp, err := client.ProjectBadges.Token(opt)
+	result, resp, err := client.ProjectBadges.Token(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -123,11 +124,11 @@ func TestProjectBadges_Token_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectBadges.Token(nil)
+	_, _, err := client.ProjectBadges.Token(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBadges.Token(&ProjectBadgesTokenOptions{})
+	_, _, err = client.ProjectBadges.Token(context.Background(), &ProjectBadgesTokenOptions{})
 	assert.Error(t, err)
 }
 

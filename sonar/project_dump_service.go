@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // ProjectDumpService handles communication with the project dump related methods
 // of the SonarQube API.
@@ -100,13 +103,13 @@ func (s *ProjectDumpService) ValidateStatusOpt(opt *ProjectDumpStatusOptions) er
 //
 // API endpoint: POST /api/project_dump/export.
 // Since: 1.0.
-func (s *ProjectDumpService) Export(opt *ProjectDumpExportOptions) (*ProjectDumpExport, *http.Response, error) {
+func (s *ProjectDumpService) Export(ctx context.Context, opt *ProjectDumpExportOptions) (*ProjectDumpExport, *http.Response, error) {
 	err := s.ValidateExportOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_dump/export", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_dump/export", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -126,13 +129,13 @@ func (s *ProjectDumpService) Export(opt *ProjectDumpExportOptions) (*ProjectDump
 //
 // API endpoint: GET /api/project_dump/status.
 // Since: 1.0.
-func (s *ProjectDumpService) Status(opt *ProjectDumpStatusOptions) (*ProjectDumpStatus, *http.Response, error) {
+func (s *ProjectDumpService) Status(ctx context.Context, opt *ProjectDumpStatusOptions) (*ProjectDumpStatus, *http.Response, error) {
 	err := s.ValidateStatusOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_dump/status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_dump/status", opt)
 	if err != nil {
 		return nil, nil, err
 	}

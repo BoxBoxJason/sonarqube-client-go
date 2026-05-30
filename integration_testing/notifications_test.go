@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -26,14 +27,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 
 		// Create a test project for project-scoped notifications
 		projectKey = helpers.UniqueResourceName("notif")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    "Notifications Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -53,7 +54,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 	Describe("List", func() {
 		Context("Valid Requests", func() {
 			It("should list notifications with nil options", func() {
-				result, resp, err := client.Notifications.List(nil)
+				result, resp, err := client.Notifications.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -62,7 +63,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			})
 
 			It("should list notifications with empty options", func() {
-				result, resp, err := client.Notifications.List(&sonar.NotificationsListOptions{})
+				result, resp, err := client.Notifications.List(context.Background(), &sonar.NotificationsListOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -76,14 +77,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 	Describe("Add", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Notifications.Add(nil)
+				resp, err := client.Notifications.Add(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required type", func() {
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{})
+				resp, err := client.Notifications.Add(context.Background(), &sonar.NotificationsAddOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Type"))
 				Expect(resp).To(BeNil())
@@ -93,21 +94,21 @@ var _ = Describe("Notifications Service", Ordered, func() {
 		Context("Valid Requests", func() {
 			It("should add a global notification", func() {
 				// First get the list to know valid types
-				listResult, _, err := client.Notifications.List(nil)
+				listResult, _, err := client.Notifications.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(listResult).NotTo(BeNil())
 				Expect(listResult.GlobalTypes).NotTo(BeEmpty())
 
 				notificationType := listResult.GlobalTypes[0]
 
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
+				resp, err := client.Notifications.Add(context.Background(), &sonar.NotificationsAddOptions{
 					Type: notificationType,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up
-				_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
+				_, err = client.Notifications.Remove(context.Background(), &sonar.NotificationsRemoveOptions{
 					Type: notificationType,
 				})
 				if err != nil {
@@ -117,14 +118,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 
 			It("should add a project-scoped notification", func() {
 				// First get the list to know valid types
-				listResult, _, err := client.Notifications.List(nil)
+				listResult, _, err := client.Notifications.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(listResult).NotTo(BeNil())
 				Expect(listResult.PerProjectTypes).NotTo(BeEmpty())
 
 				notificationType := listResult.PerProjectTypes[0]
 
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
+				resp, err := client.Notifications.Add(context.Background(), &sonar.NotificationsAddOptions{
 					Type:    notificationType,
 					Project: projectKey,
 				})
@@ -132,7 +133,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Clean up
-				_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
+				_, err = client.Notifications.Remove(context.Background(), &sonar.NotificationsRemoveOptions{
 					Type:    notificationType,
 					Project: projectKey,
 				})
@@ -144,7 +145,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 
 		Context("Invalid Type", func() {
 			It("should fail for invalid notification type", func() {
-				resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
+				resp, err := client.Notifications.Add(context.Background(), &sonar.NotificationsAddOptions{
 					Type: "invalid-type",
 				})
 				Expect(err).To(HaveOccurred())
@@ -161,14 +162,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 	Describe("Remove", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Notifications.Remove(nil)
+				resp, err := client.Notifications.Remove(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required type", func() {
-				resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOptions{})
+				resp, err := client.Notifications.Remove(context.Background(), &sonar.NotificationsRemoveOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Type"))
 				Expect(resp).To(BeNil())
@@ -178,7 +179,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 		Context("Valid Requests", func() {
 			It("should remove a notification", func() {
 				// First get valid types
-				listResult, _, err := client.Notifications.List(nil)
+				listResult, _, err := client.Notifications.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(listResult).NotTo(BeNil())
 				Expect(listResult.GlobalTypes).NotTo(BeEmpty())
@@ -186,13 +187,13 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				notificationType := listResult.GlobalTypes[0]
 
 				// Add the notification first
-				_, err = client.Notifications.Add(&sonar.NotificationsAddOptions{
+				_, err = client.Notifications.Add(context.Background(), &sonar.NotificationsAddOptions{
 					Type: notificationType,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				// Now remove it
-				resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
+				resp, err := client.Notifications.Remove(context.Background(), &sonar.NotificationsRemoveOptions{
 					Type: notificationType,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -203,7 +204,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 		Context("Non-Existent Notification", func() {
 			It("should fail for notification that doesn't exist", func() {
 				// Use a valid type but one that's not subscribed
-				listResult, _, err := client.Notifications.List(nil)
+				listResult, _, err := client.Notifications.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(listResult).NotTo(BeNil())
 				Expect(listResult.GlobalTypes).NotTo(BeEmpty())
@@ -225,7 +226,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 				}
 
 				if unsubscribedType != "" {
-					resp, err := client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
+					resp, err := client.Notifications.Remove(context.Background(), &sonar.NotificationsRemoveOptions{
 						Type: unsubscribedType,
 					})
 					Expect(err).To(HaveOccurred())
@@ -243,7 +244,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 	Describe("Full Workflow", func() {
 		It("should add, verify, and remove a notification", func() {
 			// Get valid types
-			listResult, _, err := client.Notifications.List(nil)
+			listResult, _, err := client.Notifications.List(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(listResult).NotTo(BeNil())
 			Expect(listResult.GlobalTypes).NotTo(BeEmpty())
@@ -251,7 +252,7 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			notificationType := listResult.GlobalTypes[0]
 
 			// Remove if already exists (clean state)
-			_, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
+			_, err = client.Notifications.Remove(context.Background(), &sonar.NotificationsRemoveOptions{
 				Type: notificationType,
 			})
 			if err != nil {
@@ -259,14 +260,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			}
 
 			// Add the notification
-			resp, err := client.Notifications.Add(&sonar.NotificationsAddOptions{
+			resp, err := client.Notifications.Add(context.Background(), &sonar.NotificationsAddOptions{
 				Type: notificationType,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// List and verify it's there
-			listResult, resp, err = client.Notifications.List(nil)
+			listResult, resp, err = client.Notifications.List(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
@@ -280,14 +281,14 @@ var _ = Describe("Notifications Service", Ordered, func() {
 			Expect(found).To(BeTrue(), "Notification should be in the list")
 
 			// Remove the notification
-			resp, err = client.Notifications.Remove(&sonar.NotificationsRemoveOptions{
+			resp, err = client.Notifications.Remove(context.Background(), &sonar.NotificationsRemoveOptions{
 				Type: notificationType,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify it's gone
-			listResult, _, err = client.Notifications.List(nil)
+			listResult, _, err = client.Notifications.List(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			found = false

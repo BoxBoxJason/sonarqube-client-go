@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -23,7 +24,7 @@ func TestProjectDump_Export(t *testing.T) {
 		Key: "my-project",
 	}
 
-	result, resp, err := client.ProjectDump.Export(opt)
+	result, resp, err := client.ProjectDump.Export(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -36,11 +37,11 @@ func TestProjectDump_Export_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectDump.Export(nil)
+	_, _, err := client.ProjectDump.Export(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Key should fail validation.
-	_, _, err = client.ProjectDump.Export(&ProjectDumpExportOptions{})
+	_, _, err = client.ProjectDump.Export(context.Background(), &ProjectDumpExportOptions{})
 	assert.Error(t, err)
 }
 
@@ -59,7 +60,7 @@ func TestProjectDump_Status(t *testing.T) {
 		Key: "my-project",
 	}
 
-	result, resp, err := client.ProjectDump.Status(opt)
+	result, resp, err := client.ProjectDump.Status(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -81,7 +82,7 @@ func TestProjectDump_Status_WithID(t *testing.T) {
 		ID: "proj-123",
 	}
 
-	result, resp, err := client.ProjectDump.Status(opt)
+	result, resp, err := client.ProjectDump.Status(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -91,11 +92,11 @@ func TestProjectDump_Status_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectDump.Status(nil)
+	_, _, err := client.ProjectDump.Status(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing both ID and Key should fail validation.
-	_, _, err = client.ProjectDump.Status(&ProjectDumpStatusOptions{})
+	_, _, err = client.ProjectDump.Status(context.Background(), &ProjectDumpStatusOptions{})
 	assert.Error(t, err)
 }
 

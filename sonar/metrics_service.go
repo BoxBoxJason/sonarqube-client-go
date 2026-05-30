@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // MetricsService handles communication with the metrics related methods
 // of the SonarQube API.
@@ -85,13 +88,13 @@ func (s *MetricsService) ValidateSearchOpt(opt *MetricsSearchOptions) error {
 //
 // API endpoint: GET /api/metrics/search.
 // Since: 2.6.
-func (s *MetricsService) Search(opt *MetricsSearchOptions) (*MetricsSearch, *http.Response, error) {
+func (s *MetricsService) Search(ctx context.Context, opt *MetricsSearchOptions) (*MetricsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "metrics/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "metrics/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -110,8 +113,8 @@ func (s *MetricsService) Search(opt *MetricsSearchOptions) (*MetricsSearch, *htt
 //
 // API endpoint: GET /api/metrics/types.
 // Since: 2.6.
-func (s *MetricsService) Types() (*MetricsTypes, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "metrics/types", nil)
+func (s *MetricsService) Types(ctx context.Context) (*MetricsTypes, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "metrics/types", nil)
 	if err != nil {
 		return nil, nil, err
 	}

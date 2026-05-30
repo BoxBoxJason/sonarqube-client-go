@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -46,7 +47,7 @@ func TestCleanCodePolicyV2_CreateRule(t *testing.T) {
 	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/clean-code-policy/rules", http.StatusOK, request, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.CleanCodePolicy.CreateRule(request)
+	result, resp, err := client.V2.CleanCodePolicy.CreateRule(context.Background(), request)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "custom:my_rule", result.Key)
@@ -80,7 +81,7 @@ func TestCleanCodePolicyV2_CreateRule_MinimalRequest(t *testing.T) {
 	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/clean-code-policy/rules", http.StatusOK, request, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.CleanCodePolicy.CreateRule(request)
+	result, resp, err := client.V2.CleanCodePolicy.CreateRule(context.Background(), request)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "custom:min_rule", result.Key)
@@ -111,7 +112,7 @@ func TestCleanCodePolicyV2_CreateRule_MultipleImpacts(t *testing.T) {
 	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/clean-code-policy/rules", http.StatusOK, request, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.CleanCodePolicy.CreateRule(request)
+	result, resp, err := client.V2.CleanCodePolicy.CreateRule(context.Background(), request)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Impacts, 3)
@@ -142,7 +143,7 @@ func TestCleanCodePolicyV2_CreateRule_WithParameters(t *testing.T) {
 	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/clean-code-policy/rules", http.StatusOK, request, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.CleanCodePolicy.CreateRule(request)
+	result, resp, err := client.V2.CleanCodePolicy.CreateRule(context.Background(), request)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Parameters, 2)
@@ -276,7 +277,7 @@ func TestCleanCodePolicyV2_CreateRule_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.CleanCodePolicy.CreateRule(tt.opt)
+			_, _, err := client.V2.CleanCodePolicy.CreateRule(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}

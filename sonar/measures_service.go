@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -389,13 +390,13 @@ func (s *MeasuresService) ValidateSearchHistoryOpt(opt *MeasuresSearchHistoryOpt
 // Requires the following permission: 'Browse' on the project of specified component.
 //
 // Since: 5.4.
-func (s *MeasuresService) Component(opt *MeasuresComponentOptions) (*MeasuresComponent, *http.Response, error) {
+func (s *MeasuresService) Component(ctx context.Context, opt *MeasuresComponentOptions) (*MeasuresComponent, *http.Response, error) {
 	err := s.ValidateComponentOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/component", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "measures/component", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -416,13 +417,13 @@ func (s *MeasuresService) Component(opt *MeasuresComponentOptions) (*MeasuresCom
 // When limiting search with the q parameter, directories are not returned.
 //
 // Since: 5.4.
-func (s *MeasuresService) ComponentTree(opt *MeasuresComponentTreeOptions) (*MeasuresComponentTree, *http.Response, error) {
+func (s *MeasuresService) ComponentTree(ctx context.Context, opt *MeasuresComponentTreeOptions) (*MeasuresComponentTree, *http.Response, error) {
 	err := s.ValidateComponentTreeOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/component_tree", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "measures/component_tree", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -442,13 +443,13 @@ func (s *MeasuresService) ComponentTree(opt *MeasuresComponentTreeOptions) (*Mea
 // At most 100 projects can be provided.
 //
 // Since: 6.2.
-func (s *MeasuresService) Search(opt *MeasuresSearchOptions) (*MeasuresSearch, *http.Response, error) {
+func (s *MeasuresService) Search(ctx context.Context, opt *MeasuresSearchOptions) (*MeasuresSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "measures/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -468,13 +469,13 @@ func (s *MeasuresService) Search(opt *MeasuresSearchOptions) (*MeasuresSearch, *
 // Requires the following permission: 'Browse' on the specified component.
 //
 // Since: 6.3.
-func (s *MeasuresService) SearchHistory(opt *MeasuresSearchHistoryOptions) (*MeasuresSearchHistory, *http.Response, error) {
+func (s *MeasuresService) SearchHistory(ctx context.Context, opt *MeasuresSearchHistoryOptions) (*MeasuresSearchHistory, *http.Response, error) {
 	err := s.ValidateSearchHistoryOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "measures/search_history", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "measures/search_history", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -46,7 +47,7 @@ func TestMetrics_Search(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Metrics.Search(nil)
+	result, resp, err := client.Metrics.Search(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -69,7 +70,7 @@ func TestMetrics_Search_WithPagination(t *testing.T) {
 		},
 	}
 
-	_, resp, err := client.Metrics.Search(opt)
+	_, resp, err := client.Metrics.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -80,7 +81,7 @@ func TestMetrics_Types(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Metrics.Types()
+	result, resp, err := client.Metrics.Types(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

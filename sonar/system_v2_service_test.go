@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"testing"
@@ -24,7 +25,7 @@ func TestSystemV2_GetMigrationsStatus(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/system/migrations-status", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.System.GetMigrationsStatus()
+	result, resp, err := client.V2.System.GetMigrationsStatus(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "MIGRATION_RUNNING", result.Status)
@@ -40,7 +41,7 @@ func TestSystemV2_CheckLiveness(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodGet, "/v2/system/liveness", http.StatusNoContent))
 	client := newTestClient(t, server.url())
 
-	resp, err := client.V2.System.CheckLiveness(nil)
+	resp, err := client.V2.System.CheckLiveness(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -54,7 +55,7 @@ func TestSystemV2_CheckLiveness_WithPasscode(t *testing.T) {
 	})
 	client := newTestClient(t, server.url())
 
-	resp, err := client.V2.System.CheckLiveness(&SystemPasscodeOptionV2{Passcode: "my-passcode"})
+	resp, err := client.V2.System.CheckLiveness(context.Background(), &SystemPasscodeOptionV2{Passcode: "my-passcode"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -71,7 +72,7 @@ func TestSystemV2_GetHealth(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/system/health", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.System.GetHealth(nil)
+	result, resp, err := client.V2.System.GetHealth(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "GREEN", result.Status)
@@ -93,7 +94,7 @@ func TestSystemV2_GetHealth_WithPasscode(t *testing.T) {
 	})
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.System.GetHealth(&SystemPasscodeOptionV2{Passcode: "secret-passcode"})
+	result, resp, err := client.V2.System.GetHealth(context.Background(), &SystemPasscodeOptionV2{Passcode: "secret-passcode"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "YELLOW", result.Status)

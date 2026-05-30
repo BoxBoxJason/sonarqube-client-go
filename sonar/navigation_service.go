@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // NavigationService handles communication with the navigation related methods
 // of the SonarQube API.
@@ -227,13 +230,13 @@ func (s *NavigationService) ValidateComponentOpt(opt *NavigationComponentOptions
 // API endpoint: GET /api/navigation/component.
 // Since: 5.2.
 // Internal: true.
-func (s *NavigationService) Component(opt *NavigationComponentOptions) (*NavigationComponent, *http.Response, error) {
+func (s *NavigationService) Component(ctx context.Context, opt *NavigationComponentOptions) (*NavigationComponent, *http.Response, error) {
 	err := s.ValidateComponentOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/component", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "navigation/component", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -253,8 +256,8 @@ func (s *NavigationService) Component(opt *NavigationComponentOptions) (*Navigat
 // API endpoint: GET /api/navigation/global.
 // Since: 5.2.
 // Internal: true.
-func (s *NavigationService) Global() (*NavigationGlobal, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/global", nil)
+func (s *NavigationService) Global(ctx context.Context) (*NavigationGlobal, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "navigation/global", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -275,8 +278,8 @@ func (s *NavigationService) Global() (*NavigationGlobal, *http.Response, error) 
 // API endpoint: GET /api/navigation/marketplace.
 // Since: 7.2.
 // Internal: true.
-func (s *NavigationService) Marketplace() (*NavigationMarketplace, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/marketplace", nil)
+func (s *NavigationService) Marketplace(ctx context.Context) (*NavigationMarketplace, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "navigation/marketplace", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -297,8 +300,8 @@ func (s *NavigationService) Marketplace() (*NavigationMarketplace, *http.Respons
 // API endpoint: GET /api/navigation/settings.
 // Since: 5.2.
 // Internal: true.
-func (s *NavigationService) Settings() (*NavigationSettings, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "navigation/settings", nil)
+func (s *NavigationService) Settings(ctx context.Context) (*NavigationSettings, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "navigation/settings", nil)
 	if err != nil {
 		return nil, nil, err
 	}

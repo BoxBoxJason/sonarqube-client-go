@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 const (
 	// MaxComponentSearchQueryLength is the maximum length for search queries (truncated by API if exceeded).
@@ -697,13 +700,13 @@ func (s *ComponentsService) ValidateTreeOpt(opt *ComponentsTreeOptions) error {
 // This is an internal API and may change without notice.
 //
 // Since: 4.4.
-func (s *ComponentsService) App(opt *ComponentsAppOptions) (*ComponentsApp, *http.Response, error) {
+func (s *ComponentsService) App(ctx context.Context, opt *ComponentsAppOptions) (*ComponentsApp, *http.Response, error) {
 	err := s.ValidateAppOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/app", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "components/app", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -721,13 +724,13 @@ func (s *ComponentsService) App(opt *ComponentsAppOptions) (*ComponentsApp, *htt
 // Search searches for components.
 //
 // Since: 6.3.
-func (s *ComponentsService) Search(opt *ComponentsSearchOptions) (*ComponentsSearch, *http.Response, error) {
+func (s *ComponentsService) Search(ctx context.Context, opt *ComponentsSearchOptions) (*ComponentsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "components/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -747,13 +750,13 @@ func (s *ComponentsService) Search(opt *ComponentsSearchOptions) (*ComponentsSea
 // This is an internal API and may change without notice.
 //
 // Since: 6.2.
-func (s *ComponentsService) SearchProjects(opt *ComponentsSearchProjectsOptions) (*ComponentsSearchProjects, *http.Response, error) {
+func (s *ComponentsService) SearchProjects(ctx context.Context, opt *ComponentsSearchProjectsOptions) (*ComponentsSearchProjects, *http.Response, error) {
 	err := s.ValidateSearchProjectsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/search_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "components/search_projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -773,13 +776,13 @@ func (s *ComponentsService) SearchProjects(opt *ComponentsSearchProjectsOptions)
 // Requires the following permission: 'Browse' on the project of the specified component.
 //
 // Since: 5.4.
-func (s *ComponentsService) Show(opt *ComponentsShowOptions) (*ComponentsShow, *http.Response, error) {
+func (s *ComponentsService) Show(ctx context.Context, opt *ComponentsShowOptions) (*ComponentsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "components/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -802,13 +805,13 @@ func (s *ComponentsService) Show(opt *ComponentsShowOptions) (*ComponentsShow, *
 // This is an internal API and may change without notice.
 //
 // Since: 4.2.
-func (s *ComponentsService) Suggestions(opt *ComponentsSuggestionsOptions) (*ComponentsSuggestions, *http.Response, error) {
+func (s *ComponentsService) Suggestions(ctx context.Context, opt *ComponentsSuggestionsOptions) (*ComponentsSuggestions, *http.Response, error) {
 	err := s.ValidateSuggestionsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/suggestions", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "components/suggestions", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -828,13 +831,13 @@ func (s *ComponentsService) Suggestions(opt *ComponentsSuggestionsOptions) (*Com
 // When limiting search with the q parameter, directories are not returned.
 //
 // Since: 5.4.
-func (s *ComponentsService) Tree(opt *ComponentsTreeOptions) (*ComponentsTree, *http.Response, error) {
+func (s *ComponentsService) Tree(ctx context.Context, opt *ComponentsTreeOptions) (*ComponentsTree, *http.Response, error) {
 	err := s.ValidateTreeOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "components/tree", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "components/tree", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -34,21 +35,21 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("Create", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.Create(nil)
+				resp, err := client.Views.Create(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required name", func() {
-				resp, err := client.Views.Create(&sonar.ViewsCreateOptions{})
+				resp, err := client.Views.Create(context.Background(), &sonar.ViewsCreateOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Name"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with invalid visibility", func() {
-				resp, err := client.Views.Create(&sonar.ViewsCreateOptions{
+				resp, err := client.Views.Create(context.Background(), &sonar.ViewsCreateOptions{
 					Name:       "Test View",
 					Visibility: "invalid",
 				})
@@ -60,7 +61,7 @@ var _ = Describe("Views Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should create or return an enterprise-only error", func() {
 				viewKey := helpers.UniqueResourceName("view")
-				resp, err := client.Views.Create(&sonar.ViewsCreateOptions{
+				resp, err := client.Views.Create(context.Background(), &sonar.ViewsCreateOptions{
 					Name: viewKey,
 					Key:  viewKey,
 				})
@@ -70,7 +71,7 @@ var _ = Describe("Views Service", Ordered, func() {
 				} else {
 					Expect(resp.StatusCode).To(BeNumerically("<", 400))
 					cleanup.RegisterCleanup("view", viewKey, func() error {
-						_, cleanupErr := client.Views.Delete(&sonar.ViewsDeleteOptions{
+						_, cleanupErr := client.Views.Delete(context.Background(), &sonar.ViewsDeleteOptions{
 							Key: viewKey,
 						})
 						return cleanupErr
@@ -86,7 +87,7 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("List", func() {
 		Context("Functional Tests", func() {
 			It("should return a list or an enterprise-only error", func() {
-				result, resp, err := client.Views.List()
+				result, resp, err := client.Views.List(context.Background())
 				if err != nil {
 					// Community edition does not expose views endpoints.
 					Expect(resp).NotTo(BeNil())
@@ -104,7 +105,7 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("Search", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with invalid pagination", func() {
-				_, _, err := client.Views.Search(&sonar.ViewsSearchOptions{
+				_, _, err := client.Views.Search(context.Background(), &sonar.ViewsSearchOptions{
 					PaginationArgs: sonar.PaginationArgs{Page: -1},
 				})
 				Expect(err).To(HaveOccurred())
@@ -113,7 +114,7 @@ var _ = Describe("Views Service", Ordered, func() {
 
 		Context("Functional Tests", func() {
 			It("should return results or an enterprise-only error", func() {
-				result, resp, err := client.Views.Search(nil)
+				result, resp, err := client.Views.Search(context.Background(), nil)
 				if err != nil {
 					Expect(resp).NotTo(BeNil())
 				} else {
@@ -130,13 +131,13 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("Show", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				_, _, err := client.Views.Show(nil)
+				_, _, err := client.Views.Show(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 			})
 
 			It("should fail without key", func() {
-				_, _, err := client.Views.Show(&sonar.ViewsShowOptions{})
+				_, _, err := client.Views.Show(context.Background(), &sonar.ViewsShowOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 			})
@@ -144,7 +145,7 @@ var _ = Describe("Views Service", Ordered, func() {
 
 		Context("Functional Tests", func() {
 			It("should fail for a non-existent view", func() {
-				result, resp, err := client.Views.Show(&sonar.ViewsShowOptions{
+				result, resp, err := client.Views.Show(context.Background(), &sonar.ViewsShowOptions{
 					Key: "non-existent-view-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -162,14 +163,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("Update", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.Update(nil)
+				resp, err := client.Views.Update(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.Views.Update(&sonar.ViewsUpdateOptions{
+				resp, err := client.Views.Update(context.Background(), &sonar.ViewsUpdateOptions{
 					Name: "New Name",
 				})
 				Expect(err).To(HaveOccurred())
@@ -178,7 +179,7 @@ var _ = Describe("Views Service", Ordered, func() {
 			})
 
 			It("should fail without required name", func() {
-				resp, err := client.Views.Update(&sonar.ViewsUpdateOptions{
+				resp, err := client.Views.Update(context.Background(), &sonar.ViewsUpdateOptions{
 					Key: "my-view",
 				})
 				Expect(err).To(HaveOccurred())
@@ -194,14 +195,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("Delete", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.Delete(nil)
+				resp, err := client.Views.Delete(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without key", func() {
-				resp, err := client.Views.Delete(&sonar.ViewsDeleteOptions{})
+				resp, err := client.Views.Delete(context.Background(), &sonar.ViewsDeleteOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(resp).To(BeNil())
@@ -210,7 +211,7 @@ var _ = Describe("Views Service", Ordered, func() {
 
 		Context("Functional Tests", func() {
 			It("should fail for a non-existent view", func() {
-				resp, err := client.Views.Delete(&sonar.ViewsDeleteOptions{
+				resp, err := client.Views.Delete(context.Background(), &sonar.ViewsDeleteOptions{
 					Key: "non-existent-view",
 				})
 				Expect(err).To(HaveOccurred())
@@ -225,14 +226,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("AddProject", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.AddProject(nil)
+				resp, err := client.Views.AddProject(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without key", func() {
-				resp, err := client.Views.AddProject(&sonar.ViewsAddProjectOptions{
+				resp, err := client.Views.AddProject(context.Background(), &sonar.ViewsAddProjectOptions{
 					Project: "my-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -241,7 +242,7 @@ var _ = Describe("Views Service", Ordered, func() {
 			})
 
 			It("should fail without project key", func() {
-				resp, err := client.Views.AddProject(&sonar.ViewsAddProjectOptions{
+				resp, err := client.Views.AddProject(context.Background(), &sonar.ViewsAddProjectOptions{
 					Key: "my-view",
 				})
 				Expect(err).To(HaveOccurred())
@@ -254,14 +255,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("RemoveProject", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.RemoveProject(nil)
+				resp, err := client.Views.RemoveProject(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without key", func() {
-				resp, err := client.Views.RemoveProject(&sonar.ViewsRemoveProjectOptions{
+				resp, err := client.Views.RemoveProject(context.Background(), &sonar.ViewsRemoveProjectOptions{
 					Project: "my-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -270,7 +271,7 @@ var _ = Describe("Views Service", Ordered, func() {
 			})
 
 			It("should fail without project key", func() {
-				resp, err := client.Views.RemoveProject(&sonar.ViewsRemoveProjectOptions{
+				resp, err := client.Views.RemoveProject(context.Background(), &sonar.ViewsRemoveProjectOptions{
 					Key: "my-view",
 				})
 				Expect(err).To(HaveOccurred())
@@ -286,13 +287,13 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("MoveOptions", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				_, _, err := client.Views.MoveOptions(nil)
+				_, _, err := client.Views.MoveOptions(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 			})
 
 			It("should fail without key", func() {
-				_, _, err := client.Views.MoveOptions(&sonar.ViewsMoveOptionsOptions{})
+				_, _, err := client.Views.MoveOptions(context.Background(), &sonar.ViewsMoveOptionsOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 			})
@@ -305,14 +306,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("Move", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.Move(nil)
+				resp, err := client.Views.Move(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without key", func() {
-				resp, err := client.Views.Move(&sonar.ViewsMoveOptions{
+				resp, err := client.Views.Move(context.Background(), &sonar.ViewsMoveOptions{
 					Destination: "dest",
 				})
 				Expect(err).To(HaveOccurred())
@@ -321,7 +322,7 @@ var _ = Describe("Views Service", Ordered, func() {
 			})
 
 			It("should fail without destination", func() {
-				resp, err := client.Views.Move(&sonar.ViewsMoveOptions{
+				resp, err := client.Views.Move(context.Background(), &sonar.ViewsMoveOptions{
 					Key: "my-view",
 				})
 				Expect(err).To(HaveOccurred())
@@ -337,19 +338,19 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("Projects", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				_, _, err := client.Views.Projects(nil)
+				_, _, err := client.Views.Projects(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 			})
 
 			It("should fail without key", func() {
-				_, _, err := client.Views.Projects(&sonar.ViewsProjectsOptions{})
+				_, _, err := client.Views.Projects(context.Background(), &sonar.ViewsProjectsOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 			})
 
 			It("should fail with invalid selected value", func() {
-				_, _, err := client.Views.Projects(&sonar.ViewsProjectsOptions{
+				_, _, err := client.Views.Projects(context.Background(), &sonar.ViewsProjectsOptions{
 					Key:      "my-view",
 					Selected: "invalid",
 				})
@@ -364,14 +365,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("AddApplication", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.AddApplication(nil)
+				resp, err := client.Views.AddApplication(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without portfolio key", func() {
-				resp, err := client.Views.AddApplication(&sonar.ViewsAddApplicationOptions{
+				resp, err := client.Views.AddApplication(context.Background(), &sonar.ViewsAddApplicationOptions{
 					Application: "my-app",
 				})
 				Expect(err).To(HaveOccurred())
@@ -380,7 +381,7 @@ var _ = Describe("Views Service", Ordered, func() {
 			})
 
 			It("should fail without application key", func() {
-				resp, err := client.Views.AddApplication(&sonar.ViewsAddApplicationOptions{
+				resp, err := client.Views.AddApplication(context.Background(), &sonar.ViewsAddApplicationOptions{
 					Portfolio: "my-portfolio",
 				})
 				Expect(err).To(HaveOccurred())
@@ -393,14 +394,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("RemoveApplication", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.RemoveApplication(nil)
+				resp, err := client.Views.RemoveApplication(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without portfolio key", func() {
-				resp, err := client.Views.RemoveApplication(&sonar.ViewsRemoveApplicationOptions{
+				resp, err := client.Views.RemoveApplication(context.Background(), &sonar.ViewsRemoveApplicationOptions{
 					Application: "my-app",
 				})
 				Expect(err).To(HaveOccurred())
@@ -409,7 +410,7 @@ var _ = Describe("Views Service", Ordered, func() {
 			})
 
 			It("should fail without application key", func() {
-				resp, err := client.Views.RemoveApplication(&sonar.ViewsRemoveApplicationOptions{
+				resp, err := client.Views.RemoveApplication(context.Background(), &sonar.ViewsRemoveApplicationOptions{
 					Portfolio: "my-portfolio",
 				})
 				Expect(err).To(HaveOccurred())
@@ -425,14 +426,14 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("AddPortfolio", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.AddPortfolio(nil)
+				resp, err := client.Views.AddPortfolio(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without portfolio", func() {
-				resp, err := client.Views.AddPortfolio(&sonar.ViewsAddPortfolioOptions{
+				resp, err := client.Views.AddPortfolio(context.Background(), &sonar.ViewsAddPortfolioOptions{
 					Reference: "ref-portfolio",
 				})
 				Expect(err).To(HaveOccurred())
@@ -441,7 +442,7 @@ var _ = Describe("Views Service", Ordered, func() {
 			})
 
 			It("should fail without reference", func() {
-				resp, err := client.Views.AddPortfolio(&sonar.ViewsAddPortfolioOptions{
+				resp, err := client.Views.AddPortfolio(context.Background(), &sonar.ViewsAddPortfolioOptions{
 					Portfolio: "parent-portfolio",
 				})
 				Expect(err).To(HaveOccurred())
@@ -454,7 +455,7 @@ var _ = Describe("Views Service", Ordered, func() {
 	Describe("RemovePortfolio", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Views.RemovePortfolio(nil)
+				resp, err := client.Views.RemovePortfolio(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())

@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -433,13 +434,13 @@ func (s *ProjectsService) ValidateUpdateVisibilityOpt(opt *ProjectsUpdateVisibil
 // Requires 'Administer System' permission.
 //
 // Since: 5.2.
-func (s *ProjectsService) BulkDelete(opt *ProjectsBulkDeleteOptions) (*http.Response, error) {
+func (s *ProjectsService) BulkDelete(ctx context.Context, opt *ProjectsBulkDeleteOptions) (*http.Response, error) {
 	err := s.ValidateBulkDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/bulk_delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "projects/bulk_delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -456,13 +457,13 @@ func (s *ProjectsService) BulkDelete(opt *ProjectsBulkDeleteOptions) (*http.Resp
 // Requires 'Create Projects' permission.
 //
 // Since: 4.0.
-func (s *ProjectsService) Create(opt *ProjectsCreateOptions) (*ProjectsCreate, *http.Response, error) {
+func (s *ProjectsService) Create(ctx context.Context, opt *ProjectsCreateOptions) (*ProjectsCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "projects/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -481,13 +482,13 @@ func (s *ProjectsService) Create(opt *ProjectsCreateOptions) (*ProjectsCreate, *
 // Requires 'Administer System' permission or 'Administer' permission on the project.
 //
 // Since: 5.2.
-func (s *ProjectsService) Delete(opt *ProjectsDeleteOptions) (*http.Response, error) {
+func (s *ProjectsService) Delete(ctx context.Context, opt *ProjectsDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "projects/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -504,13 +505,13 @@ func (s *ProjectsService) Delete(opt *ProjectsDeleteOptions) (*http.Response, er
 // Requires 'Browse' permission on the returned projects.
 //
 // Since: 6.3.
-func (s *ProjectsService) Search(opt *ProjectsSearchOptions) (*ProjectsSearch, *http.Response, error) {
+func (s *ProjectsService) Search(ctx context.Context, opt *ProjectsSearchOptions) (*ProjectsSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "projects/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "projects/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -529,13 +530,13 @@ func (s *ProjectsService) Search(opt *ProjectsSearchOptions) (*ProjectsSearch, *
 // Only the favorite and recently analyzed projects will be returned.
 //
 // Since: 6.4.
-func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOptions) (*ProjectsSearchMyProjects, *http.Response, error) {
+func (s *ProjectsService) SearchMyProjects(ctx context.Context, opt *ProjectsSearchMyProjectsOptions) (*ProjectsSearchMyProjects, *http.Response, error) {
 	err := s.ValidateSearchMyProjectsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "projects/search_my_projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "projects/search_my_projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -554,8 +555,8 @@ func (s *ProjectsService) SearchMyProjects(opt *ProjectsSearchMyProjectsOptions)
 // Requires authentication.
 //
 // Since: 9.5.
-func (s *ProjectsService) SearchMyScannableProjects(opt *ProjectsSearchMyScannableProjectsOptions) (*ProjectsSearchMyScannableProjects, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "projects/search_my_scannable_projects", opt)
+func (s *ProjectsService) SearchMyScannableProjects(ctx context.Context, opt *ProjectsSearchMyScannableProjectsOptions) (*ProjectsSearchMyScannableProjects, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "projects/search_my_scannable_projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -574,13 +575,13 @@ func (s *ProjectsService) SearchMyScannableProjects(opt *ProjectsSearchMyScannab
 // Requires 'Administer System' permission.
 //
 // Since: 6.4.
-func (s *ProjectsService) UpdateDefaultVisibility(opt *ProjectsUpdateDefaultVisibilityOptions) (*http.Response, error) {
+func (s *ProjectsService) UpdateDefaultVisibility(ctx context.Context, opt *ProjectsUpdateDefaultVisibilityOptions) (*http.Response, error) {
 	err := s.ValidateUpdateDefaultVisibilityOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/update_default_visibility", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "projects/update_default_visibility", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -597,13 +598,13 @@ func (s *ProjectsService) UpdateDefaultVisibility(opt *ProjectsUpdateDefaultVisi
 // Requires 'Administer' permission on the project.
 //
 // Since: 6.1.
-func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOptions) (*http.Response, error) {
+func (s *ProjectsService) UpdateKey(ctx context.Context, opt *ProjectsUpdateKeyOptions) (*http.Response, error) {
 	err := s.ValidateUpdateKeyOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/update_key", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "projects/update_key", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -620,13 +621,13 @@ func (s *ProjectsService) UpdateKey(opt *ProjectsUpdateKeyOptions) (*http.Respon
 // Requires 'Project administer' permission on the project.
 //
 // Since: 6.4.
-func (s *ProjectsService) UpdateVisibility(opt *ProjectsUpdateVisibilityOptions) (*http.Response, error) {
+func (s *ProjectsService) UpdateVisibility(ctx context.Context, opt *ProjectsUpdateVisibilityOptions) (*http.Response, error) {
 	err := s.ValidateUpdateVisibilityOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "projects/update_visibility", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "projects/update_visibility", opt)
 	if err != nil {
 		return nil, err
 	}

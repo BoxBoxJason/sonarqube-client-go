@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -54,7 +55,7 @@ func TestCe_Activity(t *testing.T) {
 		Statuses:  []string{TaskStatusSuccess},
 	}
 
-	result, resp, err := client.Ce.Activity(opt)
+	result, resp, err := client.Ce.Activity(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -92,7 +93,7 @@ func TestCe_Activity_WithPagination(t *testing.T) {
 		},
 	}
 
-	result, resp, err := client.Ce.Activity(opt)
+	result, resp, err := client.Ce.Activity(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, int64(2), result.Paging.PageIndex)
@@ -108,7 +109,7 @@ func TestCe_Activity_WithNilOption(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.Activity(nil)
+	result, resp, err := client.Ce.Activity(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -145,7 +146,7 @@ func TestCe_Activity_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Ce.Activity(tt.opt)
+			_, _, err := client.Ce.Activity(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -173,7 +174,7 @@ func TestCe_ActivityStatus(t *testing.T) {
 		Component: "my-project",
 	}
 
-	result, resp, err := client.Ce.ActivityStatus(opt)
+	result, resp, err := client.Ce.ActivityStatus(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -192,7 +193,7 @@ func TestCe_ActivityStatus_WithNilOption(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.ActivityStatus(nil)
+	result, resp, err := client.Ce.ActivityStatus(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -229,7 +230,7 @@ func TestCe_AnalysisStatus(t *testing.T) {
 		Branch:    "main",
 	}
 
-	result, resp, err := client.Ce.AnalysisStatus(opt)
+	result, resp, err := client.Ce.AnalysisStatus(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -243,11 +244,11 @@ func TestCe_AnalysisStatus_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Ce.AnalysisStatus(nil)
+	_, _, err := client.Ce.AnalysisStatus(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, _, err = client.Ce.AnalysisStatus(&CeAnalysisStatusOptions{})
+	_, _, err = client.Ce.AnalysisStatus(context.Background(), &CeAnalysisStatusOptions{})
 	assert.Error(t, err)
 }
 
@@ -266,7 +267,7 @@ func TestCe_Cancel(t *testing.T) {
 		ID: "task-123",
 	}
 
-	resp, err := client.Ce.Cancel(opt)
+	resp, err := client.Ce.Cancel(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -275,11 +276,11 @@ func TestCe_Cancel_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Ce.Cancel(nil)
+	_, err := client.Ce.Cancel(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing ID should fail validation.
-	_, err = client.Ce.Cancel(&CeCancelOptions{})
+	_, err = client.Ce.Cancel(context.Background(), &CeCancelOptions{})
 	assert.Error(t, err)
 }
 
@@ -288,7 +289,7 @@ func TestCe_CancelAll(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Ce.CancelAll()
+	resp, err := client.Ce.CancelAll(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -326,7 +327,7 @@ func TestCe_Component(t *testing.T) {
 		Component: "my-project",
 	}
 
-	result, resp, err := client.Ce.Component(opt)
+	result, resp, err := client.Ce.Component(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -341,11 +342,11 @@ func TestCe_Component_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Ce.Component(nil)
+	_, _, err := client.Ce.Component(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, _, err = client.Ce.Component(&CeComponentOptions{})
+	_, _, err = client.Ce.Component(context.Background(), &CeComponentOptions{})
 	assert.Error(t, err)
 }
 
@@ -366,7 +367,7 @@ func TestCe_DismissAnalysisWarning(t *testing.T) {
 		Warning:   "warning-key-1",
 	}
 
-	resp, err := client.Ce.DismissAnalysisWarning(opt)
+	resp, err := client.Ce.DismissAnalysisWarning(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -394,7 +395,7 @@ func TestCe_DismissAnalysisWarning_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Ce.DismissAnalysisWarning(tt.opt)
+			_, err := client.Ce.DismissAnalysisWarning(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -410,7 +411,7 @@ func TestCe_IndexationStatus(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.IndexationStatus()
+	result, resp, err := client.Ce.IndexationStatus(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -427,7 +428,7 @@ func TestCe_Info(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.Info()
+	result, resp, err := client.Ce.Info(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -439,7 +440,7 @@ func TestCe_Pause(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Ce.Pause()
+	resp, err := client.Ce.Pause(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -449,7 +450,7 @@ func TestCe_Resume(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Ce.Resume()
+	resp, err := client.Ce.Resume(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -478,7 +479,7 @@ func TestCe_Submit(t *testing.T) {
 		Report:      "base64-encoded-report",
 	}
 
-	result, resp, err := client.Ce.Submit(opt)
+	result, resp, err := client.Ce.Submit(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -516,7 +517,7 @@ func TestCe_Submit_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Ce.Submit(tt.opt)
+			_, _, err := client.Ce.Submit(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -555,7 +556,7 @@ func TestCe_Task(t *testing.T) {
 		AdditionalFields: []string{TaskFieldStacktrace},
 	}
 
-	result, resp, err := client.Ce.Task(opt)
+	result, resp, err := client.Ce.Task(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -590,7 +591,7 @@ func TestCe_Task_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Ce.Task(tt.opt)
+			_, _, err := client.Ce.Task(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -603,7 +604,7 @@ func TestCe_TaskTypes(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.TaskTypes()
+	result, resp, err := client.Ce.TaskTypes(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -621,7 +622,7 @@ func TestCe_WorkerCount(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.WorkerCount()
+	result, resp, err := client.Ce.WorkerCount(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

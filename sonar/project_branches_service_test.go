@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -19,7 +20,7 @@ func TestProjectBranches_Delete(t *testing.T) {
 		Project: "my-project",
 	}
 
-	resp, err := client.ProjectBranches.Delete(opt)
+	resp, err := client.ProjectBranches.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -28,17 +29,17 @@ func TestProjectBranches_Delete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.ProjectBranches.Delete(nil)
+	_, err := client.ProjectBranches.Delete(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Branch should fail validation.
-	_, err = client.ProjectBranches.Delete(&ProjectBranchesDeleteOptions{
+	_, err = client.ProjectBranches.Delete(context.Background(), &ProjectBranchesDeleteOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.Delete(&ProjectBranchesDeleteOptions{
+	_, err = client.ProjectBranches.Delete(context.Background(), &ProjectBranchesDeleteOptions{
 		Branch: "feature-1",
 	})
 	assert.Error(t, err)
@@ -74,7 +75,7 @@ func TestProjectBranches_List(t *testing.T) {
 		Project: "my-project",
 	}
 
-	result, resp, err := client.ProjectBranches.List(opt)
+	result, resp, err := client.ProjectBranches.List(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -89,11 +90,11 @@ func TestProjectBranches_List_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.ProjectBranches.List(nil)
+	_, _, err := client.ProjectBranches.List(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.ProjectBranches.List(&ProjectBranchesListOptions{})
+	_, _, err = client.ProjectBranches.List(context.Background(), &ProjectBranchesListOptions{})
 	assert.Error(t, err)
 }
 
@@ -108,7 +109,7 @@ func TestProjectBranches_Rename(t *testing.T) {
 		Project: "my-project",
 	}
 
-	resp, err := client.ProjectBranches.Rename(opt)
+	resp, err := client.ProjectBranches.Rename(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -117,17 +118,17 @@ func TestProjectBranches_Rename_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.ProjectBranches.Rename(nil)
+	_, err := client.ProjectBranches.Rename(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOptions{
+	_, err = client.ProjectBranches.Rename(context.Background(), &ProjectBranchesRenameOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOptions{
+	_, err = client.ProjectBranches.Rename(context.Background(), &ProjectBranchesRenameOptions{
 		Name: "main",
 	})
 	assert.Error(t, err)
@@ -137,7 +138,7 @@ func TestProjectBranches_Rename_ValidationError(t *testing.T) {
 	for i := 0; i < MaxBranchNameLength+1; i++ {
 		longName += "a"
 	}
-	_, err = client.ProjectBranches.Rename(&ProjectBranchesRenameOptions{
+	_, err = client.ProjectBranches.Rename(context.Background(), &ProjectBranchesRenameOptions{
 		Name:    longName,
 		Project: "my-project",
 	})
@@ -156,7 +157,7 @@ func TestProjectBranches_SetAutomaticDeletionProtection(t *testing.T) {
 		Value:   true,
 	}
 
-	resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(opt)
+	resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -173,7 +174,7 @@ func TestProjectBranches_SetAutomaticDeletionProtection_False(t *testing.T) {
 		Value:   false,
 	}
 
-	resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(opt)
+	resp, err := client.ProjectBranches.SetAutomaticDeletionProtection(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -182,18 +183,18 @@ func TestProjectBranches_SetAutomaticDeletionProtection_ValidationError(t *testi
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.ProjectBranches.SetAutomaticDeletionProtection(nil)
+	_, err := client.ProjectBranches.SetAutomaticDeletionProtection(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Branch should fail validation.
-	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(&ProjectBranchesSetAutomaticDeletionProtectionOptions{
+	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(context.Background(), &ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Project: "my-project",
 		Value:   true,
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(&ProjectBranchesSetAutomaticDeletionProtectionOptions{
+	_, err = client.ProjectBranches.SetAutomaticDeletionProtection(context.Background(), &ProjectBranchesSetAutomaticDeletionProtectionOptions{
 		Branch: "feature-1",
 		Value:  true,
 	})
@@ -211,7 +212,7 @@ func TestProjectBranches_SetMain(t *testing.T) {
 		Project: "my-project",
 	}
 
-	resp, err := client.ProjectBranches.SetMain(opt)
+	resp, err := client.ProjectBranches.SetMain(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -220,17 +221,17 @@ func TestProjectBranches_SetMain_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.ProjectBranches.SetMain(nil)
+	_, err := client.ProjectBranches.SetMain(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Branch should fail validation.
-	_, err = client.ProjectBranches.SetMain(&ProjectBranchesSetMainOptions{
+	_, err = client.ProjectBranches.SetMain(context.Background(), &ProjectBranchesSetMainOptions{
 		Project: "my-project",
 	})
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, err = client.ProjectBranches.SetMain(&ProjectBranchesSetMainOptions{
+	_, err = client.ProjectBranches.SetMain(context.Background(), &ProjectBranchesSetMainOptions{
 		Branch: "main",
 	})
 	assert.Error(t, err)
