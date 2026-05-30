@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAnalysisReports_IsQueueEmpty(t *testing.T) {
+func TestAnalysisReports_QueueStatus(t *testing.T) {
 	tests := []struct {
 		name           string
 		serverResponse string
@@ -24,7 +24,7 @@ func TestAnalysisReports_IsQueueEmpty(t *testing.T) {
 			server := newTestServer(t, handler)
 			client := newTestClient(t, server.url())
 
-			result, resp, err := client.AnalysisReports.IsQueueEmpty()
+			result, resp, err := client.AnalysisReports.QueueStatus()
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusOK, resp.StatusCode)
 			require.NotNil(t, result)

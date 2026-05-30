@@ -269,8 +269,8 @@ func (s *AuthorizationsService) CreateGroup(opt *AuthorizationsCreateGroupOption
 	return result, resp, nil
 }
 
-// FetchGroup retrieves a single group by ID.
-func (s *AuthorizationsService) FetchGroup(groupID string) (*AuthorizationsGroup, *http.Response, error) {
+// GetGroup retrieves a single group by ID.
+func (s *AuthorizationsService) GetGroup(groupID string) (*AuthorizationsGroup, *http.Response, error) {
 	err := ValidateRequired(groupID, "Id")
 	if err != nil {
 		return nil, nil, err

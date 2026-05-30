@@ -48,8 +48,8 @@ type AlmIntegrationsService struct {
 // Note: The API does not return a response body, validation is indicated by HTTP status.
 type AlmIntegrationsCheckPat struct{}
 
-// AlmIntegrationsGetGithubClientId represents the response from getting a GitHub client ID.
-type AlmIntegrationsGetGithubClientId struct {
+// AlmIntegrationsGetGithubClientID represents the response from getting a GitHub client ID.
+type AlmIntegrationsGetGithubClientID struct {
 	// ClientID is the GitHub OAuth client ID for the integration.
 	ClientID string `json:"clientId,omitempty"`
 }
@@ -237,8 +237,8 @@ type AlmIntegrationsCheckPatOptions struct {
 	AlmSetting string `url:"almSetting,omitempty"`
 }
 
-// AlmIntegrationsGetGithubClientIdOptions contains options for getting a GitHub client ID.
-type AlmIntegrationsGetGithubClientIdOptions struct {
+// AlmIntegrationsGetGithubClientIDOptions contains options for getting a GitHub client ID.
+type AlmIntegrationsGetGithubClientIDOptions struct {
 	// AlmSetting is the DevOps Platform setting key (required).
 	// Maximum length: 200 characters
 	AlmSetting string `url:"almSetting,omitempty"`
@@ -502,10 +502,10 @@ func (s *AlmIntegrationsService) CheckPat(opt *AlmIntegrationsCheckPatOptions) (
 	return
 }
 
-// GetGithubClientId gets the client ID of a GitHub Integration.
+// GetGithubClientID gets the client ID of a GitHub Integration.
 // Requires the 'Create Projects' permission.
-func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithubClientIdOptions) (v *AlmIntegrationsGetGithubClientId, resp *http.Response, err error) {
-	err = s.ValidateGetGithubClientIdOpt(opt)
+func (s *AlmIntegrationsService) GetGithubClientID(opt *AlmIntegrationsGetGithubClientIDOptions) (v *AlmIntegrationsGetGithubClientID, resp *http.Response, err error) {
+	err = s.ValidateGetGithubClientIDOpt(opt)
 	if err != nil {
 		return
 	}
@@ -515,7 +515,7 @@ func (s *AlmIntegrationsService) GetGithubClientId(opt *AlmIntegrationsGetGithub
 		return
 	}
 
-	v = new(AlmIntegrationsGetGithubClientId)
+	v = new(AlmIntegrationsGetGithubClientID)
 
 	resp, err = s.client.Do(req, v)
 	if err != nil {
@@ -873,10 +873,10 @@ func (s *AlmIntegrationsService) ValidateCheckPatOpt(opt *AlmIntegrationsCheckPa
 	return nil
 }
 
-// ValidateGetGithubClientIdOpt validates the options for getting a GitHub client ID.
-func (s *AlmIntegrationsService) ValidateGetGithubClientIdOpt(opt *AlmIntegrationsGetGithubClientIdOptions) error {
+// ValidateGetGithubClientIDOpt validates the options for getting a GitHub client ID.
+func (s *AlmIntegrationsService) ValidateGetGithubClientIDOpt(opt *AlmIntegrationsGetGithubClientIDOptions) error {
 	if opt == nil {
-		return NewValidationError("AlmIntegrationsGetGithubClientIdOption", "cannot be nil", ErrMissingRequired)
+		return NewValidationError("AlmIntegrationsGetGithubClientIDOption", "cannot be nil", ErrMissingRequired)
 	}
 
 	err := ValidateRequired(opt.AlmSetting, "AlmSetting")

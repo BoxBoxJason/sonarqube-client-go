@@ -120,10 +120,10 @@ func TestAuthorizationsV2_CreateGroup_Validation(t *testing.T) {
 }
 
 // =============================================================================
-// FetchGroup
+// GetGroup
 // =============================================================================
 
-func TestAuthorizationsV2_FetchGroup(t *testing.T) {
+func TestAuthorizationsV2_GetGroup(t *testing.T) {
 	response := AuthorizationsGroup{
 		Id:   "g1",
 		Name: "admins",
@@ -131,16 +131,16 @@ func TestAuthorizationsV2_FetchGroup(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/authorizations/groups/g1", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.FetchGroup("g1")
+	result, resp, err := client.V2.Authorizations.GetGroup("g1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "admins", result.Name)
 }
 
-func TestAuthorizationsV2_FetchGroup_Validation(t *testing.T) {
+func TestAuthorizationsV2_GetGroup_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.Authorizations.FetchGroup("")
+	_, _, err := client.V2.Authorizations.GetGroup("")
 	assert.Error(t, err)
 }
 

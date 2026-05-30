@@ -46,34 +46,34 @@ func TestAlmIntegrations_CheckPat_ValidationError(t *testing.T) {
 }
 
 // -----------------------------------------------------------------------------
-// GetGithubClientId Tests
+// GetGithubClientID Tests
 // -----------------------------------------------------------------------------
 
-func TestAlmIntegrations_GetGithubClientId(t *testing.T) {
+func TestAlmIntegrations_GetGithubClientID(t *testing.T) {
 	handler := mockHandler(t, http.MethodGet, "/alm_integrations/get_github_client_id", http.StatusOK, `{"clientId":"my-client-id"}`)
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	opt := &AlmIntegrationsGetGithubClientIdOptions{
+	opt := &AlmIntegrationsGetGithubClientIDOptions{
 		AlmSetting: "my-github-setting",
 	}
 
-	result, resp, err := client.AlmIntegrations.GetGithubClientId(opt)
+	result, resp, err := client.AlmIntegrations.GetGithubClientID(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.NotNil(t, result)
 	assert.Equal(t, "my-client-id", result.ClientID)
 }
 
-func TestAlmIntegrations_GetGithubClientId_ValidationError(t *testing.T) {
+func TestAlmIntegrations_GetGithubClientID_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.AlmIntegrations.GetGithubClientId(nil)
+	_, _, err := client.AlmIntegrations.GetGithubClientID(nil)
 	assert.Error(t, err)
 
 	// Test missing AlmSetting
-	_, _, err = client.AlmIntegrations.GetGithubClientId(&AlmIntegrationsGetGithubClientIdOptions{})
+	_, _, err = client.AlmIntegrations.GetGithubClientID(&AlmIntegrationsGetGithubClientIDOptions{})
 	assert.Error(t, err)
 }
 

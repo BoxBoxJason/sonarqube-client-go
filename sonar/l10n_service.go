@@ -40,8 +40,8 @@ type L10NIndexOptions struct {
 // Validation Functions
 // -----------------------------------------------------------------------------
 
-// ValidateIndexOpt validates the options for the Index method.
-func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOptions) error {
+// ValidateGetIndexOpt validates the options for the GetIndex method.
+func (s *L10NService) ValidateGetIndexOpt(opt *L10NIndexOptions) error {
 	// Options are optional; nothing to validate.
 	return nil
 }
@@ -50,12 +50,12 @@ func (s *L10NService) ValidateIndexOpt(opt *L10NIndexOptions) error {
 // Service Methods
 // -----------------------------------------------------------------------------
 
-// Index gets all localization messages for a given locale.
+// GetIndex gets all localization messages for a given locale.
 //
 // API endpoint: GET /api/l10n/index.
 // Warning: This API is internal and may change without notice.
-func (s *L10NService) Index(opt *L10NIndexOptions) (*L10NIndex, *http.Response, error) {
-	err := s.ValidateIndexOpt(opt)
+func (s *L10NService) GetIndex(opt *L10NIndexOptions) (*L10NIndex, *http.Response, error) {
+	err := s.ValidateGetIndexOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}

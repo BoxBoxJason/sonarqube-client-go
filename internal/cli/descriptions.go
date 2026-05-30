@@ -59,7 +59,7 @@ var serviceDescriptions = map[string]string{ //nolint:gosec // G101 false positi
 var methodDescriptions = map[string]string{ //nolint:gosec // G101 false positive: these are API descriptions, not credentials
 	// AlmIntegrations
 	"AlmIntegrations.CheckPat":                     "Checks validity of a Personal Access Token",
-	"AlmIntegrations.GetGithubClientId":            "Gets the client ID of a GitHub integration",
+	"AlmIntegrations.GetGithubClientID":            "Gets the client ID of a GitHub integration",
 	"AlmIntegrations.ImportAzureProject":           "Creates a project from an Azure DevOps project",
 	"AlmIntegrations.ImportBitbucketCloudRepo":     "Creates a project from a Bitbucket Cloud repo",
 	"AlmIntegrations.ImportBitbucketServerProject": "Creates a project from a Bitbucket Server project",
@@ -98,7 +98,7 @@ var methodDescriptions = map[string]string{ //nolint:gosec // G101 false positiv
 	"AnalysisCache.Get":   "Gets scanner cached data for a project",
 
 	// AnalysisReports
-	"AnalysisReports.IsQueueEmpty": "Checks if the CE queue is empty",
+	"AnalysisReports.QueueStatus": "Checks if the CE queue is empty",
 
 	// Authentication
 	"Authentication.Login":    "Authenticates a user with credentials",
@@ -106,9 +106,9 @@ var methodDescriptions = map[string]string{ //nolint:gosec // G101 false positiv
 	"Authentication.Validate": "Checks if current credentials are valid",
 
 	// Batch
-	"Batch.File":    "Downloads a JAR file from the batch index",
-	"Batch.Index":   "Lists JAR files for scanners",
-	"Batch.Project": "Returns project repository info",
+	"Batch.GetFile":    "Downloads a JAR file from the batch index",
+	"Batch.GetIndex":   "Lists JAR files for scanners",
+	"Batch.GetProject": "Returns project repository info",
 
 	// Ce
 	"Ce.Activity":               "Searches CE activity history",
@@ -192,7 +192,7 @@ var methodDescriptions = map[string]string{ //nolint:gosec // G101 false positiv
 	"Issues.Tags":                   "Lists rule tags",
 
 	// L10N
-	"L10N.Index": "Returns localized messages",
+	"L10N.GetIndex": "Returns localized messages",
 
 	// Languages
 	"Languages.List": "Lists supported languages",
@@ -316,8 +316,8 @@ var methodDescriptions = map[string]string{ //nolint:gosec // G101 false positiv
 	"Qualitygates.Create":          "Creates a new quality gate",
 	"Qualitygates.CreateCondition": "Adds a condition to a quality gate",
 	"Qualitygates.DeleteCondition": "Deletes a quality gate condition",
-	"Qualitygates.Deselect":        "Removes quality gate from a project",
-	"Qualitygates.Destroy":         "Deletes a quality gate",
+	"Qualitygates.Unassign":        "Removes quality gate from a project",
+	"Qualitygates.Delete":          "Deletes a quality gate",
 	"Qualitygates.GetByProject":    "Gets a project's quality gate",
 	"Qualitygates.List":            "Lists all quality gates",
 	"Qualitygates.ProjectStatus":   "Gets quality gate status of a project",
@@ -327,8 +327,8 @@ var methodDescriptions = map[string]string{ //nolint:gosec // G101 false positiv
 	"Qualitygates.Search":          "Searches quality gate projects",
 	"Qualitygates.SearchGroups":    "Searches quality gate groups",
 	"Qualitygates.SearchUsers":     "Searches quality gate users",
-	"Qualitygates.Select":          "Associates project with a quality gate",
-	"Qualitygates.SetAsDefault":    "Sets a default quality gate",
+	"Qualitygates.Assign":          "Associates project with a quality gate",
+	"Qualitygates.SetDefault":      "Sets a default quality gate",
 	"Qualitygates.Show":            "Shows quality gate details",
 	"Qualitygates.UpdateCondition": "Updates a quality gate condition",
 

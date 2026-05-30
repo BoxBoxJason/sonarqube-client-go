@@ -173,9 +173,9 @@ func (s *DopTranslationService) CreateBoundProject(opt *DopTranslationBoundProje
 	return result, resp, nil
 }
 
-// FetchAllDopSettings lists all DevOps Platform Integration settings.
+// GetDopSettings lists all DevOps Platform Integration settings.
 // Requires the 'Create Projects' permission.
-func (s *DopTranslationService) FetchAllDopSettings() (*DopTranslationDopSettings, *http.Response, error) {
+func (s *DopTranslationService) GetDopSettings() (*DopTranslationDopSettings, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "dop-translation/dop-settings", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)

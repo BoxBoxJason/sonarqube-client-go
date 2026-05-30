@@ -51,12 +51,12 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 	})
 
 	// =========================================================================
-	// GetGithubClientId
+	// GetGithubClientID
 	// =========================================================================
-	Describe("GetGithubClientId", func() {
+	Describe("GetGithubClientID", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.AlmIntegrations.GetGithubClientId(nil)
+				result, resp, err := client.AlmIntegrations.GetGithubClientID(nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
@@ -64,7 +64,7 @@ var _ = Describe("AlmIntegrations Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmIntegrations.GetGithubClientId(&sonar.AlmIntegrationsGetGithubClientIdOptions{})
+				result, resp, err := client.AlmIntegrations.GetGithubClientID(&sonar.AlmIntegrationsGetGithubClientIDOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(resp).To(BeNil())

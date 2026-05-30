@@ -105,10 +105,10 @@ func TestDopTranslationV2_CreateBoundProject_Validation(t *testing.T) {
 }
 
 // =============================================================================
-// FetchAllDopSettings
+// GetDopSettings
 // =============================================================================
 
-func TestDopTranslationV2_FetchAllDopSettings(t *testing.T) {
+func TestDopTranslationV2_GetDopSettings(t *testing.T) {
 	response := DopTranslationDopSettings{
 		DopSettings: []DopSetting{
 			{Id: "1", Type: "github", Key: "gh-setting", URL: "https://github.com", AppID: "app-1"},
@@ -119,7 +119,7 @@ func TestDopTranslationV2_FetchAllDopSettings(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/dop-translation/dop-settings", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.DopTranslation.FetchAllDopSettings()
+	result, resp, err := client.V2.DopTranslation.GetDopSettings()
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.DopSettings, 2)

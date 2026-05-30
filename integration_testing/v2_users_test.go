@@ -195,7 +195,7 @@ var _ = Describe("V2 Users Management Service", Ordered, func() {
 	// =========================================================================
 	// Fetch
 	// =========================================================================
-	Describe("Fetch", func() {
+	Describe("Get", func() {
 		var createdUser *sonar.UserV2
 
 		BeforeAll(func() {
@@ -221,7 +221,7 @@ var _ = Describe("V2 Users Management Service", Ordered, func() {
 
 		Context("with valid user ID", func() {
 			It("should fetch the user by ID", func() {
-				fetched, resp, err := client.V2.UsersManagement.Fetch(createdUser.Id)
+				fetched, resp, err := client.V2.UsersManagement.Get(createdUser.Id)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(fetched).NotTo(BeNil())
@@ -234,7 +234,7 @@ var _ = Describe("V2 Users Management Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with empty user ID", func() {
-				user, resp, err := client.V2.UsersManagement.Fetch("")
+				user, resp, err := client.V2.UsersManagement.Get("")
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(user).To(BeNil())
@@ -353,7 +353,7 @@ var _ = Describe("V2 Users Management Service", Ordered, func() {
 				Expect(resp).NotTo(BeNil())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
-				fetched, resp, err := client.V2.UsersManagement.Fetch(created.Id)
+				fetched, resp, err := client.V2.UsersManagement.Get(created.Id)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(fetched).NotTo(BeNil())

@@ -33,11 +33,11 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 	})
 
 	// =========================================================================
-	// FetchAllDopSettings
+	// GetDopSettings
 	// =========================================================================
-	Describe("FetchAllDopSettings", func() {
+	Describe("GetDopSettings", func() {
 		It("should return DevOps Platform settings", func() {
-			result, resp, err := client.V2.DopTranslation.FetchAllDopSettings()
+			result, resp, err := client.V2.DopTranslation.GetDopSettings()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -99,7 +99,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			)
 
 			BeforeAll(func() {
-				settings, _, err := client.V2.DopTranslation.FetchAllDopSettings()
+				settings, _, err := client.V2.DopTranslation.GetDopSettings()
 				Expect(err).NotTo(HaveOccurred())
 
 				if len(settings.DopSettings) == 0 {
@@ -169,7 +169,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			)
 
 			BeforeAll(func() {
-				settings, _, err := client.V2.DopTranslation.FetchAllDopSettings()
+				settings, _, err := client.V2.DopTranslation.GetDopSettings()
 				Expect(err).NotTo(HaveOccurred())
 
 				if len(settings.DopSettings) == 0 {

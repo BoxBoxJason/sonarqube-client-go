@@ -54,7 +54,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 	Describe("Index", func() {
 		Context("Functional Tests", func() {
 			It("should get batch index", func() {
-				result, resp, err := client.Batch.Index()
+				result, resp, err := client.Batch.GetIndex()
 				// Batch API may not be available in newer SonarQube versions
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Batch API is not available in this SonarQube version")
@@ -65,7 +65,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 			})
 
 			It("should return JAR file list", func() {
-				result, resp, err := client.Batch.Index()
+				result, resp, err := client.Batch.GetIndex()
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Batch API is not available in this SonarQube version")
 				}
@@ -82,14 +82,14 @@ var _ = Describe("Batch Service", Ordered, func() {
 			})
 
 			It("should return consistent results on multiple calls", func() {
-				result1, resp1, err := client.Batch.Index()
+				result1, resp1, err := client.Batch.GetIndex()
 				if resp1 != nil && resp1.StatusCode == http.StatusNotFound {
 					Skip("Batch API is not available in this SonarQube version")
 				}
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
-				result2, resp2, err := client.Batch.Index()
+				result2, resp2, err := client.Batch.GetIndex()
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 
@@ -105,7 +105,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should download batch file with valid name", func() {
 				// First get the index to find a valid file name
-				index, resp, err := client.Batch.Index()
+				index, resp, err := client.Batch.GetIndex()
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Batch API is not available in this SonarQube version")
 				}
@@ -116,7 +116,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 					for _, line := range lines {
 						parts := strings.Split(strings.TrimSpace(line), "|")
 						if len(parts) > 0 && strings.HasSuffix(parts[0], ".jar") {
-							result, resp, err := client.Batch.File(&sonar.BatchFileOptions{
+							result, resp, err := client.Batch.GetFile(&sonar.BatchFileOptions{
 								Name: parts[0],
 							})
 							Expect(err).NotTo(HaveOccurred())
@@ -132,7 +132,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should handle nil options", func() {
-				_, resp, err := client.Batch.File(nil)
+				_, resp, err := client.Batch.GetFile(nil)
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Batch API is not available in this SonarQube version")
 				}
@@ -143,7 +143,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 			})
 
 			It("should fail with non-existent file", func() {
-				_, resp, err := client.Batch.File(&sonar.BatchFileOptions{
+				_, resp, err := client.Batch.GetFile(&sonar.BatchFileOptions{
 					Name: "non-existent-file.jar",
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
@@ -165,7 +165,7 @@ var _ = Describe("Batch Service", Ordered, func() {
 	Describe("Project", func() {
 		Context("Functional Tests", func() {
 			It("should get project batch info with valid key", func() {
-				result, resp, err := client.Batch.Project(&sonar.BatchProjectOptions{
+				result, resp, err := client.Batch.GetProject(&sonar.BatchProjectOptions{
 					Key: testProject.Project.Key,
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
@@ -189,17 +189,17 @@ var _ = Describe("Batch Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				_, _, err := client.Batch.Project(nil)
+				_, _, err := client.Batch.GetProject(nil)
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing key", func() {
-				_, _, err := client.Batch.Project(&sonar.BatchProjectOptions{})
+				_, _, err := client.Batch.GetProject(&sonar.BatchProjectOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with non-existent project", func() {
-				_, resp, err := client.Batch.Project(&sonar.BatchProjectOptions{
+				_, resp, err := client.Batch.GetProject(&sonar.BatchProjectOptions{
 					Key: "non-existent-project-12345",
 				})
 				if resp != nil && resp.StatusCode == http.StatusNotFound {

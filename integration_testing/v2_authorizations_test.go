@@ -152,7 +152,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 		})
 	})
 
-	Describe("FetchGroup", func() {
+	Describe("GetGroup", func() {
 		var createdGroup *sonar.AuthorizationsGroup
 
 		BeforeAll(func() {
@@ -174,7 +174,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("with valid group ID", func() {
 			It("should fetch the group by ID", func() {
-				fetched, resp, err := client.V2.Authorizations.FetchGroup(createdGroup.Id)
+				fetched, resp, err := client.V2.Authorizations.GetGroup(createdGroup.Id)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(fetched).NotTo(BeNil())
@@ -186,7 +186,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with empty group ID", func() {
-				group, resp, err := client.V2.Authorizations.FetchGroup("")
+				group, resp, err := client.V2.Authorizations.GetGroup("")
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(group).To(BeNil())
