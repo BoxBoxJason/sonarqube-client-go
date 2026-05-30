@@ -422,7 +422,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 	// Create, Update, Delete (Custom Rule Lifecycle)
 	// =========================================================================
 	Describe("Custom Rule Lifecycle", func() {
-		var templateRule sonar.RuleDetails
+		var templateRule sonar.RulesDetails
 
 		BeforeAll(func() {
 			// Find a template rule to use for creating custom rules

@@ -113,16 +113,6 @@ type PermissionUser struct {
 	Permissions []string `json:"permissions,omitempty"`
 }
 
-// PermissionsPaging represents pagination information for permission queries.
-type PermissionsPaging struct {
-	// PageIndex is the current page index (1-based).
-	PageIndex int64 `json:"pageIndex,omitempty"`
-	// PageSize is the number of items per page.
-	PageSize int64 `json:"pageSize,omitempty"`
-	// Total is the total number of items.
-	Total int64 `json:"total,omitempty"`
-}
-
 // PermissionTemplate represents a permission template.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
@@ -136,17 +126,17 @@ type PermissionTemplate struct {
 	// Name is the template name.
 	Name string `json:"name,omitempty"`
 	// Permissions is the list of permissions in the template.
-	Permissions []TemplatePermission `json:"permissions,omitempty"`
+	Permissions []PermissionsTemplatePermission `json:"permissions,omitempty"`
 	// ProjectKeyPattern is the regex pattern for matching project keys.
 	ProjectKeyPattern string `json:"projectKeyPattern,omitempty"`
 	// UpdatedAt is the template last update date.
 	UpdatedAt string `json:"updatedAt,omitempty"`
 }
 
-// TemplatePermission represents a permission entry in a template.
+// PermissionsTemplatePermission represents a permission entry in a template.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type TemplatePermission struct {
+type PermissionsTemplatePermission struct {
 	// GroupsCount is the number of groups with this permission.
 	GroupsCount int64 `json:"groupsCount,omitempty"`
 	// Key is the permission key.
@@ -157,16 +147,16 @@ type TemplatePermission struct {
 	WithProjectCreator bool `json:"withProjectCreator,omitempty"`
 }
 
-// DefaultTemplate represents a default template mapping.
-type DefaultTemplate struct {
+// PermissionsDefaultTemplate represents a default template mapping.
+type PermissionsDefaultTemplate struct {
 	// Qualifier is the component qualifier (e.g., TRK for projects).
 	Qualifier string `json:"qualifier,omitempty"`
 	// TemplateID is the ID of the template set as default.
 	TemplateID string `json:"templateId,omitempty"`
 }
 
-// TemplateGroup represents a group in a permission template.
-type TemplateGroup struct {
+// PermissionsTemplateGroup represents a group in a permission template.
+type PermissionsTemplateGroup struct {
 	// Description is the group description.
 	Description string `json:"description,omitempty"`
 	// Name is the group name.
@@ -175,8 +165,8 @@ type TemplateGroup struct {
 	Permissions []string `json:"permissions,omitempty"`
 }
 
-// TemplateUser represents a user in a permission template.
-type TemplateUser struct {
+// PermissionsTemplateUser represents a user in a permission template.
+type PermissionsTemplateUser struct {
 	// Avatar is the user's avatar URL.
 	Avatar string `json:"avatar,omitempty"`
 	// Email is the user's email address.
@@ -196,11 +186,11 @@ type TemplateUser struct {
 // PermissionsCreateTemplate represents the response from creating a permission template.
 type PermissionsCreateTemplate struct {
 	// PermissionTemplate is the created permission template.
-	PermissionTemplate PermissionTemplateBasic `json:"permissionTemplate,omitzero"`
+	PermissionTemplate PermissionsTemplateBasic `json:"permissionTemplate,omitzero"`
 }
 
-// PermissionTemplateBasic represents basic permission template info returned on create.
-type PermissionTemplateBasic struct {
+// PermissionsTemplateBasic represents basic permission template info returned on create.
+type PermissionsTemplateBasic struct {
 	// Description is the template description.
 	Description string `json:"description,omitempty"`
 	// Id is the unique identifier of the template.
@@ -220,13 +210,13 @@ type PermissionsGroups struct {
 	// Groups is the list of groups with their permissions.
 	Groups []PermissionGroup `json:"groups,omitempty"`
 	// Paging contains pagination information.
-	Paging PermissionsPaging `json:"paging,omitzero"`
+	Paging Paging `json:"paging,omitzero"`
 }
 
 // PermissionsSearchTemplates represents the response from searching permission templates.
 type PermissionsSearchTemplates struct {
 	// DefaultTemplates is the list of default template mappings.
-	DefaultTemplates []DefaultTemplate `json:"defaultTemplates,omitempty"`
+	DefaultTemplates []PermissionsDefaultTemplate `json:"defaultTemplates,omitempty"`
 	// PermissionTemplates is the list of permission templates.
 	PermissionTemplates []PermissionTemplate `json:"permissionTemplates,omitempty"`
 }
@@ -234,9 +224,9 @@ type PermissionsSearchTemplates struct {
 // PermissionsTemplateGroups represents the response from listing template groups.
 type PermissionsTemplateGroups struct {
 	// Groups is the list of groups in the template.
-	Groups []TemplateGroup `json:"groups,omitempty"`
+	Groups []PermissionsTemplateGroup `json:"groups,omitempty"`
 	// Paging contains pagination information.
-	Paging PermissionsPaging `json:"paging,omitzero"`
+	Paging Paging `json:"paging,omitzero"`
 }
 
 // PermissionsTemplateUsers represents the response from listing template users.
@@ -244,19 +234,19 @@ type PermissionsTemplateGroups struct {
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type PermissionsTemplateUsers struct {
 	// Paging contains pagination information.
-	Paging PermissionsPaging `json:"paging,omitzero"`
+	Paging Paging `json:"paging,omitzero"`
 	// Users is the list of users in the template.
-	Users []TemplateUser `json:"users,omitempty"`
+	Users []PermissionsTemplateUser `json:"users,omitempty"`
 }
 
 // PermissionsUpdateTemplate represents the response from updating a permission template.
 type PermissionsUpdateTemplate struct {
 	// PermissionTemplate is the updated permission template.
-	PermissionTemplate PermissionTemplateUpdated `json:"permissionTemplate,omitzero"`
+	PermissionTemplate PermissionsTemplateUpdated `json:"permissionTemplate,omitzero"`
 }
 
-// PermissionTemplateUpdated represents updated permission template info.
-type PermissionTemplateUpdated struct {
+// PermissionsTemplateUpdated represents updated permission template info.
+type PermissionsTemplateUpdated struct {
 	// CreatedAt is the template creation date.
 	CreatedAt string `json:"createdAt,omitempty"`
 	// Description is the template description.
@@ -276,7 +266,7 @@ type PermissionTemplateUpdated struct {
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type PermissionsUsers struct {
 	// Paging contains pagination information.
-	Paging PermissionsPaging `json:"paging,omitzero"`
+	Paging Paging `json:"paging,omitzero"`
 	// Users is the list of users with their permissions.
 	Users []PermissionUser `json:"users,omitempty"`
 }

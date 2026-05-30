@@ -413,12 +413,12 @@ func TestQualityprofiles_Changelog_ValidationError(t *testing.T) {
 
 func TestQualityprofiles_Compare(t *testing.T) {
 	response := &QualityprofilesCompare{
-		Left:  CompareProfile{Key: "profile1", Name: "Profile 1"},
-		Right: CompareProfile{Key: "profile2", Name: "Profile 2"},
-		InLeft: []CompareRule{
+		Left:  QualityprofilesCompareProfile{Key: "profile1", Name: "Profile 1"},
+		Right: QualityprofilesCompareProfile{Key: "profile2", Name: "Profile 2"},
+		InLeft: []QualityprofilesCompareRule{
 			{Key: "squid:S1234", Name: "Rule in left"},
 		},
-		InRight: []CompareRule{
+		InRight: []QualityprofilesCompareRule{
 			{Key: "squid:S5678", Name: "Rule in right"},
 		},
 	}
@@ -513,7 +513,7 @@ func TestQualityprofiles_Copy_ValidationError(t *testing.T) {
 
 func TestQualityprofiles_Create(t *testing.T) {
 	response := &QualityprofilesCreate{
-		Profile: CreatedProfile{
+		Profile: QualityprofilesCreatedProfile{
 			Key:          "new-profile-key",
 			Name:         "My New Profile",
 			Language:     "java",
@@ -694,7 +694,7 @@ func TestQualityprofiles_Export_ValidationError(t *testing.T) {
 
 func TestQualityprofiles_Exporters(t *testing.T) {
 	response := &QualityprofilesExporters{
-		Exporters: []ProfileExporter{
+		Exporters: []QualityprofilesExporter{
 			{Key: "checkstyle", Name: "Checkstyle", Languages: []string{"java"}},
 		},
 	}
@@ -712,7 +712,7 @@ func TestQualityprofiles_Exporters(t *testing.T) {
 
 func TestQualityprofiles_Importers(t *testing.T) {
 	response := &QualityprofilesImporters{
-		Importers: []ProfileImporter{
+		Importers: []QualityprofilesImporter{
 			{Key: "pmd", Name: "PMD", Languages: []string{"java"}},
 		},
 	}
@@ -730,15 +730,15 @@ func TestQualityprofiles_Importers(t *testing.T) {
 
 func TestQualityprofiles_Inheritance(t *testing.T) {
 	response := &QualityprofilesInheritance{
-		Profile: InheritanceProfile{
+		Profile: QualityprofilesInheritanceProfile{
 			Key:             "my-profile-key",
 			Name:            "My Profile",
 			ActiveRuleCount: 150,
 		},
-		Ancestors: []InheritanceProfile{
+		Ancestors: []QualityprofilesInheritanceProfile{
 			{Key: "parent-key", Name: "Sonar way", ActiveRuleCount: 200},
 		},
-		Children: []InheritanceProfile{},
+		Children: []QualityprofilesInheritanceProfile{},
 	}
 
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/inheritance", http.StatusOK, response))
@@ -781,7 +781,7 @@ func TestQualityprofiles_Inheritance_ValidationError(t *testing.T) {
 func TestQualityprofiles_Projects(t *testing.T) {
 	response := &QualityprofilesProjects{
 		Paging: Paging{PageIndex: 1, PageSize: 25, Total: 2},
-		Results: []ProfileProject{
+		Results: []QualityprofilesProfileProject{
 			{Key: "project1", Name: "Project 1", Selected: true},
 			{Key: "project2", Name: "Project 2", Selected: false},
 		},
@@ -1029,7 +1029,7 @@ func TestQualityprofiles_Search_ValidationError(t *testing.T) {
 func TestQualityprofiles_SearchGroups(t *testing.T) {
 	response := &QualityprofilesSearchGroups{
 		Paging: Paging{PageIndex: 1, PageSize: 25, Total: 1},
-		Groups: []ProfileGroup{
+		Groups: []QualityprofilesProfileGroup{
 			{Name: "sonar-administrators", Description: "Admin group", Selected: true},
 		},
 	}
@@ -1081,7 +1081,7 @@ func TestQualityprofiles_SearchGroups_ValidationError(t *testing.T) {
 func TestQualityprofiles_SearchUsers(t *testing.T) {
 	response := &QualityprofilesSearchUsers{
 		Paging: Paging{PageIndex: 1, PageSize: 25, Total: 1},
-		Users: []ProfileUser{
+		Users: []QualityprofilesProfileUser{
 			{Login: "john.doe", Name: "John Doe", Selected: true},
 		},
 	}
@@ -1166,7 +1166,7 @@ func TestQualityprofiles_SetDefault_ValidationError(t *testing.T) {
 
 func TestQualityprofiles_Show(t *testing.T) {
 	response := &QualityprofilesShow{
-		Profile: ShownProfile{
+		Profile: QualityprofilesShownProfile{
 			Key:             "sonar-way-java",
 			Name:            "Sonar way",
 			Language:        "java",

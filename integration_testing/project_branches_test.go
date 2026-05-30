@@ -66,7 +66,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(result.Branches).NotTo(BeEmpty())
 
 			// Find and verify the main branch
-			var mainBranch *sonar.Branch
+			var mainBranch *sonar.ProjectBranch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]
@@ -142,7 +142,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			var mainBranch *sonar.Branch
+			var mainBranch *sonar.ProjectBranch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]
@@ -310,7 +310,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			var mainBranch *sonar.Branch
+			var mainBranch *sonar.ProjectBranch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]
@@ -456,7 +456,7 @@ var _ = Describe("ProjectBranches Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result.Branches).NotTo(BeEmpty())
 
-			var mainBranch *sonar.Branch
+			var mainBranch *sonar.ProjectBranch
 			for i := range result.Branches {
 				if result.Branches[i].IsMain {
 					mainBranch = &result.Branches[i]

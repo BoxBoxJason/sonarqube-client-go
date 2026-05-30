@@ -48,7 +48,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
 					MarkdownDescription: "Test description",
-					Impacts:             []sonar.RuleImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
+					Impacts:             []sonar.RulesImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -60,7 +60,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					Key:                 "custom:test_rule",
 					Name:                "Test Rule",
 					MarkdownDescription: "Test description",
-					Impacts:             []sonar.RuleImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
+					Impacts:             []sonar.RulesImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -72,7 +72,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					Key:                 "custom:test_rule",
 					TemplateKey:         "java:S100",
 					MarkdownDescription: "Test description",
-					Impacts:             []sonar.RuleImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
+					Impacts:             []sonar.RulesImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -84,7 +84,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					Key:         "custom:test_rule",
 					TemplateKey: "java:S100",
 					Name:        "Test Rule",
-					Impacts:     []sonar.RuleImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
+					Impacts:     []sonar.RulesImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -97,7 +97,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
 					MarkdownDescription: "Test description",
-					Impacts:             []sonar.RuleImpact{},
+					Impacts:             []sonar.RulesImpact{},
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -110,7 +110,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
 					MarkdownDescription: "Test description",
-					Impacts:             []sonar.RuleImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
+					Impacts:             []sonar.RulesImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
 					CleanCodeAttribute:  "INVALID",
 				})
 				Expect(err).To(HaveOccurred())
@@ -124,7 +124,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					TemplateKey:         "java:S100",
 					Name:                "Test Rule",
 					MarkdownDescription: "Test description",
-					Impacts:             []sonar.RuleImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: "INVALID"}},
+					Impacts:             []sonar.RulesImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: "INVALID"}},
 				})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
@@ -133,7 +133,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 		})
 
 		Context("successful creation", func() {
-			var templateRule sonar.RuleDetails
+			var templateRule sonar.RulesDetails
 
 			BeforeAll(func() {
 				// Find a template rule to use for creating custom rules.
@@ -158,7 +158,7 @@ var _ = Describe("V2 Clean Code Policy Service", Ordered, func() {
 					TemplateKey:         templateRule.Key,
 					Name:                "E2E V2 Test Rule " + customKey,
 					MarkdownDescription: "This is a test rule created by V2 e2e tests",
-					Impacts:             []sonar.RuleImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
+					Impacts:             []sonar.RulesImpact{{SoftwareQuality: sonar.SoftwareQualityMaintainability, Severity: sonar.RuleImpactSeverityHigh}},
 					Status:              sonar.RuleStatusReady,
 					CleanCodeAttribute:  sonar.CleanCodeAttributeConventional,
 				})

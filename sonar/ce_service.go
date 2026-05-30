@@ -160,8 +160,8 @@ type CeQueuedTask struct {
 	Type string `json:"type,omitempty"`
 }
 
-// CePaging represents pagination information for CE queries.
-type CePaging struct {
+// CeTaskPaging represents pagination information for CE queries.
+type CeTaskPaging struct {
 	// PageIndex is the current page index (1-based).
 	PageIndex int64 `json:"pageIndex,omitempty"`
 	// PageSize is the number of items per page.
@@ -170,10 +170,10 @@ type CePaging struct {
 	Total int64 `json:"total,omitempty"`
 }
 
-// AnalysisWarning represents a warning from analysis.
+// CeAnalysisWarning represents a warning from analysis.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type AnalysisWarning struct {
+type CeAnalysisWarning struct {
 	// Dismissable indicates if the warning can be dismissed.
 	Dismissable bool `json:"dismissable,omitempty"`
 	// Key is the unique key of the warning.
@@ -182,14 +182,14 @@ type AnalysisWarning struct {
 	Message string `json:"message,omitempty"`
 }
 
-// AnalysisComponent represents a component with its analysis warnings.
-type AnalysisComponent struct {
+// CeAnalysisComponent represents a component with its analysis warnings.
+type CeAnalysisComponent struct {
 	// Key is the component key.
 	Key string `json:"key,omitempty"`
 	// Name is the component name.
 	Name string `json:"name,omitempty"`
 	// Warnings is the list of analysis warnings.
-	Warnings []AnalysisWarning `json:"warnings,omitempty"`
+	Warnings []CeAnalysisWarning `json:"warnings,omitempty"`
 }
 
 // -----------------------------------------------------------------------------
@@ -201,7 +201,7 @@ type AnalysisComponent struct {
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type CeActivity struct {
 	// Paging contains pagination information.
-	Paging CePaging `json:"paging,omitzero"`
+	Paging CeTaskPaging `json:"paging,omitzero"`
 	// Tasks is the list of tasks.
 	Tasks []CeTask `json:"tasks,omitempty"`
 }
@@ -221,7 +221,7 @@ type CeActivityStatus struct {
 // CeAnalysisStatus represents the analysis status of a component.
 type CeAnalysisStatus struct {
 	// Component contains the component information with warnings.
-	Component AnalysisComponent `json:"component,omitzero"`
+	Component CeAnalysisComponent `json:"component,omitzero"`
 }
 
 // CeComponent represents the pending, in-progress, and last executed tasks for a component.

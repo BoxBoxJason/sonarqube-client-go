@@ -19,15 +19,15 @@ type WebservicesService struct {
 // WebservicesList represents the response from listing webservices.
 type WebservicesList struct {
 	// Webservices is the list of available webservices.
-	Webservices []Webservice `json:"webServices,omitempty"`
+	Webservices []WebservicesDefinition `json:"webServices,omitempty"`
 }
 
-// Webservice represents a webservice controller.
+// WebservicesDefinition represents a webservice controller.
 //
 //nolint:govet // fieldalignment - structure kept for readability
-type Webservice struct {
+type WebservicesDefinition struct {
 	// Actions is the list of actions available in the controller.
-	Actions []WebserviceAction `json:"actions,omitempty"`
+	Actions []WebservicesAction `json:"actions,omitempty"`
 	// Description is the controller description.
 	Description string `json:"description,omitempty"`
 	// Path is the controller path.
@@ -36,12 +36,12 @@ type Webservice struct {
 	Since string `json:"since,omitempty"`
 }
 
-// WebserviceAction represents an action within a webservice.
+// WebservicesAction represents an action within a webservice.
 //
 //nolint:govet // fieldalignment - structure kept for readability
-type WebserviceAction struct {
+type WebservicesAction struct {
 	// Changelog is the list of changes.
-	Changelog []WebserviceChangelog `json:"changelog,omitempty"`
+	Changelog []WebservicesChangelog `json:"changelog,omitempty"`
 	// DeprecatedSince indicates when the action was deprecated.
 	DeprecatedSince string `json:"deprecatedSince,omitempty"`
 	// Description is the action description.
@@ -53,25 +53,25 @@ type WebserviceAction struct {
 	// Key is the action key.
 	Key string `json:"key,omitempty"`
 	// Params is the list of parameters.
-	Params []WebserviceParam `json:"params,omitempty"`
+	Params []WebservicesParam `json:"params,omitempty"`
 	// Post indicates if the action uses POST method.
 	Post bool `json:"post,omitempty"`
 	// Since indicates when the action was introduced.
 	Since string `json:"since,omitempty"`
 }
 
-// WebserviceChangelog represents a changelog entry for an action.
-type WebserviceChangelog struct {
+// WebservicesChangelog represents a changelog entry for an action.
+type WebservicesChangelog struct {
 	// Description is the changelog description.
 	Description string `json:"description,omitempty"`
 	// Version is the version when the change occurred.
 	Version string `json:"version,omitempty"`
 }
 
-// WebserviceParam represents a parameter for an action.
+// WebservicesParam represents a parameter for an action.
 //
 //nolint:govet // fieldalignment - structure kept for readability
-type WebserviceParam struct {
+type WebservicesParam struct {
 	// DefaultValue is the parameter default value.
 	DefaultValue string `json:"defaultValue,omitempty"`
 	// DeprecatedKey is the deprecated key for the parameter.

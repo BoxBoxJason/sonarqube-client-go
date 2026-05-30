@@ -32,8 +32,8 @@ type WebhooksService struct {
 // Response Types
 // -----------------------------------------------------------------------------
 
-// Webhook represents a webhook configuration.
-type Webhook struct {
+// WebhooksDefinition represents a webhook configuration.
+type WebhooksDefinition struct {
 	// Key is the unique identifier of the webhook.
 	Key string `json:"key,omitempty"`
 	// Name is the display name of the webhook.
@@ -47,7 +47,7 @@ type Webhook struct {
 // WebhooksCreate represents the response from creating a webhook.
 type WebhooksCreate struct {
 	// Webhook contains the created webhook details.
-	Webhook Webhook `json:"webhook,omitzero"`
+	Webhook WebhooksDefinition `json:"webhook,omitzero"`
 }
 
 // WebhooksDeliveries represents the response from listing webhook deliveries.
@@ -93,7 +93,7 @@ type WebhooksDelivery struct {
 // WebhooksList represents the response from listing webhooks.
 type WebhooksList struct {
 	// Webhooks is the list of configured webhooks.
-	Webhooks []Webhook `json:"webhooks,omitempty"`
+	Webhooks []WebhooksDefinition `json:"webhooks,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

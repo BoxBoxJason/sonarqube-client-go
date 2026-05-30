@@ -153,7 +153,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 	})
 
 	Describe("FetchGroup", func() {
-		var createdGroup *sonar.Group
+		var createdGroup *sonar.AuthorizationsGroup
 
 		BeforeAll(func() {
 			groupName := helpers.UniqueResourceName("v2gfetch")
@@ -195,7 +195,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 	})
 
 	Describe("UpdateGroup", func() {
-		var createdGroup *sonar.Group
+		var createdGroup *sonar.AuthorizationsGroup
 
 		BeforeAll(func() {
 			groupName := helpers.UniqueResourceName("v2gupd")
@@ -326,7 +326,7 @@ var _ = Describe("V2 Authorizations Service", Ordered, func() {
 
 	Describe("CreateGroupMembership", func() {
 		var (
-			createdGroup *sonar.Group
+			createdGroup *sonar.AuthorizationsGroup
 			createdUser  *sonar.UserV2
 		)
 

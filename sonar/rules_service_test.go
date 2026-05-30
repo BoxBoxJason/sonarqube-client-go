@@ -60,7 +60,7 @@ func TestRules_Search(t *testing.T) {
 }
 
 // TestRulesSearchResponse_DynamicActives verifies that the Actives field
-// correctly handles dynamic rule keys as a map[string][]RuleActivation.
+// correctly handles dynamic rule keys as a map[string][]RulesActivation.
 func TestRulesSearchResponse_DynamicActives(t *testing.T) {
 	jsonData := `{
 		"actives": {

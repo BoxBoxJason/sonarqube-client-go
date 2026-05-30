@@ -82,25 +82,25 @@ type SystemDbMigrationStatus struct {
 // SystemHealth represents the response from checking the health status of SonarQube.
 type SystemHealth struct {
 	// Causes contains the reasons for any health issues.
-	Causes []HealthCause `json:"causes,omitempty"`
+	Causes []SystemHealthCause `json:"causes,omitempty"`
 	// Health is the overall health status: GREEN, YELLOW, or RED.
 	Health string `json:"health,omitempty"`
 	// Nodes contains health information for each node in a cluster.
-	Nodes []HealthNode `json:"nodes,omitempty"`
+	Nodes []SystemHealthNode `json:"nodes,omitempty"`
 }
 
-// HealthCause represents a reason for a health issue.
-type HealthCause struct {
+// SystemHealthCause represents a reason for a health issue.
+type SystemHealthCause struct {
 	// Message describes the cause of the health issue.
 	Message string `json:"message,omitempty"`
 }
 
-// HealthNode represents health information for a single node in a cluster.
+// SystemHealthNode represents health information for a single node in a cluster.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type HealthNode struct {
+type SystemHealthNode struct {
 	// Causes contains the reasons for any health issues on this node.
-	Causes []HealthCause `json:"causes,omitempty"`
+	Causes []SystemHealthCause `json:"causes,omitempty"`
 	// Health is the health status of this node: GREEN, YELLOW, or RED.
 	Health string `json:"health,omitempty"`
 	// Host is the hostname or IP address of this node.
@@ -483,13 +483,13 @@ type SystemUpgrades struct {
 	// UpdateCenterRefresh is the timestamp when Update Center was last refreshed.
 	UpdateCenterRefresh string `json:"updateCenterRefresh,omitempty"`
 	// Upgrades is the list of available upgrades.
-	Upgrades []Upgrade `json:"upgrades,omitempty"`
+	Upgrades []SystemUpgrade `json:"upgrades,omitempty"`
 }
 
-// Upgrade represents an available upgrade.
+// SystemUpgrade represents an available upgrade.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type Upgrade struct {
+type SystemUpgrade struct {
 	// ChangeLogURL is the URL to the release changelog.
 	ChangeLogURL string `json:"changeLogUrl,omitempty"`
 	// Description describes the upgrade.
@@ -497,25 +497,25 @@ type Upgrade struct {
 	// DownloadURL is the URL to download the upgrade.
 	DownloadURL string `json:"downloadUrl,omitempty"`
 	// Plugins contains plugin compatibility information.
-	Plugins UpgradePlugins `json:"plugins,omitzero"`
+	Plugins SystemUpgradePlugins `json:"plugins,omitzero"`
 	// ReleaseDate is the release date of the upgrade.
 	ReleaseDate string `json:"releaseDate,omitempty"`
 	// Version is the version of the upgrade.
 	Version string `json:"version,omitempty"`
 }
 
-// UpgradePlugins contains plugin compatibility information for an upgrade.
-type UpgradePlugins struct {
+// SystemUpgradePlugins contains plugin compatibility information for an upgrade.
+type SystemUpgradePlugins struct {
 	// Incompatible lists plugins that are incompatible with the upgrade.
-	Incompatible []IncompatiblePlugin `json:"incompatible,omitempty"`
+	Incompatible []SystemIncompatiblePlugin `json:"incompatible,omitempty"`
 	// RequireUpdate lists plugins that require updating.
-	RequireUpdate []PluginUpdate `json:"requireUpdate,omitempty"`
+	RequireUpdate []SystemPluginUpdate `json:"requireUpdate,omitempty"`
 }
 
-// IncompatiblePlugin represents a plugin that is incompatible with an upgrade.
+// SystemIncompatiblePlugin represents a plugin that is incompatible with an upgrade.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type IncompatiblePlugin struct {
+type SystemIncompatiblePlugin struct {
 	// Category is the plugin category.
 	Category string `json:"category,omitempty"`
 	// Description is the plugin description.
@@ -534,10 +534,10 @@ type IncompatiblePlugin struct {
 	OrganizationURL string `json:"organizationUrl,omitempty"`
 }
 
-// PluginUpdate represents a plugin that requires updating for an upgrade.
+// SystemPluginUpdate represents a plugin that requires updating for an upgrade.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type PluginUpdate struct {
+type SystemPluginUpdate struct {
 	// Category is the plugin category.
 	Category string `json:"category,omitempty"`
 	// Description is the plugin description.

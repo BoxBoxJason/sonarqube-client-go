@@ -156,9 +156,9 @@ func TestUsers_Create_ValidationError(t *testing.T) {
 }
 
 func TestUsers_Current(t *testing.T) {
-	response := CurrentUser{
+	response := UsersCurrentProfile{
 		Avatar: "abc123",
-		DismissedNotices: DismissedNotices{
+		UsersDismissedNotices: UsersDismissedNotices{
 			EducationPrinciples: true,
 			SonarlintAd:         false,
 		},
@@ -166,7 +166,7 @@ func TestUsers_Current(t *testing.T) {
 		ExternalIdentity: "admin",
 		ExternalProvider: "sonarqube",
 		Groups:           []string{"sonar-users", "sonar-administrators"},
-		Homepage: Homepage{
+		UsersHomepage: UsersHomepage{
 			Component: "my-project",
 			Type:      "PROJECT",
 		},
@@ -175,7 +175,7 @@ func TestUsers_Current(t *testing.T) {
 		Local:                       true,
 		Login:                       "admin",
 		Name:                        "Administrator",
-		Permissions:                 UserPermissions{Global: []string{"admin", "scan"}},
+		Permissions:                 UsersPermissions{Global: []string{"admin", "scan"}},
 		ScmAccounts:                 []string{"admin@scm.com"},
 		UsingSonarLintConnectedMode: true,
 	}
@@ -189,14 +189,14 @@ func TestUsers_Current(t *testing.T) {
 	require.NotNil(t, result)
 	assert.Equal(t, "admin", result.Login)
 	assert.True(t, result.IsLoggedIn)
-	assert.Equal(t, "PROJECT", result.Homepage.Type)
-	assert.True(t, result.DismissedNotices.EducationPrinciples)
+	assert.Equal(t, "PROJECT", result.UsersHomepage.Type)
+	assert.True(t, result.UsersDismissedNotices.EducationPrinciples)
 	assert.Len(t, result.Permissions.Global, 2)
 }
 
 func TestUsers_Deactivate(t *testing.T) {
 	response := UsersDeactivate{
-		User: DeactivatedUser{
+		User: UsersDeactivateResult{
 			Active: false,
 			Groups: []any{},
 			Local:  true,
@@ -223,7 +223,7 @@ func TestUsers_Deactivate(t *testing.T) {
 
 func TestUsers_Deactivate_WithAnonymize(t *testing.T) {
 	response := UsersDeactivate{
-		User: DeactivatedUser{
+		User: UsersDeactivateResult{
 			Active: false,
 			Groups: []any{},
 			Local:  true,
@@ -302,7 +302,7 @@ func TestUsers_DismissNotice_ValidationError(t *testing.T) {
 
 func TestUsers_Groups(t *testing.T) {
 	response := UsersGroups{
-		Groups: []UserGroup{
+		Groups: []UsersGroup{
 			{
 				Default:     true,
 				Description: "Default group",
@@ -318,7 +318,7 @@ func TestUsers_Groups(t *testing.T) {
 				Selected:    false,
 			},
 		},
-		Paging: UsersPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     2,
@@ -344,8 +344,8 @@ func TestUsers_Groups(t *testing.T) {
 
 func TestUsers_Groups_WithPagination(t *testing.T) {
 	response := UsersGroups{
-		Groups: []UserGroup{},
-		Paging: UsersPaging{
+		Groups: []UsersGroup{},
+		Paging: Paging{
 			PageIndex: 2,
 			PageSize:  10,
 			Total:     2,
@@ -371,8 +371,8 @@ func TestUsers_Groups_WithPagination(t *testing.T) {
 
 func TestUsers_Groups_WithFilter(t *testing.T) {
 	response := UsersGroups{
-		Groups: []UserGroup{},
-		Paging: UsersPaging{
+		Groups: []UsersGroup{},
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     0,
@@ -428,7 +428,7 @@ func TestUsers_Groups_ValidationError(t *testing.T) {
 
 func TestUsers_IdentityProviders(t *testing.T) {
 	response := UsersIdentityProviders{
-		IdentityProviders: []IdentityProvider{
+		IdentityProviders: []UsersIdentityProvider{
 			{
 				BackgroundColor: "#444444",
 				HelpMessage:     "Use your LDAP credentials",
@@ -460,12 +460,12 @@ func TestUsers_IdentityProviders(t *testing.T) {
 
 func TestUsers_Search(t *testing.T) {
 	response := UsersSearch{
-		Paging: UsersPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  50,
 			Total:     2,
 		},
-		Users: []SearchedUser{
+		Users: []UsersSearchResult{
 			{
 				Active:                      true,
 				Avatar:                      "abc123",
@@ -507,12 +507,12 @@ func TestUsers_Search(t *testing.T) {
 
 func TestUsers_Search_WithFilters(t *testing.T) {
 	response := UsersSearch{
-		Paging: UsersPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     0,
 		},
-		Users: []SearchedUser{},
+		Users: []UsersSearchResult{},
 	}
 
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/search", http.StatusOK, response))

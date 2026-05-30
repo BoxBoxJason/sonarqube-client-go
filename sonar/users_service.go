@@ -109,10 +109,10 @@ type User struct {
 	ScmAccounts []string `json:"scmAccounts,omitempty"`
 }
 
-// SearchedUser represents a user returned in search results.
+// UsersSearchResult represents a user returned in search results.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type SearchedUser struct {
+type UsersSearchResult struct {
 	// Active indicates whether the user is active.
 	Active bool `json:"active,omitempty"`
 	// Avatar is the user's avatar URL.
@@ -143,10 +143,10 @@ type SearchedUser struct {
 	TokensCount int64 `json:"tokensCount,omitempty"`
 }
 
-// DeactivatedUser represents a deactivated user.
+// UsersDeactivateResult represents a deactivated user.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type DeactivatedUser struct {
+type UsersDeactivateResult struct {
 	// Active indicates whether the user is active (always false for deactivated users).
 	Active bool `json:"active,omitempty"`
 	// Groups is the list of groups (empty for deactivated users).
@@ -161,14 +161,14 @@ type DeactivatedUser struct {
 	ScmAccounts []any `json:"scmAccounts,omitempty"`
 }
 
-// CurrentUser represents the currently authenticated user.
+// UsersCurrentProfile represents the currently authenticated user.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type CurrentUser struct {
+type UsersCurrentProfile struct {
 	// Avatar is the user's avatar URL.
 	Avatar string `json:"avatar,omitempty"`
-	// DismissedNotices contains the notices dismissed by the user.
-	DismissedNotices DismissedNotices `json:"dismissedNotices,omitzero"`
+	// UsersDismissedNotices contains the notices dismissed by the user.
+	UsersDismissedNotices UsersDismissedNotices `json:"dismissedNotices,omitzero"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty"`
 	// ExternalIdentity is the user's external identity.
@@ -177,8 +177,8 @@ type CurrentUser struct {
 	ExternalProvider string `json:"externalProvider,omitempty"`
 	// Groups is the list of groups the user belongs to.
 	Groups []string `json:"groups,omitempty"`
-	// Homepage is the user's homepage configuration.
-	Homepage Homepage `json:"homepage,omitzero"`
+	// UsersHomepage is the user's homepage configuration.
+	UsersHomepage UsersHomepage `json:"homepage,omitzero"`
 	// ID is the user's unique identifier.
 	ID string `json:"id,omitempty"`
 	// IsLoggedIn indicates whether the user is currently logged in.
@@ -190,39 +190,39 @@ type CurrentUser struct {
 	// Name is the user's display name.
 	Name string `json:"name,omitempty"`
 	// Permissions contains the user's global permissions.
-	Permissions UserPermissions `json:"permissions,omitzero"`
+	Permissions UsersPermissions `json:"permissions,omitzero"`
 	// ScmAccounts is the list of SCM accounts associated with the user.
 	ScmAccounts []string `json:"scmAccounts,omitempty"`
 	// UsingSonarLintConnectedMode indicates whether the user is using SonarLint connected mode.
 	UsingSonarLintConnectedMode bool `json:"usingSonarLintConnectedMode,omitempty"`
 }
 
-// DismissedNotices represents the notices dismissed by a user.
-type DismissedNotices struct {
+// UsersDismissedNotices represents the notices dismissed by a user.
+type UsersDismissedNotices struct {
 	// EducationPrinciples indicates whether the education principles notice was dismissed.
 	EducationPrinciples bool `json:"educationPrinciples,omitempty"`
 	// SonarlintAd indicates whether the SonarLint ad notice was dismissed.
 	SonarlintAd bool `json:"sonarlintAd,omitempty"`
 }
 
-// Homepage represents a user's homepage configuration.
-type Homepage struct {
+// UsersHomepage represents a user's homepage configuration.
+type UsersHomepage struct {
 	// Component is the project key for project homepages.
 	Component string `json:"component,omitempty"`
 	// Type is the homepage type.
 	Type string `json:"type,omitempty"`
 }
 
-// UserPermissions represents a user's global permissions.
-type UserPermissions struct {
+// UsersPermissions represents a user's global permissions.
+type UsersPermissions struct {
 	// Global is the list of global permissions.
 	Global []string `json:"global,omitempty"`
 }
 
-// UserGroup represents a group that a user belongs to.
+// UsersGroup represents a group that a user belongs to.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type UserGroup struct {
+type UsersGroup struct {
 	// Default indicates whether this is a default group.
 	Default bool `json:"default,omitempty"`
 	// Description is the group description.
@@ -235,8 +235,8 @@ type UserGroup struct {
 	Selected bool `json:"selected,omitempty"`
 }
 
-// IdentityProvider represents an external identity provider.
-type IdentityProvider struct {
+// UsersIdentityProvider represents an external identity provider.
+type UsersIdentityProvider struct {
 	// BackgroundColor is the background color for the provider icon.
 	BackgroundColor string `json:"backgroundColor,omitempty"`
 	// HelpMessage is a help message for the identity provider.
@@ -247,16 +247,6 @@ type IdentityProvider struct {
 	Key string `json:"key,omitempty"`
 	// Name is the display name of the identity provider.
 	Name string `json:"name,omitempty"`
-}
-
-// UsersPaging represents pagination information for user queries.
-type UsersPaging struct {
-	// PageIndex is the current page index (1-based).
-	PageIndex int64 `json:"pageIndex,omitempty"`
-	// PageSize is the number of items per page.
-	PageSize int64 `json:"pageSize,omitempty"`
-	// Total is the total number of items.
-	Total int64 `json:"total,omitempty"`
 }
 
 // -----------------------------------------------------------------------------
@@ -270,34 +260,34 @@ type UsersCreate struct {
 }
 
 // UsersCurrent represents the response from getting the current user.
-type UsersCurrent = CurrentUser
+type UsersCurrent = UsersCurrentProfile
 
 // UsersDeactivate represents the response from deactivating a user.
 type UsersDeactivate struct {
 	// User is the deactivated user.
-	User DeactivatedUser `json:"user,omitzero"`
+	User UsersDeactivateResult `json:"user,omitzero"`
 }
 
 // UsersGroups represents the response from listing a user's groups.
 type UsersGroups struct {
 	// Groups is the list of groups.
-	Groups []UserGroup `json:"groups,omitempty"`
+	Groups []UsersGroup `json:"groups,omitempty"`
 	// Paging contains pagination information.
-	Paging UsersPaging `json:"paging,omitzero"`
+	Paging Paging `json:"paging,omitzero"`
 }
 
 // UsersIdentityProviders represents the response from listing identity providers.
 type UsersIdentityProviders struct {
 	// IdentityProviders is the list of identity providers.
-	IdentityProviders []IdentityProvider `json:"identityProviders,omitempty"`
+	IdentityProviders []UsersIdentityProvider `json:"identityProviders,omitempty"`
 }
 
 // UsersSearch represents the response from searching users.
 type UsersSearch struct {
 	// Users is the list of users.
-	Users []SearchedUser `json:"users,omitempty"`
+	Users []UsersSearchResult `json:"users,omitempty"`
 	// Paging contains pagination information.
-	Paging UsersPaging `json:"paging,omitzero"`
+	Paging Paging `json:"paging,omitzero"`
 }
 
 // UsersUpdate represents the response from updating a user.

@@ -17,39 +17,39 @@ type GithubProvisioningService struct {
 // GithubProvisioningCheck represents the response from checking GitHub provisioning configuration.
 type GithubProvisioningCheck struct {
 	// Application contains provisioning status for the application level.
-	Application ProvisioningApplicationStatus `json:"application,omitzero"`
+	Application GithubProvisioningApplicationStatus `json:"application,omitzero"`
 	// Installations contains provisioning status for each GitHub organization/installation.
-	Installations []ProvisioningInstallation `json:"installations,omitempty"`
+	Installations []GithubProvisioningInstallation `json:"installations,omitempty"`
 }
 
-// ProvisioningApplicationStatus represents the provisioning status at the application level.
-type ProvisioningApplicationStatus struct {
+// GithubProvisioningApplicationStatus represents the provisioning status at the application level.
+type GithubProvisioningApplicationStatus struct {
 	// AutoProvisioning contains the auto-provisioning status.
-	AutoProvisioning ProvisioningStatus `json:"autoProvisioning,omitzero"`
+	AutoProvisioning GithubProvisioningStatus `json:"autoProvisioning,omitzero"`
 	// Jit contains the Just-In-Time provisioning status.
-	Jit JitStatus `json:"jit,omitzero"`
+	Jit GithubProvisioningJitStatus `json:"jit,omitzero"`
 }
 
-// ProvisioningInstallation represents the provisioning status for a GitHub organization/installation.
-type ProvisioningInstallation struct {
+// GithubProvisioningInstallation represents the provisioning status for a GitHub organization/installation.
+type GithubProvisioningInstallation struct {
 	// AutoProvisioning contains the auto-provisioning status for this installation.
-	AutoProvisioning ProvisioningStatus `json:"autoProvisioning,omitzero"`
+	AutoProvisioning GithubProvisioningStatus `json:"autoProvisioning,omitzero"`
 	// Jit contains the Just-In-Time provisioning status for this installation.
-	Jit JitStatus `json:"jit,omitzero"`
+	Jit GithubProvisioningJitStatus `json:"jit,omitzero"`
 	// Organization is the name of the GitHub organization.
 	Organization string `json:"organization,omitempty"`
 }
 
-// ProvisioningStatus represents the status of auto-provisioning.
-type ProvisioningStatus struct {
+// GithubProvisioningStatus represents the status of auto-provisioning.
+type GithubProvisioningStatus struct {
 	// ErrorMessage contains an error message if provisioning failed.
 	ErrorMessage string `json:"errorMessage,omitempty"`
 	// Status is the provisioning status.
 	Status string `json:"status,omitempty"`
 }
 
-// JitStatus represents the status of Just-In-Time provisioning.
-type JitStatus struct {
+// GithubProvisioningJitStatus represents the status of Just-In-Time provisioning.
+type GithubProvisioningJitStatus struct {
 	// Status is the JIT provisioning status.
 	Status string `json:"status,omitempty"`
 }

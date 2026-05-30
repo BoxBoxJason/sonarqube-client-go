@@ -72,15 +72,15 @@ type RulesApp struct {
 	// Statuses is a map of statuses keys and their associated display names.
 	Statuses map[string]string `json:"statuses,omitempty"`
 	// Characteristics is the list of available rule characteristics.
-	Characteristics []RuleCharacteristic `json:"characteristics,omitempty"`
+	Characteristics []RulesCharacteristic `json:"characteristics,omitempty"`
 	// Repositories is the list of available rule repositories.
-	Repositories []RuleRepository `json:"repositories,omitempty"`
+	Repositories []RulesRepository `json:"repositories,omitempty"`
 	// CanWrite indicates if the current user has permission to modify rules.
 	CanWrite bool `json:"canWrite,omitempty"`
 }
 
-// RuleCharacteristic represents a characteristic that can be associated with rules.
-type RuleCharacteristic struct {
+// RulesCharacteristic represents a characteristic that can be associated with rules.
+type RulesCharacteristic struct {
 	// Key is the unique identifier of the characteristic.
 	Key string `json:"key,omitempty"`
 	// Name is the display name of the characteristic.
@@ -89,8 +89,8 @@ type RuleCharacteristic struct {
 	Parent string `json:"parent,omitempty"`
 }
 
-// RuleRepository represents a rules repository.
-type RuleRepository struct {
+// RulesRepository represents a rules repository.
+type RulesRepository struct {
 	// Key is the unique identifier of the repository.
 	Key string `json:"key,omitempty"`
 	// Language is the programming language of the repository.
@@ -101,11 +101,11 @@ type RuleRepository struct {
 
 // RulesCreate represents the response from creating a custom rule.
 type RulesCreate struct {
-	Rule Rule `json:"rule,omitzero"`
+	Rule RulesDefinition `json:"rule,omitzero"`
 }
 
-// Rule represents a SonarQube rule.
-type Rule struct {
+// RulesDefinition represents a SonarQube rule.
+type RulesDefinition struct {
 	// Key is the unique identifier of the rule.
 	Key string `json:"key,omitempty"`
 	// Severity indicates the severity level of the rule.
@@ -147,29 +147,29 @@ type Rule struct {
 	// CleanCodeAttribute is the clean code attribute of the rule.
 	CleanCodeAttribute string `json:"cleanCodeAttribute,omitempty"`
 	// Params is the list of parameters that can be configured for the rule.
-	Params []RuleParam `json:"params,omitempty"`
+	Params []RulesParam `json:"params,omitempty"`
 	// SysTags is the list of system-defined tags.
 	SysTags []string `json:"sysTags,omitempty"`
 	// Tags is the list of user-defined tags.
 	Tags []any `json:"tags,omitempty"`
 	// Impacts is the list of impacts on software quality.
-	Impacts []RuleImpact `json:"impacts,omitempty"`
+	Impacts []RulesImpact `json:"impacts,omitempty"`
 	// IsTemplate indicates if this is a template rule that can be used to create custom rules.
 	IsTemplate bool `json:"isTemplate,omitempty"`
 	// IsExternal indicates if this is an external rule.
 	IsExternal bool `json:"isExternal,omitempty"`
 }
 
-// RuleImpact represents the impact of a rule on software quality.
-type RuleImpact struct {
+// RulesImpact represents the impact of a rule on software quality.
+type RulesImpact struct {
 	// Severity is the severity of the impact (HIGH, MEDIUM, LOW).
 	Severity string `json:"severity,omitempty"`
 	// SoftwareQuality is the software quality characteristic affected (MAINTAINABILITY, RELIABILITY, SECURITY).
 	SoftwareQuality string `json:"softwareQuality,omitempty"`
 }
 
-// RuleParam represents a parameter that can be configured for a rule.
-type RuleParam struct {
+// RulesParam represents a parameter that can be configured for a rule.
+type RulesParam struct {
 	// DefaultValue is the default value of the parameter.
 	DefaultValue string `json:"defaultValue,omitempty"`
 	// HTMLDesc is the HTML-formatted description of the parameter.
@@ -184,20 +184,20 @@ type RuleParam struct {
 
 // RulesRepositories contains the list of available rule repositories.
 type RulesRepositories struct {
-	Repositories []RuleRepository `json:"repositories,omitempty"`
+	Repositories []RulesRepository `json:"repositories,omitempty"`
 }
 
 // RulesSearch represents the response from searching for rules.
 // The Actives field is a map because rule keys are dynamic.
 type RulesSearch struct {
-	Actives map[string][]RuleActivation `json:"actives,omitempty"`
-	Facets  []SearchFacet               `json:"facets,omitempty"`
-	Rules   []RuleDetails               `json:"rules,omitempty"`
-	Paging  Paging                      `json:"paging,omitzero"`
+	Actives map[string][]RulesActivation `json:"actives,omitempty"`
+	Facets  []RulesSearchFacet           `json:"facets,omitempty"`
+	Rules   []RulesDetails               `json:"rules,omitempty"`
+	Paging  Paging                       `json:"paging,omitzero"`
 }
 
-// RuleActivation represents how a rule is activated in a quality profile.
-type RuleActivation struct {
+// RulesActivation represents how a rule is activated in a quality profile.
+type RulesActivation struct {
 	// Inherit indicates how the rule is inherited (NONE, INHERITED, OVERRIDES).
 	Inherit string `json:"inherit,omitempty"`
 	// QProfile is the key of the quality profile where the rule is activated.
@@ -205,92 +205,92 @@ type RuleActivation struct {
 	// Severity is the severity level of the activated rule.
 	Severity string `json:"severity,omitempty"`
 	// Params is the list of parameter values for the activated rule.
-	Params []ParamKV `json:"params,omitempty"`
+	Params []RulesParamKV `json:"params,omitempty"`
 	// CreatedAt is the timestamp when the rule was activated in the profile.
 	CreatedAt string `json:"createdAt,omitempty"`
 	// UpdatedAt is the timestamp when the rule activation was last updated in the profile.
 	UpdatedAt string `json:"updatedAt,omitempty"`
 	// Impacts is the list of impacts on software quality for this activated rule.
-	Impacts []RuleImpact `json:"impacts,omitempty"`
+	Impacts []RulesImpact `json:"impacts,omitempty"`
 	// PrioritizedRule indicates if the rule is prioritized in this profile.
 	PrioritizedRule bool `json:"prioritizedRule,omitempty"`
 }
 
-// ParamKV represents a key-value pair for rule parameters.
-type ParamKV struct {
+// RulesParamKV represents a key-value pair for rule parameters.
+type RulesParamKV struct {
 	// Key is the parameter name.
 	Key string `json:"key,omitempty"`
 	// Value is the parameter value.
 	Value string `json:"value,omitempty"`
 }
 
-// SearchFacet represents a facet in search results.
-type SearchFacet struct {
+// RulesSearchFacet represents a facet in search results.
+type RulesSearchFacet struct {
 	// Name is the facet name (e.g., languages, repositories, tags).
 	Name string `json:"name,omitempty"`
 	// Values is the list of facet values with their counts.
-	Values []FacetItem `json:"values,omitempty"`
+	Values []RulesFacetItem `json:"values,omitempty"`
 }
 
-// FacetItem represents a single facet value with its count.
-type FacetItem struct {
+// RulesFacetItem represents a single facet value with its count.
+type RulesFacetItem struct {
 	// Val is the facet value.
 	Val string `json:"val,omitempty"`
 	// Count is the number of items matching this facet value.
 	Count int64 `json:"count,omitempty"`
 }
 
-// RuleDetails contains comprehensive information about a rule.
-type RuleDetails struct {
-	Name                       string                   `json:"name,omitempty"`
-	Key                        string                   `json:"key,omitempty"`
-	CreatedAt                  string                   `json:"createdAt,omitempty"`
-	UpdatedAt                  string                   `json:"updatedAt,omitempty"`
-	RemFnType                  string                   `json:"remFnType,omitempty"`
-	HTMLDesc                   string                   `json:"htmlDesc,omitempty"`
-	HTMLNote                   string                   `json:"htmlNote,omitempty"`
-	MdNote                     string                   `json:"mdNote,omitempty"`
-	NoteLogin                  string                   `json:"noteLogin,omitempty"`
-	CleanCodeAttribute         string                   `json:"cleanCodeAttribute,omitempty"`
-	InternalKey                string                   `json:"internalKey,omitempty"`
-	RemFnGapMultiplier         string                   `json:"remFnGapMultiplier,omitempty"`
-	RemFnBaseEffort            string                   `json:"remFnBaseEffort,omitempty"`
-	DefaultRemFnBaseEffort     string                   `json:"defaultRemFnBaseEffort,omitempty"`
-	Lang                       string                   `json:"lang,omitempty"`
-	LangName                   string                   `json:"langName,omitempty"`
-	CleanCodeAttributeCategory string                   `json:"cleanCodeAttributeCategory,omitempty"`
-	GapDescription             string                   `json:"gapDescription,omitempty"`
-	Repo                       string                   `json:"repo,omitempty"`
-	Scope                      string                   `json:"scope,omitempty"`
-	Severity                   string                   `json:"severity,omitempty"`
-	Status                     string                   `json:"status,omitempty"`
-	DefaultRemFnType           string                   `json:"defaultRemFnType,omitempty"`
-	DefaultRemFnGapMultiplier  string                   `json:"defaultRemFnGapMultiplier,omitempty"`
-	TemplateKey                string                   `json:"templateKey,omitempty"`
-	Type                       string                   `json:"type,omitempty"`
-	Impacts                    []RuleImpact             `json:"impacts,omitempty"`
-	Tags                       []any                    `json:"tags,omitempty"`
-	SysTags                    []string                 `json:"sysTags,omitempty"`
-	Params                     []RuleParam              `json:"params,omitempty"`
-	DescriptionSections        []RuleDescriptionSection `json:"descriptionSections,omitempty"`
-	IsTemplate                 bool                     `json:"isTemplate,omitempty"`
-	IsExternal                 bool                     `json:"isExternal,omitempty"`
-	RemFnOverloaded            bool                     `json:"remFnOverloaded,omitempty"`
-	Template                   bool                     `json:"template,omitempty"`
+// RulesDetails contains comprehensive information about a rule.
+type RulesDetails struct {
+	Name                       string                    `json:"name,omitempty"`
+	Key                        string                    `json:"key,omitempty"`
+	CreatedAt                  string                    `json:"createdAt,omitempty"`
+	UpdatedAt                  string                    `json:"updatedAt,omitempty"`
+	RemFnType                  string                    `json:"remFnType,omitempty"`
+	HTMLDesc                   string                    `json:"htmlDesc,omitempty"`
+	HTMLNote                   string                    `json:"htmlNote,omitempty"`
+	MdNote                     string                    `json:"mdNote,omitempty"`
+	NoteLogin                  string                    `json:"noteLogin,omitempty"`
+	CleanCodeAttribute         string                    `json:"cleanCodeAttribute,omitempty"`
+	InternalKey                string                    `json:"internalKey,omitempty"`
+	RemFnGapMultiplier         string                    `json:"remFnGapMultiplier,omitempty"`
+	RemFnBaseEffort            string                    `json:"remFnBaseEffort,omitempty"`
+	DefaultRemFnBaseEffort     string                    `json:"defaultRemFnBaseEffort,omitempty"`
+	Lang                       string                    `json:"lang,omitempty"`
+	LangName                   string                    `json:"langName,omitempty"`
+	CleanCodeAttributeCategory string                    `json:"cleanCodeAttributeCategory,omitempty"`
+	GapDescription             string                    `json:"gapDescription,omitempty"`
+	Repo                       string                    `json:"repo,omitempty"`
+	Scope                      string                    `json:"scope,omitempty"`
+	Severity                   string                    `json:"severity,omitempty"`
+	Status                     string                    `json:"status,omitempty"`
+	DefaultRemFnType           string                    `json:"defaultRemFnType,omitempty"`
+	DefaultRemFnGapMultiplier  string                    `json:"defaultRemFnGapMultiplier,omitempty"`
+	TemplateKey                string                    `json:"templateKey,omitempty"`
+	Type                       string                    `json:"type,omitempty"`
+	Impacts                    []RulesImpact             `json:"impacts,omitempty"`
+	Tags                       []any                     `json:"tags,omitempty"`
+	SysTags                    []string                  `json:"sysTags,omitempty"`
+	Params                     []RulesParam              `json:"params,omitempty"`
+	DescriptionSections        []RulesDescriptionSection `json:"descriptionSections,omitempty"`
+	IsTemplate                 bool                      `json:"isTemplate,omitempty"`
+	IsExternal                 bool                      `json:"isExternal,omitempty"`
+	RemFnOverloaded            bool                      `json:"remFnOverloaded,omitempty"`
+	Template                   bool                      `json:"template,omitempty"`
 }
 
-// RuleDescriptionSection represents a section of a rule's description.
-type RuleDescriptionSection struct {
+// RulesDescriptionSection represents a section of a rule's description.
+type RulesDescriptionSection struct {
 	// Content is the HTML content of the section.
 	Content string `json:"content,omitempty"`
 	// Context provides additional context for the section.
-	Context RuleDescriptionSectionContext `json:"context,omitzero"`
+	Context RulesDescriptionSectionContext `json:"context,omitzero"`
 	// Key is the unique identifier of the section.
 	Key string `json:"key,omitempty"`
 }
 
-// RuleDescriptionSectionContext provides context for a description section.
-type RuleDescriptionSectionContext struct {
+// RulesDescriptionSectionContext provides context for a description section.
+type RulesDescriptionSectionContext struct {
 	// DisplayName is the human-readable name of the context.
 	DisplayName string `json:"displayName,omitempty"`
 	// Key is the unique identifier of the context.
@@ -299,12 +299,12 @@ type RuleDescriptionSectionContext struct {
 
 // RulesShow represents the response from showing a specific rule.
 type RulesShow struct {
-	Actives []RuleActivationDetailed `json:"actives,omitempty"`
-	Rule    RuleDetails              `json:"rule,omitzero"`
+	Actives []RulesActivationDetailed `json:"actives,omitempty"`
+	Rule    RulesDetails              `json:"rule,omitzero"`
 }
 
-// RuleActivationDetailed contains detailed information about a rule activation.
-type RuleActivationDetailed struct {
+// RulesActivationDetailed contains detailed information about a rule activation.
+type RulesActivationDetailed struct {
 	// Inherit indicates how the rule is inherited (NONE, INHERITED, OVERRIDES).
 	Inherit string `json:"inherit,omitempty"`
 	// QProfile is the key of the quality profile where the rule is activated.
@@ -312,7 +312,7 @@ type RuleActivationDetailed struct {
 	// Severity is the severity level of the activated rule.
 	Severity string `json:"severity,omitempty"`
 	// Params is the list of parameter values for the activated rule.
-	Params []ParamKV `json:"params,omitempty"`
+	Params []RulesParamKV `json:"params,omitempty"`
 	// PrioritizedRule indicates if the rule is prioritized in this profile.
 	PrioritizedRule bool `json:"prioritizedRule,omitempty"`
 }
@@ -324,7 +324,7 @@ type RulesTags struct {
 
 // RulesUpdate represents the response from updating a rule.
 type RulesUpdate struct {
-	Rule Rule `json:"rule,omitzero"`
+	Rule RulesDefinition `json:"rule,omitzero"`
 }
 
 // RulesCreateOptions contains options for creating a custom rule.

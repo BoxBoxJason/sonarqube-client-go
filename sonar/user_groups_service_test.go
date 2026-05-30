@@ -39,7 +39,7 @@ func TestUserGroups_AddUser_ValidationError(t *testing.T) {
 
 func TestUserGroups_Create(t *testing.T) {
 	response := UserGroupsCreate{
-		Group: UserGroupDetail{
+		Group: UserGroupsDetail{
 			ID:           "uuid-group-1",
 			Name:         "sonar-users",
 			Description:  "Default group",
@@ -130,7 +130,7 @@ func TestUserGroups_RemoveUser(t *testing.T) {
 
 func TestUserGroups_Search(t *testing.T) {
 	response := UserGroupsSearch{
-		Groups: []UserGroupDetail{
+		Groups: []UserGroupsDetail{
 			{
 				Name:         "sonar-administrators",
 				Description:  "Admins",
@@ -205,7 +205,7 @@ func TestUserGroups_Update_ValidationError(t *testing.T) {
 
 func TestUserGroups_Users(t *testing.T) {
 	response := UserGroupsUsers{
-		Users: []UserGroupUser{
+		Users: []UserGroupsUser{
 			{
 				Login:    "john.doe",
 				Name:     "John Doe",

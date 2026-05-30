@@ -123,28 +123,28 @@ type QualityGateActions struct {
 
 // QualitygatesProjectStatus represents the quality gate status of a project.
 type QualitygatesProjectStatus struct {
-	// ProjectStatus contains the detailed project status information.
-	ProjectStatus ProjectStatus `json:"projectStatus,omitzero"`
+	// QualityGateProjectStatus contains the detailed project status information.
+	QualityGateProjectStatus QualityGateProjectStatus `json:"projectStatus,omitzero"`
 }
 
-// ProjectStatus represents the detailed status of a project's quality gate.
+// QualityGateProjectStatus represents the detailed status of a project's quality gate.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type ProjectStatus struct {
+type QualityGateProjectStatus struct {
 	// Status is the overall quality gate status (OK, WARN, ERROR, NONE).
 	Status string `json:"status,omitempty"`
 	// CaycStatus is the Clean As You Code status.
 	CaycStatus string `json:"caycStatus,omitempty"`
 	// Conditions is the list of condition evaluations.
-	Conditions []ConditionStatus `json:"conditions,omitempty"`
+	Conditions []QualityGateConditionStatus `json:"conditions,omitempty"`
 	// Period contains information about the analysis period.
-	Period AnalysisPeriod `json:"period,omitzero"`
+	Period QualityGateAnalysisPeriod `json:"period,omitzero"`
 	// IgnoredConditions indicates if some conditions were ignored.
 	IgnoredConditions bool `json:"ignoredConditions,omitempty"`
 }
 
-// ConditionStatus represents the evaluation result of a single condition.
-type ConditionStatus struct {
+// QualityGateConditionStatus represents the evaluation result of a single condition.
+type QualityGateConditionStatus struct {
 	// ActualValue is the actual measured value.
 	ActualValue string `json:"actualValue,omitempty"`
 	// Comparator is the comparison operator used.
@@ -157,8 +157,8 @@ type ConditionStatus struct {
 	Status string `json:"status,omitempty"`
 }
 
-// AnalysisPeriod represents information about the analysis period.
-type AnalysisPeriod struct {
+// QualityGateAnalysisPeriod represents information about the analysis period.
+type QualityGateAnalysisPeriod struct {
 	// Date is the date of the period.
 	Date string `json:"date,omitempty"`
 	// Mode is the period mode.
@@ -697,7 +697,7 @@ func (s *QualitygatesService) List() (v *QualitygatesList, resp *http.Response, 
 	return
 }
 
-// ProjectStatus gets the quality gate status of a project or a Compute Engine task.
+// QualityGateProjectStatus gets the quality gate status of a project or a Compute Engine task.
 // Either AnalysisID, ProjectID, or ProjectKey must be provided.
 // Returns status: OK, WARN, ERROR, NONE.
 // NONE is returned when there is no quality gate associated with the analysis.
@@ -706,7 +706,7 @@ func (s *QualitygatesService) List() (v *QualitygatesList, resp *http.Response, 
 //   - 'Administer' rights on the specified project
 //   - 'Browse' on the specified project
 //   - 'Execute Analysis' on the specified project
-func (s *QualitygatesService) ProjectStatus(opt *QualitygatesProjectStatusOptions) (v *QualitygatesProjectStatus, resp *http.Response, err error) {
+func (s *QualitygatesService) QualityGateProjectStatus(opt *QualitygatesProjectStatusOptions) (v *QualitygatesProjectStatus, resp *http.Response, err error) {
 	err = s.ValidateProjectStatusOpt(opt)
 	if err != nil {
 		return
