@@ -51,6 +51,7 @@ type Client struct {
 	Editions           *EditionsService
 	Languages          *LanguagesService
 	Measures           *MeasuresService
+	Views              *ViewsService
 	Metrics            *MetricsService
 	Monitoring         *MonitoringService
 	Navigation         *NavigationService
@@ -351,6 +352,7 @@ func initServices(client *Client) {
 	client.Editions = &EditionsService{client: client}
 	client.Languages = &LanguagesService{client: client}
 	client.Measures = &MeasuresService{client: client}
+	client.Views = &ViewsService{client: client}
 	client.Metrics = &MetricsService{client: client}
 	client.Monitoring = &MonitoringService{client: client}
 	client.Navigation = &NavigationService{client: client}
