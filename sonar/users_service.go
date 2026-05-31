@@ -167,8 +167,8 @@ type UsersDeactivateResult struct {
 type UsersCurrentProfile struct {
 	// Avatar is the user's avatar URL.
 	Avatar string `json:"avatar,omitempty"`
-	// UsersDismissedNotices contains the notices dismissed by the user.
-	UsersDismissedNotices UsersDismissedNotices `json:"dismissedNotices,omitzero"`
+	// DismissedNotices contains the notices dismissed by the user.
+	DismissedNotices UsersDismissedNotices `json:"dismissedNotices,omitzero"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty"`
 	// ExternalIdentity is the user's external identity.
@@ -177,8 +177,8 @@ type UsersCurrentProfile struct {
 	ExternalProvider string `json:"externalProvider,omitempty"`
 	// Groups is the list of groups the user belongs to.
 	Groups []string `json:"groups,omitempty"`
-	// UsersHomepage is the user's homepage configuration.
-	UsersHomepage UsersHomepage `json:"homepage,omitzero"`
+	// Homepage is the user's homepage configuration.
+	Homepage UsersHomepage `json:"homepage,omitzero"`
 	// ID is the user's unique identifier.
 	ID string `json:"id,omitempty"`
 	// IsLoggedIn indicates whether the user is currently logged in.

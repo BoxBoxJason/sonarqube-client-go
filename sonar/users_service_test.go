@@ -158,7 +158,7 @@ func TestUsers_Create_ValidationError(t *testing.T) {
 func TestUsers_Current(t *testing.T) {
 	response := UsersCurrentProfile{
 		Avatar: "abc123",
-		UsersDismissedNotices: UsersDismissedNotices{
+		DismissedNotices: UsersDismissedNotices{
 			EducationPrinciples: true,
 			SonarlintAd:         false,
 		},
@@ -166,7 +166,7 @@ func TestUsers_Current(t *testing.T) {
 		ExternalIdentity: "admin",
 		ExternalProvider: "sonarqube",
 		Groups:           []string{"sonar-users", "sonar-administrators"},
-		UsersHomepage: UsersHomepage{
+		Homepage: UsersHomepage{
 			Component: "my-project",
 			Type:      "PROJECT",
 		},
@@ -189,8 +189,8 @@ func TestUsers_Current(t *testing.T) {
 	require.NotNil(t, result)
 	assert.Equal(t, "admin", result.Login)
 	assert.True(t, result.IsLoggedIn)
-	assert.Equal(t, "PROJECT", result.UsersHomepage.Type)
-	assert.True(t, result.UsersDismissedNotices.EducationPrinciples)
+	assert.Equal(t, "PROJECT", result.Homepage.Type)
+	assert.True(t, result.DismissedNotices.EducationPrinciples)
 	assert.Len(t, result.Permissions.Global, 2)
 }
 
