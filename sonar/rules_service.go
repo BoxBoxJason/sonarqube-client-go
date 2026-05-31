@@ -1106,6 +1106,28 @@ func (s *RulesService) ValidateUpdateOpt(opt *RulesUpdateOptions) error {
 	return nil
 }
 
+// SearchAll fetches all pages from Search and returns a flat slice of rules.
+func (s *RulesService) SearchAll(ctx context.Context, opt *RulesSearchOptions) ([]RulesDetails, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var opts RulesSearchOptions
+	if opt != nil {
+		opts = *opt
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]RulesDetails, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Rules, r.Paging.Total, resp, nil
+	})
+}
+
 // convertCreateOptForURL converts RulesCreateOptions to a URL-encodable format.
 func (s *RulesService) convertCreateOptForURL(opt *RulesCreateOptions) *rulesCreateURLOptions {
 	//nolint:exhaustruct // Only populate fields that have values

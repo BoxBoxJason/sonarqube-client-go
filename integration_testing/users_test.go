@@ -982,4 +982,61 @@ var _ = Describe("Users Service", Ordered, func() {
 			Expect(deactivateResult.User.Active).To(BeFalse())
 		})
 	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all users as a flat slice with nil options", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, resp, err := client.Users.SearchAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(result).NotTo(BeEmpty())
+			})
+
+			It("should include the admin user", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, _, err := client.Users.SearchAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				found := false
+				for _, u := range result {
+					if u.Login == "admin" {
+						found = true
+						break
+					}
+				}
+				Expect(found).To(BeTrue())
+			})
+		})
+	})
+
+	// =========================================================================
+	// GroupsAll
+	// =========================================================================
+	Describe("GroupsAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all groups for a user as a flat slice", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, resp, err := client.Users.GroupsAll(context.Background(), &sonar.UsersGroupsOptions{
+					Login: "admin",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(result).NotTo(BeEmpty())
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, resp, err := client.Users.GroupsAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
 })

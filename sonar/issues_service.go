@@ -1704,3 +1704,44 @@ func (s *IssuesService) ValidateTagsOpt(opt *IssuesTagsOptions) error {
 
 	return nil
 }
+
+// ListAll fetches all pages from List and returns a flat slice of issues.
+func (s *IssuesService) ListAll(ctx context.Context, opt *IssuesListOptions) ([]Issue, *http.Response, error) {
+	err := s.ValidateListOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]Issue, int64, *http.Response, error) {
+		r, resp, err := s.List(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Issues, r.Paging.Total, resp, nil
+	})
+}
+
+// SearchAll fetches all pages from Search and returns a flat slice of issues.
+func (s *IssuesService) SearchAll(ctx context.Context, opt *IssuesSearchOptions) ([]Issue, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var opts IssuesSearchOptions
+	if opt != nil {
+		opts = *opt
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]Issue, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Issues, r.Paging.Total, resp, nil
+	})
+}

@@ -138,4 +138,38 @@ var _ = Describe("Metrics Service", Ordered, func() {
 			})
 		})
 	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all metrics as a flat slice with nil options", func() {
+				result, resp, err := client.Metrics.SearchAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(result).NotTo(BeEmpty())
+			})
+
+			It("should return all metrics as a flat slice with empty options", func() {
+				result, resp, err := client.Metrics.SearchAll(context.Background(), &sonar.MetricsSearchOptions{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(result).NotTo(BeEmpty())
+			})
+
+			It("should include common built-in metrics", func() {
+				result, _, err := client.Metrics.SearchAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+
+				keys := make(map[string]bool, len(result))
+				for _, m := range result {
+					keys[m.Key] = true
+				}
+
+				Expect(keys["bugs"]).To(BeTrue())
+				Expect(keys["coverage"]).To(BeTrue())
+			})
+		})
+	})
 })

@@ -1392,4 +1392,131 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			}
 		})
 	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all projects as a flat slice", func() {
+				gateName := helpers.UniqueResourceName("qg-searchall")
+
+				_, _, err := client.Qualitygates.Create(context.Background(), &sonar.QualitygatesCreateOptions{
+					Name: gateName,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("qualitygate", gateName, func() error {
+					_, err := client.Qualitygates.Delete(context.Background(), &sonar.QualitygatesDeleteOptions{
+						Name: gateName,
+					})
+					return err
+				})
+
+				result, resp, err := client.Qualitygates.SearchAll(context.Background(), &sonar.QualitygatesSearchOptions{
+					GateName: gateName,
+					Selected: sonar.SelectionFilterAll,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Qualitygates.SearchAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+
+			It("should fail with missing gate name", func() {
+				result, resp, err := client.Qualitygates.SearchAll(context.Background(), &sonar.QualitygatesSearchOptions{})
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// SearchGroupsAll
+	// =========================================================================
+	Describe("SearchGroupsAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all groups as a flat slice", func() {
+				gateName := helpers.UniqueResourceName("qg-sgrpall")
+
+				_, _, err := client.Qualitygates.Create(context.Background(), &sonar.QualitygatesCreateOptions{
+					Name: gateName,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("qualitygate", gateName, func() error {
+					_, err := client.Qualitygates.Delete(context.Background(), &sonar.QualitygatesDeleteOptions{
+						Name: gateName,
+					})
+					return err
+				})
+
+				result, resp, err := client.Qualitygates.SearchGroupsAll(context.Background(), &sonar.QualitygatesSearchGroupsOptions{
+					GateName: gateName,
+					Selected: sonar.SelectionFilterAll,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Qualitygates.SearchGroupsAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// SearchUsersAll
+	// =========================================================================
+	Describe("SearchUsersAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all users as a flat slice", func() {
+				gateName := helpers.UniqueResourceName("qg-susrall")
+
+				_, _, err := client.Qualitygates.Create(context.Background(), &sonar.QualitygatesCreateOptions{
+					Name: gateName,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("qualitygate", gateName, func() error {
+					_, err := client.Qualitygates.Delete(context.Background(), &sonar.QualitygatesDeleteOptions{
+						Name: gateName,
+					})
+					return err
+				})
+
+				result, resp, err := client.Qualitygates.SearchUsersAll(context.Background(), &sonar.QualitygatesSearchUsersOptions{
+					GateName: gateName,
+					Selected: sonar.SelectionFilterAll,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Qualitygates.SearchUsersAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
 })

@@ -967,3 +967,41 @@ func (s *HotspotsService) Show(ctx context.Context, opt *HotspotsShowOptions) (*
 
 	return result, resp, nil
 }
+
+// ListAll fetches all pages from List and returns a flat slice of hotspots.
+func (s *HotspotsService) ListAll(ctx context.Context, opt *HotspotsListOptions) ([]HotspotSummary, *http.Response, error) {
+	err := s.ValidateListOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]HotspotSummary, int64, *http.Response, error) {
+		r, resp, err := s.List(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Hotspots, r.Paging.Total, resp, nil
+	})
+}
+
+// SearchAll fetches all pages from Search and returns a flat slice of hotspots.
+func (s *HotspotsService) SearchAll(ctx context.Context, opt *HotspotsSearchOptions) ([]HotspotSummary, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]HotspotSummary, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Hotspots, r.Paging.Total, resp, nil
+	})
+}

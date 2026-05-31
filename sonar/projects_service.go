@@ -639,3 +639,41 @@ func (s *ProjectsService) UpdateVisibility(ctx context.Context, opt *ProjectsUpd
 
 	return resp, nil
 }
+
+// SearchAll fetches all pages from Search and returns a flat slice of components.
+func (s *ProjectsService) SearchAll(ctx context.Context, opt *ProjectsSearchOptions) ([]ProjectSearchComponent, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]ProjectSearchComponent, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Components, r.Paging.Total, resp, nil
+	})
+}
+
+// SearchMyProjectsAll fetches all pages from SearchMyProjects and returns a flat slice of projects.
+func (s *ProjectsService) SearchMyProjectsAll(ctx context.Context, opt *ProjectsSearchMyProjectsOptions) ([]MyProject, *http.Response, error) {
+	err := s.ValidateSearchMyProjectsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]MyProject, int64, *http.Response, error) {
+		r, resp, err := s.SearchMyProjects(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Projects, r.Paging.Total, resp, nil
+	})
+}

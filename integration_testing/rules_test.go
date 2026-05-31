@@ -854,4 +854,36 @@ var _ = Describe("Rules Service", Ordered, func() {
 			Expect(result).NotTo(BeNil())
 		})
 	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all rules as a flat slice with nil options", func() {
+				result, resp, err := client.Rules.SearchAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(result).NotTo(BeEmpty())
+			})
+
+			It("should return all rules as a flat slice with empty options", func() {
+				result, resp, err := client.Rules.SearchAll(context.Background(), &sonar.RulesSearchOptions{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(result).NotTo(BeEmpty())
+			})
+
+			It("should filter by language", func() {
+				result, resp, err := client.Rules.SearchAll(context.Background(), &sonar.RulesSearchOptions{
+					Languages: []string{"java"},
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				for _, r := range result {
+					Expect(r.Lang).To(Equal("java"))
+				}
+			})
+		})
+	})
 })

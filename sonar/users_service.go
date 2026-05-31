@@ -1066,3 +1066,44 @@ func (s *UsersService) UpdateLogin(ctx context.Context, opt *UsersUpdateLoginOpt
 
 	return resp, nil
 }
+
+// SearchAll fetches all pages from Search and returns a flat slice of users.
+func (s *UsersService) SearchAll(ctx context.Context, opt *UsersSearchOptions) ([]UsersSearchResult, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var opts UsersSearchOptions
+	if opt != nil {
+		opts = *opt
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]UsersSearchResult, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Users, r.Paging.Total, resp, nil
+	})
+}
+
+// GroupsAll fetches all pages from Groups and returns a flat slice of user groups.
+func (s *UsersService) GroupsAll(ctx context.Context, opt *UsersGroupsOptions) ([]UsersGroup, *http.Response, error) {
+	err := s.ValidateGroupsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]UsersGroup, int64, *http.Response, error) {
+		r, resp, err := s.Groups(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Groups, r.Paging.Total, resp, nil
+	})
+}

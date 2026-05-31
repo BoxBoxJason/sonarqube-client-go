@@ -1671,3 +1671,105 @@ func (s *PermissionsService) Users(ctx context.Context, opt *PermissionsUsersOpt
 
 	return result, resp, nil
 }
+
+// permissionsMaxPageSize is the maximum page size accepted by permissions API endpoints.
+// The permissions API enforces a lower limit than the global MaxPageSize of 500.
+const permissionsMaxPageSize int64 = 100
+
+// GroupsAll fetches all pages from Groups and returns a flat slice of groups.
+func (s *PermissionsService) GroupsAll(ctx context.Context, opt *PermissionsGroupsOptions) ([]PermissionGroup, *http.Response, error) {
+	err := s.ValidateGroupsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var opts PermissionsGroupsOptions
+	if opt != nil {
+		opts = *opt
+	}
+
+	if opts.PageSize == 0 || opts.PageSize > permissionsMaxPageSize {
+		opts.PageSize = permissionsMaxPageSize
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]PermissionGroup, int64, *http.Response, error) {
+		r, resp, err := s.Groups(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Groups, r.Paging.Total, resp, nil
+	})
+}
+
+// TemplateGroupsAll fetches all pages from TemplateGroups and returns a flat slice of groups.
+func (s *PermissionsService) TemplateGroupsAll(ctx context.Context, opt *PermissionsTemplateGroupsOptions) ([]PermissionsTemplateGroup, *http.Response, error) {
+	err := s.ValidateTemplateGroupsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	opts := *opt
+
+	if opts.PageSize == 0 || opts.PageSize > permissionsMaxPageSize {
+		opts.PageSize = permissionsMaxPageSize
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]PermissionsTemplateGroup, int64, *http.Response, error) {
+		r, resp, err := s.TemplateGroups(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Groups, r.Paging.Total, resp, nil
+	})
+}
+
+// TemplateUsersAll fetches all pages from TemplateUsers and returns a flat slice of users.
+func (s *PermissionsService) TemplateUsersAll(ctx context.Context, opt *PermissionsTemplateUsersOptions) ([]PermissionsTemplateUser, *http.Response, error) {
+	err := s.ValidateTemplateUsersOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	opts := *opt
+
+	if opts.PageSize == 0 || opts.PageSize > permissionsMaxPageSize {
+		opts.PageSize = permissionsMaxPageSize
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]PermissionsTemplateUser, int64, *http.Response, error) {
+		r, resp, err := s.TemplateUsers(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Users, r.Paging.Total, resp, nil
+	})
+}
+
+// UsersAll fetches all pages from Users and returns a flat slice of users.
+func (s *PermissionsService) UsersAll(ctx context.Context, opt *PermissionsUsersOptions) ([]PermissionUser, *http.Response, error) {
+	err := s.ValidateUsersOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var opts PermissionsUsersOptions
+	if opt != nil {
+		opts = *opt
+	}
+
+	if opts.PageSize == 0 || opts.PageSize > permissionsMaxPageSize {
+		opts.PageSize = permissionsMaxPageSize
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]PermissionUser, int64, *http.Response, error) {
+		r, resp, err := s.Users(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Users, r.Paging.Total, resp, nil
+	})
+}

@@ -1730,4 +1730,174 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(*backupResult).NotTo(BeEmpty())
 		})
 	})
+
+	// =========================================================================
+	// ChangelogAll
+	// =========================================================================
+	Describe("ChangelogAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all changelog events as a flat slice", func() {
+				profileName := helpers.UniqueResourceName("qp-chlogall")
+
+				_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
+					Name:     profileName,
+					Language: "java",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
+					_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
+						QualityProfile: profileName,
+						Language:       "java",
+					})
+					return err
+				})
+
+				result, resp, err := client.Qualityprofiles.ChangelogAll(context.Background(), &sonar.QualityprofilesChangelogOptions{
+					QualityProfile: profileName,
+					Language:       "java",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Qualityprofiles.ChangelogAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// ProjectsAll
+	// =========================================================================
+	Describe("ProjectsAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all projects as a flat slice", func() {
+				profileName := helpers.UniqueResourceName("qp-projall")
+
+				createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
+					Name:     profileName,
+					Language: "java",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(createResult).NotTo(BeNil())
+
+				cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
+					_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
+						QualityProfile: profileName,
+						Language:       "java",
+					})
+					return err
+				})
+
+				result, resp, err := client.Qualityprofiles.ProjectsAll(context.Background(), &sonar.QualityprofilesProjectsOptions{
+					Key: createResult.Profile.Key,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Qualityprofiles.ProjectsAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// SearchGroupsAll
+	// =========================================================================
+	Describe("SearchGroupsAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all groups as a flat slice", func() {
+				profileName := helpers.UniqueResourceName("qp-sgrpall")
+
+				_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
+					Name:     profileName,
+					Language: "java",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
+					_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
+						QualityProfile: profileName,
+						Language:       "java",
+					})
+					return err
+				})
+
+				result, resp, err := client.Qualityprofiles.SearchGroupsAll(context.Background(), &sonar.QualityprofilesSearchGroupsOptions{
+					Language:       "java",
+					QualityProfile: profileName,
+					Selected:       sonar.SelectionFilterAll,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Qualityprofiles.SearchGroupsAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// SearchUsersAll
+	// =========================================================================
+	Describe("SearchUsersAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all users as a flat slice", func() {
+				profileName := helpers.UniqueResourceName("qp-susrall")
+
+				_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
+					Name:     profileName,
+					Language: "java",
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
+					_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
+						QualityProfile: profileName,
+						Language:       "java",
+					})
+					return err
+				})
+
+				result, resp, err := client.Qualityprofiles.SearchUsersAll(context.Background(), &sonar.QualityprofilesSearchUsersOptions{
+					Language:       "java",
+					QualityProfile: profileName,
+					Selected:       sonar.SelectionFilterAll,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Qualityprofiles.SearchUsersAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
 })

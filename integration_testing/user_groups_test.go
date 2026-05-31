@@ -1008,4 +1008,72 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			Expect(err).To(HaveOccurred())
 		})
 	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all groups as a flat slice", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, resp, err := client.UserGroups.SearchAll(context.Background(), &sonar.UserGroupsSearchOptions{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				Expect(result).NotTo(BeEmpty())
+			})
+
+			It("should include the built-in sonar-users group", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, _, err := client.UserGroups.SearchAll(context.Background(), &sonar.UserGroupsSearchOptions{})
+				Expect(err).NotTo(HaveOccurred())
+
+				found := false
+				for _, g := range result {
+					if g.Name == "sonar-users" {
+						found = true
+						break
+					}
+				}
+				Expect(found).To(BeTrue())
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, resp, err := client.UserGroups.SearchAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// UsersAll
+	// =========================================================================
+	Describe("UsersAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all users in a group as a flat slice", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, resp, err := client.UserGroups.UsersAll(context.Background(), &sonar.UserGroupsUsersOptions{
+					Name: "sonar-users",
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				// sonar-users always contains at least the admin user
+				Expect(result).NotTo(BeEmpty())
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				//nolint:staticcheck // Using deprecated API until v2 API is implemented
+				result, resp, err := client.UserGroups.UsersAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
 })

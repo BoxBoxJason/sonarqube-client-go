@@ -2369,6 +2369,82 @@ func (s *QualityprofilesService) ValidateShowOpt(opt *QualityprofilesShowOptions
 	return nil
 }
 
+// ChangelogAll fetches all pages from Changelog and returns a flat slice of events.
+func (s *QualityprofilesService) ChangelogAll(ctx context.Context, opt *QualityprofilesChangelogOptions) ([]ChangelogEvent, *http.Response, error) {
+	err := s.ValidateChangelogOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]ChangelogEvent, int64, *http.Response, error) {
+		r, resp, err := s.Changelog(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Events, r.Paging.Total, resp, nil
+	})
+}
+
+// ProjectsAll fetches all pages from Projects and returns a flat slice of projects.
+func (s *QualityprofilesService) ProjectsAll(ctx context.Context, opt *QualityprofilesProjectsOptions) ([]QualityprofilesProfileProject, *http.Response, error) {
+	err := s.ValidateProjectsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]QualityprofilesProfileProject, int64, *http.Response, error) {
+		r, resp, err := s.Projects(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Results, r.Paging.Total, resp, nil
+	})
+}
+
+// SearchGroupsAll fetches all pages from SearchGroups and returns a flat slice of groups.
+func (s *QualityprofilesService) SearchGroupsAll(ctx context.Context, opt *QualityprofilesSearchGroupsOptions) ([]QualityprofilesProfileGroup, *http.Response, error) {
+	err := s.ValidateSearchGroupsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]QualityprofilesProfileGroup, int64, *http.Response, error) {
+		r, resp, err := s.SearchGroups(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Groups, r.Paging.Total, resp, nil
+	})
+}
+
+// SearchUsersAll fetches all pages from SearchUsers and returns a flat slice of users.
+func (s *QualityprofilesService) SearchUsersAll(ctx context.Context, opt *QualityprofilesSearchUsersOptions) ([]QualityprofilesProfileUser, *http.Response, error) {
+	err := s.ValidateSearchUsersOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]QualityprofilesProfileUser, int64, *http.Response, error) {
+		r, resp, err := s.SearchUsers(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Users, r.Paging.Total, resp, nil
+	})
+}
+
 // -----------------------------------------------------------------------------
 // Conversion Functions
 // -----------------------------------------------------------------------------

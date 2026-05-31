@@ -717,3 +717,53 @@ func TestUsers_UpdateLogin_ValidationError(t *testing.T) {
 		})
 	}
 }
+
+func TestUsersService_SearchAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"users":[{"login":"user1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"users":[{"login":"user2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &UsersSearchOptions{}
+		result, _, err := client.Users.SearchAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+}
+
+func TestUsersService_GroupsAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"groups":[{"name":"g1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"groups":[{"name":"g2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &UsersGroupsOptions{Login: "user1"}
+		result, _, err := client.Users.GroupsAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Users.GroupsAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}
