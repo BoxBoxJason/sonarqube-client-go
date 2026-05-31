@@ -70,6 +70,7 @@ type Client struct {
 	Favorites           *FavoritesService
 	Features            *FeaturesService
 	GithubProvisioning  *GithubProvisioningService
+	GovernanceReports   *GovernanceReportsService
 	Hotspots            *HotspotsService
 	Issues              *IssuesService
 	L10N                *L10NService
@@ -497,6 +498,7 @@ func initServices(client *Client) {
 	client.Favorites = &FavoritesService{client: client}
 	client.Features = &FeaturesService{client: client}
 	client.GithubProvisioning = &GithubProvisioningService{client: client}
+	client.GovernanceReports = &GovernanceReportsService{client: client}
 	client.Hotspots = &HotspotsService{client: client}
 	client.Issues = &IssuesService{client: client}
 	client.L10N = &L10NService{client: client}
