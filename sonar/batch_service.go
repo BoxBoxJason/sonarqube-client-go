@@ -36,8 +36,8 @@ type BatchFileData struct {
 	Revision string `json:"revision,omitempty"`
 }
 
-// ValidateFileOpt validates the options for the File endpoint.
-func (s *BatchService) ValidateFileOpt(opt *BatchFileOptions) error {
+// ValidateGetFileOpt validates the options for the GetFile endpoint.
+func (s *BatchService) ValidateGetFileOpt(opt *BatchFileOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -45,8 +45,8 @@ func (s *BatchService) ValidateFileOpt(opt *BatchFileOptions) error {
 	return nil
 }
 
-// ValidateProjectOpt validates the options for the Project endpoint.
-func (s *BatchService) ValidateProjectOpt(opt *BatchProjectOptions) error {
+// ValidateGetProjectOpt validates the options for the GetProject endpoint.
+func (s *BatchService) ValidateGetProjectOpt(opt *BatchProjectOptions) error {
 	if opt == nil {
 		return nil
 	}
@@ -54,10 +54,10 @@ func (s *BatchService) ValidateProjectOpt(opt *BatchProjectOptions) error {
 	return ValidateRequired(opt.Key, "Key")
 }
 
-// File downloads a JAR file listed in the index (see batch/index).
+// GetFile downloads a JAR file listed in the index (see batch/index).
 // This endpoint returns binary data for the requested JAR file.
-func (s *BatchService) File(opt *BatchFileOptions) (v []byte, resp *http.Response, err error) {
-	err = s.ValidateFileOpt(opt)
+func (s *BatchService) GetFile(opt *BatchFileOptions) (v []byte, resp *http.Response, err error) {
+	err = s.ValidateGetFileOpt(opt)
 	if err != nil {
 		return
 	}
@@ -79,9 +79,9 @@ func (s *BatchService) File(opt *BatchFileOptions) (v []byte, resp *http.Respons
 	return
 }
 
-// Index lists the JAR files to be downloaded by scanners.
+// GetIndex lists the JAR files to be downloaded by scanners.
 // Returns a list of JAR file names and their hashes.
-func (s *BatchService) Index() (v *string, resp *http.Response, err error) {
+func (s *BatchService) GetIndex() (v *string, resp *http.Response, err error) {
 	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "batch/index", nil)
 	if err != nil {
 		return
@@ -97,10 +97,10 @@ func (s *BatchService) Index() (v *string, resp *http.Response, err error) {
 	return
 }
 
-// Project returns project repository information including file hashes
+// GetProject returns project repository information including file hashes
 // for incremental analysis.
-func (s *BatchService) Project(opt *BatchProjectOptions) (v *BatchProject, resp *http.Response, err error) {
-	err = s.ValidateProjectOpt(opt)
+func (s *BatchService) GetProject(opt *BatchProjectOptions) (v *BatchProject, resp *http.Response, err error) {
+	err = s.ValidateGetProjectOpt(opt)
 	if err != nil {
 		return
 	}

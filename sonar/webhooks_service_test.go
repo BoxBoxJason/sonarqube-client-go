@@ -11,7 +11,7 @@ import (
 
 func TestWebhooks_Create(t *testing.T) {
 	response := WebhooksCreate{
-		Webhook: Webhook{
+		Webhook: WebhooksDefinition{
 			Key:       "uuid-webhook-1",
 			Name:      "My Webhook",
 			URL:       "https://example.com/webhook",
@@ -179,7 +179,7 @@ func TestWebhooks_Delivery_ValidationError(t *testing.T) {
 
 func TestWebhooks_List(t *testing.T) {
 	response := WebhooksList{
-		Webhooks: []Webhook{
+		Webhooks: []WebhooksDefinition{
 			{
 				Key:       "webhook-1",
 				Name:      "Global Webhook",

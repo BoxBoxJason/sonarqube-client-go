@@ -19,7 +19,7 @@ func stringPtr(v string) *string {
 
 func TestAuthorizationsV2_SearchGroups(t *testing.T) {
 	response := AuthorizationsGroupsSearch{
-		Groups: []Group{
+		Groups: []AuthorizationsGroup{
 			{Id: "g1", Name: "admins", Description: "Administrator group", Managed: false},
 			{Id: "g2", Name: "members", Default: true},
 		},
@@ -38,7 +38,7 @@ func TestAuthorizationsV2_SearchGroups(t *testing.T) {
 func TestAuthorizationsV2_SearchGroups_WithOptions(t *testing.T) {
 	managed := true
 	response := AuthorizationsGroupsSearch{
-		Groups: []Group{{Id: "g1", Name: "admins", Managed: true}},
+		Groups: []AuthorizationsGroup{{Id: "g1", Name: "admins", Managed: true}},
 		Page:   PageResponseV2{PageIndex: 2, PageSize: 10, Total: 1},
 	}
 	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/v2/authorizations/groups", http.StatusOK,
@@ -77,7 +77,7 @@ func TestAuthorizationsV2_SearchGroups_Validation(t *testing.T) {
 // =============================================================================
 
 func TestAuthorizationsV2_CreateGroup(t *testing.T) {
-	response := Group{
+	response := AuthorizationsGroup{
 		Id:          "g-new",
 		Name:        "new-group",
 		Description: "A new group",
@@ -120,27 +120,27 @@ func TestAuthorizationsV2_CreateGroup_Validation(t *testing.T) {
 }
 
 // =============================================================================
-// FetchGroup
+// GetGroup
 // =============================================================================
 
-func TestAuthorizationsV2_FetchGroup(t *testing.T) {
-	response := Group{
+func TestAuthorizationsV2_GetGroup(t *testing.T) {
+	response := AuthorizationsGroup{
 		Id:   "g1",
 		Name: "admins",
 	}
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/authorizations/groups/g1", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Authorizations.FetchGroup("g1")
+	result, resp, err := client.V2.Authorizations.GetGroup("g1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "admins", result.Name)
 }
 
-func TestAuthorizationsV2_FetchGroup_Validation(t *testing.T) {
+func TestAuthorizationsV2_GetGroup_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.Authorizations.FetchGroup("")
+	_, _, err := client.V2.Authorizations.GetGroup("")
 	assert.Error(t, err)
 }
 
@@ -169,7 +169,7 @@ func TestAuthorizationsV2_DeleteGroup_Validation(t *testing.T) {
 // =============================================================================
 
 func TestAuthorizationsV2_UpdateGroup(t *testing.T) {
-	response := Group{
+	response := AuthorizationsGroup{
 		Id:          "g1",
 		Name:        "renamed-group",
 		Description: "Updated description",
@@ -218,7 +218,7 @@ func TestAuthorizationsV2_UpdateGroup_Validation(t *testing.T) {
 
 func TestAuthorizationsV2_SearchGroupMemberships(t *testing.T) {
 	response := AuthorizationsGroupMembershipsSearch{
-		GroupMemberships: []GroupMembership{
+		GroupMemberships: []AuthorizationsGroupMembership{
 			{Id: "m1", GroupId: "g1", UserId: "u1"},
 		},
 		Page: PageResponseV2{PageIndex: 1, PageSize: 50, Total: 1},
@@ -235,7 +235,7 @@ func TestAuthorizationsV2_SearchGroupMemberships(t *testing.T) {
 
 func TestAuthorizationsV2_SearchGroupMemberships_WithOptions(t *testing.T) {
 	response := AuthorizationsGroupMembershipsSearch{
-		GroupMemberships: []GroupMembership{{Id: "m1", GroupId: "g1", UserId: "u1"}},
+		GroupMemberships: []AuthorizationsGroupMembership{{Id: "m1", GroupId: "g1", UserId: "u1"}},
 		Page:             PageResponseV2{PageIndex: 2, PageSize: 10, Total: 1},
 	}
 	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/v2/authorizations/group-memberships", http.StatusOK,
@@ -272,7 +272,7 @@ func TestAuthorizationsV2_SearchGroupMemberships_Validation(t *testing.T) {
 // =============================================================================
 
 func TestAuthorizationsV2_CreateGroupMembership(t *testing.T) {
-	response := GroupMembership{
+	response := AuthorizationsGroupMembership{
 		Id:      "m-new",
 		GroupId: "g1",
 		UserId:  "u1",

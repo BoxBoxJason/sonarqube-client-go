@@ -91,29 +91,29 @@ type ChangelogImpact struct {
 // QualityprofilesCompare represents the response from comparing two quality profiles.
 type QualityprofilesCompare struct {
 	// Left contains information about the left profile.
-	Left CompareProfile `json:"left,omitzero"`
+	Left QualityprofilesCompareProfile `json:"left,omitzero"`
 	// Right contains information about the right profile.
-	Right CompareProfile `json:"right,omitzero"`
+	Right QualityprofilesCompareProfile `json:"right,omitzero"`
 	// InLeft contains rules only in the left profile.
-	InLeft []CompareRule `json:"inLeft,omitempty"`
+	InLeft []QualityprofilesCompareRule `json:"inLeft,omitempty"`
 	// InRight contains rules only in the right profile.
-	InRight []CompareRule `json:"inRight,omitempty"`
+	InRight []QualityprofilesCompareRule `json:"inRight,omitempty"`
 	// Modified contains rules that differ between profiles.
-	Modified []CompareModifiedRule `json:"modified,omitempty"`
+	Modified []QualityprofilesCompareModifiedRule `json:"modified,omitempty"`
 	// Same contains rules that are the same in both profiles.
-	Same []CompareRule `json:"same,omitempty"`
+	Same []QualityprofilesCompareRule `json:"same,omitempty"`
 }
 
-// CompareProfile represents a profile in a comparison response.
-type CompareProfile struct {
+// QualityprofilesCompareProfile represents a profile in a comparison response.
+type QualityprofilesCompareProfile struct {
 	// Key is the unique key of the profile.
 	Key string `json:"key,omitempty"`
 	// Name is the name of the profile.
 	Name string `json:"name,omitempty"`
 }
 
-// CompareRule represents a rule in a comparison response.
-type CompareRule struct {
+// QualityprofilesCompareRule represents a rule in a comparison response.
+type QualityprofilesCompareRule struct {
 	// Key is the rule key.
 	Key string `json:"key,omitempty"`
 	// Name is the rule name.
@@ -128,10 +128,10 @@ type CompareRule struct {
 	LanguageName string `json:"languageName,omitempty"`
 }
 
-// CompareModifiedRule represents a modified rule in a comparison response.
+// QualityprofilesCompareModifiedRule represents a modified rule in a comparison response.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type CompareModifiedRule struct {
+type QualityprofilesCompareModifiedRule struct {
 	// Key is the rule key.
 	Key string `json:"key,omitempty"`
 	// Name is the rule name.
@@ -145,13 +145,13 @@ type CompareModifiedRule struct {
 	// LanguageName is the language name.
 	LanguageName string `json:"languageName,omitempty"`
 	// Left contains the left profile's settings for this rule.
-	Left RuleSetting `json:"left,omitzero"`
+	Left QualityprofilesRuleSetting `json:"left,omitzero"`
 	// Right contains the right profile's settings for this rule.
-	Right RuleSetting `json:"right,omitzero"`
+	Right QualityprofilesRuleSetting `json:"right,omitzero"`
 }
 
-// RuleSetting represents the settings for a rule in a profile.
-type RuleSetting struct {
+// QualityprofilesRuleSetting represents the settings for a rule in a profile.
+type QualityprofilesRuleSetting struct {
 	// Params contains the rule parameters.
 	Params map[string]string `json:"params,omitempty"`
 }
@@ -177,11 +177,11 @@ type QualityprofilesCopy struct {
 // QualityprofilesCreate represents the response from creating a quality profile.
 type QualityprofilesCreate struct {
 	// Profile contains the created profile details.
-	Profile CreatedProfile `json:"profile,omitzero"`
+	Profile QualityprofilesCreatedProfile `json:"profile,omitzero"`
 }
 
-// CreatedProfile represents a newly created quality profile.
-type CreatedProfile struct {
+// QualityprofilesCreatedProfile represents a newly created quality profile.
+type QualityprofilesCreatedProfile struct {
 	// Key is the unique key of the profile.
 	Key string `json:"key,omitempty"`
 	// Name is the name of the profile.
@@ -201,11 +201,11 @@ type CreatedProfile struct {
 // Deprecated: No more custom profile exporters since SonarQube 25.4.
 type QualityprofilesExporters struct {
 	// Exporters is the list of available exporters.
-	Exporters []ProfileExporter `json:"exporters,omitempty"`
+	Exporters []QualityprofilesExporter `json:"exporters,omitempty"`
 }
 
-// ProfileExporter represents a quality profile exporter.
-type ProfileExporter struct {
+// QualityprofilesExporter represents a quality profile exporter.
+type QualityprofilesExporter struct {
 	// Key is the unique key of the exporter.
 	Key string `json:"key,omitempty"`
 	// Name is the name of the exporter.
@@ -219,11 +219,11 @@ type ProfileExporter struct {
 // Deprecated: Since SonarQube 25.4.
 type QualityprofilesImporters struct {
 	// Importers is the list of available importers.
-	Importers []ProfileImporter `json:"importers,omitempty"`
+	Importers []QualityprofilesImporter `json:"importers,omitempty"`
 }
 
-// ProfileImporter represents a quality profile importer.
-type ProfileImporter struct {
+// QualityprofilesImporter represents a quality profile importer.
+type QualityprofilesImporter struct {
 	// Key is the unique key of the importer.
 	Key string `json:"key,omitempty"`
 	// Name is the name of the importer.
@@ -237,15 +237,15 @@ type ProfileImporter struct {
 //nolint:govet // Field alignment is less important than logical grouping
 type QualityprofilesInheritance struct {
 	// Profile contains the current profile information.
-	Profile InheritanceProfile `json:"profile,omitzero"`
+	Profile QualityprofilesInheritanceProfile `json:"profile,omitzero"`
 	// Ancestors contains the ancestor profiles.
-	Ancestors []InheritanceProfile `json:"ancestors,omitempty"`
+	Ancestors []QualityprofilesInheritanceProfile `json:"ancestors,omitempty"`
 	// Children contains the child profiles.
-	Children []InheritanceProfile `json:"children,omitempty"`
+	Children []QualityprofilesInheritanceProfile `json:"children,omitempty"`
 }
 
-// InheritanceProfile represents a profile in an inheritance hierarchy.
-type InheritanceProfile struct {
+// QualityprofilesInheritanceProfile represents a profile in an inheritance hierarchy.
+type QualityprofilesInheritanceProfile struct {
 	// Key is the unique key of the profile.
 	Key string `json:"key,omitempty"`
 	// Name is the name of the profile.
@@ -267,11 +267,11 @@ type QualityprofilesProjects struct {
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 	// Results contains the list of projects.
-	Results []ProfileProject `json:"results,omitempty"`
+	Results []QualityprofilesProfileProject `json:"results,omitempty"`
 }
 
-// ProfileProject represents a project associated with a quality profile.
-type ProfileProject struct {
+// QualityprofilesProfileProject represents a project associated with a quality profile.
+type QualityprofilesProfileProject struct {
 	// Key is the unique key of the project.
 	Key string `json:"key,omitempty"`
 	// Name is the name of the project.
@@ -355,11 +355,11 @@ type QualityprofilesSearchGroups struct {
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 	// Groups is the list of groups.
-	Groups []ProfileGroup `json:"groups,omitempty"`
+	Groups []QualityprofilesProfileGroup `json:"groups,omitempty"`
 }
 
-// ProfileGroup represents a group that can edit a quality profile.
-type ProfileGroup struct {
+// QualityprofilesProfileGroup represents a group that can edit a quality profile.
+type QualityprofilesProfileGroup struct {
 	// Name is the name of the group.
 	Name string `json:"name,omitempty"`
 	// Description is the description of the group.
@@ -375,11 +375,11 @@ type QualityprofilesSearchUsers struct {
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 	// Users is the list of users.
-	Users []ProfileUser `json:"users,omitempty"`
+	Users []QualityprofilesProfileUser `json:"users,omitempty"`
 }
 
-// ProfileUser represents a user that can edit a quality profile.
-type ProfileUser struct {
+// QualityprofilesProfileUser represents a user that can edit a quality profile.
+type QualityprofilesProfileUser struct {
 	// Login is the login name of the user.
 	Login string `json:"login,omitempty"`
 	// Name is the display name of the user.
@@ -393,11 +393,11 @@ type ProfileUser struct {
 // QualityprofilesShow represents the response from showing a quality profile.
 type QualityprofilesShow struct {
 	// Profile contains the profile details.
-	Profile ShownProfile `json:"profile,omitzero"`
+	Profile QualityprofilesShownProfile `json:"profile,omitzero"`
 }
 
-// ShownProfile represents a quality profile in a show response.
-type ShownProfile struct {
+// QualityprofilesShownProfile represents a quality profile in a show response.
+type QualityprofilesShownProfile struct {
 	// Key is the unique key of the profile.
 	Key string `json:"key,omitempty"`
 	// Name is the name of the profile.

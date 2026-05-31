@@ -119,10 +119,10 @@ func TestUsersV2_Create_Validation(t *testing.T) {
 }
 
 // =============================================================================
-// Fetch
+// Get
 // =============================================================================
 
-func TestUsersV2_Fetch(t *testing.T) {
+func TestUsersV2_Get(t *testing.T) {
 	response := UserV2{
 		Id:    "user-1",
 		Login: "jdoe",
@@ -131,16 +131,16 @@ func TestUsersV2_Fetch(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/users-management/users/user-1", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.UsersManagement.Fetch("user-1")
+	result, resp, err := client.V2.UsersManagement.Get("user-1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "jdoe", result.Login)
 }
 
-func TestUsersV2_Fetch_Validation(t *testing.T) {
+func TestUsersV2_Get_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.UsersManagement.Fetch("")
+	_, _, err := client.V2.UsersManagement.Get("")
 	assert.Error(t, err)
 }
 

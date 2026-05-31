@@ -364,7 +364,7 @@ func TestPermissions_BulkApplyTemplate_ValidationError(t *testing.T) {
 
 func TestPermissions_CreateTemplate(t *testing.T) {
 	response := PermissionsCreateTemplate{
-		PermissionTemplate: PermissionTemplateBasic{
+		PermissionTemplate: PermissionsTemplateBasic{
 			Name:              "my-template",
 			Description:       "Template for my projects",
 			ProjectKeyPattern: "my-.*",
@@ -433,7 +433,7 @@ func TestPermissions_DeleteTemplate_ValidationError(t *testing.T) {
 
 func TestPermissions_Groups(t *testing.T) {
 	response := PermissionsGroups{
-		Paging: PermissionsPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     2,
@@ -465,7 +465,7 @@ func TestPermissions_Groups(t *testing.T) {
 
 func TestPermissions_Groups_WithOptions(t *testing.T) {
 	response := PermissionsGroups{
-		Paging: PermissionsPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     0,
@@ -725,7 +725,7 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 				ProjectKeyPattern: "my-.*",
 				CreatedAt:         "2024-01-01T00:00:00+0000",
 				UpdatedAt:         "2024-01-02T00:00:00+0000",
-				Permissions: []TemplatePermission{
+				Permissions: []PermissionsTemplatePermission{
 					{Key: "admin", UsersCount: 1, GroupsCount: 2, WithProjectCreator: true},
 				},
 			},
@@ -812,12 +812,12 @@ func TestPermissions_SetDefaultTemplate_ValidationError(t *testing.T) {
 
 func TestPermissions_TemplateGroups(t *testing.T) {
 	response := PermissionsTemplateGroups{
-		Paging: PermissionsPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     1,
 		},
-		Groups: []TemplateGroup{
+		Groups: []PermissionsTemplateGroup{
 			{
 				Name:        "developers",
 				Description: "Developers group",
@@ -872,12 +872,12 @@ func TestPermissions_TemplateGroups_ValidationError(t *testing.T) {
 
 func TestPermissions_TemplateUsers(t *testing.T) {
 	response := PermissionsTemplateUsers{
-		Paging: PermissionsPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     1,
 		},
-		Users: []TemplateUser{
+		Users: []PermissionsTemplateUser{
 			{
 				Login:       "john.doe",
 				Name:        "John Doe",
@@ -929,7 +929,7 @@ func TestPermissions_TemplateUsers_ValidationError(t *testing.T) {
 
 func TestPermissions_UpdateTemplate(t *testing.T) {
 	response := PermissionsUpdateTemplate{
-		PermissionTemplate: PermissionTemplateUpdated{
+		PermissionTemplate: PermissionsTemplateUpdated{
 			ID:                "template-1",
 			Name:              "new-template-name",
 			Description:       "Updated description",
@@ -975,7 +975,7 @@ func TestPermissions_UpdateTemplate_ValidationError(t *testing.T) {
 
 func TestPermissions_Users(t *testing.T) {
 	response := PermissionsUsers{
-		Paging: PermissionsPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     2,
@@ -1012,7 +1012,7 @@ func TestPermissions_Users(t *testing.T) {
 
 func TestPermissions_Users_WithOptions(t *testing.T) {
 	response := PermissionsUsers{
-		Paging: PermissionsPaging{
+		Paging: Paging{
 			PageIndex: 1,
 			PageSize:  25,
 			Total:     0,

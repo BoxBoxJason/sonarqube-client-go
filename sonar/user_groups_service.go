@@ -48,8 +48,8 @@ type UserGroupsService struct {
 // Response Types
 // -----------------------------------------------------------------------------
 
-// UserGroupDetail represents a user group with its properties from user_groups API.
-type UserGroupDetail struct {
+// UserGroupsDetail represents a user group with its properties from user_groups API.
+type UserGroupsDetail struct {
 	// Description is the description of the group.
 	Description string `json:"description,omitempty"`
 	// ID is the unique identifier of the group.
@@ -69,19 +69,19 @@ type UserGroupDetail struct {
 // UserGroupsCreate represents the response from creating a group.
 type UserGroupsCreate struct {
 	// Group contains the created group details.
-	Group UserGroupDetail `json:"group,omitzero"`
+	Group UserGroupsDetail `json:"group,omitzero"`
 }
 
 // UserGroupsSearch represents the response from searching groups.
 type UserGroupsSearch struct {
 	// Groups is the list of groups.
-	Groups []UserGroupDetail `json:"groups,omitempty"`
+	Groups []UserGroupsDetail `json:"groups,omitempty"`
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 }
 
-// UserGroupUser represents a user within a group.
-type UserGroupUser struct {
+// UserGroupsUser represents a user within a group.
+type UserGroupsUser struct {
 	// Login is the user's login.
 	Login string `json:"login,omitempty"`
 	// Name is the user's display name.
@@ -95,7 +95,7 @@ type UserGroupUser struct {
 // UserGroupsUsers represents the response from listing users in a group.
 type UserGroupsUsers struct {
 	// Users is the list of users.
-	Users []UserGroupUser `json:"users,omitempty"`
+	Users []UserGroupsUser `json:"users,omitempty"`
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 }

@@ -54,7 +54,7 @@ type RuleV2 struct {
 	// Type is the rule type.
 	Type string `json:"type,omitempty"`
 	// Impacts is the list of software quality impacts.
-	Impacts []RuleImpact `json:"impacts,omitempty"`
+	Impacts []RulesImpact `json:"impacts,omitempty"`
 	// CleanCodeAttribute is the clean code attribute for the rule.
 	CleanCodeAttribute string `json:"cleanCodeAttribute,omitempty"`
 	// CleanCodeAttributeCategory is the clean code attribute category.
@@ -66,7 +66,7 @@ type RuleV2 struct {
 	// CreatedAt is the rule creation timestamp.
 	CreatedAt string `json:"createdAt,omitempty"`
 	// DescriptionSections contains the rule description sections.
-	DescriptionSections []RuleDescriptionSection `json:"descriptionSections,omitempty"`
+	DescriptionSections []RulesDescriptionSection `json:"descriptionSections,omitempty"`
 	// MarkdownDescription is the rule description in markdown format.
 	MarkdownDescription string `json:"markdownDescription,omitempty"`
 	// GapDescription is the gap description for the rule.
@@ -122,7 +122,7 @@ type CleanCodePolicyCreateRuleOptions struct {
 	MarkdownDescription string `json:"markdownDescription"`
 	// Impacts is the list of software quality impacts.
 	// This field is required (at least one impact).
-	Impacts []RuleImpact `json:"impacts"`
+	Impacts []RulesImpact `json:"impacts"`
 	// Status is the rule status. Default is "READY".
 	// Valid values: BETA, DEPRECATED, READY, REMOVED.
 	Status string `json:"status,omitempty"`
@@ -149,7 +149,7 @@ type CleanCodePolicyCreateRuleOptions struct {
 // -----------------------------------------------------------------------------
 
 // validateRuleImpacts validates the impacts list in a create rule request.
-func validateRuleImpacts(impacts []RuleImpact) error {
+func validateRuleImpacts(impacts []RulesImpact) error {
 	if len(impacts) == 0 {
 		return NewValidationError("Impacts", "at least one impact is required", ErrMissingRequired)
 	}

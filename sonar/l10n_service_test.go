@@ -22,7 +22,7 @@ func TestL10N_Index(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.L10N.Index(nil)
+	result, resp, err := client.L10N.GetIndex(nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -44,7 +44,7 @@ func TestL10N_Index_WithLocale(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.L10N.Index(&L10NIndexOptions{Locale: "fr"})
+	result, resp, err := client.L10N.GetIndex(&L10NIndexOptions{Locale: "fr"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "fr", result.Locale)
@@ -56,7 +56,7 @@ func TestL10N_Index_WithTimestamp(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	_, _, err := client.L10N.Index(&L10NIndexOptions{Timestamp: "2024-01-01T00:00:00+0000"})
+	_, _, err := client.L10N.GetIndex(&L10NIndexOptions{Timestamp: "2024-01-01T00:00:00+0000"})
 	require.NoError(t, err)
 }
 
@@ -65,13 +65,13 @@ func TestL10N_Index_EmptyMessages(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, _, err := client.L10N.Index(nil)
+	result, _, err := client.L10N.GetIndex(nil)
 	require.NoError(t, err)
 	require.NotNil(t, result.Messages)
 	assert.Empty(t, result.Messages)
 }
 
-func TestL10N_ValidateIndexOpt(t *testing.T) {
+func TestL10N_ValidateGetIndexOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	tests := []struct {
@@ -88,7 +88,7 @@ func TestL10N_ValidateIndexOpt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := client.L10N.ValidateIndexOpt(tt.opt)
+			err := client.L10N.ValidateGetIndexOpt(tt.opt)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {

@@ -123,28 +123,28 @@ type QualityGateActions struct {
 
 // QualitygatesProjectStatus represents the quality gate status of a project.
 type QualitygatesProjectStatus struct {
-	// ProjectStatus contains the detailed project status information.
-	ProjectStatus ProjectStatus `json:"projectStatus,omitzero"`
+	// QualityGateProjectStatus contains the detailed project status information.
+	ProjectStatus QualityGateProjectStatus `json:"projectStatus,omitzero"`
 }
 
-// ProjectStatus represents the detailed status of a project's quality gate.
+// QualityGateProjectStatus represents the detailed status of a project's quality gate.
 //
 //nolint:govet // Field alignment is less important than logical grouping
-type ProjectStatus struct {
+type QualityGateProjectStatus struct {
 	// Status is the overall quality gate status (OK, WARN, ERROR, NONE).
 	Status string `json:"status,omitempty"`
 	// CaycStatus is the Clean As You Code status.
 	CaycStatus string `json:"caycStatus,omitempty"`
 	// Conditions is the list of condition evaluations.
-	Conditions []ConditionStatus `json:"conditions,omitempty"`
+	Conditions []QualityGateConditionStatus `json:"conditions,omitempty"`
 	// Period contains information about the analysis period.
-	Period AnalysisPeriod `json:"period,omitzero"`
+	Period QualityGateAnalysisPeriod `json:"period,omitzero"`
 	// IgnoredConditions indicates if some conditions were ignored.
 	IgnoredConditions bool `json:"ignoredConditions,omitempty"`
 }
 
-// ConditionStatus represents the evaluation result of a single condition.
-type ConditionStatus struct {
+// QualityGateConditionStatus represents the evaluation result of a single condition.
+type QualityGateConditionStatus struct {
 	// ActualValue is the actual measured value.
 	ActualValue string `json:"actualValue,omitempty"`
 	// Comparator is the comparison operator used.
@@ -157,8 +157,8 @@ type ConditionStatus struct {
 	Status string `json:"status,omitempty"`
 }
 
-// AnalysisPeriod represents information about the analysis period.
-type AnalysisPeriod struct {
+// QualityGateAnalysisPeriod represents information about the analysis period.
+type QualityGateAnalysisPeriod struct {
 	// Date is the date of the period.
 	Date string `json:"date,omitempty"`
 	// Mode is the period mode.
@@ -321,14 +321,14 @@ type QualitygatesDeleteConditionOptions struct {
 	ID string `url:"id,omitempty"`
 }
 
-// QualitygatesDeselectOptions contains options for removing a project association.
-type QualitygatesDeselectOptions struct {
+// QualitygatesUnassignOptions contains options for removing a project association.
+type QualitygatesUnassignOptions struct {
 	// ProjectKey is the project key (required).
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// QualitygatesDestroyOptions contains options for deleting a quality gate.
-type QualitygatesDestroyOptions struct {
+// QualitygatesDeleteOptions contains options for deleting a quality gate.
+type QualitygatesDeleteOptions struct {
 	// Name is the name of the quality gate to delete (required).
 	// Maximum length: 100 characters
 	Name string `url:"name,omitempty"`
@@ -434,8 +434,8 @@ type QualitygatesSearchUsersOptions struct {
 	Selected string `url:"selected,omitempty"`
 }
 
-// QualitygatesSelectOptions contains options for associating a project.
-type QualitygatesSelectOptions struct {
+// QualitygatesAssignOptions contains options for associating a project.
+type QualitygatesAssignOptions struct {
 	// GateName is the name of the quality gate (required).
 	// Maximum length: 100 characters
 	GateName string `url:"gateName,omitempty"`
@@ -443,8 +443,8 @@ type QualitygatesSelectOptions struct {
 	ProjectKey string `url:"projectKey,omitempty"`
 }
 
-// QualitygatesSetAsDefaultOptions contains options for setting the default gate.
-type QualitygatesSetAsDefaultOptions struct {
+// QualitygatesSetDefaultOptions contains options for setting the default gate.
+type QualitygatesSetDefaultOptions struct {
 	// Name is the name of the quality gate to set as default (required).
 	// Maximum length: 100 characters
 	Name string `url:"name,omitempty"`
@@ -610,12 +610,12 @@ func (s *QualitygatesService) DeleteCondition(opt *QualitygatesDeleteConditionOp
 	return
 }
 
-// Deselect removes the association of a project from a quality gate.
+// Unassign removes the association of a project from a quality gate.
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - 'Administer' rights on the project
-func (s *QualitygatesService) Deselect(opt *QualitygatesDeselectOptions) (resp *http.Response, err error) {
-	err = s.ValidateDeselectOpt(opt)
+func (s *QualitygatesService) Unassign(opt *QualitygatesUnassignOptions) (resp *http.Response, err error) {
+	err = s.ValidateUnassignOpt(opt)
 	if err != nil {
 		return
 	}
@@ -633,10 +633,10 @@ func (s *QualitygatesService) Deselect(opt *QualitygatesDeselectOptions) (resp *
 	return
 }
 
-// Destroy deletes a quality gate.
+// Delete deletes a quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) Destroy(opt *QualitygatesDestroyOptions) (resp *http.Response, err error) {
-	err = s.ValidateDestroyOpt(opt)
+func (s *QualitygatesService) Delete(opt *QualitygatesDeleteOptions) (resp *http.Response, err error) {
+	err = s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return
 	}
@@ -867,12 +867,12 @@ func (s *QualitygatesService) SearchUsers(opt *QualitygatesSearchUsersOptions) (
 	return
 }
 
-// Select associates a project to a quality gate.
+// Assign associates a project to a quality gate.
 // Requires one of the following permissions:
 //   - 'Administer Quality Gates'
 //   - 'Administer' right on the specified project
-func (s *QualitygatesService) Select(opt *QualitygatesSelectOptions) (resp *http.Response, err error) {
-	err = s.ValidateSelectOpt(opt)
+func (s *QualitygatesService) Assign(opt *QualitygatesAssignOptions) (resp *http.Response, err error) {
+	err = s.ValidateAssignOpt(opt)
 	if err != nil {
 		return
 	}
@@ -890,10 +890,10 @@ func (s *QualitygatesService) Select(opt *QualitygatesSelectOptions) (resp *http
 	return
 }
 
-// SetAsDefault sets a quality gate as the default quality gate.
+// SetDefault sets a quality gate as the default quality gate.
 // Requires the 'Administer Quality Gates' permission.
-func (s *QualitygatesService) SetAsDefault(opt *QualitygatesSetAsDefaultOptions) (resp *http.Response, err error) {
-	err = s.ValidateSetAsDefaultOpt(opt)
+func (s *QualitygatesService) SetDefault(opt *QualitygatesSetDefaultOptions) (resp *http.Response, err error) {
+	err = s.ValidateSetDefaultOpt(opt)
 	if err != nil {
 		return
 	}
@@ -1102,10 +1102,10 @@ func (s *QualitygatesService) ValidateDeleteConditionOpt(opt *QualitygatesDelete
 	return nil
 }
 
-// ValidateDeselectOpt validates the options for deselecting a project.
-func (s *QualitygatesService) ValidateDeselectOpt(opt *QualitygatesDeselectOptions) error {
+// ValidateUnassignOpt validates the options for unassigning a project.
+func (s *QualitygatesService) ValidateUnassignOpt(opt *QualitygatesUnassignOptions) error {
 	if opt == nil {
-		return NewValidationError("QualitygatesDeselectOption", "cannot be nil", ErrMissingRequired)
+		return NewValidationError("QualitygatesUnassignOption", "cannot be nil", ErrMissingRequired)
 	}
 
 	err := ValidateRequired(opt.ProjectKey, "ProjectKey")
@@ -1116,10 +1116,10 @@ func (s *QualitygatesService) ValidateDeselectOpt(opt *QualitygatesDeselectOptio
 	return nil
 }
 
-// ValidateDestroyOpt validates the options for destroying a quality gate.
-func (s *QualitygatesService) ValidateDestroyOpt(opt *QualitygatesDestroyOptions) error {
+// ValidateDeleteOpt validates the options for deleting a quality gate.
+func (s *QualitygatesService) ValidateDeleteOpt(opt *QualitygatesDeleteOptions) error {
 	if opt == nil {
-		return NewValidationError("QualitygatesDestroyOption", "cannot be nil", ErrMissingRequired)
+		return NewValidationError("QualitygatesDeleteOption", "cannot be nil", ErrMissingRequired)
 	}
 
 	err := ValidateRequired(opt.Name, "Name")
@@ -1315,10 +1315,10 @@ func (s *QualitygatesService) ValidateSearchUsersOpt(opt *QualitygatesSearchUser
 	return nil
 }
 
-// ValidateSelectOpt validates the options for selecting a project.
-func (s *QualitygatesService) ValidateSelectOpt(opt *QualitygatesSelectOptions) error {
+// ValidateAssignOpt validates the options for assigning a project to a quality gate.
+func (s *QualitygatesService) ValidateAssignOpt(opt *QualitygatesAssignOptions) error {
 	if opt == nil {
-		return NewValidationError("QualitygatesSelectOption", "cannot be nil", ErrMissingRequired)
+		return NewValidationError("QualitygatesAssignOption", "cannot be nil", ErrMissingRequired)
 	}
 
 	err := ValidateRequired(opt.GateName, "GateName")
@@ -1339,10 +1339,10 @@ func (s *QualitygatesService) ValidateSelectOpt(opt *QualitygatesSelectOptions) 
 	return nil
 }
 
-// ValidateSetAsDefaultOpt validates the options for setting a default quality gate.
-func (s *QualitygatesService) ValidateSetAsDefaultOpt(opt *QualitygatesSetAsDefaultOptions) error {
+// ValidateSetDefaultOpt validates the options for setting a default quality gate.
+func (s *QualitygatesService) ValidateSetDefaultOpt(opt *QualitygatesSetDefaultOptions) error {
 	if opt == nil {
-		return NewValidationError("QualitygatesSetAsDefaultOption", "cannot be nil", ErrMissingRequired)
+		return NewValidationError("QualitygatesSetDefaultOption", "cannot be nil", ErrMissingRequired)
 	}
 
 	err := ValidateRequired(opt.Name, "Name")

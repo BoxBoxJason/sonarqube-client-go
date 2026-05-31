@@ -24,12 +24,12 @@ type AnalysisReportsQueueStatus struct {
 // Service Methods
 // -----------------------------------------------------------------------------
 
-// IsQueueEmpty checks if the queue of Compute Engine is empty.
-// Returns true if the queue is empty, false otherwise.
+// QueueStatus checks if the queue of Compute Engine is empty.
+// Returns an AnalysisReportsQueueStatus indicating whether the queue is empty.
 //
 // API endpoint: GET /api/analysis_reports/is_queue_empty.
 // WARNING: this is an internal API and may change without notice.
-func (s *AnalysisReportsService) IsQueueEmpty() (*AnalysisReportsQueueStatus, *http.Response, error) {
+func (s *AnalysisReportsService) QueueStatus() (*AnalysisReportsQueueStatus, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "analysis_reports/is_queue_empty", nil)
 	if err != nil {
 		return nil, nil, err

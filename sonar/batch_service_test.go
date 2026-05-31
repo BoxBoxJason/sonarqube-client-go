@@ -8,13 +8,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestBatchService_File(t *testing.T) {
+func TestBatchService_GetFile(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		handler := mockBinaryHandler(t, http.MethodGet, "/batch/file", http.StatusOK, "application/java-archive", []byte("jar-binary-content"))
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.File(&BatchFileOptions{
+		result, resp, err := client.Batch.GetFile(&BatchFileOptions{
 			Name: "batch-library-2.3.jar",
 		})
 
@@ -28,7 +28,7 @@ func TestBatchService_File(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.File(nil)
+		_, _, err := client.Batch.GetFile(nil)
 
 		require.NoError(t, err)
 	})
@@ -38,19 +38,19 @@ func TestBatchService_File(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.File(&BatchFileOptions{})
+		_, _, err := client.Batch.GetFile(&BatchFileOptions{})
 
 		require.NoError(t, err)
 	})
 }
 
-func TestBatchService_Index(t *testing.T) {
+func TestBatchService_GetIndex(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		handler := mockBinaryHandler(t, http.MethodGet, "/batch/index", http.StatusOK, "text/plain", []byte("batch-library-2.3.jar|abc123def456\nscanner-engine-9.0.jar|789xyz"))
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.Index()
+		result, resp, err := client.Batch.GetIndex()
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -58,7 +58,7 @@ func TestBatchService_Index(t *testing.T) {
 	})
 }
 
-func TestBatchService_Project(t *testing.T) {
+func TestBatchService_GetProject(t *testing.T) {
 	projectJSON := `{
 		"fileDataByModuleAndPath": {
 			"my-project": {
@@ -77,7 +77,7 @@ func TestBatchService_Project(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.Project(&BatchProjectOptions{
+		result, resp, err := client.Batch.GetProject(&BatchProjectOptions{
 			Key: "my-project",
 		})
 
@@ -92,7 +92,7 @@ func TestBatchService_Project(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.Project(&BatchProjectOptions{
+		_, _, err := client.Batch.GetProject(&BatchProjectOptions{
 			Key:    "my-project",
 			Branch: "feature/my-branch",
 		})
@@ -105,7 +105,7 @@ func TestBatchService_Project(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.Project(&BatchProjectOptions{
+		_, _, err := client.Batch.GetProject(&BatchProjectOptions{
 			Key:         "my-project",
 			PullRequest: "5461",
 		})
@@ -118,13 +118,13 @@ func TestBatchService_Project(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.Project(nil)
+		_, _, err := client.Batch.GetProject(nil)
 
 		require.NoError(t, err)
 	})
 }
 
-func TestBatchService_ValidateFileOpt(t *testing.T) {
+func TestBatchService_ValidateGetFileOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	tests := []struct {
@@ -139,7 +139,7 @@ func TestBatchService_ValidateFileOpt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := client.Batch.ValidateFileOpt(tt.opt)
+			err := client.Batch.ValidateGetFileOpt(tt.opt)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -149,7 +149,7 @@ func TestBatchService_ValidateFileOpt(t *testing.T) {
 	}
 }
 
-func TestBatchService_ValidateProjectOpt(t *testing.T) {
+func TestBatchService_ValidateGetProjectOpt(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	tests := []struct {
@@ -166,7 +166,7 @@ func TestBatchService_ValidateProjectOpt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := client.Batch.ValidateProjectOpt(tt.opt)
+			err := client.Batch.ValidateGetProjectOpt(tt.opt)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {

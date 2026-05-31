@@ -14,16 +14,16 @@ type ProjectBranchesService struct {
 // Shared Types
 // -----------------------------------------------------------------------------
 
-// BranchStatus represents the status of a branch.
-type BranchStatus struct {
+// ProjectBranchStatus represents the status of a branch.
+type ProjectBranchStatus struct {
 	// QualityGateStatus is the quality gate status of the branch.
 	QualityGateStatus string `json:"qualityGateStatus,omitempty"`
 }
 
-// Branch represents a project branch.
+// ProjectBranch represents a project branch.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type Branch struct {
+type ProjectBranch struct {
 	// AnalysisDate is the date of the last analysis.
 	AnalysisDate string `json:"analysisDate,omitempty"`
 	// BranchID is the unique identifier of the branch.
@@ -35,7 +35,7 @@ type Branch struct {
 	// Name is the name of the branch.
 	Name string `json:"name,omitempty"`
 	// Status is the status of the branch.
-	Status BranchStatus `json:"status,omitzero"`
+	Status ProjectBranchStatus `json:"status,omitzero"`
 	// Type is the type of the branch.
 	Type string `json:"type,omitempty"`
 }
@@ -47,7 +47,7 @@ type Branch struct {
 // ProjectBranchesList represents the response from listing branches.
 type ProjectBranchesList struct {
 	// Branches is the list of branches.
-	Branches []Branch `json:"branches,omitempty"`
+	Branches []ProjectBranch `json:"branches,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

@@ -347,8 +347,8 @@ func (s *UsersManagementService) Create(opt *UsersCreateOptionsV2) (*UserV2, *ht
 	return result, resp, nil
 }
 
-// Fetch retrieves a single user by ID.
-func (s *UsersManagementService) Fetch(userID string) (*UserV2, *http.Response, error) {
+// Get retrieves a single user by ID.
+func (s *UsersManagementService) Get(userID string) (*UserV2, *http.Response, error) {
 	err := ValidateRequired(userID, "Id")
 	if err != nil {
 		return nil, nil, err

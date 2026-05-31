@@ -46,12 +46,12 @@ func TestProjectBranches_Delete_ValidationError(t *testing.T) {
 
 func TestProjectBranches_List(t *testing.T) {
 	response := &ProjectBranchesList{
-		Branches: []Branch{
+		Branches: []ProjectBranch{
 			{
 				Name:              "main",
 				IsMain:            true,
 				Type:              "LONG",
-				Status:            BranchStatus{QualityGateStatus: "OK"},
+				Status:            ProjectBranchStatus{QualityGateStatus: "OK"},
 				AnalysisDate:      "2024-01-01T00:00:00+0000",
 				ExcludedFromPurge: true,
 			},
@@ -59,7 +59,7 @@ func TestProjectBranches_List(t *testing.T) {
 				Name:              "feature-1",
 				IsMain:            false,
 				Type:              "BRANCH",
-				Status:            BranchStatus{QualityGateStatus: "ERROR"},
+				Status:            ProjectBranchStatus{QualityGateStatus: "ERROR"},
 				ExcludedFromPurge: false,
 			},
 		},

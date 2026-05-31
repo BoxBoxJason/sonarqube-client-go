@@ -16,10 +16,10 @@ type AuthorizationsService struct {
 // Shared Types
 // -----------------------------------------------------------------------------
 
-// Group represents a group returned by V2 API endpoints.
+// AuthorizationsGroup represents a group returned by V2 API endpoints.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
-type Group struct {
+type AuthorizationsGroup struct {
 	// Default indicates whether this is a default group.
 	Default bool `json:"default,omitempty"`
 	// Description is the group description.
@@ -32,8 +32,8 @@ type Group struct {
 	Name string `json:"name,omitempty"`
 }
 
-// GroupMembership represents a group membership returned by V2 API endpoints.
-type GroupMembership struct {
+// AuthorizationsGroupMembership represents a group membership returned by V2 API endpoints.
+type AuthorizationsGroupMembership struct {
 	// GroupId is the group's unique identifier.
 	GroupId string `json:"groupId,omitempty"`
 	// Id is the membership's unique identifier.
@@ -49,7 +49,7 @@ type GroupMembership struct {
 // AuthorizationsGroupsSearch represents the response from searching groups.
 type AuthorizationsGroupsSearch struct {
 	// Groups is the list of groups.
-	Groups []Group `json:"groups,omitempty"`
+	Groups []AuthorizationsGroup `json:"groups,omitempty"`
 	// Page contains pagination information.
 	Page PageResponseV2 `json:"page,omitzero"`
 }
@@ -57,7 +57,7 @@ type AuthorizationsGroupsSearch struct {
 // AuthorizationsGroupMembershipsSearch represents the response from searching group memberships.
 type AuthorizationsGroupMembershipsSearch struct {
 	// GroupMemberships is the list of group memberships.
-	GroupMemberships []GroupMembership `json:"groupMemberships,omitempty"`
+	GroupMemberships []AuthorizationsGroupMembership `json:"groupMemberships,omitempty"`
 	// Page contains pagination information.
 	Page PageResponseV2 `json:"page,omitzero"`
 }
@@ -248,7 +248,7 @@ func (s *AuthorizationsService) SearchGroups(opt *AuthorizationsSearchGroupsOpti
 }
 
 // CreateGroup creates a new group.
-func (s *AuthorizationsService) CreateGroup(opt *AuthorizationsCreateGroupOptions) (*Group, *http.Response, error) {
+func (s *AuthorizationsService) CreateGroup(opt *AuthorizationsCreateGroupOptions) (*AuthorizationsGroup, *http.Response, error) {
 	err := s.ValidateCreateGroupRequest(opt)
 	if err != nil {
 		return nil, nil, err
@@ -259,7 +259,7 @@ func (s *AuthorizationsService) CreateGroup(opt *AuthorizationsCreateGroupOption
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	result := new(Group)
+	result := new(AuthorizationsGroup)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {
@@ -269,8 +269,8 @@ func (s *AuthorizationsService) CreateGroup(opt *AuthorizationsCreateGroupOption
 	return result, resp, nil
 }
 
-// FetchGroup retrieves a single group by ID.
-func (s *AuthorizationsService) FetchGroup(groupID string) (*Group, *http.Response, error) {
+// GetGroup retrieves a single group by ID.
+func (s *AuthorizationsService) GetGroup(groupID string) (*AuthorizationsGroup, *http.Response, error) {
 	err := ValidateRequired(groupID, "Id")
 	if err != nil {
 		return nil, nil, err
@@ -281,7 +281,7 @@ func (s *AuthorizationsService) FetchGroup(groupID string) (*Group, *http.Respon
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	result := new(Group)
+	result := new(AuthorizationsGroup)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {
@@ -312,7 +312,7 @@ func (s *AuthorizationsService) DeleteGroup(groupID string) (*http.Response, err
 }
 
 // UpdateGroup updates a group's name or description.
-func (s *AuthorizationsService) UpdateGroup(groupID string, opt *AuthorizationsUpdateGroupOptions) (*Group, *http.Response, error) {
+func (s *AuthorizationsService) UpdateGroup(groupID string, opt *AuthorizationsUpdateGroupOptions) (*AuthorizationsGroup, *http.Response, error) {
 	err := s.ValidateUpdateGroupRequest(groupID, opt)
 	if err != nil {
 		return nil, nil, err
@@ -323,7 +323,7 @@ func (s *AuthorizationsService) UpdateGroup(groupID string, opt *AuthorizationsU
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	result := new(Group)
+	result := new(AuthorizationsGroup)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {
@@ -356,7 +356,7 @@ func (s *AuthorizationsService) SearchGroupMemberships(opt *AuthorizationsSearch
 }
 
 // CreateGroupMembership adds a user to a group.
-func (s *AuthorizationsService) CreateGroupMembership(opt *AuthorizationsCreateGroupMembershipOptions) (*GroupMembership, *http.Response, error) {
+func (s *AuthorizationsService) CreateGroupMembership(opt *AuthorizationsCreateGroupMembershipOptions) (*AuthorizationsGroupMembership, *http.Response, error) {
 	err := s.ValidateCreateGroupMembershipRequest(opt)
 	if err != nil {
 		return nil, nil, err
@@ -367,7 +367,7 @@ func (s *AuthorizationsService) CreateGroupMembership(opt *AuthorizationsCreateG
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	result := new(GroupMembership)
+	result := new(AuthorizationsGroupMembership)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {

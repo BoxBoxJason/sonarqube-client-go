@@ -145,28 +145,28 @@ func TestQualityGates_DeleteCondition(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
-func TestQualityGates_Deselect(t *testing.T) {
+func TestQualityGates_Unassign(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/deselect", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesDeselectOptions{
+	opt := &QualitygatesUnassignOptions{
 		ProjectKey: "my_project",
 	}
 
-	resp, err := client.Qualitygates.Deselect(opt)
+	resp, err := client.Qualitygates.Unassign(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
-func TestQualityGates_Destroy(t *testing.T) {
+func TestQualityGates_Delete(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/destroy", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesDestroyOptions{
+	opt := &QualitygatesDeleteOptions{
 		Name: "My Quality Gate",
 	}
 
-	resp, err := client.Qualitygates.Destroy(opt)
+	resp, err := client.Qualitygates.Delete(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -366,29 +366,29 @@ func TestQualityGates_SearchUsers(t *testing.T) {
 	assert.Equal(t, "john.doe", result.Users[0].Login)
 }
 
-func TestQualityGates_Select(t *testing.T) {
+func TestQualityGates_Assign(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/select", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesSelectOptions{
+	opt := &QualitygatesAssignOptions{
 		GateName:   "SonarSource Way",
 		ProjectKey: "my_project",
 	}
 
-	resp, err := client.Qualitygates.Select(opt)
+	resp, err := client.Qualitygates.Assign(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
-func TestQualityGates_SetAsDefault(t *testing.T) {
+func TestQualityGates_SetDefault(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/qualitygates/set_as_default", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	opt := &QualitygatesSetAsDefaultOptions{
+	opt := &QualitygatesSetDefaultOptions{
 		Name: "SonarSource Way",
 	}
 
-	resp, err := client.Qualitygates.SetAsDefault(opt)
+	resp, err := client.Qualitygates.SetDefault(opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -643,16 +643,16 @@ func TestValidation_EdgeCases(t *testing.T) {
 	err = client.Qualitygates.ValidateRemoveUserOpt(nil)
 	assert.Error(t, err)
 
-	// Test Deselect - nil option
-	err = client.Qualitygates.ValidateDeselectOpt(nil)
+	// Test Unassign - nil option
+	err = client.Qualitygates.ValidateUnassignOpt(nil)
 	assert.Error(t, err)
 
-	// Test Select - nil option
-	err = client.Qualitygates.ValidateSelectOpt(nil)
+	// Test Assign - nil option
+	err = client.Qualitygates.ValidateAssignOpt(nil)
 	assert.Error(t, err)
 
-	// Test SetAsDefault - nil option
-	err = client.Qualitygates.ValidateSetAsDefaultOpt(nil)
+	// Test SetDefault - nil option
+	err = client.Qualitygates.ValidateSetDefaultOpt(nil)
 	assert.Error(t, err)
 
 	// Test Show - nil option
