@@ -30,6 +30,7 @@ type Client struct {
 	httpClient      *http.Client
 	retryOptions    *RetryOptions
 	transportConfig *TransportConfig
+	middlewares     []Middleware
 	userAgent       string
 
 	AlmIntegrations    *AlmIntegrationsService
@@ -229,6 +230,18 @@ func setDefaults(client *Client) error {
 		client.httpClient = &clone
 	}
 
+	if len(client.middlewares) > 0 {
+		baseTransport := client.httpClient.Transport
+		if baseTransport == nil {
+			baseTransport = http.DefaultTransport
+		}
+
+		transport := applyMiddlewares(baseTransport, client.middlewares)
+		clone := *client.httpClient
+		clone.Transport = transport
+		client.httpClient = &clone
+	}
+
 	if client.userAgent == "" {
 		client.userAgent = defaultUserAgent
 	}
@@ -279,6 +292,18 @@ func WithHTTPClient(httpClient *http.Client) ClientOptionFunc {
 func WithTransportConfig(cfg TransportConfig) ClientOptionFunc {
 	return func(c *Client) error {
 		c.transportConfig = &cfg
+
+		return nil
+	}
+}
+
+// WithMiddleware is a ClientOptionFunc that appends HTTP transport middleware to
+// the client. Middleware is applied outermost-first: middlewares[0] wraps the
+// rest of the chain. When WithHTTPClient is also used, middleware wraps that
+// client's transport.
+func WithMiddleware(middlewares ...Middleware) ClientOptionFunc {
+	return func(c *Client) error {
+		c.middlewares = append(c.middlewares, middlewares...)
 
 		return nil
 	}
