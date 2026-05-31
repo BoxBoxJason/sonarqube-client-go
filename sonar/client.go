@@ -48,6 +48,7 @@ type Client struct {
 	Favorites          *FavoritesService
 	Features           *FeaturesService
 	GithubProvisioning *GithubProvisioningService
+	GovernanceReports  *GovernanceReportsService
 	Hotspots           *HotspotsService
 	Issues             *IssuesService
 	L10N               *L10NService
@@ -73,6 +74,7 @@ type Client struct {
 	Qualitygates       *QualitygatesService
 	Qualityprofiles    *QualityprofilesService
 	Rules              *RulesService
+	SecurityReports    *SecurityReportsService
 	Server             *ServerService
 	Settings           *SettingsService
 	Sources            *SourcesService
@@ -408,6 +410,7 @@ func initServices(client *Client) {
 	client.Favorites = &FavoritesService{client: client}
 	client.Features = &FeaturesService{client: client}
 	client.GithubProvisioning = &GithubProvisioningService{client: client}
+	client.GovernanceReports = &GovernanceReportsService{client: client}
 	client.Hotspots = &HotspotsService{client: client}
 	client.Issues = &IssuesService{client: client}
 	client.L10N = &L10NService{client: client}
@@ -433,6 +436,7 @@ func initServices(client *Client) {
 	client.Qualitygates = &QualitygatesService{client: client}
 	client.Qualityprofiles = &QualityprofilesService{client: client}
 	client.Rules = &RulesService{client: client}
+	client.SecurityReports = &SecurityReportsService{client: client}
 	client.Server = &ServerService{client: client}
 	client.Settings = &SettingsService{client: client}
 	client.Sources = &SourcesService{client: client}
