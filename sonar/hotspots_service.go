@@ -75,16 +75,6 @@ type HotspotComponent struct {
 	Qualifier string `json:"qualifier,omitempty"`
 }
 
-// HotspotsTaskPaging represents pagination information in a hotspots response.
-type HotspotsTaskPaging struct {
-	// PageIndex is the current page index (1-based).
-	PageIndex int64 `json:"pageIndex,omitempty"`
-	// PageSize is the number of items per page.
-	PageSize int64 `json:"pageSize,omitempty"`
-	// Total is the total number of items.
-	Total int64 `json:"total,omitempty"`
-}
-
 // HotspotSummary represents a hotspot summary in list/search results.
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
@@ -236,7 +226,7 @@ type HotspotsList struct {
 	// Hotspots is the list of hotspots.
 	Hotspots []HotspotSummary `json:"hotspots,omitempty"`
 	// Paging contains pagination information.
-	Paging HotspotsTaskPaging `json:"paging"`
+	Paging Paging `json:"paging"`
 }
 
 // HotspotsSearch represents the response from searching hotspots.
@@ -246,7 +236,7 @@ type HotspotsSearch struct {
 	// Hotspots is the list of hotspots.
 	Hotspots []HotspotSummary `json:"hotspots,omitempty"`
 	// Paging contains pagination information.
-	Paging HotspotsTaskPaging `json:"paging"`
+	Paging Paging `json:"paging"`
 }
 
 // HotspotsShow represents the response from showing hotspot details.
