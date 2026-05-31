@@ -72,6 +72,7 @@ type Client struct {
 	Push               *PushService
 	Qualitygates       *QualitygatesService
 	Qualityprofiles    *QualityprofilesService
+	RegulatoryReports  *RegulatoryReportsService
 	Rules              *RulesService
 	Server             *ServerService
 	Settings           *SettingsService
@@ -432,6 +433,7 @@ func initServices(client *Client) {
 	client.Push = &PushService{client: client}
 	client.Qualitygates = &QualitygatesService{client: client}
 	client.Qualityprofiles = &QualityprofilesService{client: client}
+	client.RegulatoryReports = &RegulatoryReportsService{client: client}
 	client.Rules = &RulesService{client: client}
 	client.Server = &ServerService{client: client}
 	client.Settings = &SettingsService{client: client}
