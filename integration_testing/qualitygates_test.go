@@ -1345,7 +1345,7 @@ var _ = Describe("Qualitygates Service", Ordered, func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(projectStatusResult).NotTo(BeNil())
-			Expect(projectStatusResult.QualityGateProjectStatus).NotTo(BeNil())
+			Expect(projectStatusResult.ProjectStatus).NotTo(BeNil())
 
 			// Step 6: Add user permission
 			_, err = client.Qualitygates.AddUser(&sonar.QualitygatesAddUserOptions{

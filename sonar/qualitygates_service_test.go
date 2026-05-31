@@ -229,9 +229,9 @@ func TestQualityGates_ProjectStatus(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
-	assert.Equal(t, "OK", result.QualityGateProjectStatus.Status)
-	assert.Len(t, result.QualityGateProjectStatus.Conditions, 1)
-	assert.Equal(t, "coverage", result.QualityGateProjectStatus.Conditions[0].MetricKey)
+	assert.Equal(t, "OK", result.ProjectStatus.Status)
+	assert.Len(t, result.ProjectStatus.Conditions, 1)
+	assert.Equal(t, "coverage", result.ProjectStatus.Conditions[0].MetricKey)
 }
 
 func TestQualityGates_ProjectStatus_ValidationError(t *testing.T) {
@@ -544,14 +544,14 @@ func TestQualitygatesProjectStatus_JSONUnmarshal(t *testing.T) {
 
 	err := json.Unmarshal([]byte(jsonData), &response)
 	require.NoError(t, err)
-	assert.Equal(t, "ERROR", response.QualityGateProjectStatus.Status)
-	assert.Equal(t, "non-compliant", response.QualityGateProjectStatus.CaycStatus)
-	require.Len(t, response.QualityGateProjectStatus.Conditions, 2)
+	assert.Equal(t, "ERROR", response.ProjectStatus.Status)
+	assert.Equal(t, "non-compliant", response.ProjectStatus.CaycStatus)
+	require.Len(t, response.ProjectStatus.Conditions, 2)
 
-	cond := response.QualityGateProjectStatus.Conditions[0]
+	cond := response.ProjectStatus.Conditions[0]
 	assert.Equal(t, "new_coverage", cond.MetricKey)
 	assert.Equal(t, "70.5", cond.ActualValue)
-	assert.Equal(t, "PREVIOUS_VERSION", response.QualityGateProjectStatus.Period.Mode)
+	assert.Equal(t, "PREVIOUS_VERSION", response.ProjectStatus.Period.Mode)
 }
 
 // TestQualitygatesShow_JSONUnmarshal verifies the JSON unmarshal for show response.

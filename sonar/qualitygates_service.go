@@ -124,7 +124,7 @@ type QualityGateActions struct {
 // QualitygatesProjectStatus represents the quality gate status of a project.
 type QualitygatesProjectStatus struct {
 	// QualityGateProjectStatus contains the detailed project status information.
-	QualityGateProjectStatus QualityGateProjectStatus `json:"projectStatus,omitzero"`
+	ProjectStatus QualityGateProjectStatus `json:"projectStatus,omitzero"`
 }
 
 // QualityGateProjectStatus represents the detailed status of a project's quality gate.
