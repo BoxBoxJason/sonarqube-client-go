@@ -118,6 +118,8 @@ type Client struct {
 type ServicesV2 struct {
 	// Analysis provides methods for the Analysis V2 API.
 	Analysis *AnalysisService
+	// Architecture provides methods for the Architecture V2 API.
+	Architecture *ArchitectureService
 	// Authorizations provides methods for the Authorizations V2 API.
 	Authorizations *AuthorizationsService
 	// CleanCodePolicy provides methods for the Clean Code Policy V2 API.
@@ -541,6 +543,7 @@ func initServices(client *Client) {
 func initServicesV2(client *Client) {
 	client.V2 = &ServicesV2{
 		Analysis:        &AnalysisService{client: client},
+		Architecture:    &ArchitectureService{client: client},
 		Authorizations:  &AuthorizationsService{client: client},
 		CleanCodePolicy: &CleanCodePolicyService{client: client},
 		DopTranslation:  &DopTranslationService{client: client},
