@@ -101,6 +101,7 @@ type Client struct {
 	Server              *ServerService
 	Settings            *SettingsService
 	Sources             *SourcesService
+	Support             *SupportService
 	System              *SystemService
 	UserGroups          *UserGroupsService
 	UserTokens          *UserTokensService
@@ -523,6 +524,7 @@ func initServices(client *Client) {
 	client.Server = &ServerService{client: client}
 	client.Settings = &SettingsService{client: client}
 	client.Sources = &SourcesService{client: client}
+	client.Support = &SupportService{client: client}
 	client.System = &SystemService{client: client}
 	client.UserGroups = &UserGroupsService{client: client}
 	client.UserTokens = &UserTokensService{client: client}
