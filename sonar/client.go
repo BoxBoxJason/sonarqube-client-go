@@ -22,13 +22,14 @@ import (
 //
 //nolint:govet // fieldalignment: keeping logical field grouping for readability
 type Client struct {
-	baseURL    *url.URL
-	username   string
-	password   string
-	token      string
-	authType   authType
-	httpClient *http.Client
-	userAgent  string
+	baseURL      *url.URL
+	username     string
+	password     string
+	token        string
+	authType     authType
+	httpClient   *http.Client
+	retryOptions *RetryOptions
+	userAgent    string
 
 	AlmIntegrations    *AlmIntegrationsService
 	AlmSettings        *AlmSettingsService
@@ -209,6 +210,17 @@ func setDefaults(client *Client) error {
 
 	if client.httpClient == nil {
 		client.httpClient = http.DefaultClient
+	}
+
+	if client.retryOptions != nil {
+		baseTransport := client.httpClient.Transport
+		if baseTransport == nil {
+			baseTransport = http.DefaultTransport
+		}
+
+		clone := *client.httpClient
+		clone.Transport = &retryRoundTripper{base: baseTransport, opts: *client.retryOptions}
+		client.httpClient = &clone
 	}
 
 	if client.userAgent == "" {
