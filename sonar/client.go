@@ -48,6 +48,7 @@ type Client struct {
 	Hotspots           *HotspotsService
 	Issues             *IssuesService
 	L10N               *L10NService
+	Editions           *EditionsService
 	Languages          *LanguagesService
 	Measures           *MeasuresService
 	Metrics            *MetricsService
@@ -347,6 +348,7 @@ func initServices(client *Client) {
 	client.Hotspots = &HotspotsService{client: client}
 	client.Issues = &IssuesService{client: client}
 	client.L10N = &L10NService{client: client}
+	client.Editions = &EditionsService{client: client}
 	client.Languages = &LanguagesService{client: client}
 	client.Measures = &MeasuresService{client: client}
 	client.Metrics = &MetricsService{client: client}
