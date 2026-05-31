@@ -91,7 +91,7 @@ func TestComponents_Search(t *testing.T) {
 	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodGet, r.Method)
 		assert.Equal(t, "/components/search", r.URL.Path)
-		assert.Equal(t, "TRK", r.URL.Query().Get("qualifiers"))
+		assert.Equal(t, ProjectQualifierTRK, r.URL.Query().Get("qualifiers"))
 		assert.Equal(t, "sonar", r.URL.Query().Get("q"))
 
 		w.Header().Set("Content-Type", "application/json")
@@ -293,7 +293,7 @@ func TestComponents_Show(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "my_project:src/file.go", result.Component.Key)
 	assert.Len(t, result.Ancestors, 2)
-	assert.Equal(t, "TRK", result.Ancestors[1].Qualifier)
+	assert.Equal(t, ProjectQualifierTRK, result.Ancestors[1].Qualifier)
 }
 
 func TestComponents_Show_ValidationError(t *testing.T) {
@@ -359,7 +359,7 @@ func TestComponents_Suggestions(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Results, 1)
-	assert.Equal(t, "TRK", result.Results[0].Query)
+	assert.Equal(t, ProjectQualifierTRK, result.Results[0].Query)
 	assert.Len(t, result.Results[0].Items, 1)
 }
 
@@ -569,7 +569,7 @@ func TestComponents_Search_WithPagination(t *testing.T) {
 func TestComponents_Tree_AllowedQualifiers(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	validQualifiers := []string{"UTS", "FIL", "DIR", "TRK"}
+	validQualifiers := []string{"UTS", "FIL", "DIR", ProjectQualifierTRK}
 	for _, q := range validQualifiers {
 		opt := &ComponentsTreeOptions{
 			Component:  "my_project",
@@ -611,7 +611,7 @@ func TestComponents_Tree_AllowedSortFields(t *testing.T) {
 func TestComponents_Suggestions_AllowedMore(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	validMoreValues := []string{"VW", "SVW", "APP", "TRK"}
+	validMoreValues := []string{"VW", "SVW", "APP", ProjectQualifierTRK}
 	for _, m := range validMoreValues {
 		opt := &ComponentsSuggestionsOptions{
 			More: m,

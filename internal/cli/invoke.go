@@ -53,7 +53,7 @@ func ClassifyMethod(method reflect.Method) MethodReturnPattern {
 		}
 
 		// *string
-		if first.Kind() == reflect.Ptr && first.Elem().Kind() == reflect.String {
+		if first.Kind() == reflect.Pointer && first.Elem().Kind() == reflect.String {
 			return PatternRawString
 		}
 

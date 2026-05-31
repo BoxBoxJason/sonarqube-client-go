@@ -187,6 +187,13 @@ const (
 	SelectionFilterSelected = "selected"
 	// SelectionFilterDeselected represents the "deselected" selection filter.
 	SelectionFilterDeselected = "deselected"
+
+	// FieldName represents the "name" field for request parameters.
+	FieldName = "name"
+	// FieldDescription represents the "description" field for request parameters.
+	FieldDescription = "description"
+	// FieldCreatedAt represents the "createdAt" field for request parameters.
+	FieldCreatedAt = "createdAt"
 )
 
 type authType int

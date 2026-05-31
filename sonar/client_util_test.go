@@ -152,7 +152,7 @@ func TestJsonStructToQueryValues(t *testing.T) {
 				Enabled: true,
 			},
 			want: url.Values{
-				"name":    []string{"test"},
+				FieldName: []string{"test"},
 				"count":   []string{"42"},
 				"enabled": []string{"true"},
 			},
@@ -166,7 +166,7 @@ func TestJsonStructToQueryValues(t *testing.T) {
 				Name: "only-name",
 			},
 			want: url.Values{
-				"name": []string{"only-name"},
+				FieldName: []string{"only-name"},
 			},
 		},
 		{

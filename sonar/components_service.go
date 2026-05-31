@@ -31,15 +31,15 @@ type ComponentsService struct {
 var (
 	// allowedComponentSearchQualifiers is the set of allowed qualifiers for component search.
 	allowedComponentSearchQualifiers = map[string]struct{}{
-		"TRK": {},
+		ProjectQualifierTRK: {},
 	}
 
 	// allowedComponentTreeQualifiers is the set of allowed qualifiers for component tree.
 	allowedComponentTreeQualifiers = map[string]struct{}{
-		"UTS": {},
-		"FIL": {},
-		"DIR": {},
-		"TRK": {},
+		"UTS":               {},
+		"FIL":               {},
+		"DIR":               {},
+		ProjectQualifierTRK: {},
 	}
 
 	// allowedComponentTreeStrategies is the set of allowed strategies for tree navigation.
@@ -51,17 +51,17 @@ var (
 
 	// allowedComponentTreeSortFields is the set of allowed sort fields for tree.
 	allowedComponentTreeSortFields = map[string]struct{}{
-		"name":      {},
+		FieldName:   {},
 		"path":      {},
 		"qualifier": {},
 	}
 
 	// allowedComponentSuggestionsMore is the set of allowed values for the more parameter.
 	allowedComponentSuggestionsMore = map[string]struct{}{
-		"VW":  {},
-		"SVW": {},
-		"APP": {},
-		"TRK": {},
+		"VW":                {},
+		"SVW":               {},
+		"APP":               {},
+		ProjectQualifierTRK: {},
 	}
 
 	// allowedSearchProjectsFields is the set of allowed fields for search projects response.
@@ -109,7 +109,7 @@ var (
 		"creationDate":                   {},
 		"duplicated_lines_density":       {},
 		"lines":                          {},
-		"name":                           {},
+		FieldName:                        {},
 		"ncloc":                          {},
 		"ncloc_language_distribution":    {},
 		"new_coverage":                   {},

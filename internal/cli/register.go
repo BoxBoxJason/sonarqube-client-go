@@ -31,11 +31,9 @@ var skipMethods = map[string]struct{}{
 func RegisterAllCommands(rootCmd *cobra.Command, format *OutputFormat) {
 	clientType := reflect.TypeFor[sonar.Client]()
 
-	for fieldIdx := range clientType.NumField() {
-		field := clientType.Field(fieldIdx)
-
+	for field := range clientType.Fields() {
 		// Only look at exported pointer-to-struct fields (the service fields).
-		if !field.IsExported() || field.Type.Kind() != reflect.Ptr || field.Type.Elem().Kind() != reflect.Struct {
+		if !field.IsExported() || field.Type.Kind() != reflect.Pointer || field.Type.Elem().Kind() != reflect.Struct {
 			continue
 		}
 
@@ -62,9 +60,7 @@ func buildServiceCommand(serviceName string, serviceType reflect.Type, format *O
 
 	methodCount := 0
 
-	for methodIdx := range serviceType.NumMethod() {
-		method := serviceType.Method(methodIdx)
-
+	for method := range serviceType.Methods() {
 		if shouldSkipMethod(method.Name) {
 			continue
 		}
@@ -116,7 +112,7 @@ func buildMethodCommand(serviceName string, _ reflect.Type, method reflect.Metho
 
 	if hasOpt {
 		optType = methodType.In(1) // The option parameter type (should be *SomeOptions)
-		if optType.Kind() == reflect.Ptr {
+		if optType.Kind() == reflect.Pointer {
 			optType = optType.Elem()
 		}
 	}

@@ -78,7 +78,7 @@ func TestFavorites_Search(t *testing.T) {
 	require.NotNil(t, result)
 	assert.Len(t, result.Favorites, 2)
 	assert.Equal(t, "project-1", result.Favorites[0].Key)
-	assert.Equal(t, "TRK", result.Favorites[0].Qualifier)
+	assert.Equal(t, ProjectQualifierTRK, result.Favorites[0].Qualifier)
 	assert.Equal(t, int64(2), result.Paging.Total)
 }
 

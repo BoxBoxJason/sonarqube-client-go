@@ -69,7 +69,7 @@ var (
 
 	// allowedQualifiers is the set of supported qualifiers for permissions.
 	allowedQualifiers = map[string]struct{}{
-		"TRK": {},
+		ProjectQualifierTRK: {},
 	}
 )
 

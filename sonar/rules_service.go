@@ -890,7 +890,7 @@ func (s *RulesService) ValidateListOpt(opt *RulesListOptions) error {
 	}
 
 	if opt.Sort != "" {
-		allowed := map[string]struct{}{"createdAt": {}}
+		allowed := map[string]struct{}{FieldCreatedAt: {}}
 
 		err := IsValueAuthorized(opt.Sort, allowed, "Sort")
 		if err != nil {
@@ -1003,7 +1003,7 @@ func (s *RulesService) ValidateSearchOpt(opt *RulesSearchOptions) error {
 
 	// Validate sort field
 	if opt.Sort != "" {
-		allowed := map[string]struct{}{"key": {}, "name": {}, "createdAt": {}, "updatedAt": {}}
+		allowed := map[string]struct{}{"key": {}, FieldName: {}, FieldCreatedAt: {}, "updatedAt": {}}
 
 		err = IsValueAuthorized(opt.Sort, allowed, "Sort")
 		if err != nil {

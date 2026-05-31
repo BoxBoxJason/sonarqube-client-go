@@ -110,7 +110,7 @@ func formatTable(writer io.Writer, data any) error {
 	rval := reflect.ValueOf(data)
 
 	// Dereference pointers.
-	for rval.Kind() == reflect.Ptr {
+	for rval.Kind() == reflect.Pointer {
 		if rval.IsNil() {
 			return nil
 		}
@@ -143,7 +143,7 @@ func formatSliceTable(writer io.Writer, sliceVal reflect.Value) error {
 
 	// Check if elements are structs.
 	elemType := sliceVal.Type().Elem()
-	for elemType.Kind() == reflect.Ptr {
+	for elemType.Kind() == reflect.Pointer {
 		elemType = elemType.Elem()
 	}
 
@@ -159,7 +159,7 @@ func formatSliceTable(writer io.Writer, sliceVal reflect.Value) error {
 	for rowIdx := range sliceVal.Len() {
 		elem := sliceVal.Index(rowIdx)
 
-		for elem.Kind() == reflect.Ptr {
+		for elem.Kind() == reflect.Pointer {
 			elem = elem.Elem()
 		}
 
@@ -203,7 +203,7 @@ func findPrimarySliceField(structVal reflect.Value) (reflect.Value, bool) {
 		fieldVal := structVal.Field(fieldIdx)
 
 		// Dereference pointer fields.
-		for fieldVal.Kind() == reflect.Ptr {
+		for fieldVal.Kind() == reflect.Pointer {
 			if fieldVal.IsNil() {
 				break
 			}
@@ -217,7 +217,7 @@ func findPrimarySliceField(structVal reflect.Value) (reflect.Value, bool) {
 
 		// Check that the slice element type is (or points to) a struct.
 		elemType := fieldVal.Type().Elem()
-		for elemType.Kind() == reflect.Ptr {
+		for elemType.Kind() == reflect.Pointer {
 			elemType = elemType.Elem()
 		}
 
@@ -285,8 +285,7 @@ func formatStructKeyValueTable(writer io.Writer, structVal reflect.Value) error 
 func extractHeaders(structType reflect.Type) []string {
 	headers := make([]string, 0, structType.NumField())
 
-	for fieldIdx := range structType.NumField() {
-		field := structType.Field(fieldIdx)
+	for field := range structType.Fields() {
 		if !field.IsExported() {
 			continue
 		}

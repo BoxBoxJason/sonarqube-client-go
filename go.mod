@@ -1,6 +1,6 @@
 module github.com/boxboxjason/sonarqube-client-go
 
-go 1.25.7
+go 1.26.3
 
 require (
 	github.com/google/go-querystring v1.2.0

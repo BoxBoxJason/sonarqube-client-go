@@ -91,7 +91,7 @@ func bindField(flags *pflag.FlagSet, fieldVal reflect.Value, field reflect.Struc
 	case reflect.Slice:
 		bindSliceField(flags, fieldVal, field, flagName, description)
 
-	case reflect.Ptr:
+	case reflect.Pointer:
 		bindPointerField(flags, fieldVal, flagName, description)
 
 	case reflect.Map:

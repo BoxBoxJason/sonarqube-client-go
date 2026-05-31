@@ -97,7 +97,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			It("should return specified fields", func() {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
 				result, resp, err := client.UserGroups.Search(&sonar.UserGroupsSearchOptions{
-					Fields: []string{"name", "description", "membersCount"},
+					Fields: []string{sonar.FieldName, sonar.FieldDescription, "membersCount"},
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
@@ -304,7 +304,7 @@ var _ = Describe("UserGroups Service", Ordered, func() {
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
 			result, _, err := client.UserGroups.Search(&sonar.UserGroupsSearchOptions{
 				Query:  testGroupName,
-				Fields: []string{"name", "description"},
+				Fields: []string{sonar.FieldName, sonar.FieldDescription},
 			})
 			Expect(err).NotTo(HaveOccurred())
 			found := false

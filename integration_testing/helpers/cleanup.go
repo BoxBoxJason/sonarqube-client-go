@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -61,8 +62,8 @@ func (cm *CleanupManager) Cleanup() []error {
 	var errors []error
 
 	// Cleanup in reverse order (LIFO)
-	for i := len(cm.resources) - 1; i >= 0; i-- {
-		r := cm.resources[i]
+	for _, v := range slices.Backward(cm.resources) {
+		r := v
 
 		err := r.cleanupFn()
 		if err != nil {

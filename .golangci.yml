@@ -29,9 +29,10 @@ linters:
     - depguard
     - lll
     - err113
-    - wsl
+    - gomodguard
     - nonamedreturns
     - revive
+    - wsl
   settings:
     govet:
       enable-all: true
@@ -40,7 +41,7 @@ linters:
       sections:
         - standard
         - default
-        - prefix(github.com/boxboxjason)
+        - prefix(github.com/boxboxjason/sonarqube-client-go)
       skip-generated: true
     wsl_v5:
       allow-first-in-block: true

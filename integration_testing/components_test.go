@@ -168,7 +168,7 @@ var _ = Describe("Components Service", Ordered, func() {
 
 		It("should search projects sorted by name", func() {
 			result, resp, err := client.Components.SearchProjects(&sonar.ComponentsSearchProjectsOptions{
-				Sort:      "name",
+				Sort:      sonar.FieldName,
 				Ascending: true,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -340,7 +340,7 @@ var _ = Describe("Components Service", Ordered, func() {
 		It("should get tree sorted by name", func() {
 			result, resp, err := client.Components.Tree(&sonar.ComponentsTreeOptions{
 				Component: projectKey,
-				Sort:      []string{"name"},
+				Sort:      []string{sonar.FieldName},
 				Ascending: true,
 			})
 			Expect(err).NotTo(HaveOccurred())

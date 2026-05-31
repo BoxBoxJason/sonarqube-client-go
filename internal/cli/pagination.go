@@ -15,8 +15,7 @@ const (
 
 // hasPagination checks if an option struct embeds PaginationArgs.
 func hasPagination(optType reflect.Type) bool {
-	for i := range optType.NumField() {
-		field := optType.Field(i)
+	for field := range optType.Fields() {
 		if field.Anonymous && field.Type.Name() == "PaginationArgs" {
 			return true
 		}
@@ -27,7 +26,7 @@ func hasPagination(optType reflect.Type) bool {
 
 // responseHasPaging checks if a response struct has a Paging field.
 func responseHasPaging(responseType reflect.Type) bool {
-	for responseType.Kind() == reflect.Ptr {
+	for responseType.Kind() == reflect.Pointer {
 		responseType = responseType.Elem()
 	}
 
@@ -43,19 +42,18 @@ func responseHasPaging(responseType reflect.Type) bool {
 // findSliceField returns the name and type of the first exported []struct field in a response type.
 // This is the field that contains the paginated items (e.g., Issues, Components, Projects).
 func findSliceField(responseType reflect.Type) (string, bool) {
-	for responseType.Kind() == reflect.Ptr {
+	for responseType.Kind() == reflect.Pointer {
 		responseType = responseType.Elem()
 	}
 
-	for i := range responseType.NumField() {
-		field := responseType.Field(i)
+	for field := range responseType.Fields() {
 		if !field.IsExported() {
 			continue
 		}
 
 		if field.Type.Kind() == reflect.Slice {
 			elemType := field.Type.Elem()
-			for elemType.Kind() == reflect.Ptr {
+			for elemType.Kind() == reflect.Pointer {
 				elemType = elemType.Elem()
 			}
 
@@ -115,7 +113,7 @@ func PaginateAll(
 		}
 
 		resultVal := reflect.ValueOf(result)
-		for resultVal.Kind() == reflect.Ptr {
+		for resultVal.Kind() == reflect.Pointer {
 			resultVal = resultVal.Elem()
 		}
 
@@ -170,7 +168,7 @@ func setPaginatedResult(firstResult any, allItems reflect.Value, sliceFieldName 
 	}
 
 	resultVal := reflect.ValueOf(firstResult)
-	for resultVal.Kind() == reflect.Ptr {
+	for resultVal.Kind() == reflect.Pointer {
 		resultVal = resultVal.Elem()
 	}
 

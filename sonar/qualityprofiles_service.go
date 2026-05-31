@@ -1747,7 +1747,7 @@ func (s *QualityprofilesService) ValidateActivateRulesOpt(opt *QualityprofilesAc
 
 	// Validate sort field
 	if opt.Sort != "" {
-		allowed := map[string]struct{}{"key": {}, "name": {}, "createdAt": {}, "updatedAt": {}}
+		allowed := map[string]struct{}{"key": {}, "name": {}, FieldCreatedAt: {}, "updatedAt": {}}
 
 		err = IsValueAuthorized(opt.Sort, allowed, "Sort")
 		if err != nil {
