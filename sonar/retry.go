@@ -8,6 +8,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"slices"
+	"strconv"
 	"time"
 )
 
@@ -33,7 +34,9 @@ type RetryOptions struct {
 // backoff and full jitter around the HTTP transport. Retry is disabled by default.
 func WithRetry(opts RetryOptions) ClientOptionFunc {
 	return func(c *Client) error {
-		c.retryOptions = &opts
+		copied := opts
+		copied.RetryableStatusCodes = slices.Clone(opts.RetryableStatusCodes)
+		c.retryOptions = &copied
 
 		return nil
 	}
@@ -48,6 +51,9 @@ type retryRoundTripper struct {
 // RoundTrip executes the request, retrying on configured status codes or network
 // errors with exponential backoff and full jitter. Retries stop immediately when
 // the request context is cancelled or its deadline is exceeded.
+//
+// When retries occur, the final response carries an X-Retry-Attempts header with
+// the total number of attempts made.
 //
 //nolint:wrapcheck // pass-through transport: errors from base RoundTripper are intentionally not wrapped
 func (r *retryRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -65,12 +71,18 @@ func (r *retryRoundTripper) RoundTrip(req *http.Request) (*http.Response, error)
 }
 
 // retryLoop runs up to MaxAttempts, sleeping between retries.
+// On the final response, X-Retry-Attempts is set to the total attempt count
+// when more than one attempt was made.
 func (r *retryRoundTripper) retryLoop(req *http.Request, hasBody bool) (*http.Response, error) {
 	for attempt := range r.opts.MaxAttempts {
 		resp, err := r.doAttempt(req, hasBody)
 		isLast := attempt >= r.opts.MaxAttempts-1
 
 		if done, result, resultErr := r.evaluate(req.Context(), resp, err, isLast); done {
+			if result != nil && attempt > 0 {
+				result.Header.Set("X-Retry-Attempts", strconv.Itoa(attempt+1))
+			}
+
 			return result, resultErr
 		}
 
@@ -100,9 +112,17 @@ func (r *retryRoundTripper) doAttempt(req *http.Request, hasBody bool) (*http.Re
 
 // evaluate decides whether the loop should stop after an attempt.
 // Returns (true, resp, err) to stop, (false, nil, nil) to sleep and continue.
+//
+// When the context is cancelled, the context error is returned rather than the
+// transport error so callers can reliably detect cancellation/timeouts.
 func (r *retryRoundTripper) evaluate(ctx context.Context, resp *http.Response, err error, isLast bool) (bool, *http.Response, error) {
 	if err != nil {
-		if ctx.Err() != nil || isLast {
+		ctxErr := ctx.Err()
+		if ctxErr != nil {
+			return true, nil, ctxErr //nolint:wrapcheck // context error is the direct cause
+		}
+
+		if isLast {
 			return true, nil, err
 		}
 
@@ -137,7 +157,8 @@ func (r *retryRoundTripper) computeDelay(attempt int) time.Duration {
 }
 
 // sleepContext waits for delay, returning false immediately if ctx is already done
-// or becomes done while waiting.
+// or becomes done while waiting. It uses time.NewTimer rather than time.After so
+// the timer is stopped and its resources released as soon as the context fires.
 func sleepContext(ctx context.Context, delay time.Duration) bool {
 	if ctx.Err() != nil {
 		return false
@@ -147,10 +168,13 @@ func sleepContext(ctx context.Context, delay time.Duration) bool {
 		return true
 	}
 
+	timer := time.NewTimer(delay)
+	defer timer.Stop()
+
 	select {
 	case <-ctx.Done():
 		return false
-	case <-time.After(delay):
+	case <-timer.C:
 		return true
 	}
 }
