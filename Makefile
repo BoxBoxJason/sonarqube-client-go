@@ -2,9 +2,11 @@ package_name := sonargo
 sdk_dir := sonar
 cli_dirs := ./cmd/... ./internal/...
 endpoint := http://127.0.0.1:9000
+enterprise_endpoint := http://127.0.0.1:9001
 username := admin
 password := admin
 sonarqube_version := 26.3.0.120487-community
+sonarqube_enterprise_version := 2025.2-enterprise
 version := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 build_time := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
@@ -30,7 +32,7 @@ else
   container_engine := docker
 endif
 
-.PHONY: setup.sonar test lint coverage api build
+.PHONY: setup.sonar setup.sonar.enterprise test lint coverage api api.enterprise build
 
 # Run all unit tests (use target=sdk|cli|all to filter)
 test:
@@ -49,6 +51,11 @@ coverage:
 e2e: setup.sonar
 	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1; }
 	SONAR_TOKEN= SONAR_URL=${endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
+
+# Run enterprise edition integration tests
+e2e.enterprise: setup.sonar.enterprise
+	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1; }
+	SONAR_TOKEN= SONAR_URL=${enterprise_endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
 # Build the CLI binary to ./bin/sonar-cli.
 # Version defaults to the latest git tag/commit. Override with: make build version=1.2.3
@@ -81,19 +88,31 @@ changelog-check:
 
 # Run golangci-lint (use target=sdk|cli|all to filter)
 lint:
-	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.10.1; }
+	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2; }
 	@mkdir -p codequality
 	golangci-lint run ${target_paths}
 
-# Fetch SonarQube API specification
+# Fetch SonarQube community edition API specification
 api: setup.sonar
 	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
 	@mkdir -p assets
 	@echo "Fetching SonarQube API v1 specification from ${endpoint}/api/webservices/list..."
 	curl -u ${username}:${password} "${endpoint}/api/webservices/list?include_internals=true" -o ./assets/api.json
-	@echo "Fetching SonarQube API v2 specification from ${endpoint}/api/webservices/list?format=openapi..."
+	@echo "Fetching SonarQube API v2 specification from ${endpoint}/api/v2/api-docs..."
 	curl -u ${username}:${password} "${endpoint}/api/v2/api-docs" -o ./assets/api.v2.json
-	@echo "API specification saved to ./assets/api.json  and ./assets/api.v2.json"
+	@echo "API specification saved to ./assets/api.json and ./assets/api.v2.json"
+
+# Fetch SonarQube enterprise edition API specification
+# Requires a running SonarQube Enterprise Edition instance at enterprise_endpoint.
+# Override the endpoint with: make api.enterprise enterprise_endpoint=http://my-sonarqube:9000
+api.enterprise: setup.sonar.enterprise
+	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
+	@mkdir -p assets
+	@echo "Fetching SonarQube Enterprise API v1 specification from ${enterprise_endpoint}/api/webservices/list..."
+	curl -u ${username}:${password} "${enterprise_endpoint}/api/webservices/list?include_internals=true" -o ./assets/api.enterprise.json
+	@echo "Fetching SonarQube Enterprise API v2 specification from ${enterprise_endpoint}/api/v2/api-docs..."
+	curl -u ${username}:${password} "${enterprise_endpoint}/api/v2/api-docs" -o ./assets/api.enterprise.v2.json
+	@echo "Enterprise API specification saved to ./assets/api.enterprise.json and ./assets/api.enterprise.v2.json"
 
 
 # Setup SonarQube instance for integration testing
@@ -118,6 +137,28 @@ setup.sonar:
 		echo "\nSonarQube is ready at ${endpoint}."; \
 	fi
 
+# Setup SonarQube Enterprise Edition instance for integration testing.
+# Requires a valid SonarQube Enterprise Edition license.
+# Override the endpoint with: make setup.sonar.enterprise enterprise_endpoint=http://my-sonarqube:9000
+setup.sonar.enterprise:
+	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
+	@if curl -s -u ${username}:${password} ${enterprise_endpoint}/api/system/health | grep -q "GREEN"; then \
+		echo "SonarQube Enterprise API is reachable at ${enterprise_endpoint}/api. Skipping setup."; \
+	else \
+		if [ -n "$$GITHUB_ACTIONS" ] || [ -n "$$CI" ]; then \
+			echo "Detected CI environment; not starting container. Waiting for SonarQube Enterprise at ${enterprise_endpoint}/api..."; \
+		else \
+			echo "Starting SonarQube Enterprise instance using ${container_engine}..."; \
+			${container_engine} run -d --name sonargo-sonarqube-enterprise -p 9001:9000 docker.io/library/sonarqube:${sonarqube_enterprise_version}; \
+			echo "Waiting for SonarQube Enterprise to be ready..."; \
+		fi; \
+		until curl -s -u ${username}:${password} ${enterprise_endpoint}/api/system/health | grep -q "GREEN"; do \
+			printf "."; \
+			sleep 5; \
+		done; \
+		echo "\nSonarQube Enterprise is ready at ${enterprise_endpoint}."; \
+	fi
+
 # Teardown SonarQube instance
 teardown.sonar:
 	@if ${container_engine} ps -a --format '{{.Names}}' | grep -w sonargo-sonarqube >/dev/null 2>&1; then \
@@ -126,4 +167,14 @@ teardown.sonar:
 		echo "SonarQube instance stopped."; \
 	else \
 		echo "No SonarQube container 'sonargo-sonarqube' found. Nothing to teardown."; \
+	fi
+
+# Teardown SonarQube Enterprise Edition instance
+teardown.sonar.enterprise:
+	@if ${container_engine} ps -a --format '{{.Names}}' | grep -w sonargo-sonarqube-enterprise >/dev/null 2>&1; then \
+		echo "Stopping SonarQube Enterprise instance..."; \
+		${container_engine} rm -f sonargo-sonarqube-enterprise >/dev/null 2>&1 || echo "Failed to remove SonarQube Enterprise container."; \
+		echo "SonarQube Enterprise instance stopped."; \
+	else \
+		echo "No SonarQube Enterprise container 'sonargo-sonarqube-enterprise' found. Nothing to teardown."; \
 	fi
