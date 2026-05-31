@@ -91,7 +91,7 @@ func TestEditionsService_IsValidLicense_Invalid(t *testing.T) {
 }
 
 func TestEditionsService_Set(t *testing.T) {
-	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/editions/set_license", http.StatusNoContent))
+	server := newTestServer(t, mockEmptyHandlerWithParams(t, http.MethodPost, "/editions/set_license", http.StatusNoContent, map[string]string{"license": "my-license-key"}))
 
 	client := newTestClient(t, server.URL)
 
