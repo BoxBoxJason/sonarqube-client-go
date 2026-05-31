@@ -128,3 +128,25 @@ func (s *MetricsService) Types(ctx context.Context) (*MetricsTypes, *http.Respon
 
 	return result, resp, nil
 }
+
+// SearchAll fetches all pages from Search and returns a flat slice of metrics.
+func (s *MetricsService) SearchAll(ctx context.Context, opt *MetricsSearchOptions) ([]Metric, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var opts MetricsSearchOptions
+	if opt != nil {
+		opts = *opt
+	}
+
+	return allPages(ctx, &opts.Page, &opts.PageSize, func(ctx context.Context) ([]Metric, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &opts)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Metrics, r.Paging.Total, resp, nil
+	})
+}

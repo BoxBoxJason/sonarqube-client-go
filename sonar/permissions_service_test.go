@@ -1087,3 +1087,104 @@ func TestPermissions_isValidPermission(t *testing.T) {
 		})
 	}
 }
+
+func TestPermissionsService_GroupsAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"groups":[{"name":"g1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"groups":[{"name":"g2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &PermissionsGroupsOptions{}
+		result, _, err := client.Permissions.GroupsAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+}
+
+func TestPermissionsService_TemplateGroupsAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"groups":[{"name":"g1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"groups":[{"name":"g2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &PermissionsTemplateGroupsOptions{TemplateID: "tmpl1"}
+		result, _, err := client.Permissions.TemplateGroupsAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Permissions.TemplateGroupsAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestPermissionsService_TemplateUsersAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"users":[{"login":"u1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"users":[{"login":"u2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &PermissionsTemplateUsersOptions{TemplateID: "tmpl1"}
+		result, _, err := client.Permissions.TemplateUsersAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Permissions.TemplateUsersAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestPermissionsService_UsersAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"users":[{"login":"u1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"users":[{"login":"u2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &PermissionsUsersOptions{}
+		result, _, err := client.Permissions.UsersAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+}

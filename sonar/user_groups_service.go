@@ -487,3 +487,41 @@ func (s *UserGroupsService) Users(ctx context.Context, opt *UserGroupsUsersOptio
 
 	return result, resp, nil
 }
+
+// SearchAll fetches all pages from Search and returns a flat slice of groups.
+func (s *UserGroupsService) SearchAll(ctx context.Context, opt *UserGroupsSearchOptions) ([]UserGroupsDetail, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]UserGroupsDetail, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Groups, r.Paging.Total, resp, nil
+	})
+}
+
+// UsersAll fetches all pages from Users and returns a flat slice of users.
+func (s *UserGroupsService) UsersAll(ctx context.Context, opt *UserGroupsUsersOptions) ([]UserGroupsUser, *http.Response, error) {
+	err := s.ValidateUsersOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]UserGroupsUser, int64, *http.Response, error) {
+		r, resp, err := s.Users(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Users, r.Paging.Total, resp, nil
+	})
+}

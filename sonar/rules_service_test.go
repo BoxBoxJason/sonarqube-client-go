@@ -848,3 +848,31 @@ func TestEmptySlicesAndMaps(t *testing.T) {
 	assert.Empty(t, urlOpt.Severities)
 	assert.Empty(t, urlOpt.Tags)
 }
+
+func TestRulesService_SearchAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"rules":[{"key":"rule1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"rules":[{"key":"rule2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &RulesSearchOptions{}
+		result, _, err := client.Rules.SearchAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Rules.SearchAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}

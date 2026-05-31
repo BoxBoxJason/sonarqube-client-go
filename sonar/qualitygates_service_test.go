@@ -672,3 +672,87 @@ func TestValidation_EdgeCases(t *testing.T) {
 	})
 	assert.Error(t, err)
 }
+
+func TestQualitygatesService_SearchAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"results":[{"key":"p1","name":"Project 1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"results":[{"key":"p2","name":"Project 2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &QualitygatesSearchOptions{GateName: "Default"}
+		result, _, err := client.Qualitygates.SearchAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Qualitygates.SearchAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestQualitygatesService_SearchGroupsAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"groups":[{"name":"g1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"groups":[{"name":"g2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &QualitygatesSearchGroupsOptions{GateName: "Default"}
+		result, _, err := client.Qualitygates.SearchGroupsAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Qualitygates.SearchGroupsAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestQualitygatesService_SearchUsersAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"users":[{"login":"u1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"users":[{"login":"u2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &QualitygatesSearchUsersOptions{GateName: "Default"}
+		result, _, err := client.Qualitygates.SearchUsersAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Qualitygates.SearchUsersAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}

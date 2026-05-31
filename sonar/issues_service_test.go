@@ -1137,3 +1137,53 @@ func TestIssues_ValidateTagsOpt(t *testing.T) {
 		})
 	}
 }
+
+func TestIssuesService_ListAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"issues":[{"key":"i1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"issues":[{"key":"i2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &IssuesListOptions{Project: "myproject"}
+		result, _, err := client.Issues.ListAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+
+	t.Run("nil option", func(t *testing.T) {
+		client := newLocalhostClient(t)
+		_, _, err := client.Issues.ListAll(context.Background(), nil)
+		assert.Error(t, err)
+	})
+}
+
+func TestIssuesService_SearchAll(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		callCount := 0
+		server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+			callCount++
+			w.Header().Set("Content-Type", "application/json")
+			if callCount == 1 {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":1,"pageSize":500,"total":2},"issues":[{"key":"i1"}]}`))
+			} else {
+				_, _ = w.Write([]byte(`{"paging":{"pageIndex":2,"pageSize":500,"total":2},"issues":[{"key":"i2"}]}`))
+			}
+		})
+
+		client := newTestClient(t, server.URL)
+		opt := &IssuesSearchOptions{}
+		result, _, err := client.Issues.SearchAll(context.Background(), opt)
+		require.NoError(t, err)
+		assert.Len(t, result, 2)
+		assert.Equal(t, 2, callCount)
+	})
+}

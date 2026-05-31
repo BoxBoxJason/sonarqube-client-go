@@ -1411,3 +1411,60 @@ func (s *QualitygatesService) ValidateUpdateConditionOpt(opt *QualitygatesUpdate
 
 	return nil
 }
+
+// SearchAll fetches all pages from Search and returns a flat slice of projects.
+func (s *QualitygatesService) SearchAll(ctx context.Context, opt *QualitygatesSearchOptions) ([]QualityGateProject, *http.Response, error) {
+	err := s.ValidateSearchOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]QualityGateProject, int64, *http.Response, error) {
+		r, resp, err := s.Search(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Results, r.Paging.Total, resp, nil
+	})
+}
+
+// SearchGroupsAll fetches all pages from SearchGroups and returns a flat slice of groups.
+func (s *QualitygatesService) SearchGroupsAll(ctx context.Context, opt *QualitygatesSearchGroupsOptions) ([]QualityGateGroup, *http.Response, error) {
+	err := s.ValidateSearchGroupsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]QualityGateGroup, int64, *http.Response, error) {
+		r, resp, err := s.SearchGroups(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Groups, r.Paging.Total, resp, nil
+	})
+}
+
+// SearchUsersAll fetches all pages from SearchUsers and returns a flat slice of users.
+func (s *QualitygatesService) SearchUsersAll(ctx context.Context, opt *QualitygatesSearchUsersOptions) ([]QualityGateUser, *http.Response, error) {
+	err := s.ValidateSearchUsersOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]QualityGateUser, int64, *http.Response, error) {
+		r, resp, err := s.SearchUsers(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Users, r.Paging.Total, resp, nil
+	})
+}
