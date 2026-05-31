@@ -255,6 +255,224 @@ func TestSleepContext_ZeroDelayReturnsTrue(t *testing.T) {
 	assert.True(t, result)
 }
 
+// =============================================
+// Retry-After tests (#201)
+// =============================================
+
+func TestRetryRoundTripper_RetryAfterSeconds(t *testing.T) {
+	transport := &countingTransport{
+		responses: []*http.Response{
+			makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "0"),
+			makeResponse(http.StatusOK),
+		},
+	}
+	rt := &retryRoundTripper{
+		base: transport,
+		opts: RetryOptions{
+			MaxAttempts:          3,
+			InitialDelay:         time.Millisecond,
+			MaxDelay:             5 * time.Millisecond,
+			RetryableStatusCodes: []int{429},
+		},
+	}
+
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+	resp, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, 2, transport.calls)
+}
+
+func TestRetryDelay_UsesRetryAfterHTTPDateOnRateLimitResponse(t *testing.T) {
+	// Test retryDelay directly to avoid waiting for the actual delay.
+	// Use 30s in the future — well beyond http.TimeFormat's 1-second precision so
+	// the formatted date is always still in the future when time.Until is called.
+	rt := &retryRoundTripper{
+		base: http.DefaultTransport,
+		opts: RetryOptions{InitialDelay: time.Second, MaxDelay: time.Minute},
+	}
+
+	future := time.Now().Add(30 * time.Second).UTC()
+	resp := makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", future.Format(http.TimeFormat))
+
+	delay := rt.retryDelay(resp, 0)
+	assert.Greater(t, delay, 25*time.Second)
+	assert.LessOrEqual(t, delay, 31*time.Second)
+}
+
+func TestRetryRoundTripper_RetryAfterAbsent_FallsBackToBackoff(t *testing.T) {
+	transport := &countingTransport{
+		responses: []*http.Response{
+			makeResponse(http.StatusTooManyRequests),
+			makeResponse(http.StatusOK),
+		},
+	}
+	rt := &retryRoundTripper{
+		base: transport,
+		opts: RetryOptions{
+			MaxAttempts:          3,
+			InitialDelay:         time.Millisecond,
+			MaxDelay:             5 * time.Millisecond,
+			RetryableStatusCodes: []int{429},
+		},
+	}
+
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+	resp, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, 2, transport.calls)
+}
+
+func TestRetryRoundTripper_RetryDisabled_429ReturnedAsIs(t *testing.T) {
+	transport := &countingTransport{
+		responses: []*http.Response{
+			makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "10"),
+		},
+	}
+	rt := &retryRoundTripper{
+		base: transport,
+		opts: RetryOptions{MaxAttempts: 1, RetryableStatusCodes: []int{429}},
+	}
+
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+	resp, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
+	assert.Equal(t, 1, transport.calls)
+}
+
+func TestRetryDelay_UsesRetryAfterOnRateLimitResponse(t *testing.T) {
+	rt := &retryRoundTripper{
+		base: http.DefaultTransport,
+		opts: RetryOptions{InitialDelay: time.Second, MaxDelay: time.Minute},
+	}
+
+	resp := makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "5")
+	delay := rt.retryDelay(resp, 0)
+
+	assert.Equal(t, 5*time.Second, delay)
+}
+
+func TestRetryDelay_ZeroRetryAfterOverridesBackoff(t *testing.T) {
+	rt := &retryRoundTripper{
+		base: http.DefaultTransport,
+		opts: RetryOptions{InitialDelay: 10 * time.Second, MaxDelay: time.Minute},
+	}
+
+	// Retry-After: 0 must result in immediate retry, not fall back to the backoff.
+	resp := makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "0")
+	delay := rt.retryDelay(resp, 0)
+
+	assert.Equal(t, time.Duration(0), delay)
+}
+
+func TestRetryDelay_IgnoresRetryAfterOnNon429(t *testing.T) {
+	rt := &retryRoundTripper{
+		base: http.DefaultTransport,
+		opts: RetryOptions{InitialDelay: 10 * time.Millisecond, MaxDelay: time.Second},
+	}
+
+	resp := makeResponseWithHeader(http.StatusServiceUnavailable, "Retry-After", "5")
+	delay := rt.retryDelay(resp, 0)
+
+	// Should use exponential backoff, not the Retry-After value (5s).
+	assert.Less(t, delay, 5*time.Second)
+}
+
+func TestParseRetryAfterHeader_Seconds(t *testing.T) {
+	tests := []struct {
+		header      string
+		expected    time.Duration
+		expectValid bool
+	}{
+		{"10", 10 * time.Second, true},
+		{"0", 0, true},   // zero is a valid instruction to retry immediately
+		{"-1", 0, false}, // negative integers are invalid
+		{"3600", 3600 * time.Second, true},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.header, func(t *testing.T) {
+			d, ok := parseRetryAfterHeader(tc.header)
+			assert.Equal(t, tc.expected, d)
+			assert.Equal(t, tc.expectValid, ok)
+		})
+	}
+}
+
+func TestParseRetryAfterHeader_HTTPDate(t *testing.T) {
+	// Use 30s in the future to survive http.TimeFormat's 1-second precision.
+	future := time.Now().Add(30 * time.Second).UTC()
+	header := future.Format(http.TimeFormat)
+
+	d, ok := parseRetryAfterHeader(header)
+	assert.True(t, ok)
+	assert.Greater(t, d, 25*time.Second)
+	assert.LessOrEqual(t, d, 31*time.Second)
+}
+
+func TestParseRetryAfterHeader_PastDate(t *testing.T) {
+	// A past HTTP-date is valid: the server's intended wait has already elapsed,
+	// so the result is zero delay (retry immediately) rather than falling back to backoff.
+	past := time.Now().Add(-time.Minute).UTC()
+	header := past.Format(http.TimeFormat)
+
+	d, ok := parseRetryAfterHeader(header)
+	assert.True(t, ok)
+	assert.Equal(t, time.Duration(0), d)
+}
+
+func TestParseRetryAfterHeader_Empty(t *testing.T) {
+	_, ok := parseRetryAfterHeader("")
+	assert.False(t, ok)
+}
+
+func TestParseRetryAfterHeader_Invalid(t *testing.T) {
+	_, ok := parseRetryAfterHeader("not-a-date-or-number")
+	assert.False(t, ok)
+}
+
+// makeResponseWithHeader creates a test response with a single header set.
+func makeResponseWithHeader(statusCode int, key, value string) *http.Response {
+	resp := makeResponse(statusCode)
+	resp.Header.Set(key, value)
+
+	return resp
+}
+
+func TestWithRetry_429ContextCancellationDuringWait(t *testing.T) {
+	// The Retry-After header requests a 60s wait; the context times out in 100ms.
+	// This verifies that sleepContext honours context cancellation and does not block.
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+
+	transport := &countingTransport{
+		responses: []*http.Response{
+			makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "60"),
+		},
+	}
+	rt := &retryRoundTripper{
+		base: transport,
+		opts: RetryOptions{
+			MaxAttempts:          3,
+			InitialDelay:         time.Millisecond,
+			MaxDelay:             5 * time.Millisecond,
+			RetryableStatusCodes: []int{429},
+		},
+	}
+
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, "http://example.com", http.NoBody)
+
+	start := time.Now()
+	_, err := rt.RoundTrip(req)
+	elapsed := time.Since(start)
+
+	// Must finish well under 60s (the Retry-After value).
+	assert.Less(t, elapsed, time.Second)
+	assert.ErrorIs(t, err, context.DeadlineExceeded)
+}
+
 func TestSleepContext_TimerReleasedOnContextCancel(t *testing.T) {
 	// Cancelling the context while sleeping must unblock immediately and not leak
 	// the timer (time.NewTimer + Stop rather than time.After).
