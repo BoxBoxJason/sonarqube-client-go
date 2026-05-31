@@ -1919,4 +1919,124 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 		})
 	})
+
+	// =========================================================================
+	// GroupsAll
+	// =========================================================================
+	Describe("GroupsAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all groups as a flat slice with nil options", func() {
+				result, resp, err := client.Permissions.GroupsAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+
+			It("should return all groups as a flat slice with empty options", func() {
+				result, resp, err := client.Permissions.GroupsAll(context.Background(), &sonar.PermissionsGroupsOptions{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+	})
+
+	// =========================================================================
+	// TemplateGroupsAll
+	// =========================================================================
+	Describe("TemplateGroupsAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all groups for a template as a flat slice", func() {
+				templateName := helpers.UniqueResourceName("tmpl-grpall")
+
+				_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
+					Name: templateName,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("template", templateName, func() error {
+					_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
+						TemplateName: templateName,
+					})
+					return err
+				})
+
+				result, resp, err := client.Permissions.TemplateGroupsAll(context.Background(), &sonar.PermissionsTemplateGroupsOptions{
+					TemplateName: templateName,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Permissions.TemplateGroupsAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// TemplateUsersAll
+	// =========================================================================
+	Describe("TemplateUsersAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all users for a template as a flat slice", func() {
+				templateName := helpers.UniqueResourceName("tmpl-usrall")
+
+				_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
+					Name: templateName,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("template", templateName, func() error {
+					_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
+						TemplateName: templateName,
+					})
+					return err
+				})
+
+				result, resp, err := client.Permissions.TemplateUsersAll(context.Background(), &sonar.PermissionsTemplateUsersOptions{
+					TemplateName: templateName,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Permissions.TemplateUsersAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// UsersAll
+	// =========================================================================
+	Describe("UsersAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all users with permissions as a flat slice with nil options", func() {
+				result, resp, err := client.Permissions.UsersAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+
+			It("should return all users with permissions as a flat slice with empty options", func() {
+				result, resp, err := client.Permissions.UsersAll(context.Background(), &sonar.PermissionsUsersOptions{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+	})
 })

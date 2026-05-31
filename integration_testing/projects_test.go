@@ -897,4 +897,74 @@ var _ = Describe("Projects Service", Ordered, func() {
 			}
 		})
 	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all projects as a flat slice", func() {
+				projectKey := helpers.UniqueResourceName("proj-searchall")
+
+				_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
+					Name:    "SearchAll Test",
+					Project: projectKey,
+				})
+				Expect(err).NotTo(HaveOccurred())
+
+				cleanup.RegisterCleanup("project", projectKey, func() error {
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
+						Project: projectKey,
+					})
+					return err
+				})
+
+				result, resp, err := client.Projects.SearchAll(context.Background(), &sonar.ProjectsSearchOptions{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+
+				found := false
+				for _, c := range result {
+					if c.Key == projectKey {
+						found = true
+						break
+					}
+				}
+				Expect(found).To(BeTrue())
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Projects.SearchAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// SearchMyProjectsAll
+	// =========================================================================
+	Describe("SearchMyProjectsAll", func() {
+		Context("Functional Tests", func() {
+			It("should return projects as a flat slice", func() {
+				result, resp, err := client.Projects.SearchMyProjectsAll(context.Background(), &sonar.ProjectsSearchMyProjectsOptions{})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				// result may be empty on a fresh install; just verify it's a valid slice
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Projects.SearchMyProjectsAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
 })

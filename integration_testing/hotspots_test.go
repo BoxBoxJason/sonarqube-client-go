@@ -490,4 +490,68 @@ var _ = Describe("Hotspots Service", Ordered, func() {
 			})
 		})
 	})
+
+	// =========================================================================
+	// ListAll
+	// =========================================================================
+	Describe("ListAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all hotspots as a flat slice", func() {
+				result, resp, err := client.Hotspots.ListAll(context.Background(), &sonar.HotspotsListOptions{
+					Project: projectKey,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Hotspots.ListAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+
+			It("should fail without required project", func() {
+				result, resp, err := client.Hotspots.ListAll(context.Background(), &sonar.HotspotsListOptions{})
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all hotspots as a flat slice", func() {
+				result, resp, err := client.Hotspots.SearchAll(context.Background(), &sonar.HotspotsSearchOptions{
+					Project: projectKey,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Hotspots.SearchAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+
+			It("should fail without project or hotspots parameter", func() {
+				result, resp, err := client.Hotspots.SearchAll(context.Background(), &sonar.HotspotsSearchOptions{})
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
 })

@@ -884,4 +884,53 @@ var _ = Describe("Issues Service", Ordered, func() {
 			})
 		})
 	})
+
+	// =========================================================================
+	// ListAll
+	// =========================================================================
+	Describe("ListAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all issues as a flat slice", func() {
+				result, resp, err := client.Issues.ListAll(context.Background(), &sonar.IssuesListOptions{
+					Project: projectKey,
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				// Result may be empty on a fresh project; just verify it's a valid slice
+				_ = result
+			})
+		})
+
+		Context("Parameter Validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.Issues.ListAll(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+	})
+
+	// =========================================================================
+	// SearchAll
+	// =========================================================================
+	Describe("SearchAll", func() {
+		Context("Functional Tests", func() {
+			It("should return all issues for a project as a flat slice", func() {
+				result, resp, err := client.Issues.SearchAll(context.Background(), &sonar.IssuesSearchOptions{
+					Projects: []string{projectKey},
+				})
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+
+			It("should accept nil options", func() {
+				result, resp, err := client.Issues.SearchAll(context.Background(), nil)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(resp).NotTo(BeNil())
+				_ = result
+			})
+		})
+	})
 })
