@@ -86,12 +86,26 @@ func (r *retryRoundTripper) retryLoop(req *http.Request, hasBody bool) (*http.Re
 			return result, resultErr
 		}
 
-		if !sleepContext(req.Context(), r.computeDelay(attempt)) {
+		// resp headers are still accessible after evaluate drains the body.
+		if !sleepContext(req.Context(), r.retryDelay(resp, attempt)) {
 			return nil, req.Context().Err() //nolint:wrapcheck // context error is the direct cause
 		}
 	}
 
 	return nil, fmt.Errorf("retry: exhausted %d attempts", r.opts.MaxAttempts)
+}
+
+// retryDelay returns the duration to wait before the next attempt.
+// For 429 responses with a valid Retry-After header, that value takes precedence
+// over the computed exponential backoff.
+func (r *retryRoundTripper) retryDelay(resp *http.Response, attempt int) time.Duration {
+	if resp != nil && resp.StatusCode == http.StatusTooManyRequests {
+		if d := parseRetryAfterHeader(resp.Header.Get("Retry-After")); d > 0 {
+			return d
+		}
+	}
+
+	return r.computeDelay(attempt)
 }
 
 // doAttempt clones the request (replaying the body when present) and executes it.
@@ -177,6 +191,36 @@ func sleepContext(ctx context.Context, delay time.Duration) bool {
 	case <-timer.C:
 		return true
 	}
+}
+
+// parseRetryAfterHeader parses a Retry-After header value and returns the wait
+// duration. It supports both the delay-seconds form ("30") and the HTTP-date
+// form ("Wed, 21 Oct 2025 07:28:00 GMT"). Returns 0 for absent, malformed, or
+// past-dated values.
+func parseRetryAfterHeader(header string) time.Duration {
+	if header == "" {
+		return 0
+	}
+
+	// delay-seconds form.
+	secs, secsErr := strconv.Atoi(header)
+	if secsErr == nil {
+		if secs > 0 {
+			return time.Duration(secs) * time.Second
+		}
+
+		return 0
+	}
+
+	// HTTP-date form.
+	t, dateErr := http.ParseTime(header)
+	if dateErr == nil {
+		if d := time.Until(t); d > 0 {
+			return d
+		}
+	}
+
+	return 0
 }
 
 // drainAndClose discards resp's body and closes it so the connection can be reused.
