@@ -22,14 +22,15 @@ import (
 //
 //nolint:govet // fieldalignment: keeping logical field grouping for readability
 type Client struct {
-	baseURL      *url.URL
-	username     string
-	password     string
-	token        string
-	authType     authType
-	httpClient   *http.Client
-	retryOptions *RetryOptions
-	userAgent    string
+	baseURL         *url.URL
+	username        string
+	password        string
+	token           string
+	authType        authType
+	httpClient      *http.Client
+	retryOptions    *RetryOptions
+	transportConfig *TransportConfig
+	userAgent       string
 
 	AlmIntegrations    *AlmIntegrationsService
 	AlmSettings        *AlmSettingsService
@@ -209,7 +210,12 @@ func setDefaults(client *Client) error {
 	}
 
 	if client.httpClient == nil {
-		client.httpClient = http.DefaultClient
+		if client.transportConfig != nil {
+			//nolint:exhaustruct // Timeout, Jar, CheckRedirect intentionally left at zero values
+			client.httpClient = &http.Client{Transport: buildTransport(*client.transportConfig)}
+		} else {
+			client.httpClient = http.DefaultClient
+		}
 	}
 
 	if client.retryOptions != nil {
@@ -263,6 +269,16 @@ func WithBaseURL(urlStr string) ClientOptionFunc {
 func WithHTTPClient(httpClient *http.Client) ClientOptionFunc {
 	return func(c *Client) error {
 		c.httpClient = httpClient
+
+		return nil
+	}
+}
+
+// WithTransportConfig is a ClientOptionFunc that configures the SDK-managed HTTP
+// transport. It is ignored when WithHTTPClient is also used.
+func WithTransportConfig(cfg TransportConfig) ClientOptionFunc {
+	return func(c *Client) error {
+		c.transportConfig = &cfg
 
 		return nil
 	}
