@@ -2,6 +2,7 @@ package sonar
 
 import (
 	"bytes"
+	"context"
 	"net/http"
 )
 
@@ -56,13 +57,13 @@ func (s *BatchService) ValidateGetProjectOpt(opt *BatchProjectOptions) error {
 
 // GetFile downloads a JAR file listed in the index (see batch/index).
 // This endpoint returns binary data for the requested JAR file.
-func (s *BatchService) GetFile(opt *BatchFileOptions) (v []byte, resp *http.Response, err error) {
+func (s *BatchService) GetFile(ctx context.Context, opt *BatchFileOptions) (v []byte, resp *http.Response, err error) {
 	err = s.ValidateGetFileOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "batch/file", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "batch/file", opt)
 	if err != nil {
 		return
 	}
@@ -81,8 +82,8 @@ func (s *BatchService) GetFile(opt *BatchFileOptions) (v []byte, resp *http.Resp
 
 // GetIndex lists the JAR files to be downloaded by scanners.
 // Returns a list of JAR file names and their hashes.
-func (s *BatchService) GetIndex() (v *string, resp *http.Response, err error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "batch/index", nil)
+func (s *BatchService) GetIndex(ctx context.Context) (v *string, resp *http.Response, err error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "batch/index", nil)
 	if err != nil {
 		return
 	}
@@ -99,13 +100,13 @@ func (s *BatchService) GetIndex() (v *string, resp *http.Response, err error) {
 
 // GetProject returns project repository information including file hashes
 // for incremental analysis.
-func (s *BatchService) GetProject(opt *BatchProjectOptions) (v *BatchProject, resp *http.Response, err error) {
+func (s *BatchService) GetProject(ctx context.Context, opt *BatchProjectOptions) (v *BatchProject, resp *http.Response, err error) {
 	err = s.ValidateGetProjectOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "batch/project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "batch/project", opt)
 	if err != nil {
 		return
 	}

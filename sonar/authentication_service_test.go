@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -18,7 +19,7 @@ func TestAuthentication_Login(t *testing.T) {
 		Password: "secret",
 	}
 
-	resp, err := client.Authentication.Login(opt)
+	resp, err := client.Authentication.Login(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -37,7 +38,7 @@ func TestAuthentication_Login_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Authentication.Login(tt.opt)
+			_, err := client.Authentication.Login(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -48,7 +49,7 @@ func TestAuthentication_Logout(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	resp, err := client.Authentication.Logout()
+	resp, err := client.Authentication.Logout(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -69,7 +70,7 @@ func TestAuthentication_Validate(t *testing.T) {
 			server := newTestServer(t, handler)
 			client := newTestClient(t, server.url())
 
-			result, resp, err := client.Authentication.Validate()
+			result, resp, err := client.Authentication.Validate(context.Background(), )
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusOK, resp.StatusCode)
 			require.NotNil(t, result)

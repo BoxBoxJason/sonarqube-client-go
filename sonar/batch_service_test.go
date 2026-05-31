@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -14,7 +15,7 @@ func TestBatchService_GetFile(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.GetFile(&BatchFileOptions{
+		result, resp, err := client.Batch.GetFile(context.Background(), &BatchFileOptions{
 			Name: "batch-library-2.3.jar",
 		})
 
@@ -28,7 +29,7 @@ func TestBatchService_GetFile(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.GetFile(nil)
+		_, _, err := client.Batch.GetFile(context.Background(), nil)
 
 		require.NoError(t, err)
 	})
@@ -38,7 +39,7 @@ func TestBatchService_GetFile(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.GetFile(&BatchFileOptions{})
+		_, _, err := client.Batch.GetFile(context.Background(), &BatchFileOptions{})
 
 		require.NoError(t, err)
 	})
@@ -50,7 +51,7 @@ func TestBatchService_GetIndex(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.GetIndex()
+		result, resp, err := client.Batch.GetIndex(context.Background(), )
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -77,7 +78,7 @@ func TestBatchService_GetProject(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.GetProject(&BatchProjectOptions{
+		result, resp, err := client.Batch.GetProject(context.Background(), &BatchProjectOptions{
 			Key: "my-project",
 		})
 
@@ -92,7 +93,7 @@ func TestBatchService_GetProject(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.GetProject(&BatchProjectOptions{
+		_, _, err := client.Batch.GetProject(context.Background(), &BatchProjectOptions{
 			Key:    "my-project",
 			Branch: "feature/my-branch",
 		})
@@ -105,7 +106,7 @@ func TestBatchService_GetProject(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.GetProject(&BatchProjectOptions{
+		_, _, err := client.Batch.GetProject(context.Background(), &BatchProjectOptions{
 			Key:         "my-project",
 			PullRequest: "5461",
 		})
@@ -118,7 +119,7 @@ func TestBatchService_GetProject(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Batch.GetProject(nil)
+		_, _, err := client.Batch.GetProject(context.Background(), nil)
 
 		require.NoError(t, err)
 	})

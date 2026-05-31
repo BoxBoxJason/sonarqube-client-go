@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -28,7 +29,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 	Describe("List", func() {
 		Context("Parameter Validation", func() {
 			It("should succeed with nil options", func() {
-				result, resp, err := client.Languages.List(nil)
+				result, resp, err := client.Languages.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -36,7 +37,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should succeed with empty options", func() {
-				result, resp, err := client.Languages.List(&sonar.LanguagesListOptions{})
+				result, resp, err := client.Languages.List(context.Background(), &sonar.LanguagesListOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -46,7 +47,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 
 		Context("Functional Tests", func() {
 			It("should list all languages", func() {
-				result, resp, err := client.Languages.List(nil)
+				result, resp, err := client.Languages.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -54,7 +55,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should return languages with valid properties", func() {
-				result, resp, err := client.Languages.List(nil)
+				result, resp, err := client.Languages.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -66,7 +67,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should verify common languages present", func() {
-				result, resp, err := client.Languages.List(nil)
+				result, resp, err := client.Languages.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -91,7 +92,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should filter languages with query", func() {
-				result, resp, err := client.Languages.List(&sonar.LanguagesListOptions{
+				result, resp, err := client.Languages.List(context.Background(), &sonar.LanguagesListOptions{
 					Query: "java",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -112,7 +113,7 @@ var _ = Describe("Languages Service", Ordered, func() {
 				}
 			})
 			It("should limit results with page size", func() {
-				result, resp, err := client.Languages.List(&sonar.LanguagesListOptions{
+				result, resp, err := client.Languages.List(context.Background(), &sonar.LanguagesListOptions{
 					PageSize: 2,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -122,11 +123,11 @@ var _ = Describe("Languages Service", Ordered, func() {
 			})
 
 			It("should return consistent results on multiple calls", func() {
-				result1, resp1, err := client.Languages.List(nil)
+				result1, resp1, err := client.Languages.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
-				result2, resp2, err := client.Languages.List(nil)
+				result2, resp2, err := client.Languages.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 

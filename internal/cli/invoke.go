@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -65,18 +66,22 @@ func ClassifyMethod(method reflect.Method) MethodReturnPattern {
 
 // InvokeMethod calls a service method via reflection and returns the result.
 // It handles all four return patterns, extracting the response value and error.
+// context.Background() is automatically prepended when the method's first parameter
+// is context.Context.
 func InvokeMethod(service reflect.Value, methodName string, opt reflect.Value, pattern MethodReturnPattern, hasOpt bool) (any, *http.Response, error) {
 	method := service.MethodByName(methodName)
 	if !method.IsValid() {
 		return nil, nil, fmt.Errorf("method %q not found on service", methodName)
 	}
 
+	ctxVal := reflect.ValueOf(context.Background())
+
 	var results []reflect.Value
 
 	if hasOpt {
-		results = method.Call([]reflect.Value{opt})
+		results = method.Call([]reflect.Value{ctxVal, opt})
 	} else {
-		results = method.Call(nil)
+		results = method.Call([]reflect.Value{ctxVal})
 	}
 
 	switch pattern {
@@ -97,13 +102,16 @@ func InvokeMethod(service reflect.Value, methodName string, opt reflect.Value, p
 
 // InvokeStreamingMethod calls a streaming service method (like Push.SonarlintEvents)
 // and pipes the response body to the writer. The response body is left open for streaming.
+// context.Background() is automatically prepended as the first argument.
 func InvokeStreamingMethod(service reflect.Value, methodName string, opt reflect.Value, writer io.Writer) error {
 	method := service.MethodByName(methodName)
 	if !method.IsValid() {
 		return fmt.Errorf("method %q not found on service", methodName)
 	}
 
-	results := method.Call([]reflect.Value{opt})
+	ctxVal := reflect.ValueOf(context.Background())
+
+	results := method.Call([]reflect.Value{ctxVal, opt})
 
 	// Push.SonarlintEvents returns (*http.Response, error)
 	if len(results) != expectedDoubleReturn {

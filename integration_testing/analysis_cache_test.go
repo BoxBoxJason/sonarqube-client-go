@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -27,13 +28,13 @@ var _ = Describe("AnalysisCache Service", Ordered, func() {
 
 		// Create a test project for analysis cache operations
 		projectKey := helpers.UniqueResourceName("analysis-cache")
-		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		testProject, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    projectKey,
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", testProject.Project.Key, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -53,19 +54,19 @@ var _ = Describe("AnalysisCache Service", Ordered, func() {
 	Describe("Clear", func() {
 		Context("Functional Tests", func() {
 			It("should clear all cached data without options", func() {
-				resp, err := client.AnalysisCache.Clear(nil)
+				resp, err := client.AnalysisCache.Clear(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 			})
 
 			It("should clear all cached data with empty options", func() {
-				resp, err := client.AnalysisCache.Clear(&sonar.AnalysisCacheClearOptions{})
+				resp, err := client.AnalysisCache.Clear(context.Background(), &sonar.AnalysisCacheClearOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 			})
 
 			It("should clear cached data for a specific project", func() {
-				resp, err := client.AnalysisCache.Clear(&sonar.AnalysisCacheClearOptions{
+				resp, err := client.AnalysisCache.Clear(context.Background(), &sonar.AnalysisCacheClearOptions{
 					Project: testProject.Project.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -73,7 +74,7 @@ var _ = Describe("AnalysisCache Service", Ordered, func() {
 			})
 
 			It("should clear cached data for a specific project branch", func() {
-				resp, err := client.AnalysisCache.Clear(&sonar.AnalysisCacheClearOptions{
+				resp, err := client.AnalysisCache.Clear(context.Background(), &sonar.AnalysisCacheClearOptions{
 					Project: testProject.Project.Key,
 					Branch:  "main",
 				})
@@ -84,14 +85,14 @@ var _ = Describe("AnalysisCache Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail when branch is specified without project", func() {
-				_, err := client.AnalysisCache.Clear(&sonar.AnalysisCacheClearOptions{
+				_, err := client.AnalysisCache.Clear(context.Background(), &sonar.AnalysisCacheClearOptions{
 					Branch: "main",
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should succeed with non-existent project (idempotent)", func() {
-				resp, err := client.AnalysisCache.Clear(&sonar.AnalysisCacheClearOptions{
+				resp, err := client.AnalysisCache.Clear(context.Background(), &sonar.AnalysisCacheClearOptions{
 					Project: "non-existent-project-12345",
 				})
 				// Clear is idempotent - should succeed even for non-existent project
@@ -107,7 +108,7 @@ var _ = Describe("AnalysisCache Service", Ordered, func() {
 	Describe("Get", func() {
 		Context("Functional Tests", func() {
 			It("should get cached data for a project", func() {
-				resp, err := client.AnalysisCache.Get(&sonar.AnalysisCacheGetOptions{
+				resp, err := client.AnalysisCache.Get(context.Background(), &sonar.AnalysisCacheGetOptions{
 					Project: testProject.Project.Key,
 				})
 				// May return 404 if no cache exists yet (project not analyzed)
@@ -126,7 +127,7 @@ var _ = Describe("AnalysisCache Service", Ordered, func() {
 			})
 
 			It("should get cached data for a specific branch", func() {
-				resp, err := client.AnalysisCache.Get(&sonar.AnalysisCacheGetOptions{
+				resp, err := client.AnalysisCache.Get(context.Background(), &sonar.AnalysisCacheGetOptions{
 					Project: testProject.Project.Key,
 					Branch:  "main",
 				})
@@ -148,17 +149,17 @@ var _ = Describe("AnalysisCache Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				_, err := client.AnalysisCache.Get(nil)
+				_, err := client.AnalysisCache.Get(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing project", func() {
-				_, err := client.AnalysisCache.Get(&sonar.AnalysisCacheGetOptions{})
+				_, err := client.AnalysisCache.Get(context.Background(), &sonar.AnalysisCacheGetOptions{})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with non-existent project", func() {
-				resp, err := client.AnalysisCache.Get(&sonar.AnalysisCacheGetOptions{
+				resp, err := client.AnalysisCache.Get(context.Background(), &sonar.AnalysisCacheGetOptions{
 					Project: "non-existent-project-12345",
 				})
 				Expect(err).To(HaveOccurred())

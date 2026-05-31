@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
@@ -27,14 +28,14 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		// Create a test project for badge operations
 		projectKey = helpers.UniqueResourceName("badge")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    "ProjectBadges Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -54,7 +55,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 	Describe("Token", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.ProjectBadges.Token(nil)
+				result, resp, err := client.ProjectBadges.Token(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -62,7 +63,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			})
 
 			It("should fail without required project", func() {
-				result, resp, err := client.ProjectBadges.Token(&sonar.ProjectBadgesTokenOptions{})
+				result, resp, err := client.ProjectBadges.Token(context.Background(), &sonar.ProjectBadgesTokenOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Project"))
 				Expect(result).To(BeNil())
@@ -72,7 +73,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get token for a project", func() {
-				result, resp, err := client.ProjectBadges.Token(&sonar.ProjectBadgesTokenOptions{
+				result, resp, err := client.ProjectBadges.Token(context.Background(), &sonar.ProjectBadgesTokenOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -84,7 +85,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				result, resp, err := client.ProjectBadges.Token(&sonar.ProjectBadgesTokenOptions{
+				result, resp, err := client.ProjectBadges.Token(context.Background(), &sonar.ProjectBadgesTokenOptions{
 					Project: "non-existent-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -102,14 +103,14 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 	Describe("RenewToken", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.ProjectBadges.RenewToken(nil)
+				resp, err := client.ProjectBadges.RenewToken(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required project", func() {
-				resp, err := client.ProjectBadges.RenewToken(&sonar.ProjectBadgesRenewTokenOptions{})
+				resp, err := client.ProjectBadges.RenewToken(context.Background(), &sonar.ProjectBadgesRenewTokenOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Project"))
 				Expect(resp).To(BeNil())
@@ -119,20 +120,20 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 		Context("Valid Requests", func() {
 			It("should renew token for a project", func() {
 				// Get current token
-				tokenBefore, _, err := client.ProjectBadges.Token(&sonar.ProjectBadgesTokenOptions{
+				tokenBefore, _, err := client.ProjectBadges.Token(context.Background(), &sonar.ProjectBadgesTokenOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				// Renew token
-				resp, err := client.ProjectBadges.RenewToken(&sonar.ProjectBadgesRenewTokenOptions{
+				resp, err := client.ProjectBadges.RenewToken(context.Background(), &sonar.ProjectBadgesRenewTokenOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Get new token
-				tokenAfter, _, err := client.ProjectBadges.Token(&sonar.ProjectBadgesTokenOptions{
+				tokenAfter, _, err := client.ProjectBadges.Token(context.Background(), &sonar.ProjectBadgesTokenOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -142,7 +143,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should fail for non-existent project", func() {
-				resp, err := client.ProjectBadges.RenewToken(&sonar.ProjectBadgesRenewTokenOptions{
+				resp, err := client.ProjectBadges.RenewToken(context.Background(), &sonar.ProjectBadgesRenewTokenOptions{
 					Project: "non-existent-project",
 				})
 				Expect(err).To(HaveOccurred())
@@ -159,7 +160,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 	Describe("Measure", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.ProjectBadges.Measure(nil)
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -167,7 +168,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			})
 
 			It("should fail without required project", func() {
-				result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 					Metric: "coverage",
 				})
 				Expect(err).To(HaveOccurred())
@@ -177,7 +178,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			})
 
 			It("should fail without required metric", func() {
-				result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 					Project: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -187,7 +188,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			})
 
 			It("should fail with invalid metric", func() {
-				result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 					Project: projectKey,
 					Metric:  "invalid_metric",
 				})
@@ -200,7 +201,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get coverage badge", func() {
-				result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 					Project: projectKey,
 					Metric:  "coverage",
 				})
@@ -212,7 +213,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			})
 
 			It("should get ncloc badge", func() {
-				result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 					Project: projectKey,
 					Metric:  "ncloc",
 				})
@@ -222,7 +223,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			})
 
 			It("should get alert_status badge", func() {
-				result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 					Project: projectKey,
 					Metric:  "alert_status",
 				})
@@ -234,7 +235,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should return an error badge for non-existent project", func() {
-				result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+				result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 					Project: "non-existent-project",
 					Metric:  "coverage",
 				})
@@ -257,7 +258,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 	Describe("QualityGate", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.ProjectBadges.QualityGate(nil)
+				result, resp, err := client.ProjectBadges.QualityGate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -265,7 +266,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			})
 
 			It("should fail without required project", func() {
-				result, resp, err := client.ProjectBadges.QualityGate(&sonar.ProjectBadgesQualityGateOptions{})
+				result, resp, err := client.ProjectBadges.QualityGate(context.Background(), &sonar.ProjectBadgesQualityGateOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Project"))
 				Expect(result).To(BeNil())
@@ -275,7 +276,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get quality gate badge", func() {
-				result, resp, err := client.ProjectBadges.QualityGate(&sonar.ProjectBadgesQualityGateOptions{
+				result, resp, err := client.ProjectBadges.QualityGate(context.Background(), &sonar.ProjectBadgesQualityGateOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -288,7 +289,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 
 		Context("Non-Existent Project", func() {
 			It("should return an error badge for non-existent project", func() {
-				result, resp, err := client.ProjectBadges.QualityGate(&sonar.ProjectBadgesQualityGateOptions{
+				result, resp, err := client.ProjectBadges.QualityGate(context.Background(), &sonar.ProjectBadgesQualityGateOptions{
 					Project: "non-existent-project",
 				})
 				// Badge API may return 200 with an error badge instead of an error
@@ -310,7 +311,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 	Describe("Full Workflow", func() {
 		It("should get token, renew it, and use it for badge access", func() {
 			// Get token
-			tokenResult, resp, err := client.ProjectBadges.Token(&sonar.ProjectBadgesTokenOptions{
+			tokenResult, resp, err := client.ProjectBadges.Token(context.Background(), &sonar.ProjectBadgesTokenOptions{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -318,7 +319,7 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			Expect(tokenResult.Token).NotTo(BeEmpty())
 
 			// Use token to get badge
-			result, resp, err := client.ProjectBadges.Measure(&sonar.ProjectBadgesMeasureOptions{
+			result, resp, err := client.ProjectBadges.Measure(context.Background(), &sonar.ProjectBadgesMeasureOptions{
 				Project: projectKey,
 				Metric:  "coverage",
 				Token:   tokenResult.Token,
@@ -328,14 +329,14 @@ var _ = Describe("ProjectBadges Service", Ordered, func() {
 			Expect(result).NotTo(BeNil())
 
 			// Renew token
-			resp, err = client.ProjectBadges.RenewToken(&sonar.ProjectBadgesRenewTokenOptions{
+			resp, err = client.ProjectBadges.RenewToken(context.Background(), &sonar.ProjectBadgesRenewTokenOptions{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Get new token
-			newTokenResult, resp, err := client.ProjectBadges.Token(&sonar.ProjectBadgesTokenOptions{
+			newTokenResult, resp, err := client.ProjectBadges.Token(context.Background(), &sonar.ProjectBadgesTokenOptions{
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())

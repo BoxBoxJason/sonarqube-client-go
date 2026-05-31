@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -25,7 +26,7 @@ func TestUserTokens_Generate(t *testing.T) {
 		Name: "my-token",
 	}
 
-	result, resp, err := client.UserTokens.Generate(opt)
+	result, resp, err := client.UserTokens.Generate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -53,7 +54,7 @@ func TestUserTokens_Generate_WithType(t *testing.T) {
 		ProjectKey: "my-project",
 	}
 
-	result, resp, err := client.UserTokens.Generate(opt)
+	result, resp, err := client.UserTokens.Generate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "PROJECT_ANALYSIS_TOKEN", result.Type)
@@ -63,22 +64,22 @@ func TestUserTokens_Generate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.UserTokens.Generate(nil)
+	_, _, err := client.UserTokens.Generate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOptions{})
+	_, _, err = client.UserTokens.Generate(context.Background(), &UserTokensGenerateOptions{})
 	assert.Error(t, err)
 
 	// Invalid Type should fail validation.
-	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOptions{
+	_, _, err = client.UserTokens.Generate(context.Background(), &UserTokensGenerateOptions{
 		Name: "my-token",
 		Type: "INVALID_TYPE",
 	})
 	assert.Error(t, err)
 
 	// PROJECT_ANALYSIS_TOKEN without ProjectKey should fail validation.
-	_, _, err = client.UserTokens.Generate(&UserTokensGenerateOptions{
+	_, _, err = client.UserTokens.Generate(context.Background(), &UserTokensGenerateOptions{
 		Name: "my-token",
 		Type: "PROJECT_ANALYSIS_TOKEN",
 	})
@@ -94,7 +95,7 @@ func TestUserTokens_Revoke(t *testing.T) {
 		Name: "my-token",
 	}
 
-	resp, err := client.UserTokens.Revoke(opt)
+	resp, err := client.UserTokens.Revoke(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -103,11 +104,11 @@ func TestUserTokens_Revoke_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.UserTokens.Revoke(nil)
+	_, err := client.UserTokens.Revoke(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, err = client.UserTokens.Revoke(&UserTokensRevokeOptions{})
+	_, err = client.UserTokens.Revoke(context.Background(), &UserTokensRevokeOptions{})
 	assert.Error(t, err)
 }
 
@@ -134,7 +135,7 @@ func TestUserTokens_Search(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.UserTokens.Search(nil)
+	result, resp, err := client.UserTokens.Search(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -155,7 +156,7 @@ func TestUserTokens_Search_WithLogin(t *testing.T) {
 		Login: "testuser",
 	}
 
-	result, _, err := client.UserTokens.Search(opt)
+	result, _, err := client.UserTokens.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, "testuser", result.Login)
 }

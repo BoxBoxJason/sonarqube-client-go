@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -29,7 +30,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 	Describe("Index", func() {
 		Context("Parameter Validation", func() {
 			It("should work with nil options", func() {
-				result, resp, err := client.L10N.GetIndex(nil)
+				result, resp, err := client.L10N.GetIndex(context.Background(), nil)
 				// Skip if API not available
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("L10N API is not available in this SonarQube version")
@@ -42,7 +43,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 
 		Context("Default Locale", func() {
 			It("should get localization messages with default locale", func() {
-				result, resp, err := client.L10N.GetIndex(nil)
+				result, resp, err := client.L10N.GetIndex(context.Background(), nil)
 				// Skip if API not available
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("L10N API is not available in this SonarQube version")
@@ -71,7 +72,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 
 		Context("Specific Locale", func() {
 			It("should get localization messages for specific locale", func() {
-				result, resp, err := client.L10N.GetIndex(&sonar.L10NIndexOptions{
+				result, resp, err := client.L10N.GetIndex(context.Background(), &sonar.L10NIndexOptions{
 					Locale: "en",
 				})
 				// Skip if API not available
@@ -93,7 +94,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 		Context("Compare Different Locales", func() {
 			It("should return different translations for different locales if available", func() {
 				// Get English locale
-				resultEN, respEN, err := client.L10N.GetIndex(&sonar.L10NIndexOptions{
+				resultEN, respEN, err := client.L10N.GetIndex(context.Background(), &sonar.L10NIndexOptions{
 					Locale: "en",
 				})
 				// Skip if API not available
@@ -104,7 +105,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 				Expect(respEN.StatusCode).To(Equal(http.StatusOK))
 
 				// Try to get French locale
-				resultFR, respFR, err := client.L10N.GetIndex(&sonar.L10NIndexOptions{
+				resultFR, respFR, err := client.L10N.GetIndex(context.Background(), &sonar.L10NIndexOptions{
 					Locale: "fr",
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -130,7 +131,7 @@ var _ = Describe("L10N Service", Ordered, func() {
 			It("should get localization messages with timestamp", func() {
 				// Use a recent timestamp (1 year ago)
 				oneYearAgo := time.Now().AddDate(-1, 0, 0).Format("2006-01-02T15:04:05-0700")
-				result, resp, err := client.L10N.GetIndex(&sonar.L10NIndexOptions{
+				result, resp, err := client.L10N.GetIndex(context.Background(), &sonar.L10NIndexOptions{
 					Timestamp: oneYearAgo,
 				})
 				// Skip if API not available

@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -27,13 +28,13 @@ var _ = Describe("Push Service", Ordered, func() {
 
 		// Create a test project for push events
 		projectKey := helpers.UniqueResourceName("push")
-		testProject, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		testProject, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    projectKey,
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 		cleanupManager.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: testProject.Project.Key,
 			})
 			return err
@@ -53,7 +54,7 @@ var _ = Describe("Push Service", Ordered, func() {
 	Describe("SonarlintEvents", func() {
 		Context("Functional Tests", func() {
 			It("should connect to sonarlint events stream with valid parameters", func() {
-				resp, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOptions{
+				resp, err := client.Push.SonarlintEvents(context.Background(), &sonar.PushSonarlintEventsOptions{
 					Languages:   []string{"java"},
 					ProjectKeys: []string{testProject.Project.Key},
 				})
@@ -72,7 +73,7 @@ var _ = Describe("Push Service", Ordered, func() {
 			})
 
 			It("should connect with multiple languages", func() {
-				resp, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOptions{
+				resp, err := client.Push.SonarlintEvents(context.Background(), &sonar.PushSonarlintEventsOptions{
 					Languages:   []string{"java", "js", "py"},
 					ProjectKeys: []string{testProject.Project.Key},
 				})
@@ -91,21 +92,21 @@ var _ = Describe("Push Service", Ordered, func() {
 
 		Context("Error Handling", func() {
 			It("should fail with missing languages", func() {
-				_, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOptions{
+				_, err := client.Push.SonarlintEvents(context.Background(), &sonar.PushSonarlintEventsOptions{
 					ProjectKeys: []string{testProject.Project.Key},
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with missing project keys", func() {
-				_, err := client.Push.SonarlintEvents(&sonar.PushSonarlintEventsOptions{
+				_, err := client.Push.SonarlintEvents(context.Background(), &sonar.PushSonarlintEventsOptions{
 					Languages: []string{"java"},
 				})
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with nil options", func() {
-				_, err := client.Push.SonarlintEvents(nil)
+				_, err := client.Push.SonarlintEvents(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 			})
 		})

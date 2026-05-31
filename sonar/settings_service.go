@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -265,8 +266,8 @@ func (s *SettingsService) ValidateValuesOpt(opt *SettingsValuesOptions) error {
 // Requires the 'Administer System' permission.
 //
 // Since: 6.1.
-func (s *SettingsService) CheckSecretKey() (*SettingsCheckSecretKey, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/check_secret_key", nil)
+func (s *SettingsService) CheckSecretKey(ctx context.Context) (*SettingsCheckSecretKey, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "settings/check_secret_key", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -285,13 +286,13 @@ func (s *SettingsService) CheckSecretKey() (*SettingsCheckSecretKey, *http.Respo
 // Requires 'Administer System' permission.
 //
 // Since: 6.1.
-func (s *SettingsService) Encrypt(opt *SettingsEncryptOptions) (*SettingsEncrypt, *http.Response, error) {
+func (s *SettingsService) Encrypt(ctx context.Context, opt *SettingsEncryptOptions) (*SettingsEncrypt, *http.Response, error) {
 	err := s.ValidateEncryptOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "settings/encrypt", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "settings/encrypt", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -310,8 +311,8 @@ func (s *SettingsService) Encrypt(opt *SettingsEncryptOptions) (*SettingsEncrypt
 // Requires the 'Administer System' permission.
 //
 // Since: 6.1.
-func (s *SettingsService) GenerateSecretKey() (*SettingsGenerateSecretKey, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/generate_secret_key", nil)
+func (s *SettingsService) GenerateSecretKey(ctx context.Context) (*SettingsGenerateSecretKey, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "settings/generate_secret_key", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -335,13 +336,13 @@ func (s *SettingsService) GenerateSecretKey() (*SettingsGenerateSecretKey, *http
 //   - 'Administer' rights on the specified component
 //
 // Since: 6.3.
-func (s *SettingsService) ListDefinitions(opt *SettingsListDefinitionsOptions) (*SettingsListDefinitions, *http.Response, error) {
+func (s *SettingsService) ListDefinitions(ctx context.Context, opt *SettingsListDefinitionsOptions) (*SettingsListDefinitions, *http.Response, error) {
 	err := s.ValidateListDefinitionsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/list_definitions", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "settings/list_definitions", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -359,8 +360,8 @@ func (s *SettingsService) ListDefinitions(opt *SettingsListDefinitionsOptions) (
 // LoginMessage returns the formatted login message, set to the 'sonar.login.message' property.
 //
 // Since: 9.8.
-func (s *SettingsService) LoginMessage() (*SettingsLoginMessage, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/login_message", nil)
+func (s *SettingsService) LoginMessage(ctx context.Context) (*SettingsLoginMessage, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "settings/login_message", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -382,13 +383,13 @@ func (s *SettingsService) LoginMessage() (*SettingsLoginMessage, *http.Response,
 //   - 'Administer' rights on the specified component
 //
 // Since: 6.1.
-func (s *SettingsService) Reset(opt *SettingsResetOptions) (*http.Response, error) {
+func (s *SettingsService) Reset(ctx context.Context, opt *SettingsResetOptions) (*http.Response, error) {
 	err := s.ValidateResetOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "settings/reset", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "settings/reset", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -409,7 +410,7 @@ func (s *SettingsService) Reset(opt *SettingsResetOptions) (*http.Response, erro
 //   - 'Administer' rights on the specified component
 //
 // Since: 6.1.
-func (s *SettingsService) Set(opt *SettingsSetOptions) (*http.Response, error) {
+func (s *SettingsService) Set(ctx context.Context, opt *SettingsSetOptions) (*http.Response, error) {
 	err := s.ValidateSetOpt(opt)
 	if err != nil {
 		return nil, err
@@ -417,7 +418,7 @@ func (s *SettingsService) Set(opt *SettingsSetOptions) (*http.Response, error) {
 
 	// For SettingsSetOption, we need custom encoding due to FieldValues
 	// being a map[string]any that needs to be JSON-encoded
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "settings/set", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "settings/set", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -437,13 +438,13 @@ func (s *SettingsService) Set(opt *SettingsSetOptions) (*http.Response, error) {
 // Secured settings values are not returned by the endpoint.
 //
 // Since: 6.3.
-func (s *SettingsService) Values(opt *SettingsValuesOptions) (*SettingsValues, *http.Response, error) {
+func (s *SettingsService) Values(ctx context.Context, opt *SettingsValuesOptions) (*SettingsValues, *http.Response, error) {
 	err := s.ValidateValuesOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "settings/values", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "settings/values", opt)
 	if err != nil {
 		return nil, nil, err
 	}

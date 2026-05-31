@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -19,7 +20,7 @@ func TestEmails_Send(t *testing.T) {
 		To:      "test@example.com",
 	}
 
-	resp, err := client.Emails.Send(opt)
+	resp, err := client.Emails.Send(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -55,7 +56,7 @@ func TestEmails_Send_ValidationErrors(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			client := newLocalhostClient(t)
 
-			_, err := client.Emails.Send(tt.opt)
+			_, err := client.Emails.Send(context.Background(), tt.opt)
 			require.Error(t, err)
 
 			var validationErr *ValidationError

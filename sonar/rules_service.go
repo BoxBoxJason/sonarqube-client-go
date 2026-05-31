@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -566,8 +567,8 @@ type RulesUpdateOptions struct {
 
 // App retrieves data required for rendering the 'Coding Rules' page.
 // WARNING: This is an internal endpoint, may change without notice.
-func (s *RulesService) App() (v *RulesApp, resp *http.Response, err error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "rules/app", nil)
+func (s *RulesService) App(ctx context.Context) (v *RulesApp, resp *http.Response, err error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "rules/app", nil)
 	if err != nil {
 		return
 	}
@@ -584,7 +585,7 @@ func (s *RulesService) App() (v *RulesApp, resp *http.Response, err error) {
 
 // Create creates a custom rule.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *RulesService) Create(opt *RulesCreateOptions) (v *RulesCreate, resp *http.Response, err error) {
+func (s *RulesService) Create(ctx context.Context, opt *RulesCreateOptions) (v *RulesCreate, resp *http.Response, err error) {
 	err = s.ValidateCreateOpt(opt)
 	if err != nil {
 		return
@@ -593,7 +594,7 @@ func (s *RulesService) Create(opt *RulesCreateOptions) (v *RulesCreate, resp *ht
 	// Convert to URL-encodable format
 	urlOpt := s.convertCreateOptForURL(opt)
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "rules/create", urlOpt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "rules/create", urlOpt)
 	if err != nil {
 		return
 	}
@@ -610,13 +611,13 @@ func (s *RulesService) Create(opt *RulesCreateOptions) (v *RulesCreate, resp *ht
 
 // Delete deletes a custom rule.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *RulesService) Delete(opt *RulesDeleteOptions) (resp *http.Response, err error) {
+func (s *RulesService) Delete(ctx context.Context, opt *RulesDeleteOptions) (resp *http.Response, err error) {
 	err = s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "rules/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "rules/delete", opt)
 	if err != nil {
 		return
 	}
@@ -630,13 +631,13 @@ func (s *RulesService) Delete(opt *RulesDeleteOptions) (resp *http.Response, err
 }
 
 // List lists rules, excluding external rules and rules with status REMOVED.
-func (s *RulesService) List(opt *RulesListOptions) (v *string, resp *http.Response, err error) {
+func (s *RulesService) List(ctx context.Context, opt *RulesListOptions) (v *string, resp *http.Response, err error) {
 	err = s.ValidateListOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "rules/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "rules/list", opt)
 	if err != nil {
 		return
 	}
@@ -652,13 +653,13 @@ func (s *RulesService) List(opt *RulesListOptions) (v *string, resp *http.Respon
 }
 
 // Repositories lists available rule repositories.
-func (s *RulesService) Repositories(opt *RulesRepositoriesOptions) (v *RulesRepositories, resp *http.Response, err error) {
+func (s *RulesService) Repositories(ctx context.Context, opt *RulesRepositoriesOptions) (v *RulesRepositories, resp *http.Response, err error) {
 	err = s.ValidateRepositoriesOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "rules/repositories", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "rules/repositories", opt)
 	if err != nil {
 		return
 	}
@@ -674,7 +675,7 @@ func (s *RulesService) Repositories(opt *RulesRepositoriesOptions) (v *RulesRepo
 }
 
 // Search searches for a collection of relevant rules matching a specified query.
-func (s *RulesService) Search(opt *RulesSearchOptions) (v *RulesSearch, resp *http.Response, err error) {
+func (s *RulesService) Search(ctx context.Context, opt *RulesSearchOptions) (v *RulesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
@@ -683,7 +684,7 @@ func (s *RulesService) Search(opt *RulesSearchOptions) (v *RulesSearch, resp *ht
 	// Convert to URL-encodable format
 	urlOpt := s.convertSearchOptForURL(opt)
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "rules/search", urlOpt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "rules/search", urlOpt)
 	if err != nil {
 		return
 	}
@@ -699,13 +700,13 @@ func (s *RulesService) Search(opt *RulesSearchOptions) (v *RulesSearch, resp *ht
 }
 
 // Show retrieves detailed information about a specific rule.
-func (s *RulesService) Show(opt *RulesShowOptions) (v *RulesShow, resp *http.Response, err error) {
+func (s *RulesService) Show(ctx context.Context, opt *RulesShowOptions) (v *RulesShow, resp *http.Response, err error) {
 	err = s.ValidateShowOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "rules/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "rules/show", opt)
 	if err != nil {
 		return
 	}
@@ -721,13 +722,13 @@ func (s *RulesService) Show(opt *RulesShowOptions) (v *RulesShow, resp *http.Res
 }
 
 // Tags lists all available rule tags.
-func (s *RulesService) Tags(opt *RulesTagsOptions) (v *RulesTags, resp *http.Response, err error) {
+func (s *RulesService) Tags(ctx context.Context, opt *RulesTagsOptions) (v *RulesTags, resp *http.Response, err error) {
 	err = s.ValidateTagsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "rules/tags", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "rules/tags", opt)
 	if err != nil {
 		return
 	}
@@ -744,7 +745,7 @@ func (s *RulesService) Tags(opt *RulesTagsOptions) (v *RulesTags, resp *http.Res
 
 // Update updates an existing rule.
 // Requires the 'Administer Quality Profiles' permission.
-func (s *RulesService) Update(opt *RulesUpdateOptions) (v *RulesUpdate, resp *http.Response, err error) {
+func (s *RulesService) Update(ctx context.Context, opt *RulesUpdateOptions) (v *RulesUpdate, resp *http.Response, err error) {
 	err = s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -753,7 +754,7 @@ func (s *RulesService) Update(opt *RulesUpdateOptions) (v *RulesUpdate, resp *ht
 	// Convert to URL-encodable format
 	urlOpt := s.convertUpdateOptForURL(opt)
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "rules/update", urlOpt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "rules/update", urlOpt)
 	if err != nil {
 		return nil, nil, err
 	}

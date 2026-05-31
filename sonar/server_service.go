@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // ServerService handles communication with the Server related methods of the SonarQube API.
 type ServerService struct {
@@ -9,8 +12,8 @@ type ServerService struct {
 }
 
 // Version returns the SonarQube server version.
-func (s *ServerService) Version() (v *string, resp *http.Response, err error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "server/version", nil)
+func (s *ServerService) Version(ctx context.Context) (v *string, resp *http.Response, err error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "server/version", nil)
 	if err != nil {
 		return nil, nil, err
 	}

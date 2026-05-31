@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -28,7 +29,7 @@ func TestDevelopers_SearchEvents(t *testing.T) {
 		Projects: []string{"my-project"},
 	}
 
-	result, resp, err := client.Developers.SearchEvents(opt)
+	result, resp, err := client.Developers.SearchEvents(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -70,7 +71,7 @@ func TestDevelopers_SearchEvents_ValidationErrors(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			client := newLocalhostClient(t)
 
-			_, _, err := client.Developers.SearchEvents(tt.opt)
+			_, _, err := client.Developers.SearchEvents(context.Background(), tt.opt)
 			require.Error(t, err)
 
 			var validationErr *ValidationError

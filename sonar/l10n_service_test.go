@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -22,7 +23,7 @@ func TestL10N_Index(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.L10N.GetIndex(nil)
+	result, resp, err := client.L10N.GetIndex(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -44,7 +45,7 @@ func TestL10N_Index_WithLocale(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.L10N.GetIndex(&L10NIndexOptions{Locale: "fr"})
+	result, resp, err := client.L10N.GetIndex(context.Background(), &L10NIndexOptions{Locale: "fr"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "fr", result.Locale)
@@ -56,7 +57,7 @@ func TestL10N_Index_WithTimestamp(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	_, _, err := client.L10N.GetIndex(&L10NIndexOptions{Timestamp: "2024-01-01T00:00:00+0000"})
+	_, _, err := client.L10N.GetIndex(context.Background(), &L10NIndexOptions{Timestamp: "2024-01-01T00:00:00+0000"})
 	require.NoError(t, err)
 }
 
@@ -65,7 +66,7 @@ func TestL10N_Index_EmptyMessages(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, _, err := client.L10N.GetIndex(nil)
+	result, _, err := client.L10N.GetIndex(context.Background(), nil)
 	require.NoError(t, err)
 	require.NotNil(t, result.Messages)
 	assert.Empty(t, result.Messages)

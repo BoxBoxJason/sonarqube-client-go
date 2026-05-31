@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 )
@@ -69,13 +70,13 @@ func (s *PushService) ValidateSonarlintEventsOpt(opt *PushSonarlintEventsOptions
 //
 // API endpoint: GET /api/push/sonarlint_events.
 // WARNING: This is an internal API and may change without notice.
-func (s *PushService) SonarlintEvents(opt *PushSonarlintEventsOptions) (*http.Response, error) {
+func (s *PushService) SonarlintEvents(ctx context.Context, opt *PushSonarlintEventsOptions) (*http.Response, error) {
 	err := s.ValidateSonarlintEventsOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "push/sonarlint_events", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "push/sonarlint_events", opt)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -16,7 +17,7 @@ func TestProjectTagsService_Search(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.ProjectTags.Search(nil)
+		result, resp, err := client.ProjectTags.Search(context.Background(), nil)
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -38,7 +39,7 @@ func TestProjectTagsService_Search(t *testing.T) {
 			Query: "sec",
 		}
 
-		result, resp, err := client.ProjectTags.Search(opt)
+		result, resp, err := client.ProjectTags.Search(context.Background(), opt)
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -57,7 +58,7 @@ func TestProjectTagsService_Set(t *testing.T) {
 			Tags:    []string{"security", "performance"},
 		}
 
-		resp, err := client.ProjectTags.Set(opt)
+		resp, err := client.ProjectTags.Set(context.Background(), opt)
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -80,7 +81,7 @@ func TestProjectTagsService_Set(t *testing.T) {
 			Tags:    []string{},
 		}
 
-		resp, err := client.ProjectTags.Set(opt)
+		resp, err := client.ProjectTags.Set(context.Background(), opt)
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -89,7 +90,7 @@ func TestProjectTagsService_Set(t *testing.T) {
 	t.Run("nil option fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectTags.Set(nil)
+		_, err := client.ProjectTags.Set(context.Background(), nil)
 
 		assert.Error(t, err)
 	})
@@ -97,7 +98,7 @@ func TestProjectTagsService_Set(t *testing.T) {
 	t.Run("missing project fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, err := client.ProjectTags.Set(&ProjectTagsSetOptions{
+		_, err := client.ProjectTags.Set(context.Background(), &ProjectTagsSetOptions{
 			Tags: []string{"tag1"},
 		})
 

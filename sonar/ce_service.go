@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 const (
 	// MaxCePageSize is the maximum page size for CE activity queries.
@@ -556,13 +559,13 @@ func (s *CeService) ValidateTaskOpt(opt *CeTaskOptions) error {
 //
 // API endpoint: GET /api/ce/activity.
 // Since: 5.2.
-func (s *CeService) Activity(opt *CeActivityOptions) (*CeActivity, *http.Response, error) {
+func (s *CeService) Activity(ctx context.Context, opt *CeActivityOptions) (*CeActivity, *http.Response, error) {
 	err := s.ValidateActivityOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/activity", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/activity", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -582,13 +585,13 @@ func (s *CeService) Activity(opt *CeActivityOptions) (*CeActivity, *http.Respons
 //
 // API endpoint: GET /api/ce/activity_status.
 // Since: 5.5.
-func (s *CeService) ActivityStatus(opt *CeActivityStatusOptions) (*CeActivityStatus, *http.Response, error) {
+func (s *CeService) ActivityStatus(ctx context.Context, opt *CeActivityStatusOptions) (*CeActivityStatus, *http.Response, error) {
 	err := s.ValidateActivityStatusOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/activity_status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/activity_status", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -608,13 +611,13 @@ func (s *CeService) ActivityStatus(opt *CeActivityStatusOptions) (*CeActivitySta
 //
 // API endpoint: GET /api/ce/analysis_status.
 // Since: 7.4.
-func (s *CeService) AnalysisStatus(opt *CeAnalysisStatusOptions) (*CeAnalysisStatus, *http.Response, error) {
+func (s *CeService) AnalysisStatus(ctx context.Context, opt *CeAnalysisStatusOptions) (*CeAnalysisStatus, *http.Response, error) {
 	err := s.ValidateAnalysisStatusOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/analysis_status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/analysis_status", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -635,13 +638,13 @@ func (s *CeService) AnalysisStatus(opt *CeAnalysisStatusOptions) (*CeAnalysisSta
 //
 // API endpoint: POST /api/ce/cancel.
 // Since: 5.2.
-func (s *CeService) Cancel(opt *CeCancelOptions) (*http.Response, error) {
+func (s *CeService) Cancel(ctx context.Context, opt *CeCancelOptions) (*http.Response, error) {
 	err := s.ValidateCancelOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "ce/cancel", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "ce/cancel", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -659,8 +662,8 @@ func (s *CeService) Cancel(opt *CeCancelOptions) (*http.Response, error) {
 //
 // API endpoint: POST /api/ce/cancel_all.
 // Since: 5.2.
-func (s *CeService) CancelAll() (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "ce/cancel_all", nil)
+func (s *CeService) CancelAll(ctx context.Context) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "ce/cancel_all", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -679,13 +682,13 @@ func (s *CeService) CancelAll() (*http.Response, error) {
 //
 // API endpoint: GET /api/ce/component.
 // Since: 5.2.
-func (s *CeService) Component(opt *CeComponentOptions) (*CeComponent, *http.Response, error) {
+func (s *CeService) Component(ctx context.Context, opt *CeComponentOptions) (*CeComponent, *http.Response, error) {
 	err := s.ValidateComponentOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/component", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/component", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -705,13 +708,13 @@ func (s *CeService) Component(opt *CeComponentOptions) (*CeComponent, *http.Resp
 //
 // API endpoint: POST /api/ce/dismiss_analysis_warning.
 // Since: 8.5.
-func (s *CeService) DismissAnalysisWarning(opt *CeDismissAnalysisWarningOptions) (*http.Response, error) {
+func (s *CeService) DismissAnalysisWarning(ctx context.Context, opt *CeDismissAnalysisWarningOptions) (*http.Response, error) {
 	err := s.ValidateDismissAnalysisWarningOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "ce/dismiss_analysis_warning", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "ce/dismiss_analysis_warning", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -728,8 +731,8 @@ func (s *CeService) DismissAnalysisWarning(opt *CeDismissAnalysisWarningOptions)
 //
 // API endpoint: GET /api/ce/indexation_status.
 // Since: 8.4.
-func (s *CeService) IndexationStatus() (*CeIndexationStatus, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/indexation_status", nil)
+func (s *CeService) IndexationStatus(ctx context.Context) (*CeIndexationStatus, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/indexation_status", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -749,8 +752,8 @@ func (s *CeService) IndexationStatus() (*CeIndexationStatus, *http.Response, err
 //
 // API endpoint: GET /api/ce/info.
 // Since: 7.2.
-func (s *CeService) Info() (*CeInfo, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/info", nil)
+func (s *CeService) Info(ctx context.Context) (*CeInfo, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/info", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -770,8 +773,8 @@ func (s *CeService) Info() (*CeInfo, *http.Response, error) {
 //
 // API endpoint: POST /api/ce/pause.
 // Since: 7.2.
-func (s *CeService) Pause() (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "ce/pause", nil)
+func (s *CeService) Pause(ctx context.Context) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "ce/pause", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -789,8 +792,8 @@ func (s *CeService) Pause() (*http.Response, error) {
 //
 // API endpoint: POST /api/ce/resume.
 // Since: 7.2.
-func (s *CeService) Resume() (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "ce/resume", nil)
+func (s *CeService) Resume(ctx context.Context) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "ce/resume", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -809,13 +812,13 @@ func (s *CeService) Resume() (*http.Response, error) {
 //
 // API endpoint: POST /api/ce/submit.
 // Since: 5.2.
-func (s *CeService) Submit(opt *CeSubmitOptions) (*CeSubmit, *http.Response, error) {
+func (s *CeService) Submit(ctx context.Context, opt *CeSubmitOptions) (*CeSubmit, *http.Response, error) {
 	err := s.ValidateSubmitOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "ce/submit", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "ce/submit", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -836,13 +839,13 @@ func (s *CeService) Submit(opt *CeSubmitOptions) (*CeSubmit, *http.Response, err
 //
 // API endpoint: GET /api/ce/task.
 // Since: 5.2.
-func (s *CeService) Task(opt *CeTaskOptions) (*CeTaskDetails, *http.Response, error) {
+func (s *CeService) Task(ctx context.Context, opt *CeTaskOptions) (*CeTaskDetails, *http.Response, error) {
 	err := s.ValidateTaskOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/task", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/task", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -861,8 +864,8 @@ func (s *CeService) Task(opt *CeTaskOptions) (*CeTaskDetails, *http.Response, er
 //
 // API endpoint: GET /api/ce/task_types.
 // Since: 5.5.
-func (s *CeService) TaskTypes() (*CeTaskTypes, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/task_types", nil)
+func (s *CeService) TaskTypes(ctx context.Context) (*CeTaskTypes, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/task_types", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -882,8 +885,8 @@ func (s *CeService) TaskTypes() (*CeTaskTypes, *http.Response, error) {
 //
 // API endpoint: GET /api/ce/worker_count.
 // Since: 6.5.
-func (s *CeService) WorkerCount() (*CeWorkerCount, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "ce/worker_count", nil)
+func (s *CeService) WorkerCount(ctx context.Context) (*CeWorkerCount, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "ce/worker_count", nil)
 	if err != nil {
 		return nil, nil, err
 	}

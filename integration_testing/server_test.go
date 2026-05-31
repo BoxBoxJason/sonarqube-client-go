@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -30,7 +31,7 @@ var _ = Describe("Server Service", Ordered, func() {
 	Describe("Version", func() {
 		Context("Functional Tests", func() {
 			It("should return server version", func() {
-				version, resp, err := client.Server.Version()
+				version, resp, err := client.Server.Version(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(version).NotTo(BeNil())
@@ -38,7 +39,7 @@ var _ = Describe("Server Service", Ordered, func() {
 			})
 
 			It("should return version in expected format", func() {
-				version, resp, err := client.Server.Version()
+				version, resp, err := client.Server.Version(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(version).NotTo(BeNil())
@@ -50,11 +51,11 @@ var _ = Describe("Server Service", Ordered, func() {
 			})
 
 			It("should return consistent version on multiple calls", func() {
-				version1, resp1, err := client.Server.Version()
+				version1, resp1, err := client.Server.Version(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
-				version2, resp2, err := client.Server.Version()
+				version2, resp2, err := client.Server.Version(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 
@@ -62,7 +63,7 @@ var _ = Describe("Server Service", Ordered, func() {
 			})
 
 			It("should return version with major version >= 9", func() {
-				version, resp, err := client.Server.Version()
+				version, resp, err := client.Server.Version(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(version).NotTo(BeNil())

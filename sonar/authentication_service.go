@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // AuthenticationService handles communication with the authentication related methods
 // of the SonarQube API.
@@ -64,13 +67,13 @@ func (s *AuthenticationService) ValidateLoginOpt(opt *AuthenticationLoginOptions
 // Login authenticates a user.
 //
 // API endpoint: POST /api/authentication/login.
-func (s *AuthenticationService) Login(opt *AuthenticationLoginOptions) (*http.Response, error) {
+func (s *AuthenticationService) Login(ctx context.Context, opt *AuthenticationLoginOptions) (*http.Response, error) {
 	err := s.ValidateLoginOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "authentication/login", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "authentication/login", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -86,8 +89,8 @@ func (s *AuthenticationService) Login(opt *AuthenticationLoginOptions) (*http.Re
 // Logout logs out the current user.
 //
 // API endpoint: POST /api/authentication/logout.
-func (s *AuthenticationService) Logout() (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "authentication/logout", nil)
+func (s *AuthenticationService) Logout(ctx context.Context) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "authentication/logout", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +106,8 @@ func (s *AuthenticationService) Logout() (*http.Response, error) {
 // Validate checks if the current credentials are valid.
 //
 // API endpoint: GET /api/authentication/validate.
-func (s *AuthenticationService) Validate() (*AuthenticationValidation, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "authentication/validate", nil)
+func (s *AuthenticationService) Validate(ctx context.Context) (*AuthenticationValidation, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "authentication/validate", nil)
 	if err != nil {
 		return nil, nil, err
 	}

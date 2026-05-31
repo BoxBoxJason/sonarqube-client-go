@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -42,7 +43,7 @@ func TestWebservicesService_List(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Webservices.List(nil)
+		result, resp, err := client.Webservices.List(context.Background(), nil)
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -59,7 +60,7 @@ func TestWebservicesService_List(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Webservices.List(&WebservicesListOptions{
+		_, _, err := client.Webservices.List(context.Background(), &WebservicesListOptions{
 			IncludeInternals: true,
 		})
 
@@ -71,7 +72,7 @@ func TestWebservicesService_List(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		_, _, err := client.Webservices.List(&WebservicesListOptions{})
+		_, _, err := client.Webservices.List(context.Background(), &WebservicesListOptions{})
 
 		require.NoError(t, err)
 	})
@@ -90,7 +91,7 @@ func TestWebservicesService_ResponseExample(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOptions{
+		result, resp, err := client.Webservices.ResponseExample(context.Background(), &WebservicesResponseExampleOptions{
 			Action:     "search",
 			Controller: "api/issues",
 		})
@@ -103,7 +104,7 @@ func TestWebservicesService_ResponseExample(t *testing.T) {
 	t.Run("nil option fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Webservices.ResponseExample(nil)
+		_, _, err := client.Webservices.ResponseExample(context.Background(), nil)
 
 		assert.Error(t, err)
 	})
@@ -111,7 +112,7 @@ func TestWebservicesService_ResponseExample(t *testing.T) {
 	t.Run("missing action fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOptions{
+		_, _, err := client.Webservices.ResponseExample(context.Background(), &WebservicesResponseExampleOptions{
 			Controller: "api/issues",
 		})
 
@@ -121,7 +122,7 @@ func TestWebservicesService_ResponseExample(t *testing.T) {
 	t.Run("missing controller fails validation", func(t *testing.T) {
 		client := newLocalhostClient(t)
 
-		_, _, err := client.Webservices.ResponseExample(&WebservicesResponseExampleOptions{
+		_, _, err := client.Webservices.ResponseExample(context.Background(), &WebservicesResponseExampleOptions{
 			Action: "search",
 		})
 

@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 )
@@ -206,13 +207,13 @@ func (s *NewCodePeriodsService) ValidateUnsetOpt(opt *NewCodePeriodsUnsetOptions
 //
 // API endpoint: GET /api/new_code_periods/list.
 // Since: 8.0.
-func (s *NewCodePeriodsService) List(opt *NewCodePeriodsListOptions) (*NewCodePeriodsList, *http.Response, error) {
+func (s *NewCodePeriodsService) List(ctx context.Context, opt *NewCodePeriodsListOptions) (*NewCodePeriodsList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "new_code_periods/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "new_code_periods/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -238,13 +239,13 @@ func (s *NewCodePeriodsService) List(opt *NewCodePeriodsListOptions) (*NewCodePe
 //
 // API endpoint: POST /api/new_code_periods/set.
 // Since: 8.0.
-func (s *NewCodePeriodsService) Set(opt *NewCodePeriodsSetOptions) (*http.Response, error) {
+func (s *NewCodePeriodsService) Set(ctx context.Context, opt *NewCodePeriodsSetOptions) (*http.Response, error) {
 	err := s.ValidateSetOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "new_code_periods/set", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "new_code_periods/set", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -267,13 +268,13 @@ func (s *NewCodePeriodsService) Set(opt *NewCodePeriodsSetOptions) (*http.Respon
 //
 // API endpoint: GET /api/new_code_periods/show.
 // Since: 8.0.
-func (s *NewCodePeriodsService) Show(opt *NewCodePeriodsShowOptions) (*NewCodePeriodsShow, *http.Response, error) {
+func (s *NewCodePeriodsService) Show(ctx context.Context, opt *NewCodePeriodsShowOptions) (*NewCodePeriodsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "new_code_periods/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "new_code_periods/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -297,13 +298,13 @@ func (s *NewCodePeriodsService) Show(opt *NewCodePeriodsShowOptions) (*NewCodePe
 //
 // API endpoint: POST /api/new_code_periods/unset.
 // Since: 8.0.
-func (s *NewCodePeriodsService) Unset(opt *NewCodePeriodsUnsetOptions) (*http.Response, error) {
+func (s *NewCodePeriodsService) Unset(ctx context.Context, opt *NewCodePeriodsUnsetOptions) (*http.Response, error) {
 	err := s.ValidateUnsetOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "new_code_periods/unset", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "new_code_periods/unset", opt)
 	if err != nil {
 		return nil, err
 	}

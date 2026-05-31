@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // EditionsService handles communication with the editions related methods of the
 // SonarQube API. This service is only available in Enterprise Edition.
@@ -94,8 +97,8 @@ func (s *EditionsService) ValidateSetOpt(opt *LicenseSetOptions) error {
 // API endpoint: POST /api/editions/activate_grace_period.
 // Since: 10.3.
 // Enterprise Edition only.
-func (s *EditionsService) ActivateGracePeriod() (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "editions/activate_grace_period", nil)
+func (s *EditionsService) ActivateGracePeriod(ctx context.Context) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "editions/activate_grace_period", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -109,8 +112,8 @@ func (s *EditionsService) ActivateGracePeriod() (*http.Response, error) {
 // API endpoint: GET /api/editions/show_license.
 // Since: 7.2.
 // Enterprise Edition only.
-func (s *EditionsService) Get() (*LicenseGet, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "editions/show_license", nil)
+func (s *EditionsService) Get(ctx context.Context) (*LicenseGet, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "editions/show_license", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -130,8 +133,8 @@ func (s *EditionsService) Get() (*LicenseGet, *http.Response, error) {
 // API endpoint: GET /api/editions/is_valid_license.
 // Since: 7.3.
 // Enterprise Edition only.
-func (s *EditionsService) IsValidLicense() (*LicenseIsValid, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "editions/is_valid_license", nil)
+func (s *EditionsService) IsValidLicense(ctx context.Context) (*LicenseIsValid, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "editions/is_valid_license", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -152,13 +155,13 @@ func (s *EditionsService) IsValidLicense() (*LicenseIsValid, *http.Response, err
 // API endpoint: POST /api/editions/set_license.
 // Since: 7.2.
 // Enterprise Edition only.
-func (s *EditionsService) Set(opt *LicenseSetOptions) (*http.Response, error) {
+func (s *EditionsService) Set(ctx context.Context, opt *LicenseSetOptions) (*http.Response, error) {
 	err := s.ValidateSetOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "editions/set_license", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "editions/set_license", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -172,8 +175,8 @@ func (s *EditionsService) Set(opt *LicenseSetOptions) (*http.Response, error) {
 // API endpoint: POST /api/editions/unset_license.
 // Since: 7.2.
 // Enterprise Edition only.
-func (s *EditionsService) UnsetLicense() (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "editions/unset_license", nil)
+func (s *EditionsService) UnsetLicense(ctx context.Context) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "editions/unset_license", nil)
 	if err != nil {
 		return nil, err
 	}

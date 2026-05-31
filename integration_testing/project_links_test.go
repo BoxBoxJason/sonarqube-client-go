@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -40,14 +41,14 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		BeforeEach(func() {
 			testProjectKey = helpers.UniqueResourceName("proj-link")
 
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "Link Test Project",
 				Project: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey,
 				})
 				return err
@@ -55,7 +56,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		})
 
 		It("should create a project link", func() {
-			result, resp, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+			result, resp, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 				ProjectKey: testProjectKey,
 				Name:       "Homepage",
 				URL:        "https://example.com",
@@ -69,7 +70,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 			linkID := result.Link.ID
 			cleanup.RegisterCleanup("project-link", linkID, func() error {
-				_, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				_, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: linkID,
 				})
 				return err
@@ -77,7 +78,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		})
 
 		It("should create multiple links for same project", func() {
-			result1, _, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+			result1, _, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 				ProjectKey: testProjectKey,
 				Name:       "Homepage",
 				URL:        "https://example.com",
@@ -86,13 +87,13 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			Expect(result1.Link.ID).NotTo(BeEmpty())
 
 			cleanup.RegisterCleanup("project-link", result1.Link.ID, func() error {
-				_, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				_, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: result1.Link.ID,
 				})
 				return err
 			})
 
-			result2, _, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+			result2, _, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 				ProjectKey: testProjectKey,
 				Name:       "CI",
 				URL:        "https://ci.example.com",
@@ -102,13 +103,13 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			Expect(result2.Link.ID).NotTo(Equal(result1.Link.ID))
 
 			cleanup.RegisterCleanup("project-link", result2.Link.ID, func() error {
-				_, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				_, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: result2.Link.ID,
 				})
 				return err
 			})
 
-			searchResult, _, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+			searchResult, _, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 				ProjectKey: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -117,7 +118,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 		It("should create links with different types", func() {
 			// Create a generic custom link (won't match predefined type patterns)
-			customResult, _, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+			customResult, _, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 				ProjectKey: testProjectKey,
 				Name:       "Documentation",
 				URL:        "https://docs.example.com",
@@ -127,7 +128,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			Expect(customResult.Link.Name).To(Equal("Documentation"))
 
 			cleanup.RegisterCleanup("project-link", customResult.Link.ID, func() error {
-				_, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				_, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: customResult.Link.ID,
 				})
 				return err
@@ -137,7 +138,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			// Types can be: homepage, issue, scm, ci, custom, etc.
 			// Note: Links with certain inferred types (homepage, issue, scm, ci) may be
 			// provided by SonarQube and cannot be deleted
-			searchResult, _, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+			searchResult, _, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 				ProjectKey: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -155,13 +156,13 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.ProjectLinks.Create(nil)
+				_, resp, err := client.ProjectLinks.Create(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing name", func() {
-				_, resp, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+				_, resp, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 					ProjectKey: testProjectKey,
 					URL:        "https://example.com",
 				})
@@ -170,7 +171,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			})
 
 			It("should fail with missing URL", func() {
-				_, resp, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+				_, resp, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 					ProjectKey: testProjectKey,
 					Name:       "Homepage",
 				})
@@ -179,7 +180,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			})
 
 			It("should fail with missing project identifier", func() {
-				_, resp, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+				_, resp, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 					Name: "Homepage",
 					URL:  "https://example.com",
 				})
@@ -190,7 +191,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				_, resp, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+				_, resp, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 					ProjectKey: "non-existent-project-12345",
 					Name:       "Homepage",
 					URL:        "https://example.com",
@@ -216,20 +217,20 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		BeforeEach(func() {
 			testProjectKey = helpers.UniqueResourceName("proj-search-link")
 
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "Search Link Test Project",
 				Project: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey,
 				})
 				return err
 			})
 
-			result, _, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+			result, _, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 				ProjectKey: testProjectKey,
 				Name:       "Test Link",
 				URL:        "https://test.example.com",
@@ -238,7 +239,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			testLinkID = result.Link.ID
 
 			cleanup.RegisterCleanup("project-link", testLinkID, func() error {
-				_, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				_, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: testLinkID,
 				})
 				return err
@@ -246,7 +247,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		})
 
 		It("should search links by project key", func() {
-			result, resp, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+			result, resp, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 				ProjectKey: testProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -269,20 +270,20 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		It("should return empty list for project without links", func() {
 			newProjectKey := helpers.UniqueResourceName("proj-no-links")
 
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "No Links Project",
 				Project: newProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", newProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: newProjectKey,
 				})
 				return err
 			})
 
-			result, resp, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+			result, resp, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 				ProjectKey: newProjectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -293,13 +294,13 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.ProjectLinks.Search(nil)
+				_, resp, err := client.ProjectLinks.Search(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing project identifier", func() {
-				_, resp, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{})
+				_, resp, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -307,7 +308,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent project", func() {
-				_, resp, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+				_, resp, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 					ProjectKey: "non-existent-project-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -324,20 +325,20 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		It("should delete a project link", func() {
 			projectKey := helpers.UniqueResourceName("proj-del-link")
 
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "Delete Link Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			result, _, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+			result, _, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 				ProjectKey: projectKey,
 				Name:       "To Delete",
 				URL:        "https://delete.example.com",
@@ -347,19 +348,19 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 			// Register cleanup in case deletion fails
 			cleanup.RegisterCleanup("project-link", linkID, func() error {
-				_, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				_, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: linkID,
 				})
 				return err
 			})
 
-			resp, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+			resp, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 				ID: linkID,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
-			searchResult, _, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+			searchResult, _, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -370,13 +371,13 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.ProjectLinks.Delete(nil)
+				resp, err := client.ProjectLinks.Delete(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing ID", func() {
-				resp, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{})
+				resp, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -384,7 +385,7 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 		Context("error cases", func() {
 			It("should fail for non-existent link", func() {
-				resp, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				resp, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: "99999999",
 				})
 				Expect(err).To(HaveOccurred())
@@ -401,20 +402,20 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 		It("should complete full link lifecycle", func() {
 			projectKey := helpers.UniqueResourceName("proj-link-lifecycle")
 
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "Link Lifecycle Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			createResult, _, err := client.ProjectLinks.Create(&sonar.ProjectLinksCreateOptions{
+			createResult, _, err := client.ProjectLinks.Create(context.Background(), &sonar.ProjectLinksCreateOptions{
 				ProjectKey: projectKey,
 				Name:       "Lifecycle Link",
 				URL:        "https://lifecycle.example.com",
@@ -425,13 +426,13 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 
 			// Register cleanup in case test fails before deletion
 			cleanup.RegisterCleanup("project-link", linkID, func() error {
-				_, err := client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+				_, err := client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 					ID: linkID,
 				})
 				return err
 			})
 
-			searchResult, _, err := client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+			searchResult, _, err := client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -446,12 +447,12 @@ var _ = Describe("ProjectLinks Service", Ordered, func() {
 			}
 			Expect(found).To(BeTrue())
 
-			_, err = client.ProjectLinks.Delete(&sonar.ProjectLinksDeleteOptions{
+			_, err = client.ProjectLinks.Delete(context.Background(), &sonar.ProjectLinksDeleteOptions{
 				ID: linkID,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			searchResult, _, err = client.ProjectLinks.Search(&sonar.ProjectLinksSearchOptions{
+			searchResult, _, err = client.ProjectLinks.Search(context.Background(), &sonar.ProjectLinksSearchOptions{
 				ProjectKey: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())

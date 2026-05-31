@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -28,7 +29,7 @@ var _ = Describe("GithubProvisioning Service", Ordered, func() {
 	Describe("Check", func() {
 		Context("Functional Tests", func() {
 			It("should check GitHub provisioning configuration", func() {
-				result, resp, err := client.GithubProvisioning.Check()
+				result, resp, err := client.GithubProvisioning.Check(context.Background(), )
 				// Skip if GitHub integration is not configured or API not available
 				if resp != nil && (resp.StatusCode == http.StatusNotFound ||
 					resp.StatusCode == http.StatusBadRequest ||
@@ -42,7 +43,7 @@ var _ = Describe("GithubProvisioning Service", Ordered, func() {
 			})
 
 			It("should return valid provisioning status structure", func() {
-				result, resp, err := client.GithubProvisioning.Check()
+				result, resp, err := client.GithubProvisioning.Check(context.Background(), )
 				// Skip if GitHub integration is not configured
 				if resp != nil && (resp.StatusCode == http.StatusNotFound ||
 					resp.StatusCode == http.StatusBadRequest ||

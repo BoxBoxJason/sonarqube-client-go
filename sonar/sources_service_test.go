@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -31,7 +32,7 @@ func TestSourcesService_Index(t *testing.T) {
 		To:       10,
 	}
 
-	result, resp, err := client.Sources.Index(opt)
+	result, resp, err := client.Sources.Index(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "package main", result.Sources["1"])
@@ -43,7 +44,7 @@ func TestSourcesService_Index_ValidationError(t *testing.T) {
 
 	// Test missing Resource
 	opt := &SourcesIndexOptions{}
-	_, _, err := client.Sources.Index(opt)
+	_, _, err := client.Sources.Index(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -69,7 +70,7 @@ func TestSourcesService_IssueSnippets(t *testing.T) {
 		IssueKey: "AX1234567890",
 	}
 
-	result, resp, err := client.Sources.IssueSnippets(opt)
+	result, resp, err := client.Sources.IssueSnippets(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	snippet, ok := (*result)["my-project:src/main.go"]
@@ -83,7 +84,7 @@ func TestSourcesService_IssueSnippets_ValidationError(t *testing.T) {
 
 	// Test missing IssueKey
 	opt := &SourcesIssueSnippetsOptions{}
-	_, _, err := client.Sources.IssueSnippets(opt)
+	_, _, err := client.Sources.IssueSnippets(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -112,7 +113,7 @@ func TestSourcesService_Lines(t *testing.T) {
 		To:     100,
 	}
 
-	result, resp, err := client.Sources.Lines(opt)
+	result, resp, err := client.Sources.Lines(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Sources, 1)
@@ -128,7 +129,7 @@ func TestSourcesService_Lines_ValidationError(t *testing.T) {
 	opt := &SourcesLinesOptions{
 		Branch: "main",
 	}
-	_, _, err := client.Sources.Lines(opt)
+	_, _, err := client.Sources.Lines(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -150,7 +151,7 @@ func TestSourcesService_Raw(t *testing.T) {
 		Key: "my-project:src/main.go",
 	}
 
-	result, resp, err := client.Sources.Raw(opt)
+	result, resp, err := client.Sources.Raw(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, expectedContent, result)
@@ -162,7 +163,7 @@ func TestSourcesService_Raw_ValidationError(t *testing.T) {
 
 	// Test missing Key
 	opt := &SourcesRawOptions{}
-	_, _, err := client.Sources.Raw(opt)
+	_, _, err := client.Sources.Raw(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -183,7 +184,7 @@ func TestSourcesService_Scm(t *testing.T) {
 		CommitsByLine: true,
 	}
 
-	result, resp, err := client.Sources.Scm(opt)
+	result, resp, err := client.Sources.Scm(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Scm, 2)
@@ -197,7 +198,7 @@ func TestSourcesService_Scm_ValidationError(t *testing.T) {
 	opt := &SourcesScmOptions{
 		CommitsByLine: true,
 	}
-	_, _, err := client.Sources.Scm(opt)
+	_, _, err := client.Sources.Scm(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -220,7 +221,7 @@ func TestSourcesService_Show(t *testing.T) {
 		To:   10,
 	}
 
-	result, resp, err := client.Sources.Show(opt)
+	result, resp, err := client.Sources.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Sources, 3)
@@ -232,6 +233,6 @@ func TestSourcesService_Show_ValidationError(t *testing.T) {
 
 	// Test missing Key
 	opt := &SourcesShowOptions{}
-	_, _, err := client.Sources.Show(opt)
+	_, _, err := client.Sources.Show(context.Background(), opt)
 	assert.Error(t, err)
 }

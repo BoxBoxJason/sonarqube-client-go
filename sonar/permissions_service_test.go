@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -21,7 +22,7 @@ func TestPermissions_AddGroup(t *testing.T) {
 		Permission: "admin",
 	}
 
-	resp, err := client.Permissions.AddGroup(opt)
+	resp, err := client.Permissions.AddGroup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -36,7 +37,7 @@ func TestPermissions_AddGroup_WithProject(t *testing.T) {
 		ProjectKey: "my-project",
 	}
 
-	resp, err := client.Permissions.AddGroup(opt)
+	resp, err := client.Permissions.AddGroup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -45,23 +46,23 @@ func TestPermissions_AddGroup_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.AddGroup(nil)
+	_, err := client.Permissions.AddGroup(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOptions{
+	_, err = client.Permissions.AddGroup(context.Background(), &PermissionsAddGroupOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOptions{
+	_, err = client.Permissions.AddGroup(context.Background(), &PermissionsAddGroupOptions{
 		GroupName: "developers",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddGroup(&PermissionsAddGroupOptions{
+	_, err = client.Permissions.AddGroup(context.Background(), &PermissionsAddGroupOptions{
 		GroupName:  "developers",
 		Permission: "invalid",
 	})
@@ -82,7 +83,7 @@ func TestPermissions_AddGroupToTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.AddGroupToTemplate(opt)
+	resp, err := client.Permissions.AddGroupToTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -91,25 +92,25 @@ func TestPermissions_AddGroupToTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.AddGroupToTemplate(nil)
+	_, err := client.Permissions.AddGroupToTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
+	_, err = client.Permissions.AddGroupToTemplate(context.Background(), &PermissionsAddGroupToTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
+	_, err = client.Permissions.AddGroupToTemplate(context.Background(), &PermissionsAddGroupToTemplateOptions{
 		GroupName:    "developers",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
+	_, err = client.Permissions.AddGroupToTemplate(context.Background(), &PermissionsAddGroupToTemplateOptions{
 		GroupName:    "developers",
 		Permission:   "gateadmin", // Not a project permission
 		TemplateName: "my-template",
@@ -117,7 +118,7 @@ func TestPermissions_AddGroupToTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.AddGroupToTemplate(&PermissionsAddGroupToTemplateOptions{
+	_, err = client.Permissions.AddGroupToTemplate(context.Background(), &PermissionsAddGroupToTemplateOptions{
 		GroupName:  "developers",
 		Permission: "admin",
 	})
@@ -137,7 +138,7 @@ func TestPermissions_AddProjectCreatorToTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.AddProjectCreatorToTemplate(opt)
+	resp, err := client.Permissions.AddProjectCreatorToTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -146,24 +147,24 @@ func TestPermissions_AddProjectCreatorToTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.AddProjectCreatorToTemplate(nil)
+	_, err := client.Permissions.AddProjectCreatorToTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOptions{
+	_, err = client.Permissions.AddProjectCreatorToTemplate(context.Background(), &PermissionsAddProjectCreatorToTemplateOptions{
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOptions{
+	_, err = client.Permissions.AddProjectCreatorToTemplate(context.Background(), &PermissionsAddProjectCreatorToTemplateOptions{
 		Permission:   "provisioning", // Not a project permission
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.AddProjectCreatorToTemplate(&PermissionsAddProjectCreatorToTemplateOptions{
+	_, err = client.Permissions.AddProjectCreatorToTemplate(context.Background(), &PermissionsAddProjectCreatorToTemplateOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
@@ -182,7 +183,7 @@ func TestPermissions_AddUser(t *testing.T) {
 		Permission: "admin",
 	}
 
-	resp, err := client.Permissions.AddUser(opt)
+	resp, err := client.Permissions.AddUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -191,23 +192,23 @@ func TestPermissions_AddUser_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.AddUser(nil)
+	_, err := client.Permissions.AddUser(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.AddUser(&PermissionsAddUserOptions{
+	_, err = client.Permissions.AddUser(context.Background(), &PermissionsAddUserOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddUser(&PermissionsAddUserOptions{
+	_, err = client.Permissions.AddUser(context.Background(), &PermissionsAddUserOptions{
 		Login: "john.doe",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddUser(&PermissionsAddUserOptions{
+	_, err = client.Permissions.AddUser(context.Background(), &PermissionsAddUserOptions{
 		Login:      "john.doe",
 		Permission: "invalid",
 	})
@@ -228,7 +229,7 @@ func TestPermissions_AddUserToTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.AddUserToTemplate(opt)
+	resp, err := client.Permissions.AddUserToTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -237,25 +238,25 @@ func TestPermissions_AddUserToTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.AddUserToTemplate(nil)
+	_, err := client.Permissions.AddUserToTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
+	_, err = client.Permissions.AddUserToTemplate(context.Background(), &PermissionsAddUserToTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
+	_, err = client.Permissions.AddUserToTemplate(context.Background(), &PermissionsAddUserToTemplateOptions{
 		Login:        "john.doe",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
+	_, err = client.Permissions.AddUserToTemplate(context.Background(), &PermissionsAddUserToTemplateOptions{
 		Login:        "john.doe",
 		Permission:   "profileadmin", // Not a project permission
 		TemplateName: "my-template",
@@ -263,7 +264,7 @@ func TestPermissions_AddUserToTemplate_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.AddUserToTemplate(&PermissionsAddUserToTemplateOptions{
+	_, err = client.Permissions.AddUserToTemplate(context.Background(), &PermissionsAddUserToTemplateOptions{
 		Login:      "john.doe",
 		Permission: "admin",
 	})
@@ -283,7 +284,7 @@ func TestPermissions_ApplyTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.ApplyTemplate(opt)
+	resp, err := client.Permissions.ApplyTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -292,17 +293,17 @@ func TestPermissions_ApplyTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.ApplyTemplate(nil)
+	_, err := client.Permissions.ApplyTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing ProjectID and ProjectKey should fail validation.
-	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOptions{
+	_, err = client.Permissions.ApplyTemplate(context.Background(), &PermissionsApplyTemplateOptions{
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.ApplyTemplate(&PermissionsApplyTemplateOptions{
+	_, err = client.Permissions.ApplyTemplate(context.Background(), &PermissionsApplyTemplateOptions{
 		ProjectKey: "my-project",
 	})
 	assert.Error(t, err)
@@ -320,7 +321,7 @@ func TestPermissions_BulkApplyTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.BulkApplyTemplate(opt)
+	resp, err := client.Permissions.BulkApplyTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -334,7 +335,7 @@ func TestPermissions_BulkApplyTemplate_WithProjects(t *testing.T) {
 		Projects:     []string{"project1", "project2"},
 	}
 
-	resp, err := client.Permissions.BulkApplyTemplate(opt)
+	resp, err := client.Permissions.BulkApplyTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -343,15 +344,15 @@ func TestPermissions_BulkApplyTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.BulkApplyTemplate(nil)
+	_, err := client.Permissions.BulkApplyTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOptions{})
+	_, err = client.Permissions.BulkApplyTemplate(context.Background(), &PermissionsBulkApplyTemplateOptions{})
 	assert.Error(t, err)
 
 	// Invalid qualifier should fail validation.
-	_, err = client.Permissions.BulkApplyTemplate(&PermissionsBulkApplyTemplateOptions{
+	_, err = client.Permissions.BulkApplyTemplate(context.Background(), &PermissionsBulkApplyTemplateOptions{
 		TemplateName: "my-template",
 		Qualifiers:   "INVALID",
 	})
@@ -379,7 +380,7 @@ func TestPermissions_CreateTemplate(t *testing.T) {
 		ProjectKeyPattern: "my-.*",
 	}
 
-	result, resp, err := client.Permissions.CreateTemplate(opt)
+	result, resp, err := client.Permissions.CreateTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -390,11 +391,11 @@ func TestPermissions_CreateTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Permissions.CreateTemplate(nil)
+	_, _, err := client.Permissions.CreateTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Name should fail validation.
-	_, _, err = client.Permissions.CreateTemplate(&PermissionsCreateTemplateOptions{})
+	_, _, err = client.Permissions.CreateTemplate(context.Background(), &PermissionsCreateTemplateOptions{})
 	assert.Error(t, err)
 }
 
@@ -410,7 +411,7 @@ func TestPermissions_DeleteTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.DeleteTemplate(opt)
+	resp, err := client.Permissions.DeleteTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -419,11 +420,11 @@ func TestPermissions_DeleteTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.DeleteTemplate(nil)
+	_, err := client.Permissions.DeleteTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.DeleteTemplate(&PermissionsDeleteTemplateOptions{})
+	_, err = client.Permissions.DeleteTemplate(context.Background(), &PermissionsDeleteTemplateOptions{})
 	assert.Error(t, err)
 }
 
@@ -454,7 +455,7 @@ func TestPermissions_Groups(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/groups", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Permissions.Groups(nil)
+	result, resp, err := client.Permissions.Groups(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -480,7 +481,7 @@ func TestPermissions_Groups_WithOptions(t *testing.T) {
 		Permission: "admin",
 	}
 
-	_, resp, err := client.Permissions.Groups(opt)
+	_, resp, err := client.Permissions.Groups(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -489,13 +490,13 @@ func TestPermissions_Groups_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Invalid permission should fail validation.
-	_, _, err := client.Permissions.Groups(&PermissionsGroupsOptions{
+	_, _, err := client.Permissions.Groups(context.Background(), &PermissionsGroupsOptions{
 		Permission: "invalid",
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.Groups(&PermissionsGroupsOptions{
+	_, _, err = client.Permissions.Groups(context.Background(), &PermissionsGroupsOptions{
 		Query: "ab",
 	})
 	assert.Error(t, err)
@@ -514,7 +515,7 @@ func TestPermissions_RemoveGroup(t *testing.T) {
 		Permission: "admin",
 	}
 
-	resp, err := client.Permissions.RemoveGroup(opt)
+	resp, err := client.Permissions.RemoveGroup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -523,17 +524,17 @@ func TestPermissions_RemoveGroup_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.RemoveGroup(nil)
+	_, err := client.Permissions.RemoveGroup(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOptions{
+	_, err = client.Permissions.RemoveGroup(context.Background(), &PermissionsRemoveGroupOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveGroup(&PermissionsRemoveGroupOptions{
+	_, err = client.Permissions.RemoveGroup(context.Background(), &PermissionsRemoveGroupOptions{
 		GroupName: "developers",
 	})
 	assert.Error(t, err)
@@ -553,7 +554,7 @@ func TestPermissions_RemoveGroupFromTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.RemoveGroupFromTemplate(opt)
+	resp, err := client.Permissions.RemoveGroupFromTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -562,25 +563,25 @@ func TestPermissions_RemoveGroupFromTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.RemoveGroupFromTemplate(nil)
+	_, err := client.Permissions.RemoveGroupFromTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing GroupName should fail validation.
-	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOptions{
+	_, err = client.Permissions.RemoveGroupFromTemplate(context.Background(), &PermissionsRemoveGroupFromTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOptions{
+	_, err = client.Permissions.RemoveGroupFromTemplate(context.Background(), &PermissionsRemoveGroupFromTemplateOptions{
 		GroupName:    "developers",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.RemoveGroupFromTemplate(&PermissionsRemoveGroupFromTemplateOptions{
+	_, err = client.Permissions.RemoveGroupFromTemplate(context.Background(), &PermissionsRemoveGroupFromTemplateOptions{
 		GroupName:  "developers",
 		Permission: "admin",
 	})
@@ -600,7 +601,7 @@ func TestPermissions_RemoveProjectCreatorFromTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(opt)
+	resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -609,17 +610,17 @@ func TestPermissions_RemoveProjectCreatorFromTemplate_ValidationError(t *testing
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.RemoveProjectCreatorFromTemplate(nil)
+	_, err := client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOptions{
+	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), &PermissionsRemoveProjectCreatorFromTemplateOptions{
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(&PermissionsRemoveProjectCreatorFromTemplateOptions{
+	_, err = client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), &PermissionsRemoveProjectCreatorFromTemplateOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
@@ -638,7 +639,7 @@ func TestPermissions_RemoveUser(t *testing.T) {
 		Permission: "admin",
 	}
 
-	resp, err := client.Permissions.RemoveUser(opt)
+	resp, err := client.Permissions.RemoveUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -647,17 +648,17 @@ func TestPermissions_RemoveUser_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.RemoveUser(nil)
+	_, err := client.Permissions.RemoveUser(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOptions{
+	_, err = client.Permissions.RemoveUser(context.Background(), &PermissionsRemoveUserOptions{
 		Permission: "admin",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveUser(&PermissionsRemoveUserOptions{
+	_, err = client.Permissions.RemoveUser(context.Background(), &PermissionsRemoveUserOptions{
 		Login: "john.doe",
 	})
 	assert.Error(t, err)
@@ -677,7 +678,7 @@ func TestPermissions_RemoveUserFromTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.RemoveUserFromTemplate(opt)
+	resp, err := client.Permissions.RemoveUserFromTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -686,25 +687,25 @@ func TestPermissions_RemoveUserFromTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.RemoveUserFromTemplate(nil)
+	_, err := client.Permissions.RemoveUserFromTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOptions{
+	_, err = client.Permissions.RemoveUserFromTemplate(context.Background(), &PermissionsRemoveUserFromTemplateOptions{
 		Permission:   "admin",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing Permission should fail validation.
-	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOptions{
+	_, err = client.Permissions.RemoveUserFromTemplate(context.Background(), &PermissionsRemoveUserFromTemplateOptions{
 		Login:        "john.doe",
 		TemplateName: "my-template",
 	})
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.RemoveUserFromTemplate(&PermissionsRemoveUserFromTemplateOptions{
+	_, err = client.Permissions.RemoveUserFromTemplate(context.Background(), &PermissionsRemoveUserFromTemplateOptions{
 		Login:      "john.doe",
 		Permission: "admin",
 	})
@@ -734,7 +735,7 @@ func TestPermissions_SearchTemplates(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/search_templates", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Permissions.SearchTemplates(nil)
+	result, resp, err := client.Permissions.SearchTemplates(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -782,7 +783,7 @@ func TestPermissions_SetDefaultTemplate(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	resp, err := client.Permissions.SetDefaultTemplate(opt)
+	resp, err := client.Permissions.SetDefaultTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -791,15 +792,15 @@ func TestPermissions_SetDefaultTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Permissions.SetDefaultTemplate(nil)
+	_, err := client.Permissions.SetDefaultTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOptions{})
+	_, err = client.Permissions.SetDefaultTemplate(context.Background(), &PermissionsSetDefaultTemplateOptions{})
 	assert.Error(t, err)
 
 	// Invalid qualifier should fail validation.
-	_, err = client.Permissions.SetDefaultTemplate(&PermissionsSetDefaultTemplateOptions{
+	_, err = client.Permissions.SetDefaultTemplate(context.Background(), &PermissionsSetDefaultTemplateOptions{
 		TemplateName: "my-template",
 		Qualifier:    "INVALID",
 	})
@@ -832,7 +833,7 @@ func TestPermissions_TemplateGroups(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	result, resp, err := client.Permissions.TemplateGroups(opt)
+	result, resp, err := client.Permissions.TemplateGroups(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -844,22 +845,22 @@ func TestPermissions_TemplateGroups_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Permissions.TemplateGroups(nil)
+	_, _, err := client.Permissions.TemplateGroups(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOptions{})
+	_, _, err = client.Permissions.TemplateGroups(context.Background(), &PermissionsTemplateGroupsOptions{})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOptions{
+	_, _, err = client.Permissions.TemplateGroups(context.Background(), &PermissionsTemplateGroupsOptions{
 		TemplateName: "my-template",
 		Permission:   "gateadmin", // Not a project permission
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.TemplateGroups(&PermissionsTemplateGroupsOptions{
+	_, _, err = client.Permissions.TemplateGroups(context.Background(), &PermissionsTemplateGroupsOptions{
 		TemplateName: "my-template",
 		Query:        "ab",
 	})
@@ -893,7 +894,7 @@ func TestPermissions_TemplateUsers(t *testing.T) {
 		TemplateName: "my-template",
 	}
 
-	result, resp, err := client.Permissions.TemplateUsers(opt)
+	result, resp, err := client.Permissions.TemplateUsers(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -905,22 +906,22 @@ func TestPermissions_TemplateUsers_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Permissions.TemplateUsers(nil)
+	_, _, err := client.Permissions.TemplateUsers(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing TemplateID and TemplateName should fail validation.
-	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOptions{})
+	_, _, err = client.Permissions.TemplateUsers(context.Background(), &PermissionsTemplateUsersOptions{})
 	assert.Error(t, err)
 
 	// Invalid permission should fail validation.
-	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOptions{
+	_, _, err = client.Permissions.TemplateUsers(context.Background(), &PermissionsTemplateUsersOptions{
 		TemplateName: "my-template",
 		Permission:   "provisioning", // Not a project permission
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.TemplateUsers(&PermissionsTemplateUsersOptions{
+	_, _, err = client.Permissions.TemplateUsers(context.Background(), &PermissionsTemplateUsersOptions{
 		TemplateName: "my-template",
 		Query:        "ab",
 	})
@@ -948,7 +949,7 @@ func TestPermissions_UpdateTemplate(t *testing.T) {
 		ProjectKeyPattern: "new-.*",
 	}
 
-	result, resp, err := client.Permissions.UpdateTemplate(opt)
+	result, resp, err := client.Permissions.UpdateTemplate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -959,11 +960,11 @@ func TestPermissions_UpdateTemplate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Permissions.UpdateTemplate(nil)
+	_, _, err := client.Permissions.UpdateTemplate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing ID should fail validation.
-	_, _, err = client.Permissions.UpdateTemplate(&PermissionsUpdateTemplateOptions{
+	_, _, err = client.Permissions.UpdateTemplate(context.Background(), &PermissionsUpdateTemplateOptions{
 		Name: "new-name",
 	})
 	assert.Error(t, err)
@@ -1000,7 +1001,7 @@ func TestPermissions_Users(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/permissions/users", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Permissions.Users(nil)
+	result, resp, err := client.Permissions.Users(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -1027,7 +1028,7 @@ func TestPermissions_Users_WithOptions(t *testing.T) {
 		Permission: "admin",
 	}
 
-	_, resp, err := client.Permissions.Users(opt)
+	_, resp, err := client.Permissions.Users(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -1036,13 +1037,13 @@ func TestPermissions_Users_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Invalid permission should fail validation.
-	_, _, err := client.Permissions.Users(&PermissionsUsersOptions{
+	_, _, err := client.Permissions.Users(context.Background(), &PermissionsUsersOptions{
 		Permission: "invalid",
 	})
 	assert.Error(t, err)
 
 	// Query too short should fail validation.
-	_, _, err = client.Permissions.Users(&PermissionsUsersOptions{
+	_, _, err = client.Permissions.Users(context.Background(), &PermissionsUsersOptions{
 		Query: "ab",
 	})
 	assert.Error(t, err)

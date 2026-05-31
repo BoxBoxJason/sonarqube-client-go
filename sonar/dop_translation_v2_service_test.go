@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -28,7 +29,7 @@ func TestDopTranslationV2_CreateOrUpdateBoundProject(t *testing.T) {
 		}, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(&DopTranslationBoundProjectOptions{
+	result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(context.Background(), &DopTranslationBoundProjectOptions{
 		DevOpsPlatformSettingId: "dop-1",
 		Monorepo:                false,
 		ProjectKey:              "my-project",
@@ -58,7 +59,7 @@ func TestDopTranslationV2_CreateOrUpdateBoundProject_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(tt.opt)
+			_, _, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -84,7 +85,7 @@ func TestDopTranslationV2_CreateBoundProject(t *testing.T) {
 		}, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.DopTranslation.CreateBoundProject(&DopTranslationBoundProjectOptions{
+	result, resp, err := client.V2.DopTranslation.CreateBoundProject(context.Background(), &DopTranslationBoundProjectOptions{
 		DevOpsPlatformSettingId: "dop-1",
 		Monorepo:                true,
 		ProjectKey:              "mono-project",
@@ -100,7 +101,7 @@ func TestDopTranslationV2_CreateBoundProject(t *testing.T) {
 func TestDopTranslationV2_CreateBoundProject_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.DopTranslation.CreateBoundProject(nil)
+	_, _, err := client.V2.DopTranslation.CreateBoundProject(context.Background(), nil)
 	assert.Error(t, err)
 }
 
@@ -119,7 +120,7 @@ func TestDopTranslationV2_GetDopSettings(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/dop-translation/dop-settings", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.DopTranslation.GetDopSettings()
+	result, resp, err := client.V2.DopTranslation.GetDopSettings(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.DopSettings, 2)

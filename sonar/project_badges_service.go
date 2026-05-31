@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 const (
 	// BadgeMetricCoverage represents the coverage metric for badges.
@@ -215,13 +218,13 @@ func (s *ProjectBadgesService) ValidateTokenOpt(opt *ProjectBadgesTokenOptions) 
 //
 // API endpoint: GET /api/project_badges/measure.
 // Since: 7.1.
-func (s *ProjectBadgesService) Measure(opt *ProjectBadgesMeasureOptions) (*string, *http.Response, error) {
+func (s *ProjectBadgesService) Measure(ctx context.Context, opt *ProjectBadgesMeasureOptions) (*string, *http.Response, error) {
 	err := s.ValidateMeasureOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_badges/measure", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_badges/measure", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -241,13 +244,13 @@ func (s *ProjectBadgesService) Measure(opt *ProjectBadgesMeasureOptions) (*strin
 //
 // API endpoint: GET /api/project_badges/quality_gate.
 // Since: 7.1.
-func (s *ProjectBadgesService) QualityGate(opt *ProjectBadgesQualityGateOptions) (*string, *http.Response, error) {
+func (s *ProjectBadgesService) QualityGate(ctx context.Context, opt *ProjectBadgesQualityGateOptions) (*string, *http.Response, error) {
 	err := s.ValidateQualityGateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_badges/quality_gate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_badges/quality_gate", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -268,13 +271,13 @@ func (s *ProjectBadgesService) QualityGate(opt *ProjectBadgesQualityGateOptions)
 //
 // API endpoint: POST /api/project_badges/renew_token.
 // Since: 9.2.
-func (s *ProjectBadgesService) RenewToken(opt *ProjectBadgesRenewTokenOptions) (*http.Response, error) {
+func (s *ProjectBadgesService) RenewToken(ctx context.Context, opt *ProjectBadgesRenewTokenOptions) (*http.Response, error) {
 	err := s.ValidateRenewTokenOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "project_badges/renew_token", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "project_badges/renew_token", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -293,13 +296,13 @@ func (s *ProjectBadgesService) RenewToken(opt *ProjectBadgesRenewTokenOptions) (
 //
 // API endpoint: GET /api/project_badges/token.
 // Since: 9.2.
-func (s *ProjectBadgesService) Token(opt *ProjectBadgesTokenOptions) (*ProjectBadgesToken, *http.Response, error) {
+func (s *ProjectBadgesService) Token(ctx context.Context, opt *ProjectBadgesTokenOptions) (*ProjectBadgesToken, *http.Response, error) {
 	err := s.ValidateTokenOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "project_badges/token", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "project_badges/token", opt)
 	if err != nil {
 		return nil, nil, err
 	}

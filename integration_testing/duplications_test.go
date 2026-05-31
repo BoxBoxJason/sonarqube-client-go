@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -26,14 +27,14 @@ var _ = Describe("Duplications Service", Ordered, func() {
 
 		// Create a test project for duplications-related operations
 		projectKey = helpers.UniqueResourceName("dup")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    "Duplications Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -53,7 +54,7 @@ var _ = Describe("Duplications Service", Ordered, func() {
 	Describe("Show", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Duplications.Show(nil)
+				result, resp, err := client.Duplications.Show(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -61,7 +62,7 @@ var _ = Describe("Duplications Service", Ordered, func() {
 			})
 
 			It("should fail without required key", func() {
-				result, resp, err := client.Duplications.Show(&sonar.DuplicationsShowOptions{})
+				result, resp, err := client.Duplications.Show(context.Background(), &sonar.DuplicationsShowOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(result).To(BeNil())
@@ -71,7 +72,7 @@ var _ = Describe("Duplications Service", Ordered, func() {
 
 		Context("Non-Existent File", func() {
 			It("should fail for non-existent file key", func() {
-				result, resp, err := client.Duplications.Show(&sonar.DuplicationsShowOptions{
+				result, resp, err := client.Duplications.Show(context.Background(), &sonar.DuplicationsShowOptions{
 					Key: "non-existent-file-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -84,7 +85,7 @@ var _ = Describe("Duplications Service", Ordered, func() {
 
 		Context("Project Key", func() {
 			It("should work with project key (empty duplications)", func() {
-				result, resp, err := client.Duplications.Show(&sonar.DuplicationsShowOptions{
+				result, resp, err := client.Duplications.Show(context.Background(), &sonar.DuplicationsShowOptions{
 					Key: projectKey,
 				})
 				// May succeed with empty result or fail if the project doesn't have analyzed files

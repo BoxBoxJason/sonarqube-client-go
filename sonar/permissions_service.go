@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 const (
 	// MinPermissionQueryLength is the minimum required length for permission query strings.
@@ -1109,13 +1112,13 @@ func (s *PermissionsService) ValidateUsersOpt(opt *PermissionsUsersOptions) erro
 //
 // API endpoint: POST /api/permissions/add_group.
 // Since: 5.2.
-func (s *PermissionsService) AddGroup(opt *PermissionsAddGroupOptions) (*http.Response, error) {
+func (s *PermissionsService) AddGroup(ctx context.Context, opt *PermissionsAddGroupOptions) (*http.Response, error) {
 	err := s.ValidateAddGroupOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/add_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/add_group", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1134,13 +1137,13 @@ func (s *PermissionsService) AddGroup(opt *PermissionsAddGroupOptions) (*http.Re
 //
 // API endpoint: POST /api/permissions/add_group_to_template.
 // Since: 5.2.
-func (s *PermissionsService) AddGroupToTemplate(opt *PermissionsAddGroupToTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) AddGroupToTemplate(ctx context.Context, opt *PermissionsAddGroupToTemplateOptions) (*http.Response, error) {
 	err := s.ValidateAddGroupToTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/add_group_to_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/add_group_to_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1158,13 +1161,13 @@ func (s *PermissionsService) AddGroupToTemplate(opt *PermissionsAddGroupToTempla
 //
 // API endpoint: POST /api/permissions/add_project_creator_to_template.
 // Since: 6.0.
-func (s *PermissionsService) AddProjectCreatorToTemplate(opt *PermissionsAddProjectCreatorToTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) AddProjectCreatorToTemplate(ctx context.Context, opt *PermissionsAddProjectCreatorToTemplateOptions) (*http.Response, error) {
 	err := s.ValidateAddProjectCreatorToTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/add_project_creator_to_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/add_project_creator_to_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1186,13 +1189,13 @@ func (s *PermissionsService) AddProjectCreatorToTemplate(opt *PermissionsAddProj
 //
 // API endpoint: POST /api/permissions/add_user.
 // Since: 5.2.
-func (s *PermissionsService) AddUser(opt *PermissionsAddUserOptions) (*http.Response, error) {
+func (s *PermissionsService) AddUser(ctx context.Context, opt *PermissionsAddUserOptions) (*http.Response, error) {
 	err := s.ValidateAddUserOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/add_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/add_user", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1210,13 +1213,13 @@ func (s *PermissionsService) AddUser(opt *PermissionsAddUserOptions) (*http.Resp
 //
 // API endpoint: POST /api/permissions/add_user_to_template.
 // Since: 5.2.
-func (s *PermissionsService) AddUserToTemplate(opt *PermissionsAddUserToTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) AddUserToTemplate(ctx context.Context, opt *PermissionsAddUserToTemplateOptions) (*http.Response, error) {
 	err := s.ValidateAddUserToTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/add_user_to_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/add_user_to_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1236,13 +1239,13 @@ func (s *PermissionsService) AddUserToTemplate(opt *PermissionsAddUserToTemplate
 //
 // API endpoint: POST /api/permissions/apply_template.
 // Since: 5.2.
-func (s *PermissionsService) ApplyTemplate(opt *PermissionsApplyTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) ApplyTemplate(ctx context.Context, opt *PermissionsApplyTemplateOptions) (*http.Response, error) {
 	err := s.ValidateApplyTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/apply_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/apply_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1262,13 +1265,13 @@ func (s *PermissionsService) ApplyTemplate(opt *PermissionsApplyTemplateOptions)
 //
 // API endpoint: POST /api/permissions/bulk_apply_template.
 // Since: 5.5.
-func (s *PermissionsService) BulkApplyTemplate(opt *PermissionsBulkApplyTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) BulkApplyTemplate(ctx context.Context, opt *PermissionsBulkApplyTemplateOptions) (*http.Response, error) {
 	err := s.ValidateBulkApplyTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/bulk_apply_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/bulk_apply_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1286,13 +1289,13 @@ func (s *PermissionsService) BulkApplyTemplate(opt *PermissionsBulkApplyTemplate
 //
 // API endpoint: POST /api/permissions/create_template.
 // Since: 5.2.
-func (s *PermissionsService) CreateTemplate(opt *PermissionsCreateTemplateOptions) (*PermissionsCreateTemplate, *http.Response, error) {
+func (s *PermissionsService) CreateTemplate(ctx context.Context, opt *PermissionsCreateTemplateOptions) (*PermissionsCreateTemplate, *http.Response, error) {
 	err := s.ValidateCreateTemplateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/create_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/create_template", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1312,13 +1315,13 @@ func (s *PermissionsService) CreateTemplate(opt *PermissionsCreateTemplateOption
 //
 // API endpoint: POST /api/permissions/delete_template.
 // Since: 5.2.
-func (s *PermissionsService) DeleteTemplate(opt *PermissionsDeleteTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) DeleteTemplate(ctx context.Context, opt *PermissionsDeleteTemplateOptions) (*http.Response, error) {
 	err := s.ValidateDeleteTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/delete_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/delete_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1344,13 +1347,13 @@ func (s *PermissionsService) DeleteTemplate(opt *PermissionsDeleteTemplateOption
 //
 // API endpoint: GET /api/permissions/groups.
 // Since: 5.2.
-func (s *PermissionsService) Groups(opt *PermissionsGroupsOptions) (*PermissionsGroups, *http.Response, error) {
+func (s *PermissionsService) Groups(ctx context.Context, opt *PermissionsGroupsOptions) (*PermissionsGroups, *http.Response, error) {
 	err := s.ValidateGroupsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "permissions/groups", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "permissions/groups", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1375,13 +1378,13 @@ func (s *PermissionsService) Groups(opt *PermissionsGroupsOptions) (*Permissions
 //
 // API endpoint: POST /api/permissions/remove_group.
 // Since: 5.2.
-func (s *PermissionsService) RemoveGroup(opt *PermissionsRemoveGroupOptions) (*http.Response, error) {
+func (s *PermissionsService) RemoveGroup(ctx context.Context, opt *PermissionsRemoveGroupOptions) (*http.Response, error) {
 	err := s.ValidateRemoveGroupOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/remove_group", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/remove_group", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1400,13 +1403,13 @@ func (s *PermissionsService) RemoveGroup(opt *PermissionsRemoveGroupOptions) (*h
 //
 // API endpoint: POST /api/permissions/remove_group_from_template.
 // Since: 5.2.
-func (s *PermissionsService) RemoveGroupFromTemplate(opt *PermissionsRemoveGroupFromTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) RemoveGroupFromTemplate(ctx context.Context, opt *PermissionsRemoveGroupFromTemplateOptions) (*http.Response, error) {
 	err := s.ValidateRemoveGroupFromTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/remove_group_from_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/remove_group_from_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1424,13 +1427,13 @@ func (s *PermissionsService) RemoveGroupFromTemplate(opt *PermissionsRemoveGroup
 //
 // API endpoint: POST /api/permissions/remove_project_creator_from_template.
 // Since: 6.0.
-func (s *PermissionsService) RemoveProjectCreatorFromTemplate(opt *PermissionsRemoveProjectCreatorFromTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) RemoveProjectCreatorFromTemplate(ctx context.Context, opt *PermissionsRemoveProjectCreatorFromTemplateOptions) (*http.Response, error) {
 	err := s.ValidateRemoveProjectCreatorFromTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/remove_project_creator_from_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/remove_project_creator_from_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1452,13 +1455,13 @@ func (s *PermissionsService) RemoveProjectCreatorFromTemplate(opt *PermissionsRe
 //
 // API endpoint: POST /api/permissions/remove_user.
 // Since: 5.2.
-func (s *PermissionsService) RemoveUser(opt *PermissionsRemoveUserOptions) (*http.Response, error) {
+func (s *PermissionsService) RemoveUser(ctx context.Context, opt *PermissionsRemoveUserOptions) (*http.Response, error) {
 	err := s.ValidateRemoveUserOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/remove_user", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/remove_user", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1476,13 +1479,13 @@ func (s *PermissionsService) RemoveUser(opt *PermissionsRemoveUserOptions) (*htt
 //
 // API endpoint: POST /api/permissions/remove_user_from_template.
 // Since: 5.2.
-func (s *PermissionsService) RemoveUserFromTemplate(opt *PermissionsRemoveUserFromTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) RemoveUserFromTemplate(ctx context.Context, opt *PermissionsRemoveUserFromTemplateOptions) (*http.Response, error) {
 	err := s.ValidateRemoveUserFromTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/remove_user_from_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/remove_user_from_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1501,13 +1504,13 @@ func (s *PermissionsService) RemoveUserFromTemplate(opt *PermissionsRemoveUserFr
 //
 // API endpoint: GET /api/permissions/search_templates.
 // Since: 5.2.
-func (s *PermissionsService) SearchTemplates(opt *PermissionsSearchTemplatesOptions) (*PermissionsSearchTemplates, *http.Response, error) {
+func (s *PermissionsService) SearchTemplates(ctx context.Context, opt *PermissionsSearchTemplatesOptions) (*PermissionsSearchTemplates, *http.Response, error) {
 	err := s.ValidateSearchTemplatesOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "permissions/search_templates", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "permissions/search_templates", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1527,13 +1530,13 @@ func (s *PermissionsService) SearchTemplates(opt *PermissionsSearchTemplatesOpti
 //
 // API endpoint: POST /api/permissions/set_default_template.
 // Since: 5.2.
-func (s *PermissionsService) SetDefaultTemplate(opt *PermissionsSetDefaultTemplateOptions) (*http.Response, error) {
+func (s *PermissionsService) SetDefaultTemplate(ctx context.Context, opt *PermissionsSetDefaultTemplateOptions) (*http.Response, error) {
 	err := s.ValidateSetDefaultTemplateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/set_default_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/set_default_template", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1556,13 +1559,13 @@ func (s *PermissionsService) SetDefaultTemplate(opt *PermissionsSetDefaultTempla
 //
 // API endpoint: GET /api/permissions/template_groups.
 // Since: 5.2.
-func (s *PermissionsService) TemplateGroups(opt *PermissionsTemplateGroupsOptions) (*PermissionsTemplateGroups, *http.Response, error) {
+func (s *PermissionsService) TemplateGroups(ctx context.Context, opt *PermissionsTemplateGroupsOptions) (*PermissionsTemplateGroups, *http.Response, error) {
 	err := s.ValidateTemplateGroupsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "permissions/template_groups", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "permissions/template_groups", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1587,13 +1590,13 @@ func (s *PermissionsService) TemplateGroups(opt *PermissionsTemplateGroupsOption
 //
 // API endpoint: GET /api/permissions/template_users.
 // Since: 5.2.
-func (s *PermissionsService) TemplateUsers(opt *PermissionsTemplateUsersOptions) (*PermissionsTemplateUsers, *http.Response, error) {
+func (s *PermissionsService) TemplateUsers(ctx context.Context, opt *PermissionsTemplateUsersOptions) (*PermissionsTemplateUsers, *http.Response, error) {
 	err := s.ValidateTemplateUsersOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "permissions/template_users", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "permissions/template_users", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1613,13 +1616,13 @@ func (s *PermissionsService) TemplateUsers(opt *PermissionsTemplateUsersOptions)
 //
 // API endpoint: POST /api/permissions/update_template.
 // Since: 5.2.
-func (s *PermissionsService) UpdateTemplate(opt *PermissionsUpdateTemplateOptions) (*PermissionsUpdateTemplate, *http.Response, error) {
+func (s *PermissionsService) UpdateTemplate(ctx context.Context, opt *PermissionsUpdateTemplateOptions) (*PermissionsUpdateTemplate, *http.Response, error) {
 	err := s.ValidateUpdateTemplateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "permissions/update_template", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "permissions/update_template", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1648,13 +1651,13 @@ func (s *PermissionsService) UpdateTemplate(opt *PermissionsUpdateTemplateOption
 //
 // API endpoint: GET /api/permissions/users.
 // Since: 5.2.
-func (s *PermissionsService) Users(opt *PermissionsUsersOptions) (*PermissionsUsers, *http.Response, error) {
+func (s *PermissionsService) Users(ctx context.Context, opt *PermissionsUsersOptions) (*PermissionsUsers, *http.Response, error) {
 	err := s.ValidateUsersOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "permissions/users", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "permissions/users", opt)
 	if err != nil {
 		return nil, nil, err
 	}

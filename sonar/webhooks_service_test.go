@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -28,7 +29,7 @@ func TestWebhooks_Create(t *testing.T) {
 		Secret: "my-secret-at-least-16",
 	}
 
-	result, resp, err := client.Webhooks.Create(opt)
+	result, resp, err := client.Webhooks.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "uuid-webhook-1", result.Webhook.Key)
@@ -38,37 +39,37 @@ func TestWebhooks_Create_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Webhooks.Create(nil)
+	_, _, err := client.Webhooks.Create(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
+	_, _, err = client.Webhooks.Create(context.Background(), &WebhooksCreateOptions{
 		URL: "https://example.com",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
+	_, _, err = client.Webhooks.Create(context.Background(), &WebhooksCreateOptions{
 		Name: "My Webhook",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
+	_, _, err = client.Webhooks.Create(context.Background(), &WebhooksCreateOptions{
 		Name: strings.Repeat("a", MaxWebhookNameLength+1),
 		URL:  "https://example.com",
 	})
 	assert.Error(t, err)
 
 	// Test URL too long
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
+	_, _, err = client.Webhooks.Create(context.Background(), &WebhooksCreateOptions{
 		Name: "My Webhook",
 		URL:  strings.Repeat("a", MaxWebhookURLLength+1),
 	})
 	assert.Error(t, err)
 
 	// Test Secret too short
-	_, _, err = client.Webhooks.Create(&WebhooksCreateOptions{
+	_, _, err = client.Webhooks.Create(context.Background(), &WebhooksCreateOptions{
 		Name:   "My Webhook",
 		URL:    "https://example.com",
 		Secret: "short",
@@ -84,7 +85,7 @@ func TestWebhooks_Delete(t *testing.T) {
 		Webhook: "my-webhook-key",
 	}
 
-	resp, err := client.Webhooks.Delete(opt)
+	resp, err := client.Webhooks.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -93,11 +94,11 @@ func TestWebhooks_Delete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Webhooks.Delete(nil)
+	_, err := client.Webhooks.Delete(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Webhook
-	_, err = client.Webhooks.Delete(&WebhooksDeleteOptions{})
+	_, err = client.Webhooks.Delete(context.Background(), &WebhooksDeleteOptions{})
 	assert.Error(t, err)
 }
 
@@ -126,7 +127,7 @@ func TestWebhooks_Deliveries(t *testing.T) {
 		Webhook: "webhook-key",
 	}
 
-	result, resp, err := client.Webhooks.Deliveries(opt)
+	result, resp, err := client.Webhooks.Deliveries(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Deliveries, 1)
@@ -136,7 +137,7 @@ func TestWebhooks_Deliveries_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Webhooks.Deliveries(nil)
+	_, _, err := client.Webhooks.Deliveries(context.Background(), nil)
 	assert.Error(t, err)
 }
 
@@ -159,7 +160,7 @@ func TestWebhooks_Delivery(t *testing.T) {
 		DeliveryID: "delivery-1",
 	}
 
-	result, resp, err := client.Webhooks.Delivery(opt)
+	result, resp, err := client.Webhooks.Delivery(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.NotEmpty(t, result.Delivery.Payload)
@@ -169,11 +170,11 @@ func TestWebhooks_Delivery_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Webhooks.Delivery(nil)
+	_, _, err := client.Webhooks.Delivery(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing DeliveryID
-	_, _, err = client.Webhooks.Delivery(&WebhooksDeliveryOptions{})
+	_, _, err = client.Webhooks.Delivery(context.Background(), &WebhooksDeliveryOptions{})
 	assert.Error(t, err)
 }
 
@@ -194,7 +195,7 @@ func TestWebhooks_List(t *testing.T) {
 
 	opt := &WebhooksListOptions{}
 
-	result, resp, err := client.Webhooks.List(opt)
+	result, resp, err := client.Webhooks.List(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Webhooks, 1)
@@ -204,7 +205,7 @@ func TestWebhooks_List_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Webhooks.List(nil)
+	_, _, err := client.Webhooks.List(context.Background(), nil)
 	assert.Error(t, err)
 }
 
@@ -218,7 +219,7 @@ func TestWebhooks_Update(t *testing.T) {
 		URL:     "https://example.com/updated",
 	}
 
-	resp, err := client.Webhooks.Update(opt)
+	resp, err := client.Webhooks.Update(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -227,25 +228,25 @@ func TestWebhooks_Update_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Webhooks.Update(nil)
+	_, err := client.Webhooks.Update(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.Webhooks.Update(&WebhooksUpdateOptions{
+	_, err = client.Webhooks.Update(context.Background(), &WebhooksUpdateOptions{
 		URL:     "https://example.com",
 		Webhook: "webhook-1",
 	})
 	assert.Error(t, err)
 
 	// Test missing URL
-	_, err = client.Webhooks.Update(&WebhooksUpdateOptions{
+	_, err = client.Webhooks.Update(context.Background(), &WebhooksUpdateOptions{
 		Name:    "My Webhook",
 		Webhook: "webhook-1",
 	})
 	assert.Error(t, err)
 
 	// Test missing Webhook
-	_, err = client.Webhooks.Update(&WebhooksUpdateOptions{
+	_, err = client.Webhooks.Update(context.Background(), &WebhooksUpdateOptions{
 		Name: "My Webhook",
 		URL:  "https://example.com",
 	})

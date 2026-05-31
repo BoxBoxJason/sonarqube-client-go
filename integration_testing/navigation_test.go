@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -26,14 +27,14 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		// Create a test project for component navigation
 		projectKey = helpers.UniqueResourceName("nav")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    "Navigation Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -53,13 +54,13 @@ var _ = Describe("Navigation Service", Ordered, func() {
 	Describe("Component", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, _, err := client.Navigation.Component(nil)
+				resp, _, err := client.Navigation.Component(context.Background(), nil)
 				Expect(resp).To(BeNil())
 				Expect(err).To(HaveOccurred())
 			})
 
 			It("should fail with empty component key", func() {
-				resp, _, err := client.Navigation.Component(&sonar.NavigationComponentOptions{
+				resp, _, err := client.Navigation.Component(context.Background(), &sonar.NavigationComponentOptions{
 					Component: "",
 				})
 				Expect(resp).To(BeNil())
@@ -69,7 +70,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		Context("Valid Requests", func() {
 			It("should get component navigation with valid component key and breadcrumbs", func() {
-				result, resp, err := client.Navigation.Component(&sonar.NavigationComponentOptions{
+				result, resp, err := client.Navigation.Component(context.Background(), &sonar.NavigationComponentOptions{
 					Component: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -82,7 +83,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 
 		Context("Error Cases", func() {
 			It("should fail with non-existent component key", func() {
-				_, resp, err := client.Navigation.Component(&sonar.NavigationComponentOptions{
+				_, resp, err := client.Navigation.Component(context.Background(), &sonar.NavigationComponentOptions{
 					Component: "non-existent-component-key-12345",
 				})
 				Expect(err).To(HaveOccurred())
@@ -99,7 +100,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 	Describe("Global", func() {
 		Context("Valid Requests", func() {
 			It("should get global navigation with version and edition information", func() {
-				result, resp, err := client.Navigation.Global()
+				result, resp, err := client.Navigation.Global(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -108,11 +109,11 @@ var _ = Describe("Navigation Service", Ordered, func() {
 			})
 
 			It("should return consistent results on multiple calls", func() {
-				result1, resp1, err := client.Navigation.Global()
+				result1, resp1, err := client.Navigation.Global(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp1.StatusCode).To(Equal(http.StatusOK))
 
-				result2, resp2, err := client.Navigation.Global()
+				result2, resp2, err := client.Navigation.Global(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp2.StatusCode).To(Equal(http.StatusOK))
 
@@ -127,7 +128,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 	Describe("Marketplace", func() {
 		Context("Valid Requests", func() {
 			It("should get marketplace navigation", func() {
-				result, resp, err := client.Navigation.Marketplace()
+				result, resp, err := client.Navigation.Marketplace(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -142,7 +143,7 @@ var _ = Describe("Navigation Service", Ordered, func() {
 	Describe("Settings", func() {
 		Context("Valid Requests", func() {
 			It("should get settings navigation", func() {
-				result, resp, err := client.Navigation.Settings()
+				result, resp, err := client.Navigation.Settings(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())

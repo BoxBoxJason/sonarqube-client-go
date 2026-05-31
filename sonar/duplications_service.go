@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // DuplicationsService handles communication with the duplications related methods
 // of the SonarQube API.
@@ -96,13 +99,13 @@ func (s *DuplicationsService) ValidateShowOpt(opt *DuplicationsShowOptions) erro
 //
 // API endpoint: GET /api/duplications/show.
 // Since: 4.4.
-func (s *DuplicationsService) Show(opt *DuplicationsShowOptions) (*DuplicationsShow, *http.Response, error) {
+func (s *DuplicationsService) Show(ctx context.Context, opt *DuplicationsShowOptions) (*DuplicationsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "duplications/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "duplications/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}

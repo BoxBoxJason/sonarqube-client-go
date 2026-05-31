@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -28,7 +29,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 	Describe("List", func() {
 		Context("Functional Tests", func() {
 			It("should list webservices with nil options", func() {
-				result, resp, err := client.Webservices.List(nil)
+				result, resp, err := client.Webservices.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -36,7 +37,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should list webservices with empty options", func() {
-				result, resp, err := client.Webservices.List(&sonar.WebservicesListOptions{})
+				result, resp, err := client.Webservices.List(context.Background(), &sonar.WebservicesListOptions{})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -44,7 +45,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should return webservices with valid properties", func() {
-				result, resp, err := client.Webservices.List(nil)
+				result, resp, err := client.Webservices.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -66,14 +67,14 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should find common API paths", func() {
-				result, resp, err := client.Webservices.List(nil)
+				result, resp, err := client.Webservices.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 			})
 
 			It("should filter and search for specific web service domains", func() {
-				result, resp, err := client.Webservices.List(nil)
+				result, resp, err := client.Webservices.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
@@ -97,12 +98,12 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should include internals when requested", func() {
-				withoutInternals, _, err := client.Webservices.List(&sonar.WebservicesListOptions{
+				withoutInternals, _, err := client.Webservices.List(context.Background(), &sonar.WebservicesListOptions{
 					IncludeInternals: false,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				withInternals, _, err := client.Webservices.List(&sonar.WebservicesListOptions{
+				withInternals, _, err := client.Webservices.List(context.Background(), &sonar.WebservicesListOptions{
 					IncludeInternals: true,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -130,7 +131,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should get response example for an action with example", func() {
 				// First find an action with a response example
-				list, _, err := client.Webservices.List(&sonar.WebservicesListOptions{
+				list, _, err := client.Webservices.List(context.Background(), &sonar.WebservicesListOptions{
 					IncludeInternals: true,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -154,7 +155,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 					Skip("No action with response example found in this SonarQube version")
 				}
 
-				result, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{
+				result, resp, err := client.Webservices.ResponseExample(context.Background(), &sonar.WebservicesResponseExampleOptions{
 					Controller: controller,
 					Action:     action,
 				})
@@ -167,20 +168,20 @@ var _ = Describe("Webservices Service", Ordered, func() {
 
 		Context("Error Handling", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Webservices.ResponseExample(nil)
+				_, resp, err := client.Webservices.ResponseExample(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with empty options", func() {
-				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{})
+				_, resp, err := client.Webservices.ResponseExample(context.Background(), &sonar.WebservicesResponseExampleOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(err.Error()).To(ContainSubstring("Action"))
 			})
 
 			It("should fail with missing action", func() {
-				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{
+				_, resp, err := client.Webservices.ResponseExample(context.Background(), &sonar.WebservicesResponseExampleOptions{
 					Controller: "api/system",
 				})
 				Expect(err).To(HaveOccurred())
@@ -189,7 +190,7 @@ var _ = Describe("Webservices Service", Ordered, func() {
 			})
 
 			It("should fail with missing controller", func() {
-				_, resp, err := client.Webservices.ResponseExample(&sonar.WebservicesResponseExampleOptions{
+				_, resp, err := client.Webservices.ResponseExample(context.Background(), &sonar.WebservicesResponseExampleOptions{
 					Action: "status",
 				})
 				Expect(err).To(HaveOccurred())

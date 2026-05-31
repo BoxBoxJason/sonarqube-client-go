@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // LanguagesService handles communication with the languages related methods
 // of the SonarQube API.
@@ -61,13 +64,13 @@ func (s *LanguagesService) ValidateListOpt(opt *LanguagesListOptions) error {
 //
 // API endpoint: GET /api/languages/list.
 // Since: 5.1.
-func (s *LanguagesService) List(opt *LanguagesListOptions) (*LanguagesList, *http.Response, error) {
+func (s *LanguagesService) List(ctx context.Context, opt *LanguagesListOptions) (*LanguagesList, *http.Response, error) {
 	err := s.ValidateListOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "languages/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "languages/list", opt)
 	if err != nil {
 		return nil, nil, err
 	}

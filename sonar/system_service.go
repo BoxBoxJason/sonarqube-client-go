@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -589,13 +590,13 @@ type SystemLogsOptions struct {
 // Requires system administration permission.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/change_log_level
-func (s *SystemService) ChangeLogLevel(opt *SystemChangeLogLevelOptions) (*http.Response, error) {
+func (s *SystemService) ChangeLogLevel(ctx context.Context, opt *SystemChangeLogLevelOptions) (*http.Response, error) {
 	err := s.ValidateChangeLogLevelOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "system/change_log_level", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "system/change_log_level", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -620,8 +621,8 @@ func (s *SystemService) ChangeLogLevel(opt *SystemChangeLogLevelOptions) (*http.
 // Deprecated: since 10.6. Use the API v2 version /api/v2/system/migrations-status instead.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/db_migration_status
-func (s *SystemService) DbMigrationStatus() (*SystemDbMigrationStatus, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/db_migration_status", nil)
+func (s *SystemService) DbMigrationStatus(ctx context.Context) (*SystemDbMigrationStatus, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/db_migration_status", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -649,8 +650,8 @@ func (s *SystemService) DbMigrationStatus() (*SystemDbMigrationStatus, *http.Res
 // When SonarQube is in safe mode, only authentication with a system passcode is supported.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/health
-func (s *SystemService) Health() (*SystemHealth, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/health", nil)
+func (s *SystemService) Health(ctx context.Context) (*SystemHealth, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/health", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -669,8 +670,8 @@ func (s *SystemService) Health() (*SystemHealth, *http.Response, error) {
 // Requires 'Administer' permissions.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/info
-func (s *SystemService) Info() (*SystemInfo, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/info", nil)
+func (s *SystemService) Info(ctx context.Context) (*SystemInfo, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/info", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -698,8 +699,8 @@ func (s *SystemService) Info() (*SystemInfo, *http.Response, error) {
 //   - Any other HTTP code: this SonarQube node is not alive and should be rescheduled.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/liveness
-func (s *SystemService) Liveness() (*SystemLiveness, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/liveness", nil)
+func (s *SystemService) Liveness(ctx context.Context) (*SystemLiveness, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/liveness", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -722,13 +723,13 @@ func (s *SystemService) Liveness() (*SystemLiveness, *http.Response, error) {
 // Requires system administration permission.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/logs
-func (s *SystemService) Logs(opt *SystemLogsOptions) (*string, *http.Response, error) {
+func (s *SystemService) Logs(ctx context.Context, opt *SystemLogsOptions) (*string, *http.Response, error) {
 	err := s.ValidateLogsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/logs", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/logs", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -755,8 +756,8 @@ func (s *SystemService) Logs(opt *SystemLogsOptions) (*string, *http.Response, e
 //   - MIGRATION_REQUIRED: DB migration is required.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/migrate_db
-func (s *SystemService) MigrateDb() (*SystemMigrateDb, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "system/migrate_db", nil)
+func (s *SystemService) MigrateDb(ctx context.Context) (*SystemMigrateDb, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "system/migrate_db", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -775,8 +776,8 @@ func (s *SystemService) MigrateDb() (*SystemMigrateDb, *http.Response, error) {
 // This can be used for health checks.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/ping
-func (s *SystemService) Ping() (*string, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/ping", nil)
+func (s *SystemService) Ping(ctx context.Context) (*string, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/ping", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -797,8 +798,8 @@ func (s *SystemService) Ping() (*string, *http.Response, error) {
 // Does not reload sonar.properties.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/restart
-func (s *SystemService) Restart() (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "system/restart", nil)
+func (s *SystemService) Restart(ctx context.Context) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "system/restart", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -822,8 +823,8 @@ func (s *SystemService) Restart() (*http.Response, error) {
 //   - DB_MIGRATION_RUNNING: DB migration is running.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/status
-func (s *SystemService) Status() (*SystemStatus, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/status", nil)
+func (s *SystemService) Status(ctx context.Context) (*SystemStatus, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/status", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -843,8 +844,8 @@ func (s *SystemService) Status() (*SystemStatus, *http.Response, error) {
 // Plugin information is retrieved from Update Center.
 //
 // API Docs: https://next.sonarqube.com/sonarqube/web_api/api/system/upgrades
-func (s *SystemService) Upgrades() (*SystemUpgrades, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "system/upgrades", nil)
+func (s *SystemService) Upgrades(ctx context.Context) (*SystemUpgrades, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "system/upgrades", nil)
 	if err != nil {
 		return nil, nil, err
 	}

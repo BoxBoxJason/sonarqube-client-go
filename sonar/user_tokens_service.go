@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 const (
 	// TokenTypeUserToken represents a user token that can be used for authentication and project analysis.
@@ -192,13 +195,13 @@ func (s *UserTokensService) ValidateSearchOpt(opt *UserTokensSearchOptions) erro
 //
 // API endpoint: POST /api/user_tokens/generate.
 // Since: 5.3.
-func (s *UserTokensService) Generate(opt *UserTokensGenerateOptions) (*UserTokensGenerate, *http.Response, error) {
+func (s *UserTokensService) Generate(ctx context.Context, opt *UserTokensGenerateOptions) (*UserTokensGenerate, *http.Response, error) {
 	err := s.ValidateGenerateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_tokens/generate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "user_tokens/generate", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -219,13 +222,13 @@ func (s *UserTokensService) Generate(opt *UserTokensGenerateOptions) (*UserToken
 //
 // API endpoint: POST /api/user_tokens/revoke.
 // Since: 5.3.
-func (s *UserTokensService) Revoke(opt *UserTokensRevokeOptions) (*http.Response, error) {
+func (s *UserTokensService) Revoke(ctx context.Context, opt *UserTokensRevokeOptions) (*http.Response, error) {
 	err := s.ValidateRevokeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "user_tokens/revoke", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "user_tokens/revoke", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -247,13 +250,13 @@ func (s *UserTokensService) Revoke(opt *UserTokensRevokeOptions) (*http.Response
 //
 // API endpoint: GET /api/user_tokens/search.
 // Since: 5.3.
-func (s *UserTokensService) Search(opt *UserTokensSearchOptions) (*UserTokensSearch, *http.Response, error) {
+func (s *UserTokensService) Search(ctx context.Context, opt *UserTokensSearchOptions) (*UserTokensSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "user_tokens/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "user_tokens/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -16,7 +17,7 @@ func TestUsers_Anonymize(t *testing.T) {
 		Login: "deactivated-user",
 	}
 
-	resp, err := client.Users.Anonymize(opt)
+	resp, err := client.Users.Anonymize(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -25,11 +26,11 @@ func TestUsers_Anonymize_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Users.Anonymize(nil)
+	_, err := client.Users.Anonymize(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, err = client.Users.Anonymize(&UsersAnonymizeOptions{})
+	_, err = client.Users.Anonymize(context.Background(), &UsersAnonymizeOptions{})
 	assert.Error(t, err)
 }
 
@@ -42,7 +43,7 @@ func TestUsers_ChangePassword(t *testing.T) {
 		Password: "MyNewPassword123!",
 	}
 
-	resp, err := client.Users.ChangePassword(opt)
+	resp, err := client.Users.ChangePassword(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -74,7 +75,7 @@ func TestUsers_ChangePassword_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Users.ChangePassword(tt.opt)
+			_, err := client.Users.ChangePassword(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -104,7 +105,7 @@ func TestUsers_Create(t *testing.T) {
 		ScmAccounts: []string{"scm1", "scm2"},
 	}
 
-	result, resp, err := client.Users.Create(opt)
+	result, resp, err := client.Users.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -149,7 +150,7 @@ func TestUsers_Create_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Users.Create(tt.opt)
+			_, _, err := client.Users.Create(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -183,7 +184,7 @@ func TestUsers_Current(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/current", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Users.Current()
+	result, resp, err := client.Users.Current(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -213,7 +214,7 @@ func TestUsers_Deactivate(t *testing.T) {
 		Anonymize: false,
 	}
 
-	result, resp, err := client.Users.Deactivate(opt)
+	result, resp, err := client.Users.Deactivate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -240,7 +241,7 @@ func TestUsers_Deactivate_WithAnonymize(t *testing.T) {
 		Anonymize: true,
 	}
 
-	result, resp, err := client.Users.Deactivate(opt)
+	result, resp, err := client.Users.Deactivate(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -250,11 +251,11 @@ func TestUsers_Deactivate_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Users.Deactivate(nil)
+	_, _, err := client.Users.Deactivate(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, _, err = client.Users.Deactivate(&UsersDeactivateOptions{})
+	_, _, err = client.Users.Deactivate(context.Background(), &UsersDeactivateOptions{})
 	assert.Error(t, err)
 }
 
@@ -266,7 +267,7 @@ func TestUsers_DismissNotice(t *testing.T) {
 		Notice: "educationPrinciples",
 	}
 
-	resp, err := client.Users.DismissNotice(opt)
+	resp, err := client.Users.DismissNotice(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -294,7 +295,7 @@ func TestUsers_DismissNotice_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Users.DismissNotice(tt.opt)
+			_, err := client.Users.DismissNotice(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -332,7 +333,7 @@ func TestUsers_Groups(t *testing.T) {
 		Login: "myuser",
 	}
 
-	result, resp, err := client.Users.Groups(opt)
+	result, resp, err := client.Users.Groups(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -363,7 +364,7 @@ func TestUsers_Groups_WithPagination(t *testing.T) {
 		},
 	}
 
-	result, resp, err := client.Users.Groups(opt)
+	result, resp, err := client.Users.Groups(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, int64(2), result.Paging.PageIndex)
@@ -388,7 +389,7 @@ func TestUsers_Groups_WithFilter(t *testing.T) {
 		Selected: SelectionFilterSelected,
 	}
 
-	_, resp, err := client.Users.Groups(opt)
+	_, resp, err := client.Users.Groups(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -420,7 +421,7 @@ func TestUsers_Groups_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.Users.Groups(tt.opt)
+			_, _, err := client.Users.Groups(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -449,7 +450,7 @@ func TestUsers_IdentityProviders(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/identity_providers", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Users.IdentityProviders()
+	result, resp, err := client.Users.IdentityProviders(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -495,7 +496,7 @@ func TestUsers_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Users.Search(nil)
+	result, resp, err := client.Users.Search(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -527,7 +528,7 @@ func TestUsers_Search_WithFilters(t *testing.T) {
 		},
 	}
 
-	_, resp, err := client.Users.Search(opt)
+	_, resp, err := client.Users.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -539,7 +540,7 @@ func TestUsers_Search_ValidationError(t *testing.T) {
 	opt := &UsersSearchOptions{
 		PaginationArgs: PaginationArgs{PageSize: 1000},
 	}
-	_, _, err := client.Users.Search(opt)
+	_, _, err := client.Users.Search(context.Background(), opt)
 	assert.Error(t, err)
 }
 
@@ -552,7 +553,7 @@ func TestUsers_SetHomepage(t *testing.T) {
 		Component: "my-project",
 	}
 
-	resp, err := client.Users.SetHomepage(opt)
+	resp, err := client.Users.SetHomepage(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -580,7 +581,7 @@ func TestUsers_SetHomepage_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Users.SetHomepage(tt.opt)
+			_, err := client.Users.SetHomepage(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -607,7 +608,7 @@ func TestUsers_Update(t *testing.T) {
 		Email: "updated@example.com",
 	}
 
-	result, resp, err := client.Users.Update(opt)
+	result, resp, err := client.Users.Update(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -618,11 +619,11 @@ func TestUsers_Update_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.Users.Update(nil)
+	_, _, err := client.Users.Update(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Login should fail validation.
-	_, _, err = client.Users.Update(&UsersUpdateOptions{})
+	_, _, err = client.Users.Update(context.Background(), &UsersUpdateOptions{})
 	assert.Error(t, err)
 }
 
@@ -636,7 +637,7 @@ func TestUsers_UpdateIdentityProvider(t *testing.T) {
 		NewExternalIdentity: "github-user",
 	}
 
-	resp, err := client.Users.UpdateIdentityProvider(opt)
+	resp, err := client.Users.UpdateIdentityProvider(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -664,7 +665,7 @@ func TestUsers_UpdateIdentityProvider_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Users.UpdateIdentityProvider(tt.opt)
+			_, err := client.Users.UpdateIdentityProvider(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -679,7 +680,7 @@ func TestUsers_UpdateLogin(t *testing.T) {
 		NewLogin: "newlogin",
 	}
 
-	resp, err := client.Users.UpdateLogin(opt)
+	resp, err := client.Users.UpdateLogin(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -711,7 +712,7 @@ func TestUsers_UpdateLogin_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.Users.UpdateLogin(tt.opt)
+			_, err := client.Users.UpdateLogin(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}

@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -26,7 +27,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Available", func() {
 		Context("Functional Tests", func() {
 			It("should list available plugins", func() {
-				result, resp, err := client.Plugins.Available()
+				result, resp, err := client.Plugins.Available(context.Background(), )
 				// Skip if API not available or requires marketplace configuration
 				if resp != nil && (resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest) {
 					Skip("Plugins Available API is not available in this SonarQube version")
@@ -44,7 +45,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("CancelAll", func() {
 		Context("Functional Tests", func() {
 			It("should cancel all pending plugin operations", func() {
-				resp, err := client.Plugins.CancelAll()
+				resp, err := client.Plugins.CancelAll(context.Background(), )
 				// Skip if API not available
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Plugins CancelAll API is not available in this SonarQube version")
@@ -61,7 +62,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Download", func() {
 		Context("Functional Tests", func() {
 			It("should attempt to download a plugin", func() {
-				_, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOptions{
+				_, resp, err := client.Plugins.Download(context.Background(), &sonar.PluginsDownloadOptions{
 					Plugin: "java",
 				})
 				// Skip if API not available - this is internal API
@@ -76,14 +77,14 @@ var _ = Describe("Plugins Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with missing plugin key", func() {
-				result, resp, err := client.Plugins.Download(&sonar.PluginsDownloadOptions{})
+				result, resp, err := client.Plugins.Download(context.Background(), &sonar.PluginsDownloadOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				result, resp, err := client.Plugins.Download(nil)
+				result, resp, err := client.Plugins.Download(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -97,19 +98,19 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Install", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Install(&sonar.PluginsInstallOptions{})
+				resp, err := client.Plugins.Install(context.Background(), &sonar.PluginsInstallOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				resp, err := client.Plugins.Install(nil)
+				resp, err := client.Plugins.Install(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Install(&sonar.PluginsInstallOptions{
+				resp, err := client.Plugins.Install(context.Background(), &sonar.PluginsInstallOptions{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available
@@ -130,7 +131,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Installed", func() {
 		Context("Functional Tests", func() {
 			It("should list installed plugins with no options", func() {
-				result, resp, err := client.Plugins.Installed(nil)
+				result, resp, err := client.Plugins.Installed(context.Background(), nil)
 				// Skip if API not available
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Plugins Installed API is not available in this SonarQube version")
@@ -142,7 +143,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list installed plugins with category field", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
+				result, resp, err := client.Plugins.Installed(context.Background(), &sonar.PluginsInstalledOptions{
 					Fields: []string{"category"},
 				})
 				// Skip if API not available
@@ -155,7 +156,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list bundled plugins only", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
+				result, resp, err := client.Plugins.Installed(context.Background(), &sonar.PluginsInstalledOptions{
 					Type: "BUNDLED",
 				})
 				// Skip if API not available
@@ -168,7 +169,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should list external plugins only", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
+				result, resp, err := client.Plugins.Installed(context.Background(), &sonar.PluginsInstalledOptions{
 					Type: "EXTERNAL",
 				})
 				// Skip if API not available
@@ -183,7 +184,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 
 		Context("Parameter Validation", func() {
 			It("should fail with invalid type", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
+				result, resp, err := client.Plugins.Installed(context.Background(), &sonar.PluginsInstalledOptions{
 					Type: "INVALID",
 				})
 				Expect(err).To(HaveOccurred())
@@ -192,7 +193,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 			})
 
 			It("should fail with invalid field", func() {
-				result, resp, err := client.Plugins.Installed(&sonar.PluginsInstalledOptions{
+				result, resp, err := client.Plugins.Installed(context.Background(), &sonar.PluginsInstalledOptions{
 					Fields: []string{"invalid_field"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -208,7 +209,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Pending", func() {
 		Context("Functional Tests", func() {
 			It("should list pending plugin operations", func() {
-				result, resp, err := client.Plugins.Pending()
+				result, resp, err := client.Plugins.Pending(context.Background(), )
 				// Skip if API not available
 				if resp != nil && resp.StatusCode == http.StatusNotFound {
 					Skip("Plugins Pending API is not available in this SonarQube version")
@@ -226,19 +227,19 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Uninstall", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOptions{})
+				resp, err := client.Plugins.Uninstall(context.Background(), &sonar.PluginsUninstallOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				resp, err := client.Plugins.Uninstall(nil)
+				resp, err := client.Plugins.Uninstall(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Uninstall(&sonar.PluginsUninstallOptions{
+				resp, err := client.Plugins.Uninstall(context.Background(), &sonar.PluginsUninstallOptions{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available
@@ -259,19 +260,19 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Update", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with missing key", func() {
-				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOptions{})
+				resp, err := client.Plugins.Update(context.Background(), &sonar.PluginsUpdateOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with nil options", func() {
-				resp, err := client.Plugins.Update(nil)
+				resp, err := client.Plugins.Update(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent plugin key", func() {
-				resp, err := client.Plugins.Update(&sonar.PluginsUpdateOptions{
+				resp, err := client.Plugins.Update(context.Background(), &sonar.PluginsUpdateOptions{
 					Key: "non-existent-plugin-12345",
 				})
 				// Skip if API not available
@@ -292,7 +293,7 @@ var _ = Describe("Plugins Service", Ordered, func() {
 	Describe("Updates", func() {
 		Context("Functional Tests", func() {
 			It("should list plugins with available updates", func() {
-				result, resp, err := client.Plugins.Updates()
+				result, resp, err := client.Plugins.Updates(context.Background(), )
 				// Skip if API not available or requires marketplace configuration
 				if resp != nil && (resp.StatusCode == http.StatusNotFound || resp.StatusCode == http.StatusBadRequest) {
 					Skip("Plugins Updates API is not available in this SonarQube version")

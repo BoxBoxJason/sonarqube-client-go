@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -132,8 +133,8 @@ func validateAnalysisWriter(writer io.Writer) error {
 // -----------------------------------------------------------------------------
 
 // GetVersion returns the Scanner Engine version as a plain text string.
-func (s *AnalysisService) GetVersion() (*string, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/version", nil, nil)
+func (s *AnalysisService) GetVersion(ctx context.Context) (*string, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/version", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -150,8 +151,8 @@ func (s *AnalysisService) GetVersion() (*string, *http.Response, error) {
 
 // GetJresMetadata returns metadata for all available JREs, optionally filtered
 // by operating system and CPU architecture.
-func (s *AnalysisService) GetJresMetadata(opt *AnalysisJresOptions) ([]AnalysisJre, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/jres", opt, nil)
+func (s *AnalysisService) GetJresMetadata(ctx context.Context, opt *AnalysisJresOptions) ([]AnalysisJre, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/jres", opt, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -168,7 +169,7 @@ func (s *AnalysisService) GetJresMetadata(opt *AnalysisJresOptions) ([]AnalysisJ
 
 // DownloadJre downloads a JRE binary by ID into the provided writer.
 // Set the Accept header to "application/octet-stream" to receive the binary.
-func (s *AnalysisService) DownloadJre(jreID string, writer io.Writer) (*http.Response, error) {
+func (s *AnalysisService) DownloadJre(ctx context.Context, jreID string, writer io.Writer) (*http.Response, error) {
 	err := ValidateRequired(jreID, "Id")
 	if err != nil {
 		return nil, err
@@ -179,7 +180,7 @@ func (s *AnalysisService) DownloadJre(jreID string, writer io.Writer) (*http.Res
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/jres/"+jreID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/jres/"+jreID, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -195,13 +196,13 @@ func (s *AnalysisService) DownloadJre(jreID string, writer io.Writer) (*http.Res
 }
 
 // GetJreMetadata returns metadata for a single JRE by ID.
-func (s *AnalysisService) GetJreMetadata(jreID string) (*AnalysisJre, *http.Response, error) {
+func (s *AnalysisService) GetJreMetadata(ctx context.Context, jreID string) (*AnalysisJre, *http.Response, error) {
 	err := ValidateRequired(jreID, "Id")
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/jres/"+jreID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/jres/"+jreID, nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -217,13 +218,13 @@ func (s *AnalysisService) GetJreMetadata(jreID string) (*AnalysisJre, *http.Resp
 }
 
 // DownloadScannerEngine downloads the Scanner Engine binary into the provided writer.
-func (s *AnalysisService) DownloadScannerEngine(writer io.Writer) (*http.Response, error) {
+func (s *AnalysisService) DownloadScannerEngine(ctx context.Context, writer io.Writer) (*http.Response, error) {
 	err := validateAnalysisWriter(writer)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/engine", nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/engine", nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -239,8 +240,8 @@ func (s *AnalysisService) DownloadScannerEngine(writer io.Writer) (*http.Respons
 }
 
 // GetScannerEngineMetadata returns metadata for the Scanner Engine.
-func (s *AnalysisService) GetScannerEngineMetadata() (*AnalysisEngineInfo, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/engine", nil, nil)
+func (s *AnalysisService) GetScannerEngineMetadata(ctx context.Context) (*AnalysisEngineInfo, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/engine", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -257,13 +258,13 @@ func (s *AnalysisService) GetScannerEngineMetadata() (*AnalysisEngineInfo, *http
 
 // GetActiveRules returns all active rules for a specific project.
 // Used by the scanner-engine.
-func (s *AnalysisService) GetActiveRules(opt *AnalysisActiveRuleOptions) ([]AnalysisActiveRule, *http.Response, error) {
+func (s *AnalysisService) GetActiveRules(ctx context.Context, opt *AnalysisActiveRuleOptions) ([]AnalysisActiveRule, *http.Response, error) {
 	err := s.ValidateActiveRulesOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(http.MethodGet, "analysis/active_rules", opt, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/active_rules", opt, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

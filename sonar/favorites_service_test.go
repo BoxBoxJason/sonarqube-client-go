@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -16,7 +17,7 @@ func TestFavorites_Add(t *testing.T) {
 		Component: "my-project",
 	}
 
-	resp, err := client.Favorites.Add(opt)
+	resp, err := client.Favorites.Add(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -25,11 +26,11 @@ func TestFavorites_Add_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Favorites.Add(nil)
+	_, err := client.Favorites.Add(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, err = client.Favorites.Add(&FavoritesAddOptions{})
+	_, err = client.Favorites.Add(context.Background(), &FavoritesAddOptions{})
 	assert.Error(t, err)
 }
 
@@ -41,7 +42,7 @@ func TestFavorites_Remove(t *testing.T) {
 		Component: "my-project",
 	}
 
-	resp, err := client.Favorites.Remove(opt)
+	resp, err := client.Favorites.Remove(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -50,11 +51,11 @@ func TestFavorites_Remove_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.Favorites.Remove(nil)
+	_, err := client.Favorites.Remove(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Component should fail validation.
-	_, err = client.Favorites.Remove(&FavoritesRemoveOptions{})
+	_, err = client.Favorites.Remove(context.Background(), &FavoritesRemoveOptions{})
 	assert.Error(t, err)
 }
 
@@ -72,7 +73,7 @@ func TestFavorites_Search(t *testing.T) {
 	}))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Favorites.Search(nil)
+	result, resp, err := client.Favorites.Search(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -100,7 +101,7 @@ func TestFavorites_Search_WithPagination(t *testing.T) {
 		},
 	}
 
-	_, resp, err := client.Favorites.Search(opt)
+	_, resp, err := client.Favorites.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }

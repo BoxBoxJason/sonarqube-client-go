@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -18,7 +19,7 @@ func TestQualityprofiles_ActivateRule(t *testing.T) {
 		Rule: "squid:AvoidCycles",
 	}
 
-	resp, err := client.Qualityprofiles.ActivateRule(opt)
+	resp, err := client.Qualityprofiles.ActivateRule(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -27,23 +28,23 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.ActivateRule(nil)
+	_, err := client.Qualityprofiles.ActivateRule(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
+	_, err = client.Qualityprofiles.ActivateRule(context.Background(), &QualityprofilesActivateRuleOptions{
 		Rule: "squid:AvoidCycles",
 	})
 	assert.Error(t, err)
 
 	// Test missing Rule
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
+	_, err = client.Qualityprofiles.ActivateRule(context.Background(), &QualityprofilesActivateRuleOptions{
 		Key: "AU-TpxcA-iU5OvuD2FL0",
 	})
 	assert.Error(t, err)
 
 	// Test both Impacts and Severity set
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
+	_, err = client.Qualityprofiles.ActivateRule(context.Background(), &QualityprofilesActivateRuleOptions{
 		Key:      "AU-TpxcA-iU5OvuD2FL0",
 		Rule:     "squid:AvoidCycles",
 		Impacts:  map[string]string{SoftwareQualityMaintainability: RuleImpactSeverityHigh},
@@ -52,7 +53,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid Severity
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
+	_, err = client.Qualityprofiles.ActivateRule(context.Background(), &QualityprofilesActivateRuleOptions{
 		Key:      "AU-TpxcA-iU5OvuD2FL0",
 		Rule:     "squid:AvoidCycles",
 		Severity: "INVALID",
@@ -60,7 +61,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid Impacts map key (software quality)
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
+	_, err = client.Qualityprofiles.ActivateRule(context.Background(), &QualityprofilesActivateRuleOptions{
 		Key:     "AU-TpxcA-iU5OvuD2FL0",
 		Rule:    "squid:AvoidCycles",
 		Impacts: map[string]string{"INVALID_QUALITY": RuleImpactSeverityHigh},
@@ -68,7 +69,7 @@ func TestQualityprofiles_ActivateRule_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test invalid Impacts map value (severity)
-	_, err = client.Qualityprofiles.ActivateRule(&QualityprofilesActivateRuleOptions{
+	_, err = client.Qualityprofiles.ActivateRule(context.Background(), &QualityprofilesActivateRuleOptions{
 		Key:     "AU-TpxcA-iU5OvuD2FL0",
 		Rule:    "squid:AvoidCycles",
 		Impacts: map[string]string{SoftwareQualityMaintainability: "INVALID_SEVERITY"},
@@ -85,7 +86,7 @@ func TestQualityprofiles_ActivateRules(t *testing.T) {
 		Languages: []string{"java"},
 	}
 
-	resp, err := client.Qualityprofiles.ActivateRules(opt)
+	resp, err := client.Qualityprofiles.ActivateRules(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -94,43 +95,43 @@ func TestQualityprofiles_ActivateRules_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.ActivateRules(nil)
+	_, err := client.Qualityprofiles.ActivateRules(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing TargetKey
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{})
+	_, err = client.Qualityprofiles.ActivateRules(context.Background(), &QualityprofilesActivateRulesOptions{})
 	assert.Error(t, err)
 
 	// Test invalid language
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
+	_, err = client.Qualityprofiles.ActivateRules(context.Background(), &QualityprofilesActivateRulesOptions{
 		TargetKey: "AU-TpxcA-iU5OvuD2FL0",
 		Languages: []string{"invalid_language"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid severity
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
+	_, err = client.Qualityprofiles.ActivateRules(context.Background(), &QualityprofilesActivateRulesOptions{
 		TargetKey:  "AU-TpxcA-iU5OvuD2FL0",
 		Severities: []string{"INVALID_SEVERITY"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid impact severity
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
+	_, err = client.Qualityprofiles.ActivateRules(context.Background(), &QualityprofilesActivateRulesOptions{
 		TargetKey:        "AU-TpxcA-iU5OvuD2FL0",
 		ImpactSeverities: []string{"INVALID"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid software quality
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
+	_, err = client.Qualityprofiles.ActivateRules(context.Background(), &QualityprofilesActivateRulesOptions{
 		TargetKey:               "AU-TpxcA-iU5OvuD2FL0",
 		ImpactSoftwareQualities: []string{"INVALID"},
 	})
 	assert.Error(t, err)
 
 	// Test invalid sort field
-	_, err = client.Qualityprofiles.ActivateRules(&QualityprofilesActivateRulesOptions{
+	_, err = client.Qualityprofiles.ActivateRules(context.Background(), &QualityprofilesActivateRulesOptions{
 		TargetKey: "AU-TpxcA-iU5OvuD2FL0",
 		Sort:      "invalid_sort",
 	})
@@ -147,7 +148,7 @@ func TestQualityprofiles_AddGroup(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.AddGroup(opt)
+	resp, err := client.Qualityprofiles.AddGroup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -156,25 +157,25 @@ func TestQualityprofiles_AddGroup_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.AddGroup(nil)
+	_, err := client.Qualityprofiles.AddGroup(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Group
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
+	_, err = client.Qualityprofiles.AddGroup(context.Background(), &QualityprofilesAddGroupOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
+	_, err = client.Qualityprofiles.AddGroup(context.Background(), &QualityprofilesAddGroupOptions{
 		Group:          "sonar-administrators",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test invalid Language
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
+	_, err = client.Qualityprofiles.AddGroup(context.Background(), &QualityprofilesAddGroupOptions{
 		Group:          "sonar-administrators",
 		Language:       "invalid_lang",
 		QualityProfile: "Sonar way",
@@ -182,7 +183,7 @@ func TestQualityprofiles_AddGroup_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.AddGroup(&QualityprofilesAddGroupOptions{
+	_, err = client.Qualityprofiles.AddGroup(context.Background(), &QualityprofilesAddGroupOptions{
 		Group:    "sonar-administrators",
 		Language: "java",
 	})
@@ -199,7 +200,7 @@ func TestQualityprofiles_AddProject(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.AddProject(opt)
+	resp, err := client.Qualityprofiles.AddProject(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -208,25 +209,25 @@ func TestQualityprofiles_AddProject_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.AddProject(nil)
+	_, err := client.Qualityprofiles.AddProject(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOptions{
+	_, err = client.Qualityprofiles.AddProject(context.Background(), &QualityprofilesAddProjectOptions{
 		Project:        "my_project",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing Project
-	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOptions{
+	_, err = client.Qualityprofiles.AddProject(context.Background(), &QualityprofilesAddProjectOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.AddProject(&QualityprofilesAddProjectOptions{
+	_, err = client.Qualityprofiles.AddProject(context.Background(), &QualityprofilesAddProjectOptions{
 		Language: "java",
 		Project:  "my_project",
 	})
@@ -243,7 +244,7 @@ func TestQualityprofiles_AddUser(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.AddUser(opt)
+	resp, err := client.Qualityprofiles.AddUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -252,25 +253,25 @@ func TestQualityprofiles_AddUser_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.AddUser(nil)
+	_, err := client.Qualityprofiles.AddUser(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOptions{
+	_, err = client.Qualityprofiles.AddUser(context.Background(), &QualityprofilesAddUserOptions{
 		Login:          "john.doe",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing Login
-	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOptions{
+	_, err = client.Qualityprofiles.AddUser(context.Background(), &QualityprofilesAddUserOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.AddUser(&QualityprofilesAddUserOptions{
+	_, err = client.Qualityprofiles.AddUser(context.Background(), &QualityprofilesAddUserOptions{
 		Language: "java",
 		Login:    "john.doe",
 	})
@@ -292,7 +293,7 @@ func TestQualityprofiles_Backup(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	result, resp, err := client.Qualityprofiles.Backup(opt)
+	result, resp, err := client.Qualityprofiles.Backup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -303,17 +304,17 @@ func TestQualityprofiles_Backup_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Backup(nil)
+	_, _, err := client.Qualityprofiles.Backup(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Backup(&QualityprofilesBackupOptions{
+	_, _, err = client.Qualityprofiles.Backup(context.Background(), &QualityprofilesBackupOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.Backup(&QualityprofilesBackupOptions{
+	_, _, err = client.Qualityprofiles.Backup(context.Background(), &QualityprofilesBackupOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -329,7 +330,7 @@ func TestQualityprofiles_ChangeParent(t *testing.T) {
 		ParentQualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.ChangeParent(opt)
+	resp, err := client.Qualityprofiles.ChangeParent(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -338,17 +339,17 @@ func TestQualityprofiles_ChangeParent_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.ChangeParent(nil)
+	_, err := client.Qualityprofiles.ChangeParent(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.ChangeParent(&QualityprofilesChangeParentOptions{
+	_, err = client.Qualityprofiles.ChangeParent(context.Background(), &QualityprofilesChangeParentOptions{
 		QualityProfile: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.ChangeParent(&QualityprofilesChangeParentOptions{
+	_, err = client.Qualityprofiles.ChangeParent(context.Background(), &QualityprofilesChangeParentOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -375,7 +376,7 @@ func TestQualityprofiles_Changelog(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	result, resp, err := client.Qualityprofiles.Changelog(opt)
+	result, resp, err := client.Qualityprofiles.Changelog(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -387,23 +388,23 @@ func TestQualityprofiles_Changelog_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Changelog(nil)
+	_, _, err := client.Qualityprofiles.Changelog(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOptions{
+	_, _, err = client.Qualityprofiles.Changelog(context.Background(), &QualityprofilesChangelogOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOptions{
+	_, _, err = client.Qualityprofiles.Changelog(context.Background(), &QualityprofilesChangelogOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test invalid FilterMode
-	_, _, err = client.Qualityprofiles.Changelog(&QualityprofilesChangelogOptions{
+	_, _, err = client.Qualityprofiles.Changelog(context.Background(), &QualityprofilesChangelogOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 		FilterMode:     "INVALID",
@@ -431,7 +432,7 @@ func TestQualityprofiles_Compare(t *testing.T) {
 		RightKey: "profile2",
 	}
 
-	result, resp, err := client.Qualityprofiles.Compare(opt)
+	result, resp, err := client.Qualityprofiles.Compare(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -443,17 +444,17 @@ func TestQualityprofiles_Compare_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Compare(nil)
+	_, _, err := client.Qualityprofiles.Compare(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing LeftKey
-	_, _, err = client.Qualityprofiles.Compare(&QualityprofilesCompareOptions{
+	_, _, err = client.Qualityprofiles.Compare(context.Background(), &QualityprofilesCompareOptions{
 		RightKey: "profile2",
 	})
 	assert.Error(t, err)
 
 	// Test missing RightKey
-	_, _, err = client.Qualityprofiles.Compare(&QualityprofilesCompareOptions{
+	_, _, err = client.Qualityprofiles.Compare(context.Background(), &QualityprofilesCompareOptions{
 		LeftKey: "profile1",
 	})
 	assert.Error(t, err)
@@ -477,7 +478,7 @@ func TestQualityprofiles_Copy(t *testing.T) {
 		ToName:  "My Profile Copy",
 	}
 
-	result, resp, err := client.Qualityprofiles.Copy(opt)
+	result, resp, err := client.Qualityprofiles.Copy(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -488,23 +489,23 @@ func TestQualityprofiles_Copy_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Copy(nil)
+	_, _, err := client.Qualityprofiles.Copy(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing FromKey
-	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOptions{
+	_, _, err = client.Qualityprofiles.Copy(context.Background(), &QualityprofilesCopyOptions{
 		ToName: "New Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing ToName
-	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOptions{
+	_, _, err = client.Qualityprofiles.Copy(context.Background(), &QualityprofilesCopyOptions{
 		FromKey: "source-key",
 	})
 	assert.Error(t, err)
 
 	// Test ToName too long
-	_, _, err = client.Qualityprofiles.Copy(&QualityprofilesCopyOptions{
+	_, _, err = client.Qualityprofiles.Copy(context.Background(), &QualityprofilesCopyOptions{
 		FromKey: "source-key",
 		ToName:  strings.Repeat("a", MaxQualityProfileNameLength+1),
 	})
@@ -530,7 +531,7 @@ func TestQualityprofiles_Create(t *testing.T) {
 		Name:     "My New Profile",
 	}
 
-	result, resp, err := client.Qualityprofiles.Create(opt)
+	result, resp, err := client.Qualityprofiles.Create(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -541,23 +542,23 @@ func TestQualityprofiles_Create_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Create(nil)
+	_, _, err := client.Qualityprofiles.Create(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOptions{
+	_, _, err = client.Qualityprofiles.Create(context.Background(), &QualityprofilesCreateOptions{
 		Name: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOptions{
+	_, _, err = client.Qualityprofiles.Create(context.Background(), &QualityprofilesCreateOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, _, err = client.Qualityprofiles.Create(&QualityprofilesCreateOptions{
+	_, _, err = client.Qualityprofiles.Create(context.Background(), &QualityprofilesCreateOptions{
 		Language: "java",
 		Name:     strings.Repeat("a", MaxQualityProfileNameLength+1),
 	})
@@ -573,7 +574,7 @@ func TestQualityprofiles_DeactivateRule(t *testing.T) {
 		Rule: "squid:AvoidCycles",
 	}
 
-	resp, err := client.Qualityprofiles.DeactivateRule(opt)
+	resp, err := client.Qualityprofiles.DeactivateRule(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -582,17 +583,17 @@ func TestQualityprofiles_DeactivateRule_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.DeactivateRule(nil)
+	_, err := client.Qualityprofiles.DeactivateRule(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.Qualityprofiles.DeactivateRule(&QualityprofilesDeactivateRuleOptions{
+	_, err = client.Qualityprofiles.DeactivateRule(context.Background(), &QualityprofilesDeactivateRuleOptions{
 		Rule: "squid:AvoidCycles",
 	})
 	assert.Error(t, err)
 
 	// Test missing Rule
-	_, err = client.Qualityprofiles.DeactivateRule(&QualityprofilesDeactivateRuleOptions{
+	_, err = client.Qualityprofiles.DeactivateRule(context.Background(), &QualityprofilesDeactivateRuleOptions{
 		Key: "AU-TpxcA-iU5OvuD2FL0",
 	})
 	assert.Error(t, err)
@@ -607,7 +608,7 @@ func TestQualityprofiles_DeactivateRules(t *testing.T) {
 		Languages: []string{"java"},
 	}
 
-	resp, err := client.Qualityprofiles.DeactivateRules(opt)
+	resp, err := client.Qualityprofiles.DeactivateRules(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -616,11 +617,11 @@ func TestQualityprofiles_DeactivateRules_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.DeactivateRules(nil)
+	_, err := client.Qualityprofiles.DeactivateRules(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing TargetKey
-	_, err = client.Qualityprofiles.DeactivateRules(&QualityprofilesDeactivateRulesOptions{})
+	_, err = client.Qualityprofiles.DeactivateRules(context.Background(), &QualityprofilesDeactivateRulesOptions{})
 	assert.Error(t, err)
 }
 
@@ -633,7 +634,7 @@ func TestQualityprofiles_Delete(t *testing.T) {
 		QualityProfile: "My Profile",
 	}
 
-	resp, err := client.Qualityprofiles.Delete(opt)
+	resp, err := client.Qualityprofiles.Delete(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -642,17 +643,17 @@ func TestQualityprofiles_Delete_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.Delete(nil)
+	_, err := client.Qualityprofiles.Delete(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.Delete(&QualityprofilesDeleteOptions{
+	_, err = client.Qualityprofiles.Delete(context.Background(), &QualityprofilesDeleteOptions{
 		QualityProfile: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.Delete(&QualityprofilesDeleteOptions{
+	_, err = client.Qualityprofiles.Delete(context.Background(), &QualityprofilesDeleteOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -673,7 +674,7 @@ func TestQualityprofiles_Export(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	result, resp, err := client.Qualityprofiles.Export(opt)
+	result, resp, err := client.Qualityprofiles.Export(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -684,11 +685,11 @@ func TestQualityprofiles_Export_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Export(nil)
+	_, _, err := client.Qualityprofiles.Export(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Export(&QualityprofilesExportOptions{})
+	_, _, err = client.Qualityprofiles.Export(context.Background(), &QualityprofilesExportOptions{})
 	assert.Error(t, err)
 }
 
@@ -702,7 +703,7 @@ func TestQualityprofiles_Exporters(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/exporters", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Qualityprofiles.Exporters()
+	result, resp, err := client.Qualityprofiles.Exporters(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -720,7 +721,7 @@ func TestQualityprofiles_Importers(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/importers", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Qualityprofiles.Importers()
+	result, resp, err := client.Qualityprofiles.Importers(context.Background(), )
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -749,7 +750,7 @@ func TestQualityprofiles_Inheritance(t *testing.T) {
 		QualityProfile: "My Profile",
 	}
 
-	result, resp, err := client.Qualityprofiles.Inheritance(opt)
+	result, resp, err := client.Qualityprofiles.Inheritance(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -762,17 +763,17 @@ func TestQualityprofiles_Inheritance_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Inheritance(nil)
+	_, _, err := client.Qualityprofiles.Inheritance(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.Inheritance(&QualityprofilesInheritanceOptions{
+	_, _, err = client.Qualityprofiles.Inheritance(context.Background(), &QualityprofilesInheritanceOptions{
 		QualityProfile: "My Profile",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.Inheritance(&QualityprofilesInheritanceOptions{
+	_, _, err = client.Qualityprofiles.Inheritance(context.Background(), &QualityprofilesInheritanceOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -794,7 +795,7 @@ func TestQualityprofiles_Projects(t *testing.T) {
 		Key: "profile-key",
 	}
 
-	result, resp, err := client.Qualityprofiles.Projects(opt)
+	result, resp, err := client.Qualityprofiles.Projects(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -806,15 +807,15 @@ func TestQualityprofiles_Projects_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Projects(nil)
+	_, _, err := client.Qualityprofiles.Projects(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, _, err = client.Qualityprofiles.Projects(&QualityprofilesProjectsOptions{})
+	_, _, err = client.Qualityprofiles.Projects(context.Background(), &QualityprofilesProjectsOptions{})
 	assert.Error(t, err)
 
 	// Test invalid Selected
-	_, _, err = client.Qualityprofiles.Projects(&QualityprofilesProjectsOptions{
+	_, _, err = client.Qualityprofiles.Projects(context.Background(), &QualityprofilesProjectsOptions{
 		Key:      "profile-key",
 		Selected: "invalid",
 	})
@@ -831,7 +832,7 @@ func TestQualityprofiles_RemoveGroup(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.RemoveGroup(opt)
+	resp, err := client.Qualityprofiles.RemoveGroup(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -840,11 +841,11 @@ func TestQualityprofiles_RemoveGroup_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.RemoveGroup(nil)
+	_, err := client.Qualityprofiles.RemoveGroup(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Group
-	_, err = client.Qualityprofiles.RemoveGroup(&QualityprofilesRemoveGroupOptions{
+	_, err = client.Qualityprofiles.RemoveGroup(context.Background(), &QualityprofilesRemoveGroupOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 	})
@@ -861,7 +862,7 @@ func TestQualityprofiles_RemoveProject(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.RemoveProject(opt)
+	resp, err := client.Qualityprofiles.RemoveProject(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -870,11 +871,11 @@ func TestQualityprofiles_RemoveProject_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.RemoveProject(nil)
+	_, err := client.Qualityprofiles.RemoveProject(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.RemoveProject(&QualityprofilesRemoveProjectOptions{
+	_, err = client.Qualityprofiles.RemoveProject(context.Background(), &QualityprofilesRemoveProjectOptions{
 		Project:        "my_project",
 		QualityProfile: "Sonar way",
 	})
@@ -891,7 +892,7 @@ func TestQualityprofiles_RemoveUser(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.RemoveUser(opt)
+	resp, err := client.Qualityprofiles.RemoveUser(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -900,11 +901,11 @@ func TestQualityprofiles_RemoveUser_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.RemoveUser(nil)
+	_, err := client.Qualityprofiles.RemoveUser(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.RemoveUser(&QualityprofilesRemoveUserOptions{
+	_, err = client.Qualityprofiles.RemoveUser(context.Background(), &QualityprofilesRemoveUserOptions{
 		Login:          "john.doe",
 		QualityProfile: "Sonar way",
 	})
@@ -920,7 +921,7 @@ func TestQualityprofiles_Rename(t *testing.T) {
 		Name: "New Profile Name",
 	}
 
-	resp, err := client.Qualityprofiles.Rename(opt)
+	resp, err := client.Qualityprofiles.Rename(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -929,23 +930,23 @@ func TestQualityprofiles_Rename_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.Rename(nil)
+	_, err := client.Qualityprofiles.Rename(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOptions{
+	_, err = client.Qualityprofiles.Rename(context.Background(), &QualityprofilesRenameOptions{
 		Name: "New Name",
 	})
 	assert.Error(t, err)
 
 	// Test missing Name
-	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOptions{
+	_, err = client.Qualityprofiles.Rename(context.Background(), &QualityprofilesRenameOptions{
 		Key: "profile-key",
 	})
 	assert.Error(t, err)
 
 	// Test Name too long
-	_, err = client.Qualityprofiles.Rename(&QualityprofilesRenameOptions{
+	_, err = client.Qualityprofiles.Rename(context.Background(), &QualityprofilesRenameOptions{
 		Key:  "profile-key",
 		Name: strings.Repeat("a", MaxQualityProfileNameLength+1),
 	})
@@ -960,7 +961,7 @@ func TestQualityprofiles_Restore(t *testing.T) {
 		Backup: `<?xml version='1.0'?><profile><name>My Profile</name></profile>`,
 	}
 
-	resp, err := client.Qualityprofiles.Restore(opt)
+	resp, err := client.Qualityprofiles.Restore(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -969,11 +970,11 @@ func TestQualityprofiles_Restore_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.Restore(nil)
+	_, err := client.Qualityprofiles.Restore(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Backup
-	_, err = client.Qualityprofiles.Restore(&QualityprofilesRestoreOptions{})
+	_, err = client.Qualityprofiles.Restore(context.Background(), &QualityprofilesRestoreOptions{})
 	assert.Error(t, err)
 }
 
@@ -1009,7 +1010,7 @@ func TestQualityprofiles_Search(t *testing.T) {
 		Language: "java",
 	}
 
-	result, resp, err := client.Qualityprofiles.Search(opt)
+	result, resp, err := client.Qualityprofiles.Search(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -1022,7 +1023,7 @@ func TestQualityprofiles_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Search(nil)
+	_, _, err := client.Qualityprofiles.Search(context.Background(), nil)
 	assert.Error(t, err)
 }
 
@@ -1042,7 +1043,7 @@ func TestQualityprofiles_SearchGroups(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	result, resp, err := client.Qualityprofiles.SearchGroups(opt)
+	result, resp, err := client.Qualityprofiles.SearchGroups(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -1054,23 +1055,23 @@ func TestQualityprofiles_SearchGroups_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.SearchGroups(nil)
+	_, _, err := client.Qualityprofiles.SearchGroups(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOptions{
+	_, _, err = client.Qualityprofiles.SearchGroups(context.Background(), &QualityprofilesSearchGroupsOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOptions{
+	_, _, err = client.Qualityprofiles.SearchGroups(context.Background(), &QualityprofilesSearchGroupsOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test invalid Selected
-	_, _, err = client.Qualityprofiles.SearchGroups(&QualityprofilesSearchGroupsOptions{
+	_, _, err = client.Qualityprofiles.SearchGroups(context.Background(), &QualityprofilesSearchGroupsOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 		Selected:       "invalid",
@@ -1094,7 +1095,7 @@ func TestQualityprofiles_SearchUsers(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	result, resp, err := client.Qualityprofiles.SearchUsers(opt)
+	result, resp, err := client.Qualityprofiles.SearchUsers(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -1106,23 +1107,23 @@ func TestQualityprofiles_SearchUsers_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.SearchUsers(nil)
+	_, _, err := client.Qualityprofiles.SearchUsers(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOptions{
+	_, _, err = client.Qualityprofiles.SearchUsers(context.Background(), &QualityprofilesSearchUsersOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOptions{
+	_, _, err = client.Qualityprofiles.SearchUsers(context.Background(), &QualityprofilesSearchUsersOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
 
 	// Test invalid Selected
-	_, _, err = client.Qualityprofiles.SearchUsers(&QualityprofilesSearchUsersOptions{
+	_, _, err = client.Qualityprofiles.SearchUsers(context.Background(), &QualityprofilesSearchUsersOptions{
 		Language:       "java",
 		QualityProfile: "Sonar way",
 		Selected:       "invalid",
@@ -1139,7 +1140,7 @@ func TestQualityprofiles_SetDefault(t *testing.T) {
 		QualityProfile: "Sonar way",
 	}
 
-	resp, err := client.Qualityprofiles.SetDefault(opt)
+	resp, err := client.Qualityprofiles.SetDefault(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, 204, resp.StatusCode)
 }
@@ -1148,17 +1149,17 @@ func TestQualityprofiles_SetDefault_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, err := client.Qualityprofiles.SetDefault(nil)
+	_, err := client.Qualityprofiles.SetDefault(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Language
-	_, err = client.Qualityprofiles.SetDefault(&QualityprofilesSetDefaultOptions{
+	_, err = client.Qualityprofiles.SetDefault(context.Background(), &QualityprofilesSetDefaultOptions{
 		QualityProfile: "Sonar way",
 	})
 	assert.Error(t, err)
 
 	// Test missing QualityProfile
-	_, err = client.Qualityprofiles.SetDefault(&QualityprofilesSetDefaultOptions{
+	_, err = client.Qualityprofiles.SetDefault(context.Background(), &QualityprofilesSetDefaultOptions{
 		Language: "java",
 	})
 	assert.Error(t, err)
@@ -1184,7 +1185,7 @@ func TestQualityprofiles_Show(t *testing.T) {
 		Key: "sonar-way-java",
 	}
 
-	result, resp, err := client.Qualityprofiles.Show(opt)
+	result, resp, err := client.Qualityprofiles.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -1196,11 +1197,11 @@ func TestQualityprofiles_Show_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Test nil option
-	_, _, err := client.Qualityprofiles.Show(nil)
+	_, _, err := client.Qualityprofiles.Show(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Test missing Key
-	_, _, err = client.Qualityprofiles.Show(&QualityprofilesShowOptions{})
+	_, _, err = client.Qualityprofiles.Show(context.Background(), &QualityprofilesShowOptions{})
 	assert.Error(t, err)
 }
 

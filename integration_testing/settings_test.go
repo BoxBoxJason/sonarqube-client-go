@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -36,7 +37,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 	// =========================================================================
 	Describe("ListDefinitions", func() {
 		It("should list all setting definitions", func() {
-			result, resp, err := client.Settings.ListDefinitions(&sonar.SettingsListDefinitionsOptions{})
+			result, resp, err := client.Settings.ListDefinitions(context.Background(), &sonar.SettingsListDefinitionsOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -44,7 +45,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 		})
 
 		It("should return definitions with proper structure", func() {
-			result, resp, err := client.Settings.ListDefinitions(&sonar.SettingsListDefinitionsOptions{})
+			result, resp, err := client.Settings.ListDefinitions(context.Background(), &sonar.SettingsListDefinitionsOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			// Each definition should have at least a key
@@ -56,21 +57,21 @@ var _ = Describe("Settings Service", Ordered, func() {
 		It("should list definitions for a specific project", func() {
 			// First create a project
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// List definitions for the project
-			result, resp, err := client.Settings.ListDefinitions(&sonar.SettingsListDefinitionsOptions{
+			result, resp, err := client.Settings.ListDefinitions(context.Background(), &sonar.SettingsListDefinitionsOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -80,7 +81,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Settings.ListDefinitions(nil)
+				_, resp, err := client.Settings.ListDefinitions(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -92,7 +93,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 	// =========================================================================
 	Describe("Values", func() {
 		It("should list all setting values", func() {
-			result, resp, err := client.Settings.Values(&sonar.SettingsValuesOptions{})
+			result, resp, err := client.Settings.Values(context.Background(), &sonar.SettingsValuesOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -100,7 +101,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 		})
 
 		It("should filter by specific keys", func() {
-			result, resp, err := client.Settings.Values(&sonar.SettingsValuesOptions{
+			result, resp, err := client.Settings.Values(context.Background(), &sonar.SettingsValuesOptions{
 				Keys: []string{"sonar.core.id", "sonar.core.startTime"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -115,21 +116,21 @@ var _ = Describe("Settings Service", Ordered, func() {
 		It("should get values for a specific project", func() {
 			// First create a project
 			projectKey := helpers.UniqueResourceName("proj")
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    projectKey,
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// Get values for the project
-			result, resp, err := client.Settings.Values(&sonar.SettingsValuesOptions{
+			result, resp, err := client.Settings.Values(context.Background(), &sonar.SettingsValuesOptions{
 				Component: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -139,7 +140,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Settings.Values(nil)
+				_, resp, err := client.Settings.Values(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -153,7 +154,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 		Describe("Set", func() {
 			It("should set a global setting value", func() {
 				// Set a simple string setting
-				resp, err := client.Settings.Set(&sonar.SettingsSetOptions{
+				resp, err := client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 					Key:   "sonar.login.message",
 					Value: "E2E Test Login Message",
 				})
@@ -161,7 +162,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Verify the value was set
-				values, _, err := client.Settings.Values(&sonar.SettingsValuesOptions{
+				values, _, err := client.Settings.Values(context.Background(), &sonar.SettingsValuesOptions{
 					Keys: []string{"sonar.login.message"},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -169,7 +170,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 				Expect(values.Settings[0].Value).To(Equal("E2E Test Login Message"))
 
 				// Clean up - reset the setting
-				_, _ = client.Settings.Reset(&sonar.SettingsResetOptions{
+				_, _ = client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
 					Keys: []string{"sonar.login.message"},
 				})
 			})
@@ -177,21 +178,21 @@ var _ = Describe("Settings Service", Ordered, func() {
 			It("should set a project-level setting", func() {
 				// Create a project
 				projectKey := helpers.UniqueResourceName("proj")
-				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+				_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 					Name:    projectKey,
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return err
 				})
 
 				// Set a project-level setting (sonar.exclusions is a multi-value setting)
-				resp, err := client.Settings.Set(&sonar.SettingsSetOptions{
+				resp, err := client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 					Key:       "sonar.exclusions",
 					Values:    []string{"**/test/**"},
 					Component: projectKey,
@@ -200,7 +201,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Verify the value was set
-				values, _, err := client.Settings.Values(&sonar.SettingsValuesOptions{
+				values, _, err := client.Settings.Values(context.Background(), &sonar.SettingsValuesOptions{
 					Component: projectKey,
 					Keys:      []string{"sonar.exclusions"},
 				})
@@ -211,21 +212,21 @@ var _ = Describe("Settings Service", Ordered, func() {
 			It("should set a multi-value setting", func() {
 				// Create a project for testing
 				projectKey := helpers.UniqueResourceName("proj")
-				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+				_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 					Name:    projectKey,
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return err
 				})
 
 				// Set a multi-value setting on the project
-				resp, err := client.Settings.Set(&sonar.SettingsSetOptions{
+				resp, err := client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 					Key:       "sonar.exclusions",
 					Values:    []string{"**/test/**", "**/vendor/**"},
 					Component: projectKey,
@@ -236,13 +237,13 @@ var _ = Describe("Settings Service", Ordered, func() {
 
 			Context("parameter validation", func() {
 				It("should fail with nil options", func() {
-					resp, err := client.Settings.Set(nil)
+					resp, err := client.Settings.Set(context.Background(), nil)
 					Expect(err).To(HaveOccurred())
 					Expect(resp).To(BeNil())
 				})
 
 				It("should fail with missing key", func() {
-					resp, err := client.Settings.Set(&sonar.SettingsSetOptions{
+					resp, err := client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 						Value: "some value",
 					})
 					Expect(err).To(HaveOccurred())
@@ -250,7 +251,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 				})
 
 				It("should fail with missing value/values/fieldValues", func() {
-					resp, err := client.Settings.Set(&sonar.SettingsSetOptions{
+					resp, err := client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 						Key: "some.key",
 					})
 					Expect(err).To(HaveOccurred())
@@ -262,21 +263,21 @@ var _ = Describe("Settings Service", Ordered, func() {
 		Describe("Reset", func() {
 			It("should reset a global setting value", func() {
 				// First set a value
-				_, err := client.Settings.Set(&sonar.SettingsSetOptions{
+				_, err := client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 					Key:   "sonar.login.message",
 					Value: "Message to be reset",
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				// Reset the setting
-				resp, err := client.Settings.Reset(&sonar.SettingsResetOptions{
+				resp, err := client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
 					Keys: []string{"sonar.login.message"},
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 				// Verify the value was reset (should not be found or have default value)
-				values, _, err := client.Settings.Values(&sonar.SettingsValuesOptions{
+				values, _, err := client.Settings.Values(context.Background(), &sonar.SettingsValuesOptions{
 					Keys: []string{"sonar.login.message"},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -289,21 +290,21 @@ var _ = Describe("Settings Service", Ordered, func() {
 			It("should reset a project-level setting", func() {
 				// Create a project
 				projectKey := helpers.UniqueResourceName("proj")
-				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+				_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 					Name:    projectKey,
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return err
 				})
 
 				// Set a project-level setting (sonar.exclusions is a multi-value setting)
-				_, err = client.Settings.Set(&sonar.SettingsSetOptions{
+				_, err = client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 					Key:       "sonar.exclusions",
 					Values:    []string{"**/test/**"},
 					Component: projectKey,
@@ -311,7 +312,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				// Reset the project-level setting
-				resp, err := client.Settings.Reset(&sonar.SettingsResetOptions{
+				resp, err := client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
 					Keys:      []string{"sonar.exclusions"},
 					Component: projectKey,
 				})
@@ -322,28 +323,28 @@ var _ = Describe("Settings Service", Ordered, func() {
 			It("should reset multiple settings at once", func() {
 				// Create a project
 				projectKey := helpers.UniqueResourceName("proj")
-				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+				_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 					Name:    projectKey,
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return err
 				})
 
 				// Set multiple settings (sonar.exclusions and sonar.inclusions are multi-value)
-				_, err = client.Settings.Set(&sonar.SettingsSetOptions{
+				_, err = client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 					Key:       "sonar.exclusions",
 					Values:    []string{"**/test/**"},
 					Component: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
-				_, err = client.Settings.Set(&sonar.SettingsSetOptions{
+				_, err = client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 					Key:       "sonar.inclusions",
 					Values:    []string{"**/src/**"},
 					Component: projectKey,
@@ -351,7 +352,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				// Reset multiple settings
-				resp, err := client.Settings.Reset(&sonar.SettingsResetOptions{
+				resp, err := client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
 					Keys:      []string{"sonar.exclusions", "sonar.inclusions"},
 					Component: projectKey,
 				})
@@ -361,19 +362,19 @@ var _ = Describe("Settings Service", Ordered, func() {
 
 			Context("parameter validation", func() {
 				It("should fail with nil options", func() {
-					resp, err := client.Settings.Reset(nil)
+					resp, err := client.Settings.Reset(context.Background(), nil)
 					Expect(err).To(HaveOccurred())
 					Expect(resp).To(BeNil())
 				})
 
 				It("should fail with missing keys", func() {
-					resp, err := client.Settings.Reset(&sonar.SettingsResetOptions{})
+					resp, err := client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{})
 					Expect(err).To(HaveOccurred())
 					Expect(resp).To(BeNil())
 				})
 
 				It("should fail with empty keys array", func() {
-					resp, err := client.Settings.Reset(&sonar.SettingsResetOptions{
+					resp, err := client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
 						Keys: []string{},
 					})
 					Expect(err).To(HaveOccurred())
@@ -388,7 +389,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 	// =========================================================================
 	Describe("LoginMessage", func() {
 		It("should get the login message", func() {
-			result, resp, err := client.Settings.LoginMessage()
+			result, resp, err := client.Settings.LoginMessage(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -397,14 +398,14 @@ var _ = Describe("Settings Service", Ordered, func() {
 
 		It("should return the set login message", func() {
 			// Set a login message
-			_, err := client.Settings.Set(&sonar.SettingsSetOptions{
+			_, err := client.Settings.Set(context.Background(), &sonar.SettingsSetOptions{
 				Key:   "sonar.login.message",
 				Value: "Welcome to E2E Testing!",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Verify the value was set using Values endpoint
-			values, _, err := client.Settings.Values(&sonar.SettingsValuesOptions{
+			values, _, err := client.Settings.Values(context.Background(), &sonar.SettingsValuesOptions{
 				Keys: []string{"sonar.login.message"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -413,13 +414,13 @@ var _ = Describe("Settings Service", Ordered, func() {
 
 			// The LoginMessage endpoint may return empty due to SonarQube behavior
 			// but the setting value is correctly stored
-			result, resp, err := client.Settings.LoginMessage()
+			result, resp, err := client.Settings.LoginMessage(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
 
 			// Clean up
-			_, _ = client.Settings.Reset(&sonar.SettingsResetOptions{
+			_, _ = client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
 				Keys: []string{"sonar.login.message"},
 			})
 		})
@@ -430,7 +431,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 	// =========================================================================
 	Describe("CheckSecretKey", func() {
 		It("should check if secret key is available", func() {
-			result, resp, err := client.Settings.CheckSecretKey()
+			result, resp, err := client.Settings.CheckSecretKey(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -444,7 +445,7 @@ var _ = Describe("Settings Service", Ordered, func() {
 	Describe("GenerateSecretKey", func() {
 		It("should generate a secret key", func() {
 			Skip("Skipping secret key generation test - it may fail if key already exists")
-			result, resp, err := client.Settings.GenerateSecretKey()
+			result, resp, err := client.Settings.GenerateSecretKey(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -458,14 +459,14 @@ var _ = Describe("Settings Service", Ordered, func() {
 	Describe("Encrypt", func() {
 		It("should encrypt a value if secret key is available", func() {
 			// First check if secret key is available
-			checkResult, _, err := client.Settings.CheckSecretKey()
+			checkResult, _, err := client.Settings.CheckSecretKey(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 
 			if !checkResult.SecretKeyAvailable {
 				Skip("Secret key not available, skipping encryption test")
 			}
 
-			result, resp, err := client.Settings.Encrypt(&sonar.SettingsEncryptOptions{
+			result, resp, err := client.Settings.Encrypt(context.Background(), &sonar.SettingsEncryptOptions{
 				Value: "my-secret-value",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -478,13 +479,13 @@ var _ = Describe("Settings Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Settings.Encrypt(nil)
+				_, resp, err := client.Settings.Encrypt(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing value", func() {
-				_, resp, err := client.Settings.Encrypt(&sonar.SettingsEncryptOptions{})
+				_, resp, err := client.Settings.Encrypt(context.Background(), &sonar.SettingsEncryptOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})

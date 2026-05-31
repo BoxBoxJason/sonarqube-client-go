@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -43,7 +44,7 @@ func TestNewCodePeriods_List(t *testing.T) {
 		Project: "my-project",
 	}
 
-	result, resp, err := client.NewCodePeriods.List(opt)
+	result, resp, err := client.NewCodePeriods.List(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -56,11 +57,11 @@ func TestNewCodePeriods_List_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, _, err := client.NewCodePeriods.List(nil)
+	_, _, err := client.NewCodePeriods.List(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Project should fail validation.
-	_, _, err = client.NewCodePeriods.List(&NewCodePeriodsListOptions{})
+	_, _, err = client.NewCodePeriods.List(context.Background(), &NewCodePeriodsListOptions{})
 	assert.Error(t, err)
 }
 
@@ -81,7 +82,7 @@ func TestNewCodePeriods_Set(t *testing.T) {
 		Value: "30",
 	}
 
-	resp, err := client.NewCodePeriods.Set(opt)
+	resp, err := client.NewCodePeriods.Set(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -90,27 +91,27 @@ func TestNewCodePeriods_Set_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Nil option should fail validation.
-	_, err := client.NewCodePeriods.Set(nil)
+	_, err := client.NewCodePeriods.Set(context.Background(), nil)
 	assert.Error(t, err)
 
 	// Missing Type should fail validation.
-	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOptions{})
+	_, err = client.NewCodePeriods.Set(context.Background(), &NewCodePeriodsSetOptions{})
 	assert.Error(t, err)
 
 	// Invalid Type should fail validation.
-	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOptions{
+	_, err = client.NewCodePeriods.Set(context.Background(), &NewCodePeriodsSetOptions{
 		Type: "INVALID_TYPE",
 	})
 	assert.Error(t, err)
 
 	// SPECIFIC_ANALYSIS without Branch should fail validation.
-	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOptions{
+	_, err = client.NewCodePeriods.Set(context.Background(), &NewCodePeriodsSetOptions{
 		Type: NewCodePeriodTypeSpecificAnalysis,
 	})
 	assert.Error(t, err)
 
 	// REFERENCE_BRANCH without Project should fail validation.
-	_, err = client.NewCodePeriods.Set(&NewCodePeriodsSetOptions{
+	_, err = client.NewCodePeriods.Set(context.Background(), &NewCodePeriodsSetOptions{
 		Type: NewCodePeriodTypeReferenceBranch,
 	})
 	assert.Error(t, err)
@@ -126,7 +127,7 @@ func TestNewCodePeriods_Show(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/new_code_periods/show", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.NewCodePeriods.Show(nil)
+	result, resp, err := client.NewCodePeriods.Show(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -161,7 +162,7 @@ func TestNewCodePeriods_Show_WithOptions(t *testing.T) {
 		Branch:  "main",
 	}
 
-	result, _, err := client.NewCodePeriods.Show(opt)
+	result, _, err := client.NewCodePeriods.Show(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, "my-project", result.ProjectKey)
 	assert.Equal(t, NewCodePeriodTypeReferenceBranch, result.Type)
@@ -172,7 +173,7 @@ func TestNewCodePeriods_Unset(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/new_code_periods/unset", http.StatusOK))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.NewCodePeriods.Unset(nil)
+	resp, err := client.NewCodePeriods.Unset(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
@@ -192,7 +193,7 @@ func TestNewCodePeriods_Unset_WithOptions(t *testing.T) {
 		Project: "my-project",
 	}
 
-	resp, err := client.NewCodePeriods.Unset(opt)
+	resp, err := client.NewCodePeriods.Unset(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }

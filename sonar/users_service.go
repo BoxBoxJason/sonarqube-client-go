@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 const (
 	// MaxLoginLength is the maximum length for a user login.
@@ -737,13 +740,13 @@ func (s *UsersService) ValidateUpdateLoginOpt(opt *UsersUpdateLoginOptions) erro
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/anonymize.
 // Since: 9.7.
-func (s *UsersService) Anonymize(opt *UsersAnonymizeOptions) (*http.Response, error) {
+func (s *UsersService) Anonymize(ctx context.Context, opt *UsersAnonymizeOptions) (*http.Response, error) {
 	err := s.ValidateAnonymizeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/anonymize", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/anonymize", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -763,13 +766,13 @@ func (s *UsersService) Anonymize(opt *UsersAnonymizeOptions) (*http.Response, er
 //
 // API endpoint: POST /api/users/change_password.
 // Since: 5.2.
-func (s *UsersService) ChangePassword(opt *UsersChangePasswordOptions) (*http.Response, error) {
+func (s *UsersService) ChangePassword(ctx context.Context, opt *UsersChangePasswordOptions) (*http.Response, error) {
 	err := s.ValidateChangePasswordOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/change_password", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/change_password", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -789,13 +792,13 @@ func (s *UsersService) ChangePassword(opt *UsersChangePasswordOptions) (*http.Re
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/create.
 // Since: 3.7.
-func (s *UsersService) Create(opt *UsersCreateOptions) (*UsersCreate, *http.Response, error) {
+func (s *UsersService) Create(ctx context.Context, opt *UsersCreateOptions) (*UsersCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/create", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -814,8 +817,8 @@ func (s *UsersService) Create(opt *UsersCreateOptions) (*UsersCreate, *http.Resp
 //
 // API endpoint: GET /api/users/current.
 // Since: 5.2.
-func (s *UsersService) Current() (*UsersCurrent, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/current", nil)
+func (s *UsersService) Current(ctx context.Context) (*UsersCurrent, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "users/current", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -836,13 +839,13 @@ func (s *UsersService) Current() (*UsersCurrent, *http.Response, error) {
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/deactivate.
 // Since: 3.7.
-func (s *UsersService) Deactivate(opt *UsersDeactivateOptions) (*UsersDeactivate, *http.Response, error) {
+func (s *UsersService) Deactivate(ctx context.Context, opt *UsersDeactivateOptions) (*UsersDeactivate, *http.Response, error) {
 	err := s.ValidateDeactivateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/deactivate", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/deactivate", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -862,13 +865,13 @@ func (s *UsersService) Deactivate(opt *UsersDeactivateOptions) (*UsersDeactivate
 //
 // API endpoint: POST /api/users/dismiss_notice.
 // Since: 9.6.
-func (s *UsersService) DismissNotice(opt *UsersDismissNoticeOptions) (*http.Response, error) {
+func (s *UsersService) DismissNotice(ctx context.Context, opt *UsersDismissNoticeOptions) (*http.Response, error) {
 	err := s.ValidateDismissNoticeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/dismiss_notice", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/dismiss_notice", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -887,13 +890,13 @@ func (s *UsersService) DismissNotice(opt *UsersDismissNoticeOptions) (*http.Resp
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: GET /api/users/groups.
 // Since: 5.2.
-func (s *UsersService) Groups(opt *UsersGroupsOptions) (*UsersGroups, *http.Response, error) {
+func (s *UsersService) Groups(ctx context.Context, opt *UsersGroupsOptions) (*UsersGroups, *http.Response, error) {
 	err := s.ValidateGroupsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/groups", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "users/groups", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -912,8 +915,8 @@ func (s *UsersService) Groups(opt *UsersGroupsOptions) (*UsersGroups, *http.Resp
 //
 // API endpoint: GET /api/users/identity_providers.
 // Since: 5.5.
-func (s *UsersService) IdentityProviders() (*UsersIdentityProviders, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/identity_providers", nil)
+func (s *UsersService) IdentityProviders(ctx context.Context) (*UsersIdentityProviders, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "users/identity_providers", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -938,13 +941,13 @@ func (s *UsersService) IdentityProviders() (*UsersIdentityProviders, *http.Respo
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: GET /api/users/search.
 // Since: 3.6.
-func (s *UsersService) Search(opt *UsersSearchOptions) (*UsersSearch, *http.Response, error) {
+func (s *UsersService) Search(ctx context.Context, opt *UsersSearchOptions) (*UsersSearch, *http.Response, error) {
 	err := s.ValidateSearchOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "users/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "users/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -964,13 +967,13 @@ func (s *UsersService) Search(opt *UsersSearchOptions) (*UsersSearch, *http.Resp
 //
 // API endpoint: POST /api/users/set_homepage.
 // Since: 7.0.
-func (s *UsersService) SetHomepage(opt *UsersSetHomepageOptions) (*http.Response, error) {
+func (s *UsersService) SetHomepage(ctx context.Context, opt *UsersSetHomepageOptions) (*http.Response, error) {
 	err := s.ValidateSetHomepageOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/set_homepage", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/set_homepage", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -989,13 +992,13 @@ func (s *UsersService) SetHomepage(opt *UsersSetHomepageOptions) (*http.Response
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/update.
 // Since: 3.7.
-func (s *UsersService) Update(opt *UsersUpdateOptions) (*UsersUpdate, *http.Response, error) {
+func (s *UsersService) Update(ctx context.Context, opt *UsersUpdateOptions) (*UsersUpdate, *http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/update", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1019,13 +1022,13 @@ func (s *UsersService) Update(opt *UsersUpdateOptions) (*UsersUpdate, *http.Resp
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/update_identity_provider.
 // Since: 8.7.
-func (s *UsersService) UpdateIdentityProvider(opt *UsersUpdateIdentityProviderOptions) (*http.Response, error) {
+func (s *UsersService) UpdateIdentityProvider(ctx context.Context, opt *UsersUpdateIdentityProviderOptions) (*http.Response, error) {
 	err := s.ValidateUpdateIdentityProviderOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/update_identity_provider", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/update_identity_provider", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1045,13 +1048,13 @@ func (s *UsersService) UpdateIdentityProvider(opt *UsersUpdateIdentityProviderOp
 // Deprecated: Since SonarQube 10.4.
 // API endpoint: POST /api/users/update_login.
 // Since: 7.6.
-func (s *UsersService) UpdateLogin(opt *UsersUpdateLoginOptions) (*http.Response, error) {
+func (s *UsersService) UpdateLogin(ctx context.Context, opt *UsersUpdateLoginOptions) (*http.Response, error) {
 	err := s.ValidateUpdateLoginOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "users/update_login", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/update_login", opt)
 	if err != nil {
 		return nil, err
 	}

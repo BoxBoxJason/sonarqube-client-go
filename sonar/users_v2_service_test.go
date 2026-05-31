@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -24,7 +25,7 @@ func TestUsersV2_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/users-management/users", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.UsersManagement.Search(nil)
+	result, resp, err := client.V2.UsersManagement.Search(context.Background(), nil)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Len(t, result.Users, 2)
@@ -42,7 +43,7 @@ func TestUsersV2_Search_WithOptions(t *testing.T) {
 		response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.UsersManagement.Search(&UsersSearchOptionV2{
+	result, resp, err := client.V2.UsersManagement.Search(context.Background(), &UsersSearchOptionV2{
 		PaginationParamsV2: PaginationParamsV2{PageSize: 10},
 		Active:             &active,
 		Query:              "jdoe",
@@ -56,7 +57,7 @@ func TestUsersV2_Search_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	// Invalid page size
-	_, _, err := client.V2.UsersManagement.Search(&UsersSearchOptionV2{
+	_, _, err := client.V2.UsersManagement.Search(context.Background(), &UsersSearchOptionV2{
 		PaginationParamsV2: PaginationParamsV2{PageSize: 600},
 	})
 	assert.Error(t, err)
@@ -83,7 +84,7 @@ func TestUsersV2_Create(t *testing.T) {
 		}, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.UsersManagement.Create(&UsersCreateOptionsV2{
+	result, resp, err := client.V2.UsersManagement.Create(context.Background(), &UsersCreateOptionsV2{
 		Login:    "newuser",
 		Name:     "New User",
 		Email:    "new@example.com",
@@ -112,7 +113,7 @@ func TestUsersV2_Create_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.UsersManagement.Create(tt.opt)
+			_, _, err := client.V2.UsersManagement.Create(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -131,7 +132,7 @@ func TestUsersV2_Get(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/users-management/users/user-1", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.UsersManagement.Get("user-1")
+	result, resp, err := client.V2.UsersManagement.Get(context.Background(), "user-1")
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "jdoe", result.Login)
@@ -140,7 +141,7 @@ func TestUsersV2_Get(t *testing.T) {
 func TestUsersV2_Get_Validation(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	_, _, err := client.V2.UsersManagement.Get("")
+	_, _, err := client.V2.UsersManagement.Get(context.Background(), "")
 	assert.Error(t, err)
 }
 
@@ -153,7 +154,7 @@ func TestUsersV2_Deactivate(t *testing.T) {
 		map[string]string{"anonymize": "true"}))
 	client := newTestClient(t, server.url())
 
-	resp, err := client.V2.UsersManagement.Deactivate(&UsersDeactivateOptionsV2{
+	resp, err := client.V2.UsersManagement.Deactivate(context.Background(), &UsersDeactivateOptionsV2{
 		Id:        "user-1",
 		Anonymize: true,
 	})
@@ -174,7 +175,7 @@ func TestUsersV2_Deactivate_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.V2.UsersManagement.Deactivate(tt.opt)
+			_, err := client.V2.UsersManagement.Deactivate(context.Background(), tt.opt)
 			assert.Error(t, err)
 		})
 	}
@@ -198,7 +199,7 @@ func TestUsersV2_Update(t *testing.T) {
 		}, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.UsersManagement.Update("user-1", &UsersUpdateOptionsV2{
+	result, resp, err := client.V2.UsersManagement.Update(context.Background(), "user-1", &UsersUpdateOptionsV2{
 		Name:  "John Updated",
 		Email: "updated@example.com",
 	})
@@ -226,7 +227,7 @@ func TestUsersV2_Update_Validation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.V2.UsersManagement.Update(tt.id, tt.opt)
+			_, _, err := client.V2.UsersManagement.Update(context.Background(), tt.id, tt.opt)
 			assert.Error(t, err)
 		})
 	}

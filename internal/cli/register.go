@@ -101,9 +101,11 @@ func buildMethodCommand(serviceName string, _ reflect.Type, method reflect.Metho
 	pattern := ClassifyMethod(method)
 
 	// Determine if this method takes an option struct parameter.
-	// Method signatures: receiver is index 0 (for reflect.Type.Method on pointer type).
+	// Method signatures (receiver is index 0 for reflect.Type.Method on pointer type):
+	//   NumIn() == 2: receiver + ctx              (no option param)
+	//   NumIn() == 3: receiver + ctx + option     (has option param)
 	methodType := method.Type
-	hasOpt := methodType.NumIn() == 2 //nolint:mnd // 2 = receiver + option param
+	hasOpt := methodType.NumIn() == 3 //nolint:mnd // 3 = receiver + ctx + option param
 
 	var (
 		optType  reflect.Type
@@ -111,7 +113,7 @@ func buildMethodCommand(serviceName string, _ reflect.Type, method reflect.Metho
 	)
 
 	if hasOpt {
-		optType = methodType.In(1) // The option parameter type (should be *SomeOptions)
+		optType = methodType.In(2) //nolint:mnd // 2 = option param index (0=receiver, 1=ctx, 2=opt)
 		if optType.Kind() == reflect.Pointer {
 			optType = optType.Elem()
 		}

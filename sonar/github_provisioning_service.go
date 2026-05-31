@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // GithubProvisioningService handles communication with the GitHub provisioning related methods
 // of the SonarQube API.
@@ -62,8 +65,8 @@ type GithubProvisioningJitStatus struct {
 //
 // API endpoint: POST /api/github_provisioning/check.
 // WARNING: This is an internal API and may change without notice.
-func (s *GithubProvisioningService) Check() (*GithubProvisioningCheck, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "github_provisioning/check", nil)
+func (s *GithubProvisioningService) Check(ctx context.Context) (*GithubProvisioningCheck, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "github_provisioning/check", nil)
 	if err != nil {
 		return nil, nil, err
 	}

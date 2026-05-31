@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -18,7 +19,7 @@ func TestSystem_ChangeLogLevel(t *testing.T) {
 	client := newTestClient(t, server.url())
 
 	opt := &SystemChangeLogLevelOptions{Level: "INFO"}
-	resp, err := client.System.ChangeLogLevel(opt)
+	resp, err := client.System.ChangeLogLevel(context.Background(), opt)
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -38,7 +39,7 @@ func TestSystem_ChangeLogLevel_ValidationErrors(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := client.System.ChangeLogLevel(tc.opt)
+			_, err := client.System.ChangeLogLevel(context.Background(), tc.opt)
 			assert.Error(t, err, "expected validation error")
 		})
 	}
@@ -50,7 +51,7 @@ func TestSystem_DbMigrationStatus(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.DbMigrationStatus()
+	result, resp, err := client.System.DbMigrationStatus(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -63,7 +64,7 @@ func TestSystem_Health(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Health()
+	result, resp, err := client.System.Health(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -77,7 +78,7 @@ func TestSystem_Health_WithCauses(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, _, err := client.System.Health()
+	result, _, err := client.System.Health(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, "YELLOW", result.Health)
@@ -101,7 +102,7 @@ func TestSystem_Info(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Info()
+	result, resp, err := client.System.Info(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -114,7 +115,7 @@ func TestSystem_Liveness(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	_, resp, err := client.System.Liveness()
+	_, resp, err := client.System.Liveness(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -128,7 +129,7 @@ func TestSystem_Logs(t *testing.T) {
 	client := newTestClient(t, server.url())
 
 	opt := &SystemLogsOptions{Name: "app"}
-	result, resp, err := client.System.Logs(opt)
+	result, resp, err := client.System.Logs(context.Background(), opt)
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -142,7 +143,7 @@ func TestSystem_Logs_NilOption(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, _, err := client.System.Logs(nil)
+	result, _, err := client.System.Logs(context.Background(), nil)
 
 	require.NoError(t, err)
 	require.NotNil(t, result)
@@ -153,7 +154,7 @@ func TestSystem_Logs_ValidationErrors(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	opt := &SystemLogsOptions{Name: "invalid_log"}
-	_, _, err := client.System.Logs(opt)
+	_, _, err := client.System.Logs(context.Background(), opt)
 
 	assert.Error(t, err, "expected validation error for invalid log name")
 }
@@ -164,7 +165,7 @@ func TestSystem_MigrateDb(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.MigrateDb()
+	result, resp, err := client.System.MigrateDb(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -176,7 +177,7 @@ func TestSystem_Ping(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Ping()
+	result, resp, err := client.System.Ping(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -189,7 +190,7 @@ func TestSystem_Restart(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	resp, err := client.System.Restart()
+	resp, err := client.System.Restart(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -201,7 +202,7 @@ func TestSystem_Status(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Status()
+	result, resp, err := client.System.Status(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -234,7 +235,7 @@ func TestSystem_Upgrades(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Upgrades()
+	result, resp, err := client.System.Upgrades(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -254,7 +255,7 @@ func TestSystem_Upgrades_NoUpgrades(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, _, err := client.System.Upgrades()
+	result, _, err := client.System.Upgrades(context.Background(), )
 
 	require.NoError(t, err)
 	assert.Empty(t, result.Upgrades)

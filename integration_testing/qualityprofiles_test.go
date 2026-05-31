@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -36,7 +37,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 	// =========================================================================
 	Describe("Search", func() {
 		It("should list all quality profiles", func() {
-			result, resp, err := client.Qualityprofiles.Search(&sonar.QualityprofilesSearchOptions{})
+			result, resp, err := client.Qualityprofiles.Search(context.Background(), &sonar.QualityprofilesSearchOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -44,7 +45,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		})
 
 		It("should filter by language", func() {
-			result, resp, err := client.Qualityprofiles.Search(&sonar.QualityprofilesSearchOptions{
+			result, resp, err := client.Qualityprofiles.Search(context.Background(), &sonar.QualityprofilesSearchOptions{
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -55,7 +56,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		})
 
 		It("should include defaults", func() {
-			result, resp, err := client.Qualityprofiles.Search(&sonar.QualityprofilesSearchOptions{
+			result, resp, err := client.Qualityprofiles.Search(context.Background(), &sonar.QualityprofilesSearchOptions{
 				Defaults: true,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -73,7 +74,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should create a new quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp")
 
-			result, resp, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			result, resp, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
@@ -83,7 +84,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(result.Profile.Name).To(Equal(profileName))
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -93,14 +94,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Create(nil)
+				result, resp, err := client.Qualityprofiles.Create(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing name", func() {
-				result, resp, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+				result, resp, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -109,7 +110,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				result, resp, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+				result, resp, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 					Name: "test-profile",
 				})
 				Expect(err).To(HaveOccurred())
@@ -126,21 +127,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should show quality profile details", func() {
 			profileName := helpers.UniqueResourceName("qp-show")
 
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.Show(&sonar.QualityprofilesShowOptions{
+			result, resp, err := client.Qualityprofiles.Show(context.Background(), &sonar.QualityprofilesShowOptions{
 				Key: createResult.Profile.Key,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -151,14 +152,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Show(nil)
+				result, resp, err := client.Qualityprofiles.Show(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with empty key", func() {
-				result, resp, err := client.Qualityprofiles.Show(&sonar.QualityprofilesShowOptions{})
+				result, resp, err := client.Qualityprofiles.Show(context.Background(), &sonar.QualityprofilesShowOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -174,7 +175,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			originalName := helpers.UniqueResourceName("qp-rename")
 			newName := helpers.UniqueResourceName("qp-renamed")
 
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     originalName,
 				Language: "java",
 			})
@@ -183,7 +184,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			// Register cleanup that tries both names in case rename fails
 			cleanup.RegisterCleanup("qualityprofile", originalName+"-or-"+newName, func() error {
 				// Try deleting by new name first (expected case)
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: newName,
 					Language:       "java",
 				})
@@ -191,14 +192,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 					return nil
 				}
 				// If that fails, try deleting by original name (rename failed)
-				_, err = client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err = client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: originalName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			resp, err := client.Qualityprofiles.Rename(&sonar.QualityprofilesRenameOptions{
+			resp, err := client.Qualityprofiles.Rename(context.Background(), &sonar.QualityprofilesRenameOptions{
 				Key:  createResult.Profile.Key,
 				Name: newName,
 			})
@@ -206,7 +207,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify rename
-			result, _, err := client.Qualityprofiles.Show(&sonar.QualityprofilesShowOptions{
+			result, _, err := client.Qualityprofiles.Show(context.Background(), &sonar.QualityprofilesShowOptions{
 				Key: createResult.Profile.Key,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -215,13 +216,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.Rename(nil)
+				resp, err := client.Qualityprofiles.Rename(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing key", func() {
-				resp, err := client.Qualityprofiles.Rename(&sonar.QualityprofilesRenameOptions{
+				resp, err := client.Qualityprofiles.Rename(context.Background(), &sonar.QualityprofilesRenameOptions{
 					Name: "new-name",
 				})
 				Expect(err).To(HaveOccurred())
@@ -229,7 +230,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing name", func() {
-				resp, err := client.Qualityprofiles.Rename(&sonar.QualityprofilesRenameOptions{
+				resp, err := client.Qualityprofiles.Rename(context.Background(), &sonar.QualityprofilesRenameOptions{
 					Key: "some-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -246,21 +247,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			sourceName := helpers.UniqueResourceName("qp-source")
 			copyName := helpers.UniqueResourceName("qp-copy")
 
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     sourceName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", sourceName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: sourceName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.Copy(&sonar.QualityprofilesCopyOptions{
+			result, resp, err := client.Qualityprofiles.Copy(context.Background(), &sonar.QualityprofilesCopyOptions{
 				FromKey: createResult.Profile.Key,
 				ToName:  copyName,
 			})
@@ -270,7 +271,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(result.Name).To(Equal(copyName))
 
 			cleanup.RegisterCleanup("qualityprofile", copyName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: copyName,
 					Language:       "java",
 				})
@@ -280,14 +281,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Copy(nil)
+				result, resp, err := client.Qualityprofiles.Copy(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing from key", func() {
-				result, resp, err := client.Qualityprofiles.Copy(&sonar.QualityprofilesCopyOptions{
+				result, resp, err := client.Qualityprofiles.Copy(context.Background(), &sonar.QualityprofilesCopyOptions{
 					ToName: "new-copy",
 				})
 				Expect(err).To(HaveOccurred())
@@ -296,7 +297,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing to name", func() {
-				result, resp, err := client.Qualityprofiles.Copy(&sonar.QualityprofilesCopyOptions{
+				result, resp, err := client.Qualityprofiles.Copy(context.Background(), &sonar.QualityprofilesCopyOptions{
 					FromKey: "some-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -313,13 +314,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should delete a quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-delete")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			resp, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+			resp, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 			})
@@ -329,13 +330,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.Delete(nil)
+				resp, err := client.Qualityprofiles.Delete(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				resp, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -343,7 +344,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				resp, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				resp, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -360,7 +361,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName := helpers.UniqueResourceName("qp-default")
 
 			// Capture the current default profile for this language FIRST
-			searchResult, _, err := client.Qualityprofiles.Search(&sonar.QualityprofilesSearchOptions{
+			searchResult, _, err := client.Qualityprofiles.Search(context.Background(), &sonar.QualityprofilesSearchOptions{
 				Language: "java",
 				Defaults: true,
 			})
@@ -374,7 +375,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			}
 			Expect(originalDefaultName).NotTo(BeEmpty(), "Should find original default Java profile")
 
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
@@ -383,7 +384,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			// Use DeferCleanup to ensure restoration happens even if test fails
 			DeferCleanup(func() {
 				// Restore the original default profile
-				_, restoreErr := client.Qualityprofiles.SetDefault(&sonar.QualityprofilesSetDefaultOptions{
+				_, restoreErr := client.Qualityprofiles.SetDefault(context.Background(), &sonar.QualityprofilesSetDefaultOptions{
 					QualityProfile: originalDefaultName,
 					Language:       "java",
 				})
@@ -391,13 +392,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 					GinkgoWriter.Printf("Failed to restore default profile %s: %v\n", originalDefaultName, restoreErr)
 				}
 				// Delete the test profile
-				_, _ = client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, _ = client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 			})
 
-			resp, err := client.Qualityprofiles.SetDefault(&sonar.QualityprofilesSetDefaultOptions{
+			resp, err := client.Qualityprofiles.SetDefault(context.Background(), &sonar.QualityprofilesSetDefaultOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 			})
@@ -405,7 +406,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify it's now default
-			result, _, err := client.Qualityprofiles.Show(&sonar.QualityprofilesShowOptions{
+			result, _, err := client.Qualityprofiles.Show(context.Background(), &sonar.QualityprofilesShowOptions{
 				Key: createResult.Profile.Key,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -414,13 +415,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.SetDefault(nil)
+				resp, err := client.Qualityprofiles.SetDefault(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.SetDefault(&sonar.QualityprofilesSetDefaultOptions{
+				resp, err := client.Qualityprofiles.SetDefault(context.Background(), &sonar.QualityprofilesSetDefaultOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -428,7 +429,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				resp, err := client.Qualityprofiles.SetDefault(&sonar.QualityprofilesSetDefaultOptions{
+				resp, err := client.Qualityprofiles.SetDefault(context.Background(), &sonar.QualityprofilesSetDefaultOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -445,34 +446,34 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName := helpers.UniqueResourceName("qp-proj")
 			projectKey := helpers.UniqueResourceName("proj-qp")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "QualityProfile AddProject Test",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			resp, err := client.Qualityprofiles.AddProject(&sonar.QualityprofilesAddProjectOptions{
+			resp, err := client.Qualityprofiles.AddProject(context.Background(), &sonar.QualityprofilesAddProjectOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Project:        projectKey,
@@ -483,13 +484,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.AddProject(nil)
+				resp, err := client.Qualityprofiles.AddProject(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.AddProject(&sonar.QualityprofilesAddProjectOptions{
+				resp, err := client.Qualityprofiles.AddProject(context.Background(), &sonar.QualityprofilesAddProjectOptions{
 					Language: "java",
 					Project:  "some-project",
 				})
@@ -498,7 +499,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing project", func() {
-				resp, err := client.Qualityprofiles.AddProject(&sonar.QualityprofilesAddProjectOptions{
+				resp, err := client.Qualityprofiles.AddProject(context.Background(), &sonar.QualityprofilesAddProjectOptions{
 					QualityProfile: "test",
 					Language:       "java",
 				})
@@ -513,35 +514,35 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName := helpers.UniqueResourceName("qp-rmproj")
 			projectKey := helpers.UniqueResourceName("proj-rmqp")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "QualityProfile RemoveProject Test",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
 			})
 
 			// Add first
-			_, err = client.Qualityprofiles.AddProject(&sonar.QualityprofilesAddProjectOptions{
+			_, err = client.Qualityprofiles.AddProject(context.Background(), &sonar.QualityprofilesAddProjectOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Project:        projectKey,
@@ -549,7 +550,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Remove
-			resp, err := client.Qualityprofiles.RemoveProject(&sonar.QualityprofilesRemoveProjectOptions{
+			resp, err := client.Qualityprofiles.RemoveProject(context.Background(), &sonar.QualityprofilesRemoveProjectOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Project:        projectKey,
@@ -560,13 +561,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.RemoveProject(nil)
+				resp, err := client.Qualityprofiles.RemoveProject(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.RemoveProject(&sonar.QualityprofilesRemoveProjectOptions{
+				resp, err := client.Qualityprofiles.RemoveProject(context.Background(), &sonar.QualityprofilesRemoveProjectOptions{
 					Language: "java",
 					Project:  "some-project",
 				})
@@ -583,21 +584,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should list projects for a quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-projects")
 
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.Projects(&sonar.QualityprofilesProjectsOptions{
+			result, resp, err := client.Qualityprofiles.Projects(context.Background(), &sonar.QualityprofilesProjectsOptions{
 				Key: createResult.Profile.Key,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -607,14 +608,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Projects(nil)
+				result, resp, err := client.Qualityprofiles.Projects(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing key", func() {
-				result, resp, err := client.Qualityprofiles.Projects(&sonar.QualityprofilesProjectsOptions{})
+				result, resp, err := client.Qualityprofiles.Projects(context.Background(), &sonar.QualityprofilesProjectsOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
@@ -629,21 +630,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should show profile inheritance", func() {
 			profileName := helpers.UniqueResourceName("qp-inh")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.Inheritance(&sonar.QualityprofilesInheritanceOptions{
+			result, resp, err := client.Qualityprofiles.Inheritance(context.Background(), &sonar.QualityprofilesInheritanceOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 			})
@@ -655,14 +656,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Inheritance(nil)
+				result, resp, err := client.Qualityprofiles.Inheritance(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				result, resp, err := client.Qualityprofiles.Inheritance(&sonar.QualityprofilesInheritanceOptions{
+				result, resp, err := client.Qualityprofiles.Inheritance(context.Background(), &sonar.QualityprofilesInheritanceOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -671,7 +672,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				result, resp, err := client.Qualityprofiles.Inheritance(&sonar.QualityprofilesInheritanceOptions{
+				result, resp, err := client.Qualityprofiles.Inheritance(context.Background(), &sonar.QualityprofilesInheritanceOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -689,21 +690,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			parentName := helpers.UniqueResourceName("qp-parent")
 			childName := helpers.UniqueResourceName("qp-child")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     parentName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", parentName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: parentName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			_, _, err = client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err = client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     childName,
 				Language: "java",
 			})
@@ -711,18 +712,18 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("qualityprofile", childName, func() error {
 				// Remove parent first
-				_, _ = client.Qualityprofiles.ChangeParent(&sonar.QualityprofilesChangeParentOptions{
+				_, _ = client.Qualityprofiles.ChangeParent(context.Background(), &sonar.QualityprofilesChangeParentOptions{
 					QualityProfile: childName,
 					Language:       "java",
 				})
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: childName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			resp, err := client.Qualityprofiles.ChangeParent(&sonar.QualityprofilesChangeParentOptions{
+			resp, err := client.Qualityprofiles.ChangeParent(context.Background(), &sonar.QualityprofilesChangeParentOptions{
 				QualityProfile:       childName,
 				Language:             "java",
 				ParentQualityProfile: parentName,
@@ -731,7 +732,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify parent was set by checking ancestors
-			result, _, err := client.Qualityprofiles.Inheritance(&sonar.QualityprofilesInheritanceOptions{
+			result, _, err := client.Qualityprofiles.Inheritance(context.Background(), &sonar.QualityprofilesInheritanceOptions{
 				QualityProfile: childName,
 				Language:       "java",
 			})
@@ -742,13 +743,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.ChangeParent(nil)
+				resp, err := client.Qualityprofiles.ChangeParent(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.ChangeParent(&sonar.QualityprofilesChangeParentOptions{
+				resp, err := client.Qualityprofiles.ChangeParent(context.Background(), &sonar.QualityprofilesChangeParentOptions{
 					Language:             "java",
 					ParentQualityProfile: "some-parent",
 				})
@@ -757,7 +758,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				resp, err := client.Qualityprofiles.ChangeParent(&sonar.QualityprofilesChangeParentOptions{
+				resp, err := client.Qualityprofiles.ChangeParent(context.Background(), &sonar.QualityprofilesChangeParentOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -774,35 +775,35 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName1 := helpers.UniqueResourceName("qp-cmp1")
 			profileName2 := helpers.UniqueResourceName("qp-cmp2")
 
-			result1, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			result1, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName1,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName1, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName1,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result2, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			result2, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName2,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName2, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName2,
 					Language:       "java",
 				})
 				return err
 			})
 
-			compareResult, resp, err := client.Qualityprofiles.Compare(&sonar.QualityprofilesCompareOptions{
+			compareResult, resp, err := client.Qualityprofiles.Compare(context.Background(), &sonar.QualityprofilesCompareOptions{
 				LeftKey:  result1.Profile.Key,
 				RightKey: result2.Profile.Key,
 			})
@@ -813,14 +814,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Compare(nil)
+				result, resp, err := client.Qualityprofiles.Compare(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing left key", func() {
-				result, resp, err := client.Qualityprofiles.Compare(&sonar.QualityprofilesCompareOptions{
+				result, resp, err := client.Qualityprofiles.Compare(context.Background(), &sonar.QualityprofilesCompareOptions{
 					RightKey: "some-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -829,7 +830,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing right key", func() {
-				result, resp, err := client.Qualityprofiles.Compare(&sonar.QualityprofilesCompareOptions{
+				result, resp, err := client.Qualityprofiles.Compare(context.Background(), &sonar.QualityprofilesCompareOptions{
 					LeftKey: "some-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -846,21 +847,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should show quality profile changelog", func() {
 			profileName := helpers.UniqueResourceName("qp-chlog")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.Changelog(&sonar.QualityprofilesChangelogOptions{
+			result, resp, err := client.Qualityprofiles.Changelog(context.Background(), &sonar.QualityprofilesChangelogOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 			})
@@ -871,14 +872,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Changelog(nil)
+				result, resp, err := client.Qualityprofiles.Changelog(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				result, resp, err := client.Qualityprofiles.Changelog(&sonar.QualityprofilesChangelogOptions{
+				result, resp, err := client.Qualityprofiles.Changelog(context.Background(), &sonar.QualityprofilesChangelogOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -887,7 +888,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				result, resp, err := client.Qualityprofiles.Changelog(&sonar.QualityprofilesChangelogOptions{
+				result, resp, err := client.Qualityprofiles.Changelog(context.Background(), &sonar.QualityprofilesChangelogOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -904,21 +905,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should backup a quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-backup")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.Backup(&sonar.QualityprofilesBackupOptions{
+			result, resp, err := client.Qualityprofiles.Backup(context.Background(), &sonar.QualityprofilesBackupOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 			})
@@ -930,14 +931,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.Backup(nil)
+				result, resp, err := client.Qualityprofiles.Backup(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				result, resp, err := client.Qualityprofiles.Backup(&sonar.QualityprofilesBackupOptions{
+				result, resp, err := client.Qualityprofiles.Backup(context.Background(), &sonar.QualityprofilesBackupOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -946,7 +947,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				result, resp, err := client.Qualityprofiles.Backup(&sonar.QualityprofilesBackupOptions{
+				result, resp, err := client.Qualityprofiles.Backup(context.Background(), &sonar.QualityprofilesBackupOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -971,13 +972,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.Restore(nil)
+				resp, err := client.Qualityprofiles.Restore(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with empty backup", func() {
-				resp, err := client.Qualityprofiles.Restore(&sonar.QualityprofilesRestoreOptions{})
+				resp, err := client.Qualityprofiles.Restore(context.Background(), &sonar.QualityprofilesRestoreOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -992,7 +993,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName := helpers.UniqueResourceName("qp-activate")
 
 			// Create a profile
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
@@ -1000,7 +1001,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileKey := createResult.Profile.Key
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -1008,7 +1009,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			// Find an available Java rule to activate
-			rulesResult, _, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			rulesResult, _, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Languages: []string{"java"},
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 1,
@@ -1019,7 +1020,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			ruleKey := rulesResult.Rules[0].Key
 
 			// Activate the rule
-			resp, err := client.Qualityprofiles.ActivateRule(&sonar.QualityprofilesActivateRuleOptions{
+			resp, err := client.Qualityprofiles.ActivateRule(context.Background(), &sonar.QualityprofilesActivateRuleOptions{
 				Key:  profileKey,
 				Rule: ruleKey,
 			})
@@ -1029,13 +1030,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.ActivateRule(nil)
+				resp, err := client.Qualityprofiles.ActivateRule(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing key", func() {
-				resp, err := client.Qualityprofiles.ActivateRule(&sonar.QualityprofilesActivateRuleOptions{
+				resp, err := client.Qualityprofiles.ActivateRule(context.Background(), &sonar.QualityprofilesActivateRuleOptions{
 					Rule: "java:S1234",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1043,7 +1044,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing rule", func() {
-				resp, err := client.Qualityprofiles.ActivateRule(&sonar.QualityprofilesActivateRuleOptions{
+				resp, err := client.Qualityprofiles.ActivateRule(context.Background(), &sonar.QualityprofilesActivateRuleOptions{
 					Key: "some-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1057,7 +1058,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName := helpers.UniqueResourceName("qp-deactivate")
 
 			// Create a profile
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
@@ -1065,7 +1066,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileKey := createResult.Profile.Key
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -1073,7 +1074,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			// Find an available Java rule to activate then deactivate
-			rulesResult, _, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			rulesResult, _, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Languages: []string{"java"},
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 1,
@@ -1084,14 +1085,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			ruleKey := rulesResult.Rules[0].Key
 
 			// First activate the rule
-			_, err = client.Qualityprofiles.ActivateRule(&sonar.QualityprofilesActivateRuleOptions{
+			_, err = client.Qualityprofiles.ActivateRule(context.Background(), &sonar.QualityprofilesActivateRuleOptions{
 				Key:  profileKey,
 				Rule: ruleKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Now deactivate it
-			resp, err := client.Qualityprofiles.DeactivateRule(&sonar.QualityprofilesDeactivateRuleOptions{
+			resp, err := client.Qualityprofiles.DeactivateRule(context.Background(), &sonar.QualityprofilesDeactivateRuleOptions{
 				Key:  profileKey,
 				Rule: ruleKey,
 			})
@@ -1101,13 +1102,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.DeactivateRule(nil)
+				resp, err := client.Qualityprofiles.DeactivateRule(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing key", func() {
-				resp, err := client.Qualityprofiles.DeactivateRule(&sonar.QualityprofilesDeactivateRuleOptions{
+				resp, err := client.Qualityprofiles.DeactivateRule(context.Background(), &sonar.QualityprofilesDeactivateRuleOptions{
 					Rule: "java:S1234",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1115,7 +1116,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing rule", func() {
-				resp, err := client.Qualityprofiles.DeactivateRule(&sonar.QualityprofilesDeactivateRuleOptions{
+				resp, err := client.Qualityprofiles.DeactivateRule(context.Background(), &sonar.QualityprofilesDeactivateRuleOptions{
 					Key: "some-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1132,7 +1133,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName := helpers.UniqueResourceName("qp-bulk-activate")
 
 			// Create a profile
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
@@ -1140,7 +1141,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileKey := createResult.Profile.Key
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -1148,7 +1149,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			// Bulk activate rules by language
-			resp, err := client.Qualityprofiles.ActivateRules(&sonar.QualityprofilesActivateRulesOptions{
+			resp, err := client.Qualityprofiles.ActivateRules(context.Background(), &sonar.QualityprofilesActivateRulesOptions{
 				TargetKey: profileKey,
 				Languages: []string{"java"},
 			})
@@ -1158,13 +1159,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.ActivateRules(nil)
+				resp, err := client.Qualityprofiles.ActivateRules(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing target key", func() {
-				resp, err := client.Qualityprofiles.ActivateRules(&sonar.QualityprofilesActivateRulesOptions{
+				resp, err := client.Qualityprofiles.ActivateRules(context.Background(), &sonar.QualityprofilesActivateRulesOptions{
 					Languages: []string{"java"},
 				})
 				Expect(err).To(HaveOccurred())
@@ -1178,7 +1179,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileName := helpers.UniqueResourceName("qp-bulk-deactivate")
 
 			// Create a profile
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
@@ -1186,7 +1187,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileKey := createResult.Profile.Key
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -1194,7 +1195,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			// Find an available Java rule and activate it first
-			rulesResult, _, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			rulesResult, _, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Languages: []string{"java"},
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 1,
@@ -1205,14 +1206,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			ruleKey := rulesResult.Rules[0].Key
 
 			// Activate a rule first
-			_, err = client.Qualityprofiles.ActivateRule(&sonar.QualityprofilesActivateRuleOptions{
+			_, err = client.Qualityprofiles.ActivateRule(context.Background(), &sonar.QualityprofilesActivateRuleOptions{
 				Key:  profileKey,
 				Rule: ruleKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Bulk deactivate rules
-			resp, err := client.Qualityprofiles.DeactivateRules(&sonar.QualityprofilesDeactivateRulesOptions{
+			resp, err := client.Qualityprofiles.DeactivateRules(context.Background(), &sonar.QualityprofilesDeactivateRulesOptions{
 				TargetKey: profileKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1221,13 +1222,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.DeactivateRules(nil)
+				resp, err := client.Qualityprofiles.DeactivateRules(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing target key", func() {
-				resp, err := client.Qualityprofiles.DeactivateRules(&sonar.QualityprofilesDeactivateRulesOptions{})
+				resp, err := client.Qualityprofiles.DeactivateRules(context.Background(), &sonar.QualityprofilesDeactivateRulesOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -1239,7 +1240,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 	// =========================================================================
 	Describe("Exporters", func() {
 		It("should list exporters", func() {
-			result, resp, err := client.Qualityprofiles.Exporters()
+			result, resp, err := client.Qualityprofiles.Exporters(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -1248,7 +1249,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 	Describe("Importers", func() {
 		It("should list importers", func() {
-			result, resp, err := client.Qualityprofiles.Importers()
+			result, resp, err := client.Qualityprofiles.Importers(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -1262,21 +1263,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should add group permission to quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-grp")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			resp, err := client.Qualityprofiles.AddGroup(&sonar.QualityprofilesAddGroupOptions{
+			resp, err := client.Qualityprofiles.AddGroup(context.Background(), &sonar.QualityprofilesAddGroupOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Group:          "sonar-users",
@@ -1287,13 +1288,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.AddGroup(nil)
+				resp, err := client.Qualityprofiles.AddGroup(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.AddGroup(&sonar.QualityprofilesAddGroupOptions{
+				resp, err := client.Qualityprofiles.AddGroup(context.Background(), &sonar.QualityprofilesAddGroupOptions{
 					Language: "java",
 					Group:    "sonar-users",
 				})
@@ -1302,7 +1303,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing group", func() {
-				resp, err := client.Qualityprofiles.AddGroup(&sonar.QualityprofilesAddGroupOptions{
+				resp, err := client.Qualityprofiles.AddGroup(context.Background(), &sonar.QualityprofilesAddGroupOptions{
 					QualityProfile: "test",
 					Language:       "java",
 				})
@@ -1316,21 +1317,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should search groups for a quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-sgrp")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.SearchGroups(&sonar.QualityprofilesSearchGroupsOptions{
+			result, resp, err := client.Qualityprofiles.SearchGroups(context.Background(), &sonar.QualityprofilesSearchGroupsOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Selected:       sonar.SelectionFilterAll,
@@ -1342,14 +1343,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.SearchGroups(nil)
+				result, resp, err := client.Qualityprofiles.SearchGroups(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				result, resp, err := client.Qualityprofiles.SearchGroups(&sonar.QualityprofilesSearchGroupsOptions{
+				result, resp, err := client.Qualityprofiles.SearchGroups(context.Background(), &sonar.QualityprofilesSearchGroupsOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1358,7 +1359,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				result, resp, err := client.Qualityprofiles.SearchGroups(&sonar.QualityprofilesSearchGroupsOptions{
+				result, resp, err := client.Qualityprofiles.SearchGroups(context.Background(), &sonar.QualityprofilesSearchGroupsOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1372,14 +1373,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should remove group permission from quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-rmgrp")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -1387,7 +1388,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			// Add group first
-			_, err = client.Qualityprofiles.AddGroup(&sonar.QualityprofilesAddGroupOptions{
+			_, err = client.Qualityprofiles.AddGroup(context.Background(), &sonar.QualityprofilesAddGroupOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Group:          "sonar-users",
@@ -1395,7 +1396,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Remove group
-			resp, err := client.Qualityprofiles.RemoveGroup(&sonar.QualityprofilesRemoveGroupOptions{
+			resp, err := client.Qualityprofiles.RemoveGroup(context.Background(), &sonar.QualityprofilesRemoveGroupOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Group:          "sonar-users",
@@ -1406,13 +1407,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.RemoveGroup(nil)
+				resp, err := client.Qualityprofiles.RemoveGroup(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.RemoveGroup(&sonar.QualityprofilesRemoveGroupOptions{
+				resp, err := client.Qualityprofiles.RemoveGroup(context.Background(), &sonar.QualityprofilesRemoveGroupOptions{
 					Language: "java",
 					Group:    "sonar-users",
 				})
@@ -1421,7 +1422,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing group", func() {
-				resp, err := client.Qualityprofiles.RemoveGroup(&sonar.QualityprofilesRemoveGroupOptions{
+				resp, err := client.Qualityprofiles.RemoveGroup(context.Background(), &sonar.QualityprofilesRemoveGroupOptions{
 					QualityProfile: "test",
 					Language:       "java",
 				})
@@ -1438,21 +1439,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should add user permission to quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-usr")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			resp, err := client.Qualityprofiles.AddUser(&sonar.QualityprofilesAddUserOptions{
+			resp, err := client.Qualityprofiles.AddUser(context.Background(), &sonar.QualityprofilesAddUserOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Login:          "admin",
@@ -1463,13 +1464,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.AddUser(nil)
+				resp, err := client.Qualityprofiles.AddUser(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.AddUser(&sonar.QualityprofilesAddUserOptions{
+				resp, err := client.Qualityprofiles.AddUser(context.Background(), &sonar.QualityprofilesAddUserOptions{
 					Language: "java",
 					Login:    "admin",
 				})
@@ -1478,7 +1479,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing login", func() {
-				resp, err := client.Qualityprofiles.AddUser(&sonar.QualityprofilesAddUserOptions{
+				resp, err := client.Qualityprofiles.AddUser(context.Background(), &sonar.QualityprofilesAddUserOptions{
 					QualityProfile: "test",
 					Language:       "java",
 				})
@@ -1492,21 +1493,21 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should search users for a quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-susr")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
 				return err
 			})
 
-			result, resp, err := client.Qualityprofiles.SearchUsers(&sonar.QualityprofilesSearchUsersOptions{
+			result, resp, err := client.Qualityprofiles.SearchUsers(context.Background(), &sonar.QualityprofilesSearchUsersOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Selected:       sonar.SelectionFilterAll,
@@ -1518,14 +1519,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.Qualityprofiles.SearchUsers(nil)
+				result, resp, err := client.Qualityprofiles.SearchUsers(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				result, resp, err := client.Qualityprofiles.SearchUsers(&sonar.QualityprofilesSearchUsersOptions{
+				result, resp, err := client.Qualityprofiles.SearchUsers(context.Background(), &sonar.QualityprofilesSearchUsersOptions{
 					Language: "java",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1534,7 +1535,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing language", func() {
-				result, resp, err := client.Qualityprofiles.SearchUsers(&sonar.QualityprofilesSearchUsersOptions{
+				result, resp, err := client.Qualityprofiles.SearchUsers(context.Background(), &sonar.QualityprofilesSearchUsersOptions{
 					QualityProfile: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1548,14 +1549,14 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 		It("should remove user permission from quality profile", func() {
 			profileName := helpers.UniqueResourceName("qp-rmusr")
 
-			_, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			_, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -1563,7 +1564,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			// Add user first
-			_, err = client.Qualityprofiles.AddUser(&sonar.QualityprofilesAddUserOptions{
+			_, err = client.Qualityprofiles.AddUser(context.Background(), &sonar.QualityprofilesAddUserOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Login:          "admin",
@@ -1571,7 +1572,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Remove user
-			resp, err := client.Qualityprofiles.RemoveUser(&sonar.QualityprofilesRemoveUserOptions{
+			resp, err := client.Qualityprofiles.RemoveUser(context.Background(), &sonar.QualityprofilesRemoveUserOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Login:          "admin",
@@ -1582,13 +1583,13 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Qualityprofiles.RemoveUser(nil)
+				resp, err := client.Qualityprofiles.RemoveUser(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing profile name", func() {
-				resp, err := client.Qualityprofiles.RemoveUser(&sonar.QualityprofilesRemoveUserOptions{
+				resp, err := client.Qualityprofiles.RemoveUser(context.Background(), &sonar.QualityprofilesRemoveUserOptions{
 					Language: "java",
 					Login:    "admin",
 				})
@@ -1597,7 +1598,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			It("should fail with missing login", func() {
-				resp, err := client.Qualityprofiles.RemoveUser(&sonar.QualityprofilesRemoveUserOptions{
+				resp, err := client.Qualityprofiles.RemoveUser(context.Background(), &sonar.QualityprofilesRemoveUserOptions{
 					QualityProfile: "test",
 					Language:       "java",
 				})
@@ -1616,7 +1617,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			projectKey := helpers.UniqueResourceName("proj-qplc")
 
 			// Step 1: Create quality profile
-			createResult, _, err := client.Qualityprofiles.Create(&sonar.QualityprofilesCreateOptions{
+			createResult, _, err := client.Qualityprofiles.Create(context.Background(), &sonar.QualityprofilesCreateOptions{
 				Name:     profileName,
 				Language: "java",
 			})
@@ -1624,7 +1625,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			profileKey := createResult.Profile.Key
 
 			cleanup.RegisterCleanup("qualityprofile", profileName, func() error {
-				_, err := client.Qualityprofiles.Delete(&sonar.QualityprofilesDeleteOptions{
+				_, err := client.Qualityprofiles.Delete(context.Background(), &sonar.QualityprofilesDeleteOptions{
 					QualityProfile: profileName,
 					Language:       "java",
 				})
@@ -1632,34 +1633,34 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			})
 
 			// Step 2: Show the profile
-			showResult, _, err := client.Qualityprofiles.Show(&sonar.QualityprofilesShowOptions{
+			showResult, _, err := client.Qualityprofiles.Show(context.Background(), &sonar.QualityprofilesShowOptions{
 				Key: profileKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(showResult.Profile.Name).To(Equal(profileName))
 
 			// Step 3: View changelog
-			_, _, err = client.Qualityprofiles.Changelog(&sonar.QualityprofilesChangelogOptions{
+			_, _, err = client.Qualityprofiles.Changelog(context.Background(), &sonar.QualityprofilesChangelogOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 4: Create project and associate
-			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "Lifecycle Test Project",
 				Project: projectKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", projectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: projectKey,
 				})
 				return err
 			})
 
-			_, err = client.Qualityprofiles.AddProject(&sonar.QualityprofilesAddProjectOptions{
+			_, err = client.Qualityprofiles.AddProject(context.Background(), &sonar.QualityprofilesAddProjectOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Project:        projectKey,
@@ -1667,7 +1668,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5: List projects and verify our project is associated
-			projectsResult, _, err := client.Qualityprofiles.Projects(&sonar.QualityprofilesProjectsOptions{
+			projectsResult, _, err := client.Qualityprofiles.Projects(context.Background(), &sonar.QualityprofilesProjectsOptions{
 				Key: profileKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1681,7 +1682,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(foundProject).To(BeTrue(), "Project %s should be associated with the quality profile", projectKey)
 
 			// Step 6: Add user permission
-			_, err = client.Qualityprofiles.AddUser(&sonar.QualityprofilesAddUserOptions{
+			_, err = client.Qualityprofiles.AddUser(context.Background(), &sonar.QualityprofilesAddUserOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Login:          "admin",
@@ -1689,7 +1690,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 7: Search users and verify admin is selected
-			usersResult, _, err := client.Qualityprofiles.SearchUsers(&sonar.QualityprofilesSearchUsersOptions{
+			usersResult, _, err := client.Qualityprofiles.SearchUsers(context.Background(), &sonar.QualityprofilesSearchUsersOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Selected:       sonar.SelectionFilterSelected,
@@ -1705,7 +1706,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(foundAdmin).To(BeTrue(), "Admin user should have permission on quality profile")
 
 			// Step 8: Remove user permission
-			_, err = client.Qualityprofiles.RemoveUser(&sonar.QualityprofilesRemoveUserOptions{
+			_, err = client.Qualityprofiles.RemoveUser(context.Background(), &sonar.QualityprofilesRemoveUserOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Login:          "admin",
@@ -1713,7 +1714,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 9: Remove project association
-			_, err = client.Qualityprofiles.RemoveProject(&sonar.QualityprofilesRemoveProjectOptions{
+			_, err = client.Qualityprofiles.RemoveProject(context.Background(), &sonar.QualityprofilesRemoveProjectOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 				Project:        projectKey,
@@ -1721,7 +1722,7 @@ var _ = Describe("Qualityprofiles Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 10: Backup profile
-			backupResult, _, err := client.Qualityprofiles.Backup(&sonar.QualityprofilesBackupOptions{
+			backupResult, _, err := client.Qualityprofiles.Backup(context.Background(), &sonar.QualityprofilesBackupOptions{
 				QualityProfile: profileName,
 				Language:       "java",
 			})

@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // DevelopersService handles communication with the developers related methods
 // of the SonarQube API.
@@ -78,13 +81,13 @@ func (s *DevelopersService) ValidateSearchEventsOpt(opt *DevelopersSearchEventsO
 //
 // API endpoint: GET /api/developers/search_events.
 // WARNING: This is an internal API and may change without notice.
-func (s *DevelopersService) SearchEvents(opt *DevelopersSearchEventsOptions) (*DevelopersSearchEvents, *http.Response, error) {
+func (s *DevelopersService) SearchEvents(ctx context.Context, opt *DevelopersSearchEventsOptions) (*DevelopersSearchEvents, *http.Response, error) {
 	err := s.ValidateSearchEventsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "developers/search_events", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "developers/search_events", opt)
 	if err != nil {
 		return nil, nil, err
 	}

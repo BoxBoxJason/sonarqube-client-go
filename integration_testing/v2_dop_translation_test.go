@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 	"os"
 
@@ -37,7 +38,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 	// =========================================================================
 	Describe("GetDopSettings", func() {
 		It("should return DevOps Platform settings", func() {
-			result, resp, err := client.V2.DopTranslation.GetDopSettings()
+			result, resp, err := client.V2.DopTranslation.GetDopSettings(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -53,14 +54,14 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 	Describe("CreateBoundProject", func() {
 		Context("parameter validation", func() {
 			It("should fail with nil request", func() {
-				result, resp, err := client.V2.DopTranslation.CreateBoundProject(nil)
+				result, resp, err := client.V2.DopTranslation.CreateBoundProject(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing required fields", func() {
-				result, resp, err := client.V2.DopTranslation.CreateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				result, resp, err := client.V2.DopTranslation.CreateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					ProjectKey:  helpers.UniqueResourceName("v2dopproj"),
 					ProjectName: "Test DOP Project",
 				})
@@ -70,7 +71,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			})
 
 			It("should fail without project key", func() {
-				result, resp, err := client.V2.DopTranslation.CreateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				result, resp, err := client.V2.DopTranslation.CreateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					DevOpsPlatformSettingId: "nonexistent-setting-id",
 					ProjectName:             "Test DOP Project",
 					RepositoryIdentifier:    "test/repo",
@@ -81,7 +82,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			})
 
 			It("should fail without repository identifier", func() {
-				result, resp, err := client.V2.DopTranslation.CreateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				result, resp, err := client.V2.DopTranslation.CreateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					DevOpsPlatformSettingId: "nonexistent-setting-id",
 					ProjectKey:              helpers.UniqueResourceName("v2dopproj"),
 					ProjectName:             "Test DOP Project",
@@ -99,7 +100,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			)
 
 			BeforeAll(func() {
-				settings, _, err := client.V2.DopTranslation.GetDopSettings()
+				settings, _, err := client.V2.DopTranslation.GetDopSettings(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 
 				if len(settings.DopSettings) == 0 {
@@ -117,7 +118,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			It("should create a bound project", func() {
 				projectKey := helpers.UniqueResourceName("v2dopproj")
 
-				result, resp, err := client.V2.DopTranslation.CreateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				result, resp, err := client.V2.DopTranslation.CreateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					DevOpsPlatformSettingId: dopSettingID,
 					ProjectKey:              projectKey,
 					ProjectName:             "E2E V2 DOP Bound Project " + projectKey,
@@ -130,7 +131,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 				Expect(result.NewProjectCreated).To(BeTrue())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return helpers.IgnoreNotFoundError(err)
@@ -145,14 +146,14 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 	Describe("CreateOrUpdateBoundProject", func() {
 		Context("parameter validation", func() {
 			It("should fail with nil request", func() {
-				result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(nil)
+				result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 				Expect(result).To(BeNil())
 			})
 
 			It("should fail with missing required fields", func() {
-				result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					ProjectKey:  helpers.UniqueResourceName("v2dopproj"),
 					ProjectName: "Test DOP Project",
 				})
@@ -169,7 +170,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			)
 
 			BeforeAll(func() {
-				settings, _, err := client.V2.DopTranslation.GetDopSettings()
+				settings, _, err := client.V2.DopTranslation.GetDopSettings(context.Background(), )
 				Expect(err).NotTo(HaveOccurred())
 
 				if len(settings.DopSettings) == 0 {
@@ -187,7 +188,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			It("should create a bound project", func() {
 				projectKey := helpers.UniqueResourceName("v2dopproj")
 
-				result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				result, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					DevOpsPlatformSettingId: dopSettingID,
 					ProjectKey:              projectKey,
 					ProjectName:             "E2E V2 DOP CreateOrUpdate Project " + projectKey,
@@ -200,7 +201,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 				Expect(result.NewProjectCreated).To(BeTrue())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return helpers.IgnoreNotFoundError(err)
@@ -212,7 +213,7 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 				projectKey := helpers.UniqueResourceName("v2dopupd")
 
 				// First create the project.
-				createResult, _, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				createResult, _, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					DevOpsPlatformSettingId: dopSettingID,
 					ProjectKey:              projectKey,
 					ProjectName:             "E2E V2 DOP Update Project " + projectKey,
@@ -222,14 +223,14 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 				Expect(createResult.NewProjectCreated).To(BeTrue())
 
 				cleanup.RegisterCleanup("project", projectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: projectKey,
 					})
 					return helpers.IgnoreNotFoundError(err)
 				})
 
 				// Now update it (same project key, idempotent PUT).
-				updateResult, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(&sonar.DopTranslationBoundProjectOptions{
+				updateResult, resp, err := client.V2.DopTranslation.CreateOrUpdateBoundProject(context.Background(), &sonar.DopTranslationBoundProjectOptions{
 					DevOpsPlatformSettingId: dopSettingID,
 					ProjectKey:              projectKey,
 					ProjectName:             "E2E V2 DOP Updated Project " + projectKey,

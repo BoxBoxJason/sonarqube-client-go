@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 	"testing"
 
@@ -19,7 +20,7 @@ func TestDismissMessage_Check(t *testing.T) {
 		ProjectKey:  "my-project",
 	}
 
-	result, resp, err := client.DismissMessage.Check(opt)
+	result, resp, err := client.DismissMessage.Check(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -53,7 +54,7 @@ func TestDismissMessage_Check_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, _, err := client.DismissMessage.Check(tt.opt)
+			_, _, err := client.DismissMessage.Check(context.Background(), tt.opt)
 			require.Error(t, err)
 		})
 	}
@@ -68,7 +69,7 @@ func TestDismissMessage_Dismiss(t *testing.T) {
 		ProjectKey:  "my-project",
 	}
 
-	resp, err := client.DismissMessage.Dismiss(opt)
+	resp, err := client.DismissMessage.Dismiss(context.Background(), opt)
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -100,7 +101,7 @@ func TestDismissMessage_Dismiss_ValidationError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := client.DismissMessage.Dismiss(tt.opt)
+			_, err := client.DismissMessage.Dismiss(context.Background(), tt.opt)
 			require.Error(t, err)
 		})
 	}

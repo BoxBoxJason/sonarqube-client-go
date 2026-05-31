@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -785,13 +786,13 @@ type IssuesTagsOptions struct {
 
 // AddComment adds a comment to an issue.
 // Requires authentication and 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) AddComment(opt *IssuesAddCommentOptions) (v *IssuesAddComment, resp *http.Response, err error) {
+func (s *IssuesService) AddComment(ctx context.Context, opt *IssuesAddCommentOptions) (v *IssuesAddComment, resp *http.Response, err error) {
 	err = s.ValidateAddCommentOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/add_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/add_comment", opt)
 	if err != nil {
 		return
 	}
@@ -810,13 +811,13 @@ func (s *IssuesService) AddComment(opt *IssuesAddCommentOptions) (v *IssuesAddCo
 // Requires 'Administer Issues' permission on the specified project.
 // Only 'falsepositive', 'wontfix' and 'accept' transitions are supported.
 // Upon successful execution, the HTTP status code returned is 202 (Accepted).
-func (s *IssuesService) AnticipatedTransitions(opt *IssuesAnticipatedTransitionsOptions) (resp *http.Response, err error) {
+func (s *IssuesService) AnticipatedTransitions(ctx context.Context, opt *IssuesAnticipatedTransitionsOptions) (resp *http.Response, err error) {
 	err = s.ValidateAnticipatedTransitionsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/anticipated_transitions", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/anticipated_transitions", opt)
 	if err != nil {
 		return
 	}
@@ -831,13 +832,13 @@ func (s *IssuesService) AnticipatedTransitions(opt *IssuesAnticipatedTransitions
 
 // Assign assigns or unassigns an issue.
 // Requires authentication and 'Browse' permission on the project.
-func (s *IssuesService) Assign(opt *IssuesAssignOptions) (v *IssuesAssign, resp *http.Response, err error) {
+func (s *IssuesService) Assign(ctx context.Context, opt *IssuesAssignOptions) (v *IssuesAssign, resp *http.Response, err error) {
 	err = s.ValidateAssignOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/assign", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/assign", opt)
 	if err != nil {
 		return
 	}
@@ -854,13 +855,13 @@ func (s *IssuesService) Assign(opt *IssuesAssignOptions) (v *IssuesAssign, resp 
 
 // Authors searches SCM accounts which match a given query.
 // Requires authentication. Returns 503 when issue indexing is in progress.
-func (s *IssuesService) Authors(opt *IssuesAuthorsOptions) (v *IssuesAuthors, resp *http.Response, err error) {
+func (s *IssuesService) Authors(ctx context.Context, opt *IssuesAuthorsOptions) (v *IssuesAuthors, resp *http.Response, err error) {
 	err = s.ValidateAuthorsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/authors", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/authors", opt)
 	if err != nil {
 		return
 	}
@@ -877,13 +878,13 @@ func (s *IssuesService) Authors(opt *IssuesAuthorsOptions) (v *IssuesAuthors, re
 
 // BulkChange performs bulk changes on issues. Up to 500 issues can be updated.
 // Requires authentication.
-func (s *IssuesService) BulkChange(opt *IssuesBulkChangeOptions) (v *IssuesBulkChange, resp *http.Response, err error) {
+func (s *IssuesService) BulkChange(ctx context.Context, opt *IssuesBulkChangeOptions) (v *IssuesBulkChange, resp *http.Response, err error) {
 	err = s.ValidateBulkChangeOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/bulk_change", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/bulk_change", opt)
 	if err != nil {
 		return
 	}
@@ -900,13 +901,13 @@ func (s *IssuesService) BulkChange(opt *IssuesBulkChangeOptions) (v *IssuesBulkC
 
 // Changelog displays the changelog of an issue.
 // Requires 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) Changelog(opt *IssuesChangelogOptions) (v *IssuesChangelog, resp *http.Response, err error) {
+func (s *IssuesService) Changelog(ctx context.Context, opt *IssuesChangelogOptions) (v *IssuesChangelog, resp *http.Response, err error) {
 	err = s.ValidateChangelogOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/changelog", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/changelog", opt)
 	if err != nil {
 		return
 	}
@@ -923,13 +924,13 @@ func (s *IssuesService) Changelog(opt *IssuesChangelogOptions) (v *IssuesChangel
 
 // ComponentTags lists tags for issues under a given component.
 // Returns 503 when issue indexing is in progress.
-func (s *IssuesService) ComponentTags(opt *IssuesComponentTagsOptions) (v *IssuesComponentTags, resp *http.Response, err error) {
+func (s *IssuesService) ComponentTags(ctx context.Context, opt *IssuesComponentTagsOptions) (v *IssuesComponentTags, resp *http.Response, err error) {
 	err = s.ValidateComponentTagsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/component_tags", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/component_tags", opt)
 	if err != nil {
 		return
 	}
@@ -946,13 +947,13 @@ func (s *IssuesService) ComponentTags(opt *IssuesComponentTagsOptions) (v *Issue
 
 // DeleteComment deletes a comment.
 // Requires authentication and 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) DeleteComment(opt *IssuesDeleteCommentOptions) (v *IssuesDeleteComment, resp *http.Response, err error) {
+func (s *IssuesService) DeleteComment(ctx context.Context, opt *IssuesDeleteCommentOptions) (v *IssuesDeleteComment, resp *http.Response, err error) {
 	err = s.ValidateDeleteCommentOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/delete_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/delete_comment", opt)
 	if err != nil {
 		return
 	}
@@ -971,13 +972,13 @@ func (s *IssuesService) DeleteComment(opt *IssuesDeleteCommentOptions) (v *Issue
 // Requires authentication and 'Browse' permission on the project.
 // Transitions 'accept', 'wontfix', and 'falsepositive' require 'Administer Issues' permission.
 // Security hotspot transitions require 'Administer Security Hotspot' permission.
-func (s *IssuesService) DoTransition(opt *IssuesDoTransitionOptions) (v *IssuesDoTransition, resp *http.Response, err error) {
+func (s *IssuesService) DoTransition(ctx context.Context, opt *IssuesDoTransitionOptions) (v *IssuesDoTransition, resp *http.Response, err error) {
 	err = s.ValidateDoTransitionOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/do_transition", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/do_transition", opt)
 	if err != nil {
 		return
 	}
@@ -994,13 +995,13 @@ func (s *IssuesService) DoTransition(opt *IssuesDoTransitionOptions) (v *IssuesD
 
 // EditComment edits a comment.
 // Requires authentication and 'Browse' permission on the project of the specified issue.
-func (s *IssuesService) EditComment(opt *IssuesEditCommentOptions) (v *IssuesEditComment, resp *http.Response, err error) {
+func (s *IssuesService) EditComment(ctx context.Context, opt *IssuesEditCommentOptions) (v *IssuesEditComment, resp *http.Response, err error) {
 	err = s.ValidateEditCommentOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/edit_comment", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/edit_comment", opt)
 	if err != nil {
 		return
 	}
@@ -1018,13 +1019,13 @@ func (s *IssuesService) EditComment(opt *IssuesEditCommentOptions) (v *IssuesEdi
 // List lists issues in degraded mode when issue indexing is running.
 // Either 'project' or 'component' parameter is required.
 // Requires 'Browse' permission on the specified project.
-func (s *IssuesService) List(opt *IssuesListOptions) (v *IssuesList, resp *http.Response, err error) {
+func (s *IssuesService) List(ctx context.Context, opt *IssuesListOptions) (v *IssuesList, resp *http.Response, err error) {
 	err = s.ValidateListOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/list", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/list", opt)
 	if err != nil {
 		return
 	}
@@ -1042,13 +1043,13 @@ func (s *IssuesService) List(opt *IssuesListOptions) (v *IssuesList, resp *http.
 // Pull fetches all issues for a given branch.
 // The issues returned are not paginated, so the response size can be big.
 // Requires 'Browse' permission on the project.
-func (s *IssuesService) Pull(opt *IssuesPullOptions) (v []byte, resp *http.Response, err error) {
+func (s *IssuesService) Pull(ctx context.Context, opt *IssuesPullOptions) (v []byte, resp *http.Response, err error) {
 	err = s.ValidatePullOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/pull", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/pull", opt)
 	if err != nil {
 		return
 	}
@@ -1064,13 +1065,13 @@ func (s *IssuesService) Pull(opt *IssuesPullOptions) (v []byte, resp *http.Respo
 // PullTaint fetches all taint vulnerabilities for a given branch.
 // The vulnerabilities returned are not paginated, so the response size can be big.
 // Requires 'Browse' permission on the project.
-func (s *IssuesService) PullTaint(opt *IssuesPullTaintOptions) (v []byte, resp *http.Response, err error) {
+func (s *IssuesService) PullTaint(ctx context.Context, opt *IssuesPullTaintOptions) (v []byte, resp *http.Response, err error) {
 	err = s.ValidatePullTaintOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/pull_taint", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/pull_taint", opt)
 	if err != nil {
 		return
 	}
@@ -1085,13 +1086,13 @@ func (s *IssuesService) PullTaint(opt *IssuesPullTaintOptions) (v []byte, resp *
 
 // Reindex triggers reindexing of issues for a project.
 // Requires 'Administer System' permission.
-func (s *IssuesService) Reindex(opt *IssuesReindexOptions) (resp *http.Response, err error) {
+func (s *IssuesService) Reindex(ctx context.Context, opt *IssuesReindexOptions) (resp *http.Response, err error) {
 	err = s.ValidateReindexOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/reindex", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/reindex", opt)
 	if err != nil {
 		return
 	}
@@ -1108,13 +1109,13 @@ func (s *IssuesService) Reindex(opt *IssuesReindexOptions) (resp *http.Response,
 // Requires 'Browse' permission on the specified project(s).
 // For applications, it also requires 'Browse' permission on child projects.
 // Returns 503 when issue indexing is in progress.
-func (s *IssuesService) Search(opt *IssuesSearchOptions) (v *IssuesSearch, resp *http.Response, err error) {
+func (s *IssuesService) Search(ctx context.Context, opt *IssuesSearchOptions) (v *IssuesSearch, resp *http.Response, err error) {
 	err = s.ValidateSearchOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/search", opt)
 	if err != nil {
 		return
 	}
@@ -1131,13 +1132,13 @@ func (s *IssuesService) Search(opt *IssuesSearchOptions) (v *IssuesSearch, resp 
 
 // SetSeverity changes the severity of an issue.
 // Requires authentication, 'Browse' and 'Administer Issues' permissions on the project.
-func (s *IssuesService) SetSeverity(opt *IssuesSetSeverityOptions) (v *IssuesSetSeverity, resp *http.Response, err error) {
+func (s *IssuesService) SetSeverity(ctx context.Context, opt *IssuesSetSeverityOptions) (v *IssuesSetSeverity, resp *http.Response, err error) {
 	err = s.ValidateSetSeverityOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/set_severity", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/set_severity", opt)
 	if err != nil {
 		return
 	}
@@ -1154,13 +1155,13 @@ func (s *IssuesService) SetSeverity(opt *IssuesSetSeverityOptions) (v *IssuesSet
 
 // SetTags sets tags on an issue.
 // Requires authentication and 'Browse' permission on the project.
-func (s *IssuesService) SetTags(opt *IssuesSetTagsOptions) (v *IssuesSetTags, resp *http.Response, err error) {
+func (s *IssuesService) SetTags(ctx context.Context, opt *IssuesSetTagsOptions) (v *IssuesSetTags, resp *http.Response, err error) {
 	err = s.ValidateSetTagsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/set_tags", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/set_tags", opt)
 	if err != nil {
 		return
 	}
@@ -1177,13 +1178,13 @@ func (s *IssuesService) SetTags(opt *IssuesSetTagsOptions) (v *IssuesSetTags, re
 
 // SetType changes the type of an issue.
 // Requires authentication, 'Browse' and 'Administer Issues' permissions on the project.
-func (s *IssuesService) SetType(opt *IssuesSetTypeOptions) (v *IssuesSetType, resp *http.Response, err error) {
+func (s *IssuesService) SetType(ctx context.Context, opt *IssuesSetTypeOptions) (v *IssuesSetType, resp *http.Response, err error) {
 	err = s.ValidateSetTypeOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "issues/set_type", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "issues/set_type", opt)
 	if err != nil {
 		return
 	}
@@ -1199,13 +1200,13 @@ func (s *IssuesService) SetType(opt *IssuesSetTypeOptions) (v *IssuesSetType, re
 }
 
 // Tags lists tags matching a given query.
-func (s *IssuesService) Tags(opt *IssuesTagsOptions) (v *IssuesTags, resp *http.Response, err error) {
+func (s *IssuesService) Tags(ctx context.Context, opt *IssuesTagsOptions) (v *IssuesTags, resp *http.Response, err error) {
 	err = s.ValidateTagsOpt(opt)
 	if err != nil {
 		return
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "issues/tags", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "issues/tags", opt)
 	if err != nil {
 		return
 	}

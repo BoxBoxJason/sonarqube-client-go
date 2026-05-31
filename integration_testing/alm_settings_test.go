@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -26,14 +27,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 
 		// Create a test project
 		projectKey = helpers.UniqueResourceName("alm")
-		_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+		_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 			Name:    "AlmSettings Test Project",
 			Project: projectKey,
 		})
 		Expect(err).NotTo(HaveOccurred())
 
 		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			return err
@@ -52,7 +53,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	// =========================================================================
 	Describe("ListDefinitions", func() {
 		It("should list ALM setting definitions", func() {
-			result, resp, err := client.AlmSettings.ListDefinitions()
+			result, resp, err := client.AlmSettings.ListDefinitions(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -65,14 +66,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("List", func() {
 		Context("Valid Requests", func() {
 			It("should list ALM settings with nil options", func() {
-				result, resp, err := client.AlmSettings.List(nil)
+				result, resp, err := client.AlmSettings.List(context.Background(), nil)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 				Expect(result).NotTo(BeNil())
 			})
 
 			It("should list ALM settings for a project", func() {
-				result, resp, err := client.AlmSettings.List(&sonar.AlmSettingsListOptions{
+				result, resp, err := client.AlmSettings.List(context.Background(), &sonar.AlmSettingsListOptions{
 					Project: projectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -88,7 +89,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("GetBinding", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.AlmSettings.GetBinding(nil)
+				result, resp, err := client.AlmSettings.GetBinding(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -96,7 +97,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required project", func() {
-				result, resp, err := client.AlmSettings.GetBinding(&sonar.AlmSettingsGetBindingOptions{})
+				result, resp, err := client.AlmSettings.GetBinding(context.Background(), &sonar.AlmSettingsGetBindingOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Project"))
 				Expect(result).To(BeNil())
@@ -106,7 +107,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 
 		Context("Non-Bound Project", func() {
 			It("should fail for project without ALM binding", func() {
-				result, resp, err := client.AlmSettings.GetBinding(&sonar.AlmSettingsGetBindingOptions{
+				result, resp, err := client.AlmSettings.GetBinding(context.Background(), &sonar.AlmSettingsGetBindingOptions{
 					Project: projectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -124,7 +125,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("CountBinding", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				result, resp, err := client.AlmSettings.CountBinding(nil)
+				result, resp, err := client.AlmSettings.CountBinding(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(result).To(BeNil())
@@ -132,7 +133,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required almSetting", func() {
-				result, resp, err := client.AlmSettings.CountBinding(&sonar.AlmSettingsCountBindingOptions{})
+				result, resp, err := client.AlmSettings.CountBinding(context.Background(), &sonar.AlmSettingsCountBindingOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("AlmSetting"))
 				Expect(result).To(BeNil())
@@ -142,7 +143,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 
 		Context("Non-Existent ALM Setting", func() {
 			It("should fail for non-existent ALM setting", func() {
-				result, resp, err := client.AlmSettings.CountBinding(&sonar.AlmSettingsCountBindingOptions{
+				result, resp, err := client.AlmSettings.CountBinding(context.Background(), &sonar.AlmSettingsCountBindingOptions{
 					AlmSetting: "non-existent-alm-setting",
 				})
 				Expect(err).To(HaveOccurred())
@@ -160,14 +161,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("Delete", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.Delete(nil)
+				resp, err := client.AlmSettings.Delete(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.Delete(&sonar.AlmSettingsDeleteOptions{})
+				resp, err := client.AlmSettings.Delete(context.Background(), &sonar.AlmSettingsDeleteOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(resp).To(BeNil())
@@ -176,7 +177,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 
 		Context("Non-Existent ALM Setting", func() {
 			It("should fail for non-existent ALM setting", func() {
-				resp, err := client.AlmSettings.Delete(&sonar.AlmSettingsDeleteOptions{
+				resp, err := client.AlmSettings.Delete(context.Background(), &sonar.AlmSettingsDeleteOptions{
 					Key: "non-existent-alm-setting",
 				})
 				Expect(err).To(HaveOccurred())
@@ -193,14 +194,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("CreateAzure", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.CreateAzure(nil)
+				resp, err := client.AlmSettings.CreateAzure(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.CreateAzure(&sonar.AlmSettingsCreateAzureOptions{
+				resp, err := client.AlmSettings.CreateAzure(context.Background(), &sonar.AlmSettingsCreateAzureOptions{
 					PersonalAccessToken: "test-token",
 				})
 				Expect(err).To(HaveOccurred())
@@ -209,7 +210,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required personalAccessToken", func() {
-				resp, err := client.AlmSettings.CreateAzure(&sonar.AlmSettingsCreateAzureOptions{
+				resp, err := client.AlmSettings.CreateAzure(context.Background(), &sonar.AlmSettingsCreateAzureOptions{
 					Key: "test-azure",
 				})
 				Expect(err).To(HaveOccurred())
@@ -225,14 +226,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("CreateGithub", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.CreateGithub(nil)
+				resp, err := client.AlmSettings.CreateGithub(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.CreateGithub(&sonar.AlmSettingsCreateGithubOptions{
+				resp, err := client.AlmSettings.CreateGithub(context.Background(), &sonar.AlmSettingsCreateGithubOptions{
 					AppID:        "test-app-id",
 					ClientID:     "test-client-id",
 					ClientSecret: "test-client-secret",
@@ -245,7 +246,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required appId", func() {
-				resp, err := client.AlmSettings.CreateGithub(&sonar.AlmSettingsCreateGithubOptions{
+				resp, err := client.AlmSettings.CreateGithub(context.Background(), &sonar.AlmSettingsCreateGithubOptions{
 					Key:          "test-github",
 					ClientID:     "test-client-id",
 					ClientSecret: "test-client-secret",
@@ -258,7 +259,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required privateKey", func() {
-				resp, err := client.AlmSettings.CreateGithub(&sonar.AlmSettingsCreateGithubOptions{
+				resp, err := client.AlmSettings.CreateGithub(context.Background(), &sonar.AlmSettingsCreateGithubOptions{
 					Key:          "test-github",
 					AppID:        "test-app-id",
 					ClientID:     "test-client-id",
@@ -271,7 +272,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required URL", func() {
-				resp, err := client.AlmSettings.CreateGithub(&sonar.AlmSettingsCreateGithubOptions{
+				resp, err := client.AlmSettings.CreateGithub(context.Background(), &sonar.AlmSettingsCreateGithubOptions{
 					Key:          "test-github",
 					AppID:        "test-app-id",
 					ClientID:     "test-client-id",
@@ -291,14 +292,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("CreateGitlab", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.CreateGitlab(nil)
+				resp, err := client.AlmSettings.CreateGitlab(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.CreateGitlab(&sonar.AlmSettingsCreateGitlabOptions{
+				resp, err := client.AlmSettings.CreateGitlab(context.Background(), &sonar.AlmSettingsCreateGitlabOptions{
 					PersonalAccessToken: "test-token",
 				})
 				Expect(err).To(HaveOccurred())
@@ -307,7 +308,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required personalAccessToken", func() {
-				resp, err := client.AlmSettings.CreateGitlab(&sonar.AlmSettingsCreateGitlabOptions{
+				resp, err := client.AlmSettings.CreateGitlab(context.Background(), &sonar.AlmSettingsCreateGitlabOptions{
 					Key: "test-gitlab",
 				})
 				Expect(err).To(HaveOccurred())
@@ -323,14 +324,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("CreateBitbucket", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.CreateBitbucket(nil)
+				resp, err := client.AlmSettings.CreateBitbucket(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.CreateBitbucket(&sonar.AlmSettingsCreateBitbucketOptions{
+				resp, err := client.AlmSettings.CreateBitbucket(context.Background(), &sonar.AlmSettingsCreateBitbucketOptions{
 					PersonalAccessToken: "test-token",
 					URL:                 "https://bitbucket.example.com",
 				})
@@ -340,7 +341,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required URL", func() {
-				resp, err := client.AlmSettings.CreateBitbucket(&sonar.AlmSettingsCreateBitbucketOptions{
+				resp, err := client.AlmSettings.CreateBitbucket(context.Background(), &sonar.AlmSettingsCreateBitbucketOptions{
 					Key:                 "test-bitbucket",
 					PersonalAccessToken: "test-token",
 				})
@@ -350,7 +351,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required personalAccessToken", func() {
-				resp, err := client.AlmSettings.CreateBitbucket(&sonar.AlmSettingsCreateBitbucketOptions{
+				resp, err := client.AlmSettings.CreateBitbucket(context.Background(), &sonar.AlmSettingsCreateBitbucketOptions{
 					Key: "test-bitbucket",
 					URL: "https://bitbucket.example.com",
 				})
@@ -367,14 +368,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("CreateBitbucketCloud", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.CreateBitbucketCloud(nil)
+				resp, err := client.AlmSettings.CreateBitbucketCloud(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.CreateBitbucketCloud(&sonar.AlmSettingsCreateBitbucketCloudOptions{
+				resp, err := client.AlmSettings.CreateBitbucketCloud(context.Background(), &sonar.AlmSettingsCreateBitbucketCloudOptions{
 					ClientID:     "test-client-id",
 					ClientSecret: "test-client-secret",
 					Workspace:    "test-workspace",
@@ -385,7 +386,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required clientId", func() {
-				resp, err := client.AlmSettings.CreateBitbucketCloud(&sonar.AlmSettingsCreateBitbucketCloudOptions{
+				resp, err := client.AlmSettings.CreateBitbucketCloud(context.Background(), &sonar.AlmSettingsCreateBitbucketCloudOptions{
 					Key:          "test-bitbucket-cloud",
 					ClientSecret: "test-client-secret",
 					Workspace:    "test-workspace",
@@ -396,7 +397,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required clientSecret", func() {
-				resp, err := client.AlmSettings.CreateBitbucketCloud(&sonar.AlmSettingsCreateBitbucketCloudOptions{
+				resp, err := client.AlmSettings.CreateBitbucketCloud(context.Background(), &sonar.AlmSettingsCreateBitbucketCloudOptions{
 					Key:       "test-bitbucket-cloud",
 					ClientID:  "test-client-id",
 					Workspace: "test-workspace",
@@ -407,7 +408,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required workspace", func() {
-				resp, err := client.AlmSettings.CreateBitbucketCloud(&sonar.AlmSettingsCreateBitbucketCloudOptions{
+				resp, err := client.AlmSettings.CreateBitbucketCloud(context.Background(), &sonar.AlmSettingsCreateBitbucketCloudOptions{
 					Key:          "test-bitbucket-cloud",
 					ClientID:     "test-client-id",
 					ClientSecret: "test-client-secret",
@@ -425,14 +426,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("UpdateAzure", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.UpdateAzure(nil)
+				resp, err := client.AlmSettings.UpdateAzure(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.UpdateAzure(&sonar.AlmSettingsUpdateAzureOptions{})
+				resp, err := client.AlmSettings.UpdateAzure(context.Background(), &sonar.AlmSettingsUpdateAzureOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(resp).To(BeNil())
@@ -446,14 +447,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("UpdateGithub", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.UpdateGithub(nil)
+				resp, err := client.AlmSettings.UpdateGithub(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.UpdateGithub(&sonar.AlmSettingsUpdateGithubOptions{
+				resp, err := client.AlmSettings.UpdateGithub(context.Background(), &sonar.AlmSettingsUpdateGithubOptions{
 					AppID:    "test-app-id",
 					ClientID: "test-client-id",
 					URL:      "https://api.github.com",
@@ -464,7 +465,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required appId", func() {
-				resp, err := client.AlmSettings.UpdateGithub(&sonar.AlmSettingsUpdateGithubOptions{
+				resp, err := client.AlmSettings.UpdateGithub(context.Background(), &sonar.AlmSettingsUpdateGithubOptions{
 					Key:      "test-github",
 					ClientID: "test-client-id",
 					URL:      "https://api.github.com",
@@ -475,7 +476,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required URL", func() {
-				resp, err := client.AlmSettings.UpdateGithub(&sonar.AlmSettingsUpdateGithubOptions{
+				resp, err := client.AlmSettings.UpdateGithub(context.Background(), &sonar.AlmSettingsUpdateGithubOptions{
 					Key:      "test-github",
 					AppID:    "test-app-id",
 					ClientID: "test-client-id",
@@ -493,14 +494,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("UpdateGitlab", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.UpdateGitlab(nil)
+				resp, err := client.AlmSettings.UpdateGitlab(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.UpdateGitlab(&sonar.AlmSettingsUpdateGitlabOptions{})
+				resp, err := client.AlmSettings.UpdateGitlab(context.Background(), &sonar.AlmSettingsUpdateGitlabOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("Key"))
 				Expect(resp).To(BeNil())
@@ -514,14 +515,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("UpdateBitbucket", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.UpdateBitbucket(nil)
+				resp, err := client.AlmSettings.UpdateBitbucket(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.UpdateBitbucket(&sonar.AlmSettingsUpdateBitbucketOptions{
+				resp, err := client.AlmSettings.UpdateBitbucket(context.Background(), &sonar.AlmSettingsUpdateBitbucketOptions{
 					URL: "https://bitbucket.example.com",
 				})
 				Expect(err).To(HaveOccurred())
@@ -530,7 +531,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required URL", func() {
-				resp, err := client.AlmSettings.UpdateBitbucket(&sonar.AlmSettingsUpdateBitbucketOptions{
+				resp, err := client.AlmSettings.UpdateBitbucket(context.Background(), &sonar.AlmSettingsUpdateBitbucketOptions{
 					Key: "test-bitbucket",
 				})
 				Expect(err).To(HaveOccurred())
@@ -546,14 +547,14 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 	Describe("UpdateBitbucketCloud", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.AlmSettings.UpdateBitbucketCloud(nil)
+				resp, err := client.AlmSettings.UpdateBitbucketCloud(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("is required"))
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required key", func() {
-				resp, err := client.AlmSettings.UpdateBitbucketCloud(&sonar.AlmSettingsUpdateBitbucketCloudOptions{
+				resp, err := client.AlmSettings.UpdateBitbucketCloud(context.Background(), &sonar.AlmSettingsUpdateBitbucketCloudOptions{
 					ClientID:  "test-client-id",
 					Workspace: "test-workspace",
 				})
@@ -563,7 +564,7 @@ var _ = Describe("AlmSettings Service", Ordered, func() {
 			})
 
 			It("should fail without required workspace", func() {
-				resp, err := client.AlmSettings.UpdateBitbucketCloud(&sonar.AlmSettingsUpdateBitbucketCloudOptions{
+				resp, err := client.AlmSettings.UpdateBitbucketCloud(context.Background(), &sonar.AlmSettingsUpdateBitbucketCloudOptions{
 					Key:      "test-bitbucket-cloud",
 					ClientID: "test-client-id",
 				})

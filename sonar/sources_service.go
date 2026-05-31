@@ -1,6 +1,7 @@
 package sonar
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -230,13 +231,13 @@ func (s *SourcesService) ValidateShowOpt(opt *SourcesShowOptions) error {
 // Since: 5.0.
 //
 // Deprecated: This web service is deprecated since 5.1. Use api/sources/lines instead.
-func (s *SourcesService) Index(opt *SourcesIndexOptions) (*SourcesIndex, *http.Response, error) {
+func (s *SourcesService) Index(ctx context.Context, opt *SourcesIndexOptions) (*SourcesIndex, *http.Response, error) {
 	err := s.ValidateIndexOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/index", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "sources/index", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -256,13 +257,13 @@ func (s *SourcesService) Index(opt *SourcesIndexOptions) (*SourcesIndex, *http.R
 // Returns source code snippets relevant to the given issue.
 //
 // Since: 7.8.
-func (s *SourcesService) IssueSnippets(opt *SourcesIssueSnippetsOptions) (*SourcesIssueSnippets, *http.Response, error) {
+func (s *SourcesService) IssueSnippets(ctx context.Context, opt *SourcesIssueSnippetsOptions) (*SourcesIssueSnippets, *http.Response, error) {
 	err := s.ValidateIssueSnippetsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/issue_snippets", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "sources/issue_snippets", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -282,13 +283,13 @@ func (s *SourcesService) IssueSnippets(opt *SourcesIssueSnippetsOptions) (*Sourc
 // Returns source code with additional info like SCM data, coverage, and duplications.
 //
 // Since: 5.0.
-func (s *SourcesService) Lines(opt *SourcesLinesOptions) (*SourcesLines, *http.Response, error) {
+func (s *SourcesService) Lines(ctx context.Context, opt *SourcesLinesOptions) (*SourcesLines, *http.Response, error) {
 	err := s.ValidateLinesOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/lines", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "sources/lines", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -308,13 +309,13 @@ func (s *SourcesService) Lines(opt *SourcesLinesOptions) (*SourcesLines, *http.R
 // Requires 'See Source Code' permission on file's project.
 //
 // Since: 5.0.
-func (s *SourcesService) Raw(opt *SourcesRawOptions) (string, *http.Response, error) {
+func (s *SourcesService) Raw(ctx context.Context, opt *SourcesRawOptions) (string, *http.Response, error) {
 	err := s.ValidateRawOpt(opt)
 	if err != nil {
 		return "", nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/raw", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "sources/raw", opt)
 	if err != nil {
 		return "", nil, err
 	}
@@ -334,13 +335,13 @@ func (s *SourcesService) Raw(opt *SourcesRawOptions) (string, *http.Response, er
 // Returns source code modification information.
 //
 // Since: 4.4.
-func (s *SourcesService) Scm(opt *SourcesScmOptions) (*SourcesScm, *http.Response, error) {
+func (s *SourcesService) Scm(ctx context.Context, opt *SourcesScmOptions) (*SourcesScm, *http.Response, error) {
 	err := s.ValidateScmOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/scm", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "sources/scm", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -359,13 +360,13 @@ func (s *SourcesService) Scm(opt *SourcesScmOptions) (*SourcesScm, *http.Respons
 // Requires 'See Source Code' permission on file's project.
 //
 // Since: 4.4.
-func (s *SourcesService) Show(opt *SourcesShowOptions) (*SourcesShow, *http.Response, error) {
+func (s *SourcesService) Show(ctx context.Context, opt *SourcesShowOptions) (*SourcesShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "sources/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "sources/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}

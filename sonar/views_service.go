@@ -1,6 +1,9 @@
 package sonar
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // ViewsService handles communication with the portfolio related methods of
 // the SonarQube API. This service is only available in Enterprise Edition.
@@ -744,13 +747,13 @@ func (s *ViewsService) ValidateSetTagsModeOpt(opt *ViewsSetTagsModeOptions) erro
 // API endpoint: POST /api/views/add_application.
 // Since: 7.1.
 // Enterprise Edition only.
-func (s *ViewsService) AddApplication(opt *ViewsAddApplicationOptions) (*http.Response, error) {
+func (s *ViewsService) AddApplication(ctx context.Context, opt *ViewsAddApplicationOptions) (*http.Response, error) {
 	err := s.ValidateAddApplicationOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/add_application", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/add_application", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -764,13 +767,13 @@ func (s *ViewsService) AddApplication(opt *ViewsAddApplicationOptions) (*http.Re
 // API endpoint: POST /api/views/add_application_branch.
 // Since: 7.1.
 // Enterprise Edition only.
-func (s *ViewsService) AddApplicationBranch(opt *ViewsAddApplicationBranchOptions) (*http.Response, error) {
+func (s *ViewsService) AddApplicationBranch(ctx context.Context, opt *ViewsAddApplicationBranchOptions) (*http.Response, error) {
 	err := s.ValidateAddApplicationBranchOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/add_application_branch", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/add_application_branch", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -784,13 +787,13 @@ func (s *ViewsService) AddApplicationBranch(opt *ViewsAddApplicationBranchOption
 // API endpoint: POST /api/views/add_portfolio.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) AddPortfolio(opt *ViewsAddPortfolioOptions) (*http.Response, error) {
+func (s *ViewsService) AddPortfolio(ctx context.Context, opt *ViewsAddPortfolioOptions) (*http.Response, error) {
 	err := s.ValidateAddPortfolioOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/add_portfolio", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/add_portfolio", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -804,13 +807,13 @@ func (s *ViewsService) AddPortfolio(opt *ViewsAddPortfolioOptions) (*http.Respon
 // API endpoint: POST /api/views/add_project.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) AddProject(opt *ViewsAddProjectOptions) (*http.Response, error) {
+func (s *ViewsService) AddProject(ctx context.Context, opt *ViewsAddProjectOptions) (*http.Response, error) {
 	err := s.ValidateAddProjectOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/add_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/add_project", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -824,13 +827,13 @@ func (s *ViewsService) AddProject(opt *ViewsAddProjectOptions) (*http.Response, 
 // API endpoint: POST /api/views/add_project_branch.
 // Since: 7.1.
 // Enterprise Edition only.
-func (s *ViewsService) AddProjectBranch(opt *ViewsAddProjectBranchOptions) (*http.Response, error) {
+func (s *ViewsService) AddProjectBranch(ctx context.Context, opt *ViewsAddProjectBranchOptions) (*http.Response, error) {
 	err := s.ValidateAddProjectBranchOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/add_project_branch", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/add_project_branch", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -844,13 +847,13 @@ func (s *ViewsService) AddProjectBranch(opt *ViewsAddProjectBranchOptions) (*htt
 // API endpoint: GET /api/views/applications.
 // Since: 7.1.
 // Enterprise Edition only.
-func (s *ViewsService) Applications(opt *ViewsApplicationsOptions) (*ViewsApplications, *http.Response, error) {
+func (s *ViewsService) Applications(ctx context.Context, opt *ViewsApplicationsOptions) (*ViewsApplications, *http.Response, error) {
 	err := s.ValidateApplicationsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/applications", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/applications", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -871,13 +874,13 @@ func (s *ViewsService) Applications(opt *ViewsApplicationsOptions) (*ViewsApplic
 // API endpoint: POST /api/views/create.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Create(opt *ViewsCreateOptions) (*http.Response, error) {
+func (s *ViewsService) Create(ctx context.Context, opt *ViewsCreateOptions) (*http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/create", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/create", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -891,13 +894,13 @@ func (s *ViewsService) Create(opt *ViewsCreateOptions) (*http.Response, error) {
 // API endpoint: POST /api/views/delete.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Delete(opt *ViewsDeleteOptions) (*http.Response, error) {
+func (s *ViewsService) Delete(ctx context.Context, opt *ViewsDeleteOptions) (*http.Response, error) {
 	err := s.ValidateDeleteOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/delete", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/delete", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -911,8 +914,8 @@ func (s *ViewsService) Delete(opt *ViewsDeleteOptions) (*http.Response, error) {
 // API endpoint: GET /api/views/list.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) List() (*ViewsList, *http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/list", nil)
+func (s *ViewsService) List(ctx context.Context) (*ViewsList, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/list", nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -933,13 +936,13 @@ func (s *ViewsService) List() (*ViewsList, *http.Response, error) {
 // API endpoint: POST /api/views/move.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Move(opt *ViewsMoveOptions) (*http.Response, error) {
+func (s *ViewsService) Move(ctx context.Context, opt *ViewsMoveOptions) (*http.Response, error) {
 	err := s.ValidateMoveOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/move", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/move", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -953,13 +956,13 @@ func (s *ViewsService) Move(opt *ViewsMoveOptions) (*http.Response, error) {
 // API endpoint: GET /api/views/move_options.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) MoveOptions(opt *ViewsMoveOptionsOptions) (*ViewsMoveDestinations, *http.Response, error) {
+func (s *ViewsService) MoveOptions(ctx context.Context, opt *ViewsMoveOptionsOptions) (*ViewsMoveDestinations, *http.Response, error) {
 	err := s.ValidateMoveOptionsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/move_options", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/move_options", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -980,13 +983,13 @@ func (s *ViewsService) MoveOptions(opt *ViewsMoveOptionsOptions) (*ViewsMoveDest
 // API endpoint: GET /api/views/portfolios.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) SubPortfolios(opt *ViewsSubViewsOptions) (*ViewsSubViews, *http.Response, error) {
+func (s *ViewsService) SubPortfolios(ctx context.Context, opt *ViewsSubViewsOptions) (*ViewsSubViews, *http.Response, error) {
 	err := s.ValidateSubPortfoliosOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/portfolios", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/portfolios", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1007,13 +1010,13 @@ func (s *ViewsService) SubPortfolios(opt *ViewsSubViewsOptions) (*ViewsSubViews,
 // API endpoint: GET /api/views/projects.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Projects(opt *ViewsProjectsOptions) (*ViewsProjects, *http.Response, error) {
+func (s *ViewsService) Projects(ctx context.Context, opt *ViewsProjectsOptions) (*ViewsProjects, *http.Response, error) {
 	err := s.ValidateProjectsOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/projects", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/projects", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1034,13 +1037,13 @@ func (s *ViewsService) Projects(opt *ViewsProjectsOptions) (*ViewsProjects, *htt
 // API endpoint: GET /api/views/projects_status.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) ProjectsStatus(opt *ViewsProjectsStatusOptions) (*ViewsProjectsStatus, *http.Response, error) {
+func (s *ViewsService) ProjectsStatus(ctx context.Context, opt *ViewsProjectsStatusOptions) (*ViewsProjectsStatus, *http.Response, error) {
 	err := s.ValidateProjectsStatusOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/projects_status", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/projects_status", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1062,8 +1065,8 @@ func (s *ViewsService) ProjectsStatus(opt *ViewsProjectsStatusOptions) (*ViewsPr
 // API endpoint: POST /api/views/refresh.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Refresh(opt *ViewsRefreshOptions) (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/refresh", opt)
+func (s *ViewsService) Refresh(ctx context.Context, opt *ViewsRefreshOptions) (*http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/refresh", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1077,13 +1080,13 @@ func (s *ViewsService) Refresh(opt *ViewsRefreshOptions) (*http.Response, error)
 // API endpoint: POST /api/views/remove_application.
 // Since: 7.1.
 // Enterprise Edition only.
-func (s *ViewsService) RemoveApplication(opt *ViewsRemoveApplicationOptions) (*http.Response, error) {
+func (s *ViewsService) RemoveApplication(ctx context.Context, opt *ViewsRemoveApplicationOptions) (*http.Response, error) {
 	err := s.ValidateRemoveApplicationOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/remove_application", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/remove_application", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1097,13 +1100,13 @@ func (s *ViewsService) RemoveApplication(opt *ViewsRemoveApplicationOptions) (*h
 // API endpoint: POST /api/views/remove_application_branch.
 // Since: 7.1.
 // Enterprise Edition only.
-func (s *ViewsService) RemoveApplicationBranch(opt *ViewsRemoveApplicationBranchOptions) (*http.Response, error) {
+func (s *ViewsService) RemoveApplicationBranch(ctx context.Context, opt *ViewsRemoveApplicationBranchOptions) (*http.Response, error) {
 	err := s.ValidateRemoveApplicationBranchOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/remove_application_branch", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/remove_application_branch", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1117,13 +1120,13 @@ func (s *ViewsService) RemoveApplicationBranch(opt *ViewsRemoveApplicationBranch
 // API endpoint: POST /api/views/remove_portfolio.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) RemovePortfolio(opt *ViewsRemovePortfolioOptions) (*http.Response, error) {
+func (s *ViewsService) RemovePortfolio(ctx context.Context, opt *ViewsRemovePortfolioOptions) (*http.Response, error) {
 	err := s.ValidateRemovePortfolioOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/remove_portfolio", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/remove_portfolio", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1137,13 +1140,13 @@ func (s *ViewsService) RemovePortfolio(opt *ViewsRemovePortfolioOptions) (*http.
 // API endpoint: POST /api/views/remove_project.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) RemoveProject(opt *ViewsRemoveProjectOptions) (*http.Response, error) {
+func (s *ViewsService) RemoveProject(ctx context.Context, opt *ViewsRemoveProjectOptions) (*http.Response, error) {
 	err := s.ValidateRemoveProjectOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/remove_project", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/remove_project", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1157,13 +1160,13 @@ func (s *ViewsService) RemoveProject(opt *ViewsRemoveProjectOptions) (*http.Resp
 // API endpoint: POST /api/views/remove_project_branch.
 // Since: 7.1.
 // Enterprise Edition only.
-func (s *ViewsService) RemoveProjectBranch(opt *ViewsRemoveProjectBranchOptions) (*http.Response, error) {
+func (s *ViewsService) RemoveProjectBranch(ctx context.Context, opt *ViewsRemoveProjectBranchOptions) (*http.Response, error) {
 	err := s.ValidateRemoveProjectBranchOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/remove_project_branch", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/remove_project_branch", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1177,7 +1180,7 @@ func (s *ViewsService) RemoveProjectBranch(opt *ViewsRemoveProjectBranchOptions)
 // API endpoint: GET /api/views/search.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Search(opt *ViewsSearchOptions) (*ViewsSearch, *http.Response, error) {
+func (s *ViewsService) Search(ctx context.Context, opt *ViewsSearchOptions) (*ViewsSearch, *http.Response, error) {
 	if opt != nil {
 		err := opt.Validate()
 		if err != nil {
@@ -1185,7 +1188,7 @@ func (s *ViewsService) Search(opt *ViewsSearchOptions) (*ViewsSearch, *http.Resp
 		}
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/search", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/search", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1206,13 +1209,13 @@ func (s *ViewsService) Search(opt *ViewsSearchOptions) (*ViewsSearch, *http.Resp
 // API endpoint: POST /api/views/set_manual_mode.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) SetManualMode(opt *ViewsSetManualModeOptions) (*http.Response, error) {
+func (s *ViewsService) SetManualMode(ctx context.Context, opt *ViewsSetManualModeOptions) (*http.Response, error) {
 	err := s.ValidateSetManualModeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/set_manual_mode", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/set_manual_mode", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1226,13 +1229,13 @@ func (s *ViewsService) SetManualMode(opt *ViewsSetManualModeOptions) (*http.Resp
 // API endpoint: POST /api/views/set_none_mode.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) SetNoneMode(opt *ViewsSetNoneModeOptions) (*http.Response, error) {
+func (s *ViewsService) SetNoneMode(ctx context.Context, opt *ViewsSetNoneModeOptions) (*http.Response, error) {
 	err := s.ValidateSetNoneModeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/set_none_mode", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/set_none_mode", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1246,13 +1249,13 @@ func (s *ViewsService) SetNoneMode(opt *ViewsSetNoneModeOptions) (*http.Response
 // API endpoint: POST /api/views/set_regexp_mode.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) SetRegexpMode(opt *ViewsSetRegexpModeOptions) (*http.Response, error) {
+func (s *ViewsService) SetRegexpMode(ctx context.Context, opt *ViewsSetRegexpModeOptions) (*http.Response, error) {
 	err := s.ValidateSetRegexpModeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/set_regexp_mode", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/set_regexp_mode", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1266,13 +1269,13 @@ func (s *ViewsService) SetRegexpMode(opt *ViewsSetRegexpModeOptions) (*http.Resp
 // API endpoint: POST /api/views/set_remaining_projects_mode.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) SetRemainingProjectsMode(opt *ViewsSetRemainingProjectsModeOptions) (*http.Response, error) {
+func (s *ViewsService) SetRemainingProjectsMode(ctx context.Context, opt *ViewsSetRemainingProjectsModeOptions) (*http.Response, error) {
 	err := s.ValidateSetRemainingProjectsModeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/set_remaining_projects_mode", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/set_remaining_projects_mode", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1286,13 +1289,13 @@ func (s *ViewsService) SetRemainingProjectsMode(opt *ViewsSetRemainingProjectsMo
 // API endpoint: POST /api/views/set_tags_mode.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) SetTagsMode(opt *ViewsSetTagsModeOptions) (*http.Response, error) {
+func (s *ViewsService) SetTagsMode(ctx context.Context, opt *ViewsSetTagsModeOptions) (*http.Response, error) {
 	err := s.ValidateSetTagsModeOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/set_tags_mode", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/set_tags_mode", opt)
 	if err != nil {
 		return nil, err
 	}
@@ -1306,13 +1309,13 @@ func (s *ViewsService) SetTagsMode(opt *ViewsSetTagsModeOptions) (*http.Response
 // API endpoint: GET /api/views/show.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Show(opt *ViewsShowOptions) (*ViewsShow, *http.Response, error) {
+func (s *ViewsService) Show(ctx context.Context, opt *ViewsShowOptions) (*ViewsShow, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodGet, "views/show", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "views/show", opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -1333,13 +1336,13 @@ func (s *ViewsService) Show(opt *ViewsShowOptions) (*ViewsShow, *http.Response, 
 // API endpoint: POST /api/views/update.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Update(opt *ViewsUpdateOptions) (*http.Response, error) {
+func (s *ViewsService) Update(ctx context.Context, opt *ViewsUpdateOptions) (*http.Response, error) {
 	err := s.ValidateUpdateOpt(opt)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV1APIRequest(http.MethodPost, "views/update", opt)
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "views/update", opt)
 	if err != nil {
 		return nil, err
 	}

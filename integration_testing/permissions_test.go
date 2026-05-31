@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
@@ -45,7 +46,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testUserLogin = helpers.UniqueResourceName("user-perm")
 
 			// Create private project (codeviewer/user permissions only work on private projects)
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:       "Permission Test Project",
 				Project:    testProjectKey,
 				Visibility: sonar.ProjectVisibilityPrivate,
@@ -53,7 +54,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey,
 				})
 				return err
@@ -61,7 +62,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonar.UsersCreateOptions{
+			_, _, err = client.Users.Create(context.Background(), &sonar.UsersCreateOptions{
 				Login:    testUserLogin,
 				Name:     "Permission Test User",
 				Password: "SecurePassword123!",
@@ -71,7 +72,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", testUserLogin, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOptions{
+				_, _, err := client.Users.Deactivate(context.Background(), &sonar.UsersDeactivateOptions{
 					Login:     testUserLogin,
 					Anonymize: true,
 				})
@@ -80,7 +81,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add user permission to project", func() {
-			resp, err := client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+			resp, err := client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 				Login:      testUserLogin,
 				Permission: "codeviewer",
 				ProjectKey: testProjectKey,
@@ -89,7 +90,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify user has permission
-			result, _, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+			result, _, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 				ProjectKey: testProjectKey,
 				Permission: "codeviewer",
 			})
@@ -105,7 +106,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add admin permission to project", func() {
-			resp, err := client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+			resp, err := client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 				Login:      testUserLogin,
 				Permission: "admin",
 				ProjectKey: testProjectKey,
@@ -115,7 +116,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add issueadmin permission to project", func() {
-			resp, err := client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+			resp, err := client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 				Login:      testUserLogin,
 				Permission: "issueadmin",
 				ProjectKey: testProjectKey,
@@ -126,13 +127,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.AddUser(nil)
+				resp, err := client.Permissions.AddUser(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing login", func() {
-				resp, err := client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+				resp, err := client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 					Permission: "codeviewer",
 					ProjectKey: testProjectKey,
 				})
@@ -141,7 +142,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+				resp, err := client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 					Login:      testUserLogin,
 					ProjectKey: testProjectKey,
 				})
@@ -150,7 +151,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with invalid permission", func() {
-				resp, err := client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+				resp, err := client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 					Login:      testUserLogin,
 					Permission: "invalid_permission",
 					ProjectKey: testProjectKey,
@@ -170,7 +171,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testUserLogin = helpers.UniqueResourceName("user-rmperm")
 
 			// Create private project (codeviewer permission only works on private projects)
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:       "Remove User Permission Test",
 				Project:    testProjectKey,
 				Visibility: sonar.ProjectVisibilityPrivate,
@@ -178,7 +179,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey,
 				})
 				return err
@@ -186,7 +187,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonar.UsersCreateOptions{
+			_, _, err = client.Users.Create(context.Background(), &sonar.UsersCreateOptions{
 				Login:    testUserLogin,
 				Name:     "Remove Permission Test User",
 				Password: "SecurePassword123!",
@@ -196,7 +197,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", testUserLogin, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOptions{
+				_, _, err := client.Users.Deactivate(context.Background(), &sonar.UsersDeactivateOptions{
 					Login:     testUserLogin,
 					Anonymize: true,
 				})
@@ -204,7 +205,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			// Add permission first
-			_, err = client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+			_, err = client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 				Login:      testUserLogin,
 				Permission: "codeviewer",
 				ProjectKey: testProjectKey,
@@ -213,7 +214,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should remove user permission from project", func() {
-			resp, err := client.Permissions.RemoveUser(&sonar.PermissionsRemoveUserOptions{
+			resp, err := client.Permissions.RemoveUser(context.Background(), &sonar.PermissionsRemoveUserOptions{
 				Login:      testUserLogin,
 				Permission: "codeviewer",
 				ProjectKey: testProjectKey,
@@ -222,7 +223,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify user no longer has permission
-			result, _, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+			result, _, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 				ProjectKey: testProjectKey,
 				Permission: "codeviewer",
 			})
@@ -234,13 +235,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.RemoveUser(nil)
+				resp, err := client.Permissions.RemoveUser(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing login", func() {
-				resp, err := client.Permissions.RemoveUser(&sonar.PermissionsRemoveUserOptions{
+				resp, err := client.Permissions.RemoveUser(context.Background(), &sonar.PermissionsRemoveUserOptions{
 					Permission: "codeviewer",
 					ProjectKey: testProjectKey,
 				})
@@ -249,7 +250,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.RemoveUser(&sonar.PermissionsRemoveUserOptions{
+				resp, err := client.Permissions.RemoveUser(context.Background(), &sonar.PermissionsRemoveUserOptions{
 					Login:      testUserLogin,
 					ProjectKey: testProjectKey,
 				})
@@ -271,7 +272,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testGroupName = helpers.UniqueResourceName("grp-perm")
 
 			// Create private project (codeviewer permission only works on private projects)
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:       "Group Permission Test Project",
 				Project:    testProjectKey,
 				Visibility: sonar.ProjectVisibilityPrivate,
@@ -279,7 +280,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey,
 				})
 				return err
@@ -287,7 +288,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.UserGroups.Create(&sonar.UserGroupsCreateOptions{
+			_, _, err = client.UserGroups.Create(context.Background(), &sonar.UserGroupsCreateOptions{
 				Name:        testGroupName,
 				Description: "Permission Test Group",
 			})
@@ -295,7 +296,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("group", testGroupName, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOptions{
+				_, err := client.UserGroups.Delete(context.Background(), &sonar.UserGroupsDeleteOptions{
 					Name: testGroupName,
 				})
 				return err
@@ -303,7 +304,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add group permission to project", func() {
-			resp, err := client.Permissions.AddGroup(&sonar.PermissionsAddGroupOptions{
+			resp, err := client.Permissions.AddGroup(context.Background(), &sonar.PermissionsAddGroupOptions{
 				GroupName:  testGroupName,
 				Permission: "codeviewer",
 				ProjectKey: testProjectKey,
@@ -312,7 +313,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify group has permission
-			result, _, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+			result, _, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 				ProjectKey: testProjectKey,
 				Permission: "codeviewer",
 			})
@@ -328,7 +329,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add admin permission to group", func() {
-			resp, err := client.Permissions.AddGroup(&sonar.PermissionsAddGroupOptions{
+			resp, err := client.Permissions.AddGroup(context.Background(), &sonar.PermissionsAddGroupOptions{
 				GroupName:  testGroupName,
 				Permission: "admin",
 				ProjectKey: testProjectKey,
@@ -337,7 +338,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify group has admin permission
-			result, _, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+			result, _, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 				ProjectKey: testProjectKey,
 				Permission: "admin",
 			})
@@ -354,13 +355,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.AddGroup(nil)
+				resp, err := client.Permissions.AddGroup(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing group name", func() {
-				resp, err := client.Permissions.AddGroup(&sonar.PermissionsAddGroupOptions{
+				resp, err := client.Permissions.AddGroup(context.Background(), &sonar.PermissionsAddGroupOptions{
 					Permission: "codeviewer",
 					ProjectKey: testProjectKey,
 				})
@@ -369,7 +370,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.AddGroup(&sonar.PermissionsAddGroupOptions{
+				resp, err := client.Permissions.AddGroup(context.Background(), &sonar.PermissionsAddGroupOptions{
 					GroupName:  testGroupName,
 					ProjectKey: testProjectKey,
 				})
@@ -378,7 +379,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with invalid permission", func() {
-				resp, err := client.Permissions.AddGroup(&sonar.PermissionsAddGroupOptions{
+				resp, err := client.Permissions.AddGroup(context.Background(), &sonar.PermissionsAddGroupOptions{
 					GroupName:  testGroupName,
 					Permission: "invalid_permission",
 					ProjectKey: testProjectKey,
@@ -398,7 +399,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testGroupName = helpers.UniqueResourceName("grp-rmperm")
 
 			// Create private project (codeviewer permission only works on private projects)
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:       "Remove Group Permission Test",
 				Project:    testProjectKey,
 				Visibility: sonar.ProjectVisibilityPrivate,
@@ -406,7 +407,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey,
 				})
 				return err
@@ -414,7 +415,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.UserGroups.Create(&sonar.UserGroupsCreateOptions{
+			_, _, err = client.UserGroups.Create(context.Background(), &sonar.UserGroupsCreateOptions{
 				Name:        testGroupName,
 				Description: "Remove Permission Test Group",
 			})
@@ -422,14 +423,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("group", testGroupName, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOptions{
+				_, err := client.UserGroups.Delete(context.Background(), &sonar.UserGroupsDeleteOptions{
 					Name: testGroupName,
 				})
 				return err
 			})
 
 			// Add permission first
-			_, err = client.Permissions.AddGroup(&sonar.PermissionsAddGroupOptions{
+			_, err = client.Permissions.AddGroup(context.Background(), &sonar.PermissionsAddGroupOptions{
 				GroupName:  testGroupName,
 				Permission: "codeviewer",
 				ProjectKey: testProjectKey,
@@ -438,7 +439,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should remove group permission from project", func() {
-			resp, err := client.Permissions.RemoveGroup(&sonar.PermissionsRemoveGroupOptions{
+			resp, err := client.Permissions.RemoveGroup(context.Background(), &sonar.PermissionsRemoveGroupOptions{
 				GroupName:  testGroupName,
 				Permission: "codeviewer",
 				ProjectKey: testProjectKey,
@@ -447,7 +448,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify group no longer has permission
-			result, _, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+			result, _, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 				ProjectKey: testProjectKey,
 				Permission: "codeviewer",
 			})
@@ -459,13 +460,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.RemoveGroup(nil)
+				resp, err := client.Permissions.RemoveGroup(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing group name", func() {
-				resp, err := client.Permissions.RemoveGroup(&sonar.PermissionsRemoveGroupOptions{
+				resp, err := client.Permissions.RemoveGroup(context.Background(), &sonar.PermissionsRemoveGroupOptions{
 					Permission: "codeviewer",
 					ProjectKey: testProjectKey,
 				})
@@ -474,7 +475,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.RemoveGroup(&sonar.PermissionsRemoveGroupOptions{
+				resp, err := client.Permissions.RemoveGroup(context.Background(), &sonar.PermissionsRemoveGroupOptions{
 					GroupName:  testGroupName,
 					ProjectKey: testProjectKey,
 				})
@@ -489,7 +490,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 	// =========================================================================
 	Describe("Users", func() {
 		It("should list users globally", func() {
-			result, resp, err := client.Permissions.Users(nil)
+			result, resp, err := client.Permissions.Users(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -498,7 +499,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should list users with specific permission", func() {
-			result, resp, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+			result, resp, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 				Permission: "admin",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -512,14 +513,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			BeforeEach(func() {
 				testProjectKey = helpers.UniqueResourceName("proj-listuser")
 
-				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+				_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 					Name:    "List Users Test",
 					Project: testProjectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", testProjectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: testProjectKey,
 					})
 					return err
@@ -527,7 +528,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should list users with project permissions", func() {
-				result, resp, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+				result, resp, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 					ProjectKey: testProjectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -538,7 +539,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with query too short", func() {
-				_, resp, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+				_, resp, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 					Query: "ab", // min 3 chars
 				})
 				Expect(err).To(HaveOccurred())
@@ -546,7 +547,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with invalid permission", func() {
-				_, resp, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+				_, resp, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 					Permission: "invalid_permission",
 				})
 				Expect(err).To(HaveOccurred())
@@ -557,7 +558,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 	Describe("Groups", func() {
 		It("should list groups with global permissions", func() {
-			result, resp, err := client.Permissions.Groups(nil)
+			result, resp, err := client.Permissions.Groups(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -574,7 +575,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should list groups with specific permission", func() {
-			result, resp, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+			result, resp, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 				Permission: "admin",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -588,14 +589,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			BeforeEach(func() {
 				testProjectKey = helpers.UniqueResourceName("proj-listgrp")
 
-				_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+				_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 					Name:    "List Groups Test",
 					Project: testProjectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("project", testProjectKey, func() error {
-					_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+					_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 						Project: testProjectKey,
 					})
 					return err
@@ -603,7 +604,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should list groups with project permissions", func() {
-				result, resp, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+				result, resp, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 					ProjectKey: testProjectKey,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -614,7 +615,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with query too short", func() {
-				_, resp, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+				_, resp, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 					Query: "ab", // min 3 chars
 				})
 				Expect(err).To(HaveOccurred())
@@ -622,7 +623,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with invalid permission", func() {
-				_, resp, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+				_, resp, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 					Permission: "invalid_permission",
 				})
 				Expect(err).To(HaveOccurred())
@@ -638,7 +639,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		It("should create a permission template", func() {
 			templateName := helpers.UniqueResourceName("tpl")
 
-			result, resp, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			result, resp, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name:        templateName,
 				Description: "E2E Test Template",
 			})
@@ -647,7 +648,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Register cleanup
 			cleanup.RegisterCleanup("template", templateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: templateName,
 				})
 				return err
@@ -661,7 +662,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		It("should create a template with project key pattern", func() {
 			templateName := helpers.UniqueResourceName("tpl-pattern")
 
-			result, resp, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			result, resp, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name:              templateName,
 				Description:       "Template with pattern",
 				ProjectKeyPattern: "e2e-tpl-pattern-.*",
@@ -670,7 +671,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", templateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: templateName,
 				})
 				return err
@@ -683,13 +684,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Permissions.CreateTemplate(nil)
+				_, resp, err := client.Permissions.CreateTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing name", func() {
-				_, resp, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+				_, resp, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 					Description: "Test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -704,14 +705,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		BeforeEach(func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-search")
 
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name:        testTemplateName,
 				Description: "Search Test Template",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -719,7 +720,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should search all templates", func() {
-			result, resp, err := client.Permissions.SearchTemplates(nil)
+			result, resp, err := client.Permissions.SearchTemplates(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -727,7 +728,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should search templates by query", func() {
-			result, resp, err := client.Permissions.SearchTemplates(&sonar.PermissionsSearchTemplatesOptions{
+			result, resp, err := client.Permissions.SearchTemplates(context.Background(), &sonar.PermissionsSearchTemplatesOptions{
 				Query: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -744,7 +745,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should include default templates info", func() {
-			result, resp, err := client.Permissions.SearchTemplates(nil)
+			result, resp, err := client.Permissions.SearchTemplates(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -757,19 +758,19 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		It("should delete a template", func() {
 			templateName := helpers.UniqueResourceName("tpl-del")
 
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: templateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			resp, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+			resp, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 				TemplateName: templateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify template is deleted
-			result, _, err := client.Permissions.SearchTemplates(&sonar.PermissionsSearchTemplatesOptions{
+			result, _, err := client.Permissions.SearchTemplates(context.Background(), &sonar.PermissionsSearchTemplatesOptions{
 				Query: templateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -780,13 +781,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.DeleteTemplate(nil)
+				resp, err := client.Permissions.DeleteTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{})
+				resp, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -800,14 +801,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		BeforeEach(func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-update")
 
-			result, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			result, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name:        testTemplateName,
 				Description: "Original description",
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Get template ID from search
-			searchResult, _, err := client.Permissions.SearchTemplates(&sonar.PermissionsSearchTemplatesOptions{
+			searchResult, _, err := client.Permissions.SearchTemplates(context.Background(), &sonar.PermissionsSearchTemplatesOptions{
 				Query: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -820,7 +821,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(templateID).NotTo(BeEmpty(), "Template ID not found for: %s, result: %+v", testTemplateName, result)
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -828,7 +829,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should update template description", func() {
-			result, resp, err := client.Permissions.UpdateTemplate(&sonar.PermissionsUpdateTemplateOptions{
+			result, resp, err := client.Permissions.UpdateTemplate(context.Background(), &sonar.PermissionsUpdateTemplateOptions{
 				ID:          templateID,
 				Description: "Updated description",
 			})
@@ -841,7 +842,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		It("should update template name", func() {
 			newName := helpers.UniqueResourceName("tpl-renamed")
 
-			result, resp, err := client.Permissions.UpdateTemplate(&sonar.PermissionsUpdateTemplateOptions{
+			result, resp, err := client.Permissions.UpdateTemplate(context.Background(), &sonar.PermissionsUpdateTemplateOptions{
 				ID:   templateID,
 				Name: newName,
 			})
@@ -852,7 +853,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Update cleanup to use new name
 			cleanup.RegisterCleanup("template", newName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: newName,
 				})
 				return err
@@ -861,13 +862,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Permissions.UpdateTemplate(nil)
+				_, resp, err := client.Permissions.UpdateTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing ID", func() {
-				_, resp, err := client.Permissions.UpdateTemplate(&sonar.PermissionsUpdateTemplateOptions{
+				_, resp, err := client.Permissions.UpdateTemplate(context.Background(), &sonar.PermissionsUpdateTemplateOptions{
 					Description: "test",
 				})
 				Expect(err).To(HaveOccurred())
@@ -888,13 +889,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testUserLogin = helpers.UniqueResourceName("user-tpl")
 
 			// Create template
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -902,7 +903,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonar.UsersCreateOptions{
+			_, _, err = client.Users.Create(context.Background(), &sonar.UsersCreateOptions{
 				Login:    testUserLogin,
 				Name:     "Template User Test",
 				Password: "SecurePassword123!",
@@ -912,7 +913,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", testUserLogin, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOptions{
+				_, _, err := client.Users.Deactivate(context.Background(), &sonar.UsersDeactivateOptions{
 					Login:     testUserLogin,
 					Anonymize: true,
 				})
@@ -921,7 +922,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add user to template", func() {
-			resp, err := client.Permissions.AddUserToTemplate(&sonar.PermissionsAddUserToTemplateOptions{
+			resp, err := client.Permissions.AddUserToTemplate(context.Background(), &sonar.PermissionsAddUserToTemplateOptions{
 				Login:        testUserLogin,
 				Permission:   "codeviewer",
 				TemplateName: testTemplateName,
@@ -930,7 +931,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify user is in template
-			result, _, err := client.Permissions.TemplateUsers(&sonar.PermissionsTemplateUsersOptions{
+			result, _, err := client.Permissions.TemplateUsers(context.Background(), &sonar.PermissionsTemplateUsersOptions{
 				TemplateName: testTemplateName,
 				Permission:   "codeviewer",
 			})
@@ -947,13 +948,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.AddUserToTemplate(nil)
+				resp, err := client.Permissions.AddUserToTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing login", func() {
-				resp, err := client.Permissions.AddUserToTemplate(&sonar.PermissionsAddUserToTemplateOptions{
+				resp, err := client.Permissions.AddUserToTemplate(context.Background(), &sonar.PermissionsAddUserToTemplateOptions{
 					Permission:   "codeviewer",
 					TemplateName: testTemplateName,
 				})
@@ -962,7 +963,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.AddUserToTemplate(&sonar.PermissionsAddUserToTemplateOptions{
+				resp, err := client.Permissions.AddUserToTemplate(context.Background(), &sonar.PermissionsAddUserToTemplateOptions{
 					Login:        testUserLogin,
 					TemplateName: testTemplateName,
 				})
@@ -971,7 +972,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.AddUserToTemplate(&sonar.PermissionsAddUserToTemplateOptions{
+				resp, err := client.Permissions.AddUserToTemplate(context.Background(), &sonar.PermissionsAddUserToTemplateOptions{
 					Login:      testUserLogin,
 					Permission: "codeviewer",
 				})
@@ -990,13 +991,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testUserLogin = helpers.UniqueResourceName("user-tplrm")
 
 			// Create template
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1004,7 +1005,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonar.UsersCreateOptions{
+			_, _, err = client.Users.Create(context.Background(), &sonar.UsersCreateOptions{
 				Login:    testUserLogin,
 				Name:     "Remove Template User Test",
 				Password: "SecurePassword123!",
@@ -1014,7 +1015,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", testUserLogin, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOptions{
+				_, _, err := client.Users.Deactivate(context.Background(), &sonar.UsersDeactivateOptions{
 					Login:     testUserLogin,
 					Anonymize: true,
 				})
@@ -1022,7 +1023,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			// Add user to template
-			_, err = client.Permissions.AddUserToTemplate(&sonar.PermissionsAddUserToTemplateOptions{
+			_, err = client.Permissions.AddUserToTemplate(context.Background(), &sonar.PermissionsAddUserToTemplateOptions{
 				Login:        testUserLogin,
 				Permission:   "codeviewer",
 				TemplateName: testTemplateName,
@@ -1031,7 +1032,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should remove user from template", func() {
-			resp, err := client.Permissions.RemoveUserFromTemplate(&sonar.PermissionsRemoveUserFromTemplateOptions{
+			resp, err := client.Permissions.RemoveUserFromTemplate(context.Background(), &sonar.PermissionsRemoveUserFromTemplateOptions{
 				Login:        testUserLogin,
 				Permission:   "codeviewer",
 				TemplateName: testTemplateName,
@@ -1040,7 +1041,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify user is removed from template
-			result, _, err := client.Permissions.TemplateUsers(&sonar.PermissionsTemplateUsersOptions{
+			result, _, err := client.Permissions.TemplateUsers(context.Background(), &sonar.PermissionsTemplateUsersOptions{
 				TemplateName: testTemplateName,
 				Permission:   "codeviewer",
 			})
@@ -1060,13 +1061,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testGroupName = helpers.UniqueResourceName("grp-tpl")
 
 			// Create template
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1074,7 +1075,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.UserGroups.Create(&sonar.UserGroupsCreateOptions{
+			_, _, err = client.UserGroups.Create(context.Background(), &sonar.UserGroupsCreateOptions{
 				Name:        testGroupName,
 				Description: "Template Group Test",
 			})
@@ -1082,7 +1083,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("group", testGroupName, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOptions{
+				_, err := client.UserGroups.Delete(context.Background(), &sonar.UserGroupsDeleteOptions{
 					Name: testGroupName,
 				})
 				return err
@@ -1090,7 +1091,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add group to template", func() {
-			resp, err := client.Permissions.AddGroupToTemplate(&sonar.PermissionsAddGroupToTemplateOptions{
+			resp, err := client.Permissions.AddGroupToTemplate(context.Background(), &sonar.PermissionsAddGroupToTemplateOptions{
 				GroupName:    testGroupName,
 				Permission:   "codeviewer",
 				TemplateName: testTemplateName,
@@ -1099,7 +1100,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify group is in template
-			result, _, err := client.Permissions.TemplateGroups(&sonar.PermissionsTemplateGroupsOptions{
+			result, _, err := client.Permissions.TemplateGroups(context.Background(), &sonar.PermissionsTemplateGroupsOptions{
 				TemplateName: testTemplateName,
 				Permission:   "codeviewer",
 			})
@@ -1116,13 +1117,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.AddGroupToTemplate(nil)
+				resp, err := client.Permissions.AddGroupToTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing group name", func() {
-				resp, err := client.Permissions.AddGroupToTemplate(&sonar.PermissionsAddGroupToTemplateOptions{
+				resp, err := client.Permissions.AddGroupToTemplate(context.Background(), &sonar.PermissionsAddGroupToTemplateOptions{
 					Permission:   "codeviewer",
 					TemplateName: testTemplateName,
 				})
@@ -1131,7 +1132,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.AddGroupToTemplate(&sonar.PermissionsAddGroupToTemplateOptions{
+				resp, err := client.Permissions.AddGroupToTemplate(context.Background(), &sonar.PermissionsAddGroupToTemplateOptions{
 					GroupName:    testGroupName,
 					TemplateName: testTemplateName,
 				})
@@ -1140,7 +1141,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.AddGroupToTemplate(&sonar.PermissionsAddGroupToTemplateOptions{
+				resp, err := client.Permissions.AddGroupToTemplate(context.Background(), &sonar.PermissionsAddGroupToTemplateOptions{
 					GroupName:  testGroupName,
 					Permission: "codeviewer",
 				})
@@ -1159,13 +1160,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testGroupName = helpers.UniqueResourceName("grp-tplrm")
 
 			// Create template
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1173,7 +1174,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.UserGroups.Create(&sonar.UserGroupsCreateOptions{
+			_, _, err = client.UserGroups.Create(context.Background(), &sonar.UserGroupsCreateOptions{
 				Name:        testGroupName,
 				Description: "Remove Template Group Test",
 			})
@@ -1181,14 +1182,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("group", testGroupName, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, err := client.UserGroups.Delete(&sonar.UserGroupsDeleteOptions{
+				_, err := client.UserGroups.Delete(context.Background(), &sonar.UserGroupsDeleteOptions{
 					Name: testGroupName,
 				})
 				return err
 			})
 
 			// Add group to template
-			_, err = client.Permissions.AddGroupToTemplate(&sonar.PermissionsAddGroupToTemplateOptions{
+			_, err = client.Permissions.AddGroupToTemplate(context.Background(), &sonar.PermissionsAddGroupToTemplateOptions{
 				GroupName:    testGroupName,
 				Permission:   "codeviewer",
 				TemplateName: testTemplateName,
@@ -1197,7 +1198,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should remove group from template", func() {
-			resp, err := client.Permissions.RemoveGroupFromTemplate(&sonar.PermissionsRemoveGroupFromTemplateOptions{
+			resp, err := client.Permissions.RemoveGroupFromTemplate(context.Background(), &sonar.PermissionsRemoveGroupFromTemplateOptions{
 				GroupName:    testGroupName,
 				Permission:   "codeviewer",
 				TemplateName: testTemplateName,
@@ -1206,7 +1207,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify group is removed from template
-			result, _, err := client.Permissions.TemplateGroups(&sonar.PermissionsTemplateGroupsOptions{
+			result, _, err := client.Permissions.TemplateGroups(context.Background(), &sonar.PermissionsTemplateGroupsOptions{
 				TemplateName: testTemplateName,
 				Permission:   "codeviewer",
 			})
@@ -1223,13 +1224,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		BeforeEach(func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-usrlist")
 
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1237,7 +1238,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should list template users", func() {
-			result, resp, err := client.Permissions.TemplateUsers(&sonar.PermissionsTemplateUsersOptions{
+			result, resp, err := client.Permissions.TemplateUsers(context.Background(), &sonar.PermissionsTemplateUsersOptions{
 				TemplateName: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1247,13 +1248,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Permissions.TemplateUsers(nil)
+				_, resp, err := client.Permissions.TemplateUsers(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing template identifier", func() {
-				_, resp, err := client.Permissions.TemplateUsers(&sonar.PermissionsTemplateUsersOptions{})
+				_, resp, err := client.Permissions.TemplateUsers(context.Background(), &sonar.PermissionsTemplateUsersOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -1266,13 +1267,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		BeforeEach(func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-grplist")
 
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1280,7 +1281,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should list template groups", func() {
-			result, resp, err := client.Permissions.TemplateGroups(&sonar.PermissionsTemplateGroupsOptions{
+			result, resp, err := client.Permissions.TemplateGroups(context.Background(), &sonar.PermissionsTemplateGroupsOptions{
 				TemplateName: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1290,13 +1291,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Permissions.TemplateGroups(nil)
+				_, resp, err := client.Permissions.TemplateGroups(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing template identifier", func() {
-				_, resp, err := client.Permissions.TemplateGroups(&sonar.PermissionsTemplateGroupsOptions{})
+				_, resp, err := client.Permissions.TemplateGroups(context.Background(), &sonar.PermissionsTemplateGroupsOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
@@ -1312,13 +1313,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		BeforeEach(func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-creator")
 
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1326,7 +1327,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should add project creator to template", func() {
-			resp, err := client.Permissions.AddProjectCreatorToTemplate(&sonar.PermissionsAddProjectCreatorToTemplateOptions{
+			resp, err := client.Permissions.AddProjectCreatorToTemplate(context.Background(), &sonar.PermissionsAddProjectCreatorToTemplateOptions{
 				Permission:   "admin",
 				TemplateName: testTemplateName,
 			})
@@ -1334,7 +1335,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify by searching templates
-			result, _, err := client.Permissions.SearchTemplates(&sonar.PermissionsSearchTemplatesOptions{
+			result, _, err := client.Permissions.SearchTemplates(context.Background(), &sonar.PermissionsSearchTemplatesOptions{
 				Query: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1355,13 +1356,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.AddProjectCreatorToTemplate(nil)
+				resp, err := client.Permissions.AddProjectCreatorToTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.AddProjectCreatorToTemplate(&sonar.PermissionsAddProjectCreatorToTemplateOptions{
+				resp, err := client.Permissions.AddProjectCreatorToTemplate(context.Background(), &sonar.PermissionsAddProjectCreatorToTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				Expect(err).To(HaveOccurred())
@@ -1369,7 +1370,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.AddProjectCreatorToTemplate(&sonar.PermissionsAddProjectCreatorToTemplateOptions{
+				resp, err := client.Permissions.AddProjectCreatorToTemplate(context.Background(), &sonar.PermissionsAddProjectCreatorToTemplateOptions{
 					Permission: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1384,20 +1385,20 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		BeforeEach(func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-rmcreator")
 
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
 			})
 
 			// Add project creator first
-			_, err = client.Permissions.AddProjectCreatorToTemplate(&sonar.PermissionsAddProjectCreatorToTemplateOptions{
+			_, err = client.Permissions.AddProjectCreatorToTemplate(context.Background(), &sonar.PermissionsAddProjectCreatorToTemplateOptions{
 				Permission:   "admin",
 				TemplateName: testTemplateName,
 			})
@@ -1405,7 +1406,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should remove project creator from template", func() {
-			resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(&sonar.PermissionsRemoveProjectCreatorFromTemplateOptions{
+			resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), &sonar.PermissionsRemoveProjectCreatorFromTemplateOptions{
 				Permission:   "admin",
 				TemplateName: testTemplateName,
 			})
@@ -1413,7 +1414,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify by searching templates
-			result, _, err := client.Permissions.SearchTemplates(&sonar.PermissionsSearchTemplatesOptions{
+			result, _, err := client.Permissions.SearchTemplates(context.Background(), &sonar.PermissionsSearchTemplatesOptions{
 				Query: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -1431,13 +1432,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(nil)
+				resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing permission", func() {
-				resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(&sonar.PermissionsRemoveProjectCreatorFromTemplateOptions{
+				resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), &sonar.PermissionsRemoveProjectCreatorFromTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				Expect(err).To(HaveOccurred())
@@ -1445,7 +1446,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(&sonar.PermissionsRemoveProjectCreatorFromTemplateOptions{
+				resp, err := client.Permissions.RemoveProjectCreatorFromTemplate(context.Background(), &sonar.PermissionsRemoveProjectCreatorFromTemplateOptions{
 					Permission: "admin",
 				})
 				Expect(err).To(HaveOccurred())
@@ -1468,7 +1469,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testUserLogin = helpers.UniqueResourceName("user-apply")
 
 			// Create private project (codeviewer permission only works on private projects)
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:       "Apply Template Test",
 				Project:    testProjectKey,
 				Visibility: sonar.ProjectVisibilityPrivate,
@@ -1476,20 +1477,20 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey,
 				})
 				return err
 			})
 
 			// Create template
-			_, _, err = client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err = client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1497,7 +1498,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Create user and add to template
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonar.UsersCreateOptions{
+			_, _, err = client.Users.Create(context.Background(), &sonar.UsersCreateOptions{
 				Login:    testUserLogin,
 				Name:     "Apply Template User",
 				Password: "SecurePassword123!",
@@ -1507,7 +1508,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			cleanup.RegisterCleanup("user", testUserLogin, func() error {
 				//nolint:staticcheck // Using deprecated API until v2 API is implemented
-				_, _, err := client.Users.Deactivate(&sonar.UsersDeactivateOptions{
+				_, _, err := client.Users.Deactivate(context.Background(), &sonar.UsersDeactivateOptions{
 					Login:     testUserLogin,
 					Anonymize: true,
 				})
@@ -1515,7 +1516,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			// Add user to template
-			_, err = client.Permissions.AddUserToTemplate(&sonar.PermissionsAddUserToTemplateOptions{
+			_, err = client.Permissions.AddUserToTemplate(context.Background(), &sonar.PermissionsAddUserToTemplateOptions{
 				Login:        testUserLogin,
 				Permission:   "codeviewer",
 				TemplateName: testTemplateName,
@@ -1524,7 +1525,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should apply template to project", func() {
-			resp, err := client.Permissions.ApplyTemplate(&sonar.PermissionsApplyTemplateOptions{
+			resp, err := client.Permissions.ApplyTemplate(context.Background(), &sonar.PermissionsApplyTemplateOptions{
 				ProjectKey:   testProjectKey,
 				TemplateName: testTemplateName,
 			})
@@ -1532,7 +1533,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify user has permission on project
-			result, _, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+			result, _, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 				ProjectKey: testProjectKey,
 				Permission: "codeviewer",
 			})
@@ -1549,13 +1550,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.ApplyTemplate(nil)
+				resp, err := client.Permissions.ApplyTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing project identifier", func() {
-				resp, err := client.Permissions.ApplyTemplate(&sonar.PermissionsApplyTemplateOptions{
+				resp, err := client.Permissions.ApplyTemplate(context.Background(), &sonar.PermissionsApplyTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				Expect(err).To(HaveOccurred())
@@ -1563,7 +1564,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.ApplyTemplate(&sonar.PermissionsApplyTemplateOptions{
+				resp, err := client.Permissions.ApplyTemplate(context.Background(), &sonar.PermissionsApplyTemplateOptions{
 					ProjectKey: testProjectKey,
 				})
 				Expect(err).To(HaveOccurred())
@@ -1583,40 +1584,40 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-bulk")
 
 			// Create projects
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "Bulk Apply Test 1",
 				Project: testProjectKey1,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey1, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey1,
 				})
 				return err
 			})
 
-			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:    "Bulk Apply Test 2",
 				Project: testProjectKey2,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("project", testProjectKey2, func() error {
-				_, err := client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+				_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 					Project: testProjectKey2,
 				})
 				return err
 			})
 
 			// Create template
-			_, _, err = client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err = client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1624,7 +1625,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		})
 
 		It("should bulk apply template to projects", func() {
-			resp, err := client.Permissions.BulkApplyTemplate(&sonar.PermissionsBulkApplyTemplateOptions{
+			resp, err := client.Permissions.BulkApplyTemplate(context.Background(), &sonar.PermissionsBulkApplyTemplateOptions{
 				TemplateName: testTemplateName,
 				Projects:     []string{testProjectKey1, testProjectKey2},
 			})
@@ -1637,7 +1638,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			queryPrefix := strings.TrimPrefix(testProjectKey1, helpers.E2EResourcePrefix)
 			queryPrefix = helpers.E2EResourcePrefix + queryPrefix[:10] // Take first part
 
-			resp, err := client.Permissions.BulkApplyTemplate(&sonar.PermissionsBulkApplyTemplateOptions{
+			resp, err := client.Permissions.BulkApplyTemplate(context.Background(), &sonar.PermissionsBulkApplyTemplateOptions{
 				TemplateName: testTemplateName,
 				Query:        queryPrefix,
 			})
@@ -1647,13 +1648,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.BulkApplyTemplate(nil)
+				resp, err := client.Permissions.BulkApplyTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.BulkApplyTemplate(&sonar.PermissionsBulkApplyTemplateOptions{
+				resp, err := client.Permissions.BulkApplyTemplate(context.Background(), &sonar.PermissionsBulkApplyTemplateOptions{
 					Projects: []string{testProjectKey1},
 				})
 				Expect(err).To(HaveOccurred())
@@ -1661,7 +1662,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with invalid qualifier", func() {
-				resp, err := client.Permissions.BulkApplyTemplate(&sonar.PermissionsBulkApplyTemplateOptions{
+				resp, err := client.Permissions.BulkApplyTemplate(context.Background(), &sonar.PermissionsBulkApplyTemplateOptions{
 					TemplateName: testTemplateName,
 					Qualifiers:   "INVALID",
 				})
@@ -1677,13 +1678,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 		BeforeEach(func() {
 			testTemplateName = helpers.UniqueResourceName("tpl-default")
 
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name: testTemplateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			cleanup.RegisterCleanup("template", testTemplateName, func() error {
-				_, err := client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+				_, err := client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 					TemplateName: testTemplateName,
 				})
 				return err
@@ -1692,7 +1693,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		It("should set default template for projects", func() {
 			// First, get current default template to restore later
-			searchResult, _, err := client.Permissions.SearchTemplates(nil)
+			searchResult, _, err := client.Permissions.SearchTemplates(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 
 			var originalDefaultID string
@@ -1704,7 +1705,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			}
 
 			// Set our template as default
-			resp, err := client.Permissions.SetDefaultTemplate(&sonar.PermissionsSetDefaultTemplateOptions{
+			resp, err := client.Permissions.SetDefaultTemplate(context.Background(), &sonar.PermissionsSetDefaultTemplateOptions{
 				TemplateName: testTemplateName,
 				Qualifier:    sonar.ProjectQualifierTRK,
 			})
@@ -1712,7 +1713,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(resp.StatusCode).To(Equal(http.StatusNoContent))
 
 			// Verify it's now the default
-			searchResult, _, err = client.Permissions.SearchTemplates(nil)
+			searchResult, _, err = client.Permissions.SearchTemplates(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			found := false
 			for _, t := range searchResult.PermissionTemplates {
@@ -1730,7 +1731,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Restore original default
 			if originalDefaultID != "" {
-				_, _ = client.Permissions.SetDefaultTemplate(&sonar.PermissionsSetDefaultTemplateOptions{
+				_, _ = client.Permissions.SetDefaultTemplate(context.Background(), &sonar.PermissionsSetDefaultTemplateOptions{
 					TemplateID: originalDefaultID,
 					Qualifier:  sonar.ProjectQualifierTRK,
 				})
@@ -1739,13 +1740,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Permissions.SetDefaultTemplate(nil)
+				resp, err := client.Permissions.SetDefaultTemplate(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing template identifier", func() {
-				resp, err := client.Permissions.SetDefaultTemplate(&sonar.PermissionsSetDefaultTemplateOptions{
+				resp, err := client.Permissions.SetDefaultTemplate(context.Background(), &sonar.PermissionsSetDefaultTemplateOptions{
 					Qualifier: sonar.ProjectQualifierTRK,
 				})
 				Expect(err).To(HaveOccurred())
@@ -1753,7 +1754,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			})
 
 			It("should fail with invalid qualifier", func() {
-				resp, err := client.Permissions.SetDefaultTemplate(&sonar.PermissionsSetDefaultTemplateOptions{
+				resp, err := client.Permissions.SetDefaultTemplate(context.Background(), &sonar.PermissionsSetDefaultTemplateOptions{
 					TemplateName: testTemplateName,
 					Qualifier:    "INVALID",
 				})
@@ -1772,7 +1773,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			userLogin := helpers.UniqueResourceName("user-lifecycle")
 
 			// Step 1: Create private project (codeviewer permission only works on private projects)
-			_, _, err := client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err := client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:       "Lifecycle Test Project",
 				Project:    projectKey,
 				Visibility: sonar.ProjectVisibilityPrivate,
@@ -1781,7 +1782,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Step 2: Create user
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.Users.Create(&sonar.UsersCreateOptions{
+			_, _, err = client.Users.Create(context.Background(), &sonar.UsersCreateOptions{
 				Login:    userLogin,
 				Name:     "Lifecycle Test User",
 				Password: "SecurePassword123!",
@@ -1790,7 +1791,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 3: Add permission
-			_, err = client.Permissions.AddUser(&sonar.PermissionsAddUserOptions{
+			_, err = client.Permissions.AddUser(context.Background(), &sonar.PermissionsAddUserOptions{
 				Login:      userLogin,
 				Permission: "codeviewer",
 				ProjectKey: projectKey,
@@ -1798,7 +1799,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 4: Verify permission
-			result, _, err := client.Permissions.Users(&sonar.PermissionsUsersOptions{
+			result, _, err := client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 				ProjectKey: projectKey,
 				Permission: "codeviewer",
 			})
@@ -1813,7 +1814,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(found).To(BeTrue())
 
 			// Step 5: Remove permission
-			_, err = client.Permissions.RemoveUser(&sonar.PermissionsRemoveUserOptions{
+			_, err = client.Permissions.RemoveUser(context.Background(), &sonar.PermissionsRemoveUserOptions{
 				Login:      userLogin,
 				Permission: "codeviewer",
 				ProjectKey: projectKey,
@@ -1821,7 +1822,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 6: Verify permission removed
-			result, _, err = client.Permissions.Users(&sonar.PermissionsUsersOptions{
+			result, _, err = client.Permissions.Users(context.Background(), &sonar.PermissionsUsersOptions{
 				ProjectKey: projectKey,
 				Permission: "codeviewer",
 			})
@@ -1832,11 +1833,11 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Cleanup
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, _ = client.Users.Deactivate(&sonar.UsersDeactivateOptions{
+			_, _, _ = client.Users.Deactivate(context.Background(), &sonar.UsersDeactivateOptions{
 				Login:     userLogin,
 				Anonymize: true,
 			})
-			_, _ = client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, _ = client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 		})
@@ -1847,7 +1848,7 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			projectKey := helpers.UniqueResourceName("proj-tpllife")
 
 			// Step 1: Create template
-			_, _, err := client.Permissions.CreateTemplate(&sonar.PermissionsCreateTemplateOptions{
+			_, _, err := client.Permissions.CreateTemplate(context.Background(), &sonar.PermissionsCreateTemplateOptions{
 				Name:        templateName,
 				Description: "Lifecycle test template",
 			})
@@ -1855,13 +1856,13 @@ var _ = Describe("Permissions Service", Ordered, func() {
 
 			// Step 2: Create group
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _, err = client.UserGroups.Create(&sonar.UserGroupsCreateOptions{
+			_, _, err = client.UserGroups.Create(context.Background(), &sonar.UserGroupsCreateOptions{
 				Name: groupName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 3: Add group to template
-			_, err = client.Permissions.AddGroupToTemplate(&sonar.PermissionsAddGroupToTemplateOptions{
+			_, err = client.Permissions.AddGroupToTemplate(context.Background(), &sonar.PermissionsAddGroupToTemplateOptions{
 				GroupName:    groupName,
 				Permission:   "codeviewer",
 				TemplateName: templateName,
@@ -1869,14 +1870,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 4: Add project creator to template
-			_, err = client.Permissions.AddProjectCreatorToTemplate(&sonar.PermissionsAddProjectCreatorToTemplateOptions{
+			_, err = client.Permissions.AddProjectCreatorToTemplate(context.Background(), &sonar.PermissionsAddProjectCreatorToTemplateOptions{
 				Permission:   "admin",
 				TemplateName: templateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 5: Create private project (codeviewer permission only works on private projects)
-			_, _, err = client.Projects.Create(&sonar.ProjectsCreateOptions{
+			_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{
 				Name:       "Template Lifecycle Project",
 				Project:    projectKey,
 				Visibility: sonar.ProjectVisibilityPrivate,
@@ -1884,14 +1885,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 6: Apply template to project
-			_, err = client.Permissions.ApplyTemplate(&sonar.PermissionsApplyTemplateOptions{
+			_, err = client.Permissions.ApplyTemplate(context.Background(), &sonar.PermissionsApplyTemplateOptions{
 				ProjectKey:   projectKey,
 				TemplateName: templateName,
 			})
 			Expect(err).NotTo(HaveOccurred())
 
 			// Step 7: Verify group has permission on project
-			result, _, err := client.Permissions.Groups(&sonar.PermissionsGroupsOptions{
+			result, _, err := client.Permissions.Groups(context.Background(), &sonar.PermissionsGroupsOptions{
 				ProjectKey: projectKey,
 				Permission: "codeviewer",
 			})
@@ -1906,14 +1907,14 @@ var _ = Describe("Permissions Service", Ordered, func() {
 			Expect(found).To(BeTrue())
 
 			// Cleanup
-			_, _ = client.Projects.Delete(&sonar.ProjectsDeleteOptions{
+			_, _ = client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{
 				Project: projectKey,
 			})
 			//nolint:staticcheck // Using deprecated API until v2 API is implemented
-			_, _ = client.UserGroups.Delete(&sonar.UserGroupsDeleteOptions{
+			_, _ = client.UserGroups.Delete(context.Background(), &sonar.UserGroupsDeleteOptions{
 				Name: groupName,
 			})
-			_, _ = client.Permissions.DeleteTemplate(&sonar.PermissionsDeleteTemplateOptions{
+			_, _ = client.Permissions.DeleteTemplate(context.Background(), &sonar.PermissionsDeleteTemplateOptions{
 				TemplateName: templateName,
 			})
 		})

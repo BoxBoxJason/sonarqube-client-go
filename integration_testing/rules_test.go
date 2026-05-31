@@ -1,6 +1,7 @@
 package integration_testing_test
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
@@ -37,7 +38,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 	// =========================================================================
 	Describe("App", func() {
 		It("should return rules application data", func() {
-			result, resp, err := client.Rules.App()
+			result, resp, err := client.Rules.App(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -46,7 +47,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should include canWrite flag", func() {
-			result, resp, err := client.Rules.App()
+			result, resp, err := client.Rules.App(context.Background(), )
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			// CanWrite is a boolean indicating if the user can modify rules
@@ -60,7 +61,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 	// =========================================================================
 	Describe("Repositories", func() {
 		It("should list all rule repositories", func() {
-			result, resp, err := client.Rules.Repositories(&sonar.RulesRepositoriesOptions{})
+			result, resp, err := client.Rules.Repositories(context.Background(), &sonar.RulesRepositoriesOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -68,7 +69,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter by language", func() {
-			result, resp, err := client.Rules.Repositories(&sonar.RulesRepositoriesOptions{
+			result, resp, err := client.Rules.Repositories(context.Background(), &sonar.RulesRepositoriesOptions{
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -79,7 +80,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter by query", func() {
-			result, resp, err := client.Rules.Repositories(&sonar.RulesRepositoriesOptions{
+			result, resp, err := client.Rules.Repositories(context.Background(), &sonar.RulesRepositoriesOptions{
 				Query: "sonar",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -91,7 +92,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should allow nil options", func() {
-			result, resp, err := client.Rules.Repositories(nil)
+			result, resp, err := client.Rules.Repositories(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -103,7 +104,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 	// =========================================================================
 	Describe("Tags", func() {
 		It("should list all rule tags", func() {
-			result, resp, err := client.Rules.Tags(&sonar.RulesTagsOptions{})
+			result, resp, err := client.Rules.Tags(context.Background(), &sonar.RulesTagsOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -111,7 +112,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should limit by page size", func() {
-			result, resp, err := client.Rules.Tags(&sonar.RulesTagsOptions{
+			result, resp, err := client.Rules.Tags(context.Background(), &sonar.RulesTagsOptions{
 				PageSize: 5,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -120,7 +121,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter by query", func() {
-			result, resp, err := client.Rules.Tags(&sonar.RulesTagsOptions{
+			result, resp, err := client.Rules.Tags(context.Background(), &sonar.RulesTagsOptions{
 				Query: "sec",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -132,7 +133,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should allow nil options", func() {
-			result, resp, err := client.Rules.Tags(nil)
+			result, resp, err := client.Rules.Tags(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -140,7 +141,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with invalid page size (negative)", func() {
-				_, resp, err := client.Rules.Tags(&sonar.RulesTagsOptions{
+				_, resp, err := client.Rules.Tags(context.Background(), &sonar.RulesTagsOptions{
 					PageSize: -1,
 				})
 				Expect(err).To(HaveOccurred())
@@ -148,7 +149,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 			})
 
 			It("should fail with page size exceeding max", func() {
-				_, resp, err := client.Rules.Tags(&sonar.RulesTagsOptions{
+				_, resp, err := client.Rules.Tags(context.Background(), &sonar.RulesTagsOptions{
 					PageSize: 501,
 				})
 				Expect(err).To(HaveOccurred())
@@ -162,7 +163,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 	// =========================================================================
 	Describe("Search", func() {
 		It("should search for all rules", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{})
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -171,7 +172,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter by language", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Languages: []string{"java"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -183,7 +184,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		It("should filter by repository", func() {
 			// First get available repositories
-			repos, _, err := client.Rules.Repositories(&sonar.RulesRepositoriesOptions{
+			repos, _, err := client.Rules.Repositories(context.Background(), &sonar.RulesRepositoriesOptions{
 				Language: "java",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -191,7 +192,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 			repoKey := repos.Repositories[0].Key
 
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Repositories: []string{repoKey},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -202,7 +203,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter by severity", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Severities: []string{sonar.RuleSeverityCritical},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -213,7 +214,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter by type", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Types: []string{sonar.RuleTypeBug},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -224,7 +225,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter by status", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Statuses: []string{sonar.RuleStatusReady},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -236,13 +237,13 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		It("should filter by tags", func() {
 			// First get available tags
-			tags, _, err := client.Rules.Tags(&sonar.RulesTagsOptions{
+			tags, _, err := client.Rules.Tags(context.Background(), &sonar.RulesTagsOptions{
 				PageSize: 1,
 			})
 			Expect(err).NotTo(HaveOccurred())
 			if len(tags.Tags) > 0 {
 				targetTag := tags.Tags[0]
-				result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+				result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 					Tags: []string{targetTag},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -273,7 +274,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should filter template rules", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				IsTemplate: true,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -284,7 +285,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should paginate results", func() {
-			result1, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result1, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				PaginationArgs: sonar.PaginationArgs{
 					Page:     1,
 					PageSize: 5,
@@ -295,7 +296,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 			Expect(len(result1.Rules)).To(BeNumerically("<=", 5))
 
 			if result1.Paging.Total > 5 {
-				result2, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+				result2, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 					PaginationArgs: sonar.PaginationArgs{
 						Page:     2,
 						PageSize: 5,
@@ -311,7 +312,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should include facets", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Facets: []string{"languages", "repositories", "tags"},
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -320,7 +321,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should search by query", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				Query: "null",
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -329,7 +330,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should include external rules", func() {
-			result, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				IncludeExternal: true,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -338,7 +339,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should allow nil options", func() {
-			result, resp, err := client.Rules.Search(nil)
+			result, resp, err := client.Rules.Search(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -346,7 +347,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with search query too short", func() {
-				_, resp, err := client.Rules.Search(&sonar.RulesSearchOptions{
+				_, resp, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 					Query: "a",
 				})
 				Expect(err).To(HaveOccurred())
@@ -363,7 +364,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		BeforeAll(func() {
 			// Get an existing rule key for show tests
-			result, _, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, _, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 1,
 				},
@@ -374,7 +375,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should show rule details", func() {
-			result, resp, err := client.Rules.Show(&sonar.RulesShowOptions{
+			result, resp, err := client.Rules.Show(context.Background(), &sonar.RulesShowOptions{
 				Key: existingRuleKey,
 			})
 			Expect(err).NotTo(HaveOccurred())
@@ -385,7 +386,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should include actives when requested", func() {
-			result, resp, err := client.Rules.Show(&sonar.RulesShowOptions{
+			result, resp, err := client.Rules.Show(context.Background(), &sonar.RulesShowOptions{
 				Key:     existingRuleKey,
 				Actives: true,
 			})
@@ -397,19 +398,19 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		Context("parameter validation", func() {
 			It("should fail with nil options", func() {
-				_, resp, err := client.Rules.Show(nil)
+				_, resp, err := client.Rules.Show(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with missing key", func() {
-				_, resp, err := client.Rules.Show(&sonar.RulesShowOptions{})
+				_, resp, err := client.Rules.Show(context.Background(), &sonar.RulesShowOptions{})
 				Expect(err).To(HaveOccurred())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail with non-existent rule", func() {
-				_, resp, err := client.Rules.Show(&sonar.RulesShowOptions{
+				_, resp, err := client.Rules.Show(context.Background(), &sonar.RulesShowOptions{
 					Key: "nonexistent:rule-key",
 				})
 				Expect(err).To(HaveOccurred())
@@ -426,7 +427,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 		BeforeAll(func() {
 			// Find a template rule to use for creating custom rules
-			result, _, err := client.Rules.Search(&sonar.RulesSearchOptions{
+			result, _, err := client.Rules.Search(context.Background(), &sonar.RulesSearchOptions{
 				IsTemplate: true,
 				Languages:  []string{"java"},
 				PaginationArgs: sonar.PaginationArgs{
@@ -445,7 +446,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 			It("should create a custom rule from template", func() {
 				customKey := helpers.UniqueResourceName("rule")
 
-				result, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				result, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "E2E Test Rule " + customKey,
 					MarkdownDescription: "This is a test rule created by e2e tests",
@@ -459,7 +460,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 				// Register cleanup
 				cleanup.RegisterCleanup("rule", result.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: result.Rule.Key,
 					})
 					return err
@@ -469,7 +470,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 			It("should create a custom rule with severity", func() {
 				customKey := helpers.UniqueResourceName("rule")
 
-				result, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				result, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "E2E Severity Rule " + customKey,
 					MarkdownDescription: "Rule with custom severity",
@@ -481,7 +482,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(result.Rule.Severity).To(Equal(sonar.RuleSeverityCritical))
 
 				cleanup.RegisterCleanup("rule", result.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: result.Rule.Key,
 					})
 					return err
@@ -491,7 +492,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 			It("should create a custom rule with status", func() {
 				customKey := helpers.UniqueResourceName("rule")
 
-				result, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				result, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "E2E Status Rule " + customKey,
 					MarkdownDescription: "Rule with custom status",
@@ -503,7 +504,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(result.Rule.Status).To(Equal(sonar.RuleStatusBeta))
 
 				cleanup.RegisterCleanup("rule", result.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: result.Rule.Key,
 					})
 					return err
@@ -512,13 +513,13 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 			Context("parameter validation", func() {
 				It("should fail with nil options", func() {
-					_, resp, err := client.Rules.Create(nil)
+					_, resp, err := client.Rules.Create(context.Background(), nil)
 					Expect(err).To(HaveOccurred())
 					Expect(resp).To(BeNil())
 				})
 
 				It("should fail with missing custom key", func() {
-					_, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+					_, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 						Name:                "Test Rule",
 						MarkdownDescription: "Description",
 						TemplateKey:         templateRule.Key,
@@ -528,7 +529,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				})
 
 				It("should fail with missing name", func() {
-					_, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+					_, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 						CustomKey:           "test-rule",
 						MarkdownDescription: "Description",
 						TemplateKey:         templateRule.Key,
@@ -538,7 +539,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				})
 
 				It("should fail with missing markdown description", func() {
-					_, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+					_, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 						CustomKey:   "test-rule",
 						Name:        "Test Rule",
 						TemplateKey: templateRule.Key,
@@ -548,7 +549,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				})
 
 				It("should fail with missing template key", func() {
-					_, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+					_, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 						CustomKey:           "test-rule",
 						Name:                "Test Rule",
 						MarkdownDescription: "Description",
@@ -559,7 +560,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 				It("should fail with custom key too long", func() {
 					longKey := strings.Repeat("a", 201)
-					_, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+					_, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 						CustomKey:           longKey,
 						Name:                "Test Rule",
 						MarkdownDescription: "Description",
@@ -571,7 +572,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 				It("should fail with name too long", func() {
 					longName := strings.Repeat("a", 201)
-					_, resp, err := client.Rules.Create(&sonar.RulesCreateOptions{
+					_, resp, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 						CustomKey:           "test-rule",
 						Name:                longName,
 						MarkdownDescription: "Description",
@@ -591,7 +592,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				customKey := helpers.UniqueResourceName("rule")
 
 				// Create rule
-				createResult, _, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				createResult, _, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "Original Name",
 					MarkdownDescription: "Original description",
@@ -600,7 +601,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("rule", createResult.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: createResult.Rule.Key,
 					})
 					return err
@@ -608,7 +609,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 				// Update rule
 				updatedName := "Updated Name " + customKey
-				updateResult, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+				updateResult, resp, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 					Key:                 createResult.Rule.Key,
 					Name:                updatedName,
 					MarkdownDescription: "Updated description",
@@ -621,7 +622,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 			It("should update a custom rule severity", func() {
 				customKey := helpers.UniqueResourceName("rule")
 
-				createResult, _, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				createResult, _, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "Severity Update Rule",
 					MarkdownDescription: "Testing severity update",
@@ -631,13 +632,13 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("rule", createResult.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: createResult.Rule.Key,
 					})
 					return err
 				})
 
-				updateResult, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+				updateResult, resp, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 					Key:      createResult.Rule.Key,
 					Severity: sonar.RuleSeverityBlocker,
 				})
@@ -649,7 +650,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 			It("should update a custom rule status", func() {
 				customKey := helpers.UniqueResourceName("rule")
 
-				createResult, _, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				createResult, _, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "Status Update Rule",
 					MarkdownDescription: "Testing status update",
@@ -659,13 +660,13 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("rule", createResult.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: createResult.Rule.Key,
 					})
 					return err
 				})
 
-				updateResult, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+				updateResult, resp, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 					Key:    createResult.Rule.Key,
 					Status: sonar.RuleStatusDeprecated,
 				})
@@ -678,7 +679,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				customKey := helpers.UniqueResourceName("rule")
 
 				// Create a custom rule for testing tag updates
-				createResult, _, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				createResult, _, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "Tag Update Test Rule",
 					MarkdownDescription: "Testing tag updates",
@@ -687,14 +688,14 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("rule", createResult.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: createResult.Rule.Key,
 					})
 					return err
 				})
 
 				// Add a custom tag
-				updateResult, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+				updateResult, resp, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 					Key:  createResult.Rule.Key,
 					Tags: []string{"e2e-test-tag"},
 				})
@@ -703,7 +704,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(updateResult.Rule.Tags).To(ContainElement("e2e-test-tag"))
 
 				// Clear tags
-				clearResult, _, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+				clearResult, _, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 					Key:  createResult.Rule.Key,
 					Tags: []string{},
 				})
@@ -715,7 +716,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				customKey := helpers.UniqueResourceName("rule")
 
 				// Create a custom rule for testing note updates
-				createResult, _, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				createResult, _, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "Note Update Test Rule",
 					MarkdownDescription: "Testing note updates",
@@ -724,14 +725,14 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				cleanup.RegisterCleanup("rule", createResult.Rule.Key, func() error {
-					_, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+					_, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 						Key: createResult.Rule.Key,
 					})
 					return err
 				})
 
 				// Add a note
-				updateResult, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+				updateResult, resp, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 					Key:          createResult.Rule.Key,
 					MarkdownNote: "E2E test note: This is a test note added during e2e testing",
 				})
@@ -740,7 +741,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(updateResult.Rule.MdNote).To(ContainSubstring("E2E test note"))
 
 				// Update the note with different content
-				updateResult2, _, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+				updateResult2, _, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 					Key:          createResult.Rule.Key,
 					MarkdownNote: "Updated note content",
 				})
@@ -751,13 +752,13 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 			Context("parameter validation", func() {
 				It("should fail with nil options", func() {
-					_, resp, err := client.Rules.Update(nil)
+					_, resp, err := client.Rules.Update(context.Background(), nil)
 					Expect(err).To(HaveOccurred())
 					Expect(resp).To(BeNil())
 				})
 
 				It("should fail with missing key", func() {
-					_, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+					_, resp, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 						Name: "Updated Name",
 					})
 					Expect(err).To(HaveOccurred())
@@ -766,7 +767,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 				It("should fail with key too long", func() {
 					longKey := strings.Repeat("a", 201)
-					_, resp, err := client.Rules.Update(&sonar.RulesUpdateOptions{
+					_, resp, err := client.Rules.Update(context.Background(), &sonar.RulesUpdateOptions{
 						Key:  longKey,
 						Name: "Updated Name",
 					})
@@ -784,7 +785,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 				customKey := helpers.UniqueResourceName("rule")
 
 				// Create rule
-				createResult, _, err := client.Rules.Create(&sonar.RulesCreateOptions{
+				createResult, _, err := client.Rules.Create(context.Background(), &sonar.RulesCreateOptions{
 					CustomKey:           customKey,
 					Name:                "Rule To Delete",
 					MarkdownDescription: "This rule will be deleted",
@@ -793,14 +794,14 @@ var _ = Describe("Rules Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 
 				// Delete rule
-				resp, err := client.Rules.Delete(&sonar.RulesDeleteOptions{
+				resp, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{
 					Key: createResult.Rule.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 				// Verify deletion - rule is marked as REMOVED
-				showResult, _, err := client.Rules.Show(&sonar.RulesShowOptions{
+				showResult, _, err := client.Rules.Show(context.Background(), &sonar.RulesShowOptions{
 					Key: createResult.Rule.Key,
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -809,13 +810,13 @@ var _ = Describe("Rules Service", Ordered, func() {
 
 			Context("parameter validation", func() {
 				It("should fail with nil options", func() {
-					resp, err := client.Rules.Delete(nil)
+					resp, err := client.Rules.Delete(context.Background(), nil)
 					Expect(err).To(HaveOccurred())
 					Expect(resp).To(BeNil())
 				})
 
 				It("should fail with missing key", func() {
-					resp, err := client.Rules.Delete(&sonar.RulesDeleteOptions{})
+					resp, err := client.Rules.Delete(context.Background(), &sonar.RulesDeleteOptions{})
 					Expect(err).To(HaveOccurred())
 					Expect(resp).To(BeNil())
 				})
@@ -828,7 +829,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 	// =========================================================================
 	Describe("List", func() {
 		It("should list rules", func() {
-			result, resp, err := client.Rules.List(&sonar.RulesListOptions{})
+			result, resp, err := client.Rules.List(context.Background(), &sonar.RulesListOptions{})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
@@ -836,7 +837,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should paginate results", func() {
-			result, resp, err := client.Rules.List(&sonar.RulesListOptions{
+			result, resp, err := client.Rules.List(context.Background(), &sonar.RulesListOptions{
 				PaginationArgs: sonar.PaginationArgs{
 					PageSize: 10,
 				},
@@ -847,7 +848,7 @@ var _ = Describe("Rules Service", Ordered, func() {
 		})
 
 		It("should allow nil options", func() {
-			result, resp, err := client.Rules.List(nil)
+			result, resp, err := client.Rules.List(context.Background(), nil)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(result).NotTo(BeNil())
