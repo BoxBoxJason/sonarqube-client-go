@@ -4,12 +4,12 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/boxboxjason/sonarqube-client-go)](https://goreportcard.com/report/github.com/boxboxjason/sonarqube-client-go)
 [![License](https://img.shields.io/github/license/BoxBoxJason/sonarqube-client-go)](LICENSE)
 
-A comprehensive, type-safe Go client library **and command-line interface** for the SonarQube Web API. Whether you're building automation tools, integrating SonarQube into your CI/CD pipeline, or managing your SonarQube instance from the terminal — this project has you covered.
+A comprehensive, type-safe Go client library **and command-line interface** for the SonarQube Web API. Whether you're building automation tools, integrating SonarQube into your CI/CD pipeline, or managing your SonarQube instance from the terminal - this project has you covered.
 
 ## Table of Contents
 
 - [Features](#features)
-- [CLI — sonar-cli](#cli--sonar-cli)
+- [CLI - sonar-cli](#cli--sonar-cli)
   - [Installation](#installation)
   - [Authentication](#authentication)
   - [Basic Usage](#basic-usage)
@@ -32,7 +32,7 @@ A comprehensive, type-safe Go client library **and command-line interface** for 
 ### CLI (`sonar-cli`)
 
 - ✅ **Full API Coverage from the Terminal**: Every SonarQube service and method available as a subcommand
-- ✅ **Multiple Output Formats**: JSON, YAML, and ASCII table — pipe-friendly
+- ✅ **Multiple Output Formats**: JSON, YAML, and ASCII table - pipe-friendly
 - ✅ **Automatic Pagination**: Fetch all pages of results with a single `--all` flag
 - ✅ **Shell Completion**: Tab completion for Bash, Zsh, Fish, and PowerShell
 - ✅ **Flexible Authentication**: Token, username/password, or environment variables
@@ -50,7 +50,7 @@ A comprehensive, type-safe Go client library **and command-line interface** for 
 
 ---
 
-## CLI — sonar-cli
+## CLI - sonar-cli
 
 `sonar-cli` is a fully featured command-line interface that wraps the entire SonarQube API. Every service and method available in the SDK is exposed as a CLI subcommand, making it trivial to interact with SonarQube from scripts, CI pipelines, or your terminal.
 
@@ -143,13 +143,13 @@ sonar-cli issues search --help
 Control output format globally with `--output` (default: `json`):
 
 ```bash
-# JSON output (default) — great for jq and scripting
+# JSON output (default) - great for jq and scripting
 sonar-cli projects search --output json | jq '.components[].key'
 
-# YAML output — human-readable structured data
+# YAML output - human-readable structured data
 sonar-cli projects search --output yaml
 
-# Table output — quick visual overview in the terminal
+# Table output - quick visual overview in the terminal
 sonar-cli projects search --output table
 ```
 
@@ -453,15 +453,15 @@ Both the SDK and CLI expose all 50+ SonarQube API services:
 
 ## Contributing
 
-We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation — your help is appreciated.
+We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation - your help is appreciated.
 
 ### How to Contribute
 
-1. **Read the [Contributing Guide](CONTRIBUTING.md)** — covers development setup, testing, and PR guidelines
-2. **Check existing issues** — look for labels `good first issue` or `help wanted`
-3. **Fork and create a branch** — use conventional commit format (`feat:`, `fix:`, `docs:`, etc.)
-4. **Write tests** — ensure 80%+ coverage for new code
-5. **Submit a Pull Request** — reference the issue you're addressing
+1. **Read the [Contributing Guide](CONTRIBUTING.md)** - covers development setup, testing, and PR guidelines
+2. **Check existing issues** - look for labels `good first issue` or `help wanted`
+3. **Fork and create a branch** - use conventional commit format (`feat:`, `fix:`, `docs:`, etc.)
+4. **Write tests** - ensure 80%+ coverage for new code
+5. **Submit a Pull Request** - reference the issue you're addressing
 
 ### Quick Contribution Checklist
 
@@ -496,7 +496,7 @@ Found a bug? Provide:
 
 ## License
 
-This project is licensed under the **Apache License 2.0** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
 
 - ✅ Commercial use, modification, and distribution
 - ✅ Patent use

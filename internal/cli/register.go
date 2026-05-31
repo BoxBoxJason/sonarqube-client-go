@@ -133,7 +133,7 @@ func buildMethodCommand(serviceName string, _ reflect.Type, method reflect.Metho
 	cmd := &cobra.Command{ //nolint:exhaustruct // only setting fields relevant to method commands
 		Use:   kebabName,
 		Short: description,
-		Long:  fmt.Sprintf("%s.%s — %s", serviceName, methodName, description),
+		Long:  fmt.Sprintf("%s.%s - %s", serviceName, methodName, description),
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return runMethodCommand(cmd, serviceName, methodName, optValue, isStreaming, canPaginate, pattern, responseType, format)
 		},

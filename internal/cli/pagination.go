@@ -80,7 +80,7 @@ func PaginateAll(
 ) (any, error) {
 	sliceFieldName, hasSlice := findSliceField(responseType)
 	if !hasSlice {
-		// No slice field to paginate — just call once.
+		// No slice field to paginate - just call once.
 		result, resp, err := InvokeMethod(service, methodName, opt, pattern, true)
 		CloseBody(resp)
 

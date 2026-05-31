@@ -3,7 +3,7 @@
 ## Purpose
 
 Short, machine-friendly instructions for GitHub Copilot agent mode. Follow these rules strictly when making code changes or tests.
-This repository is an idiomatic SonarQube Go SDK — a Go client library generated from the SonarQube API, providing idiomatic, type-safe access to SonarQube endpoints.
+This repository is an idiomatic SonarQube Go SDK - a Go client library generated from the SonarQube API, providing idiomatic, type-safe access to SonarQube endpoints.
 
 ## Top priorities
 

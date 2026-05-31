@@ -39,7 +39,7 @@ func versionInfo() string {
 
 // resolveVersion returns the most specific version string available.
 func resolveVersion() string {
-	// ldflags injection wins — used by `make build` and CI releases.
+	// ldflags injection wins - used by `make build` and CI releases.
 	if version != "" {
 		return version
 	}
@@ -54,7 +54,7 @@ func resolveVersion() string {
 		return info.Main.Version
 	}
 
-	// Local `go build` / `go install @latest` — fall back to VCS revision.
+	// Local `go build` / `go install @latest` - fall back to VCS revision.
 	return vcsRevision(info)
 }
 
