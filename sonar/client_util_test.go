@@ -206,6 +206,51 @@ func makeAPIError(statusCode int) *ResponseError {
 	}
 }
 
+func TestResponseError_Error_NilResponse(t *testing.T) {
+	// Must not panic when Response or Request is nil.
+	re := &ResponseError{StatusCode: http.StatusNotFound, Message: "not found"}
+	assert.Equal(t, "404 not found", re.Error())
+}
+
+func TestResponseError_Error_NilRequest(t *testing.T) {
+	//nolint:exhaustruct // only fields needed for test populated
+	re := &ResponseError{
+		Response:   &http.Response{StatusCode: http.StatusInternalServerError},
+		StatusCode: http.StatusInternalServerError,
+		Message:    "internal error",
+	}
+	assert.Equal(t, "500 internal error", re.Error())
+}
+
+func TestResponseError_Error_UsesStatusCodeField(t *testing.T) {
+	// StatusCode field is canonical; Response.StatusCode is not used in Error().
+	req := httptest.NewRequest(http.MethodGet, "/api/test", nil)
+
+	//nolint:exhaustruct // only fields needed for test populated
+	re := &ResponseError{
+		Response:   &http.Response{StatusCode: 999, Request: req},
+		StatusCode: http.StatusNotFound,
+		Message:    "not found",
+	}
+
+	assert.Contains(t, re.Error(), "404")
+	assert.NotContains(t, re.Error(), "999")
+}
+
+func TestResponseError_Error_PathUnescape(t *testing.T) {
+	// Encoded path segments must be unescaped correctly in the error string.
+	req := httptest.NewRequest(http.MethodGet, "/api/my%20resource", nil)
+
+	//nolint:exhaustruct // only fields needed for test populated
+	re := &ResponseError{
+		Response:   &http.Response{StatusCode: http.StatusNotFound, Request: req},
+		StatusCode: http.StatusNotFound,
+		Message:    "not found",
+	}
+
+	assert.Contains(t, re.Error(), "/api/my resource")
+}
+
 func TestJsonStructToQueryValues(t *testing.T) {
 	tests := []struct {
 		name    string

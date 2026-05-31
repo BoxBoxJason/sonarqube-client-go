@@ -81,10 +81,14 @@ type ResponseError struct {
 
 // Error returns the error message.
 func (e *ResponseError) Error() string {
-	path, _ := url.QueryUnescape(e.Response.Request.URL.Path)
+	if e.Response == nil || e.Response.Request == nil {
+		return fmt.Sprintf("%d %s", e.StatusCode, e.Message)
+	}
+
+	path, _ := url.PathUnescape(e.Response.Request.URL.Path)
 	urlStr := fmt.Sprintf("%s://%s%s", e.Response.Request.URL.Scheme, e.Response.Request.URL.Host, path)
 
-	return fmt.Sprintf("%s %s: %d %s", e.Response.Request.Method, urlStr, e.Response.StatusCode, e.Message)
+	return fmt.Sprintf("%s %s: %d %s", e.Response.Request.Method, urlStr, e.StatusCode, e.Message)
 }
 
 // IsNotFound reports whether err represents a 404 Not Found response.
