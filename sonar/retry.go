@@ -97,10 +97,11 @@ func (r *retryRoundTripper) retryLoop(req *http.Request, hasBody bool) (*http.Re
 
 // retryDelay returns the duration to wait before the next attempt.
 // For 429 responses with a valid Retry-After header, that value takes precedence
-// over the computed exponential backoff.
+// over the computed exponential backoff. A Retry-After of zero is honoured as an
+// explicit instruction to retry immediately rather than falling back to backoff.
 func (r *retryRoundTripper) retryDelay(resp *http.Response, attempt int) time.Duration {
 	if resp != nil && resp.StatusCode == http.StatusTooManyRequests {
-		if d := parseRetryAfterHeader(resp.Header.Get("Retry-After")); d > 0 {
+		if d, ok := parseRetryAfterHeader(resp.Header.Get("Retry-After")); ok {
 			return d
 		}
 	}
@@ -193,34 +194,36 @@ func sleepContext(ctx context.Context, delay time.Duration) bool {
 	}
 }
 
-// parseRetryAfterHeader parses a Retry-After header value and returns the wait
-// duration. It supports both the delay-seconds form ("30") and the HTTP-date
-// form ("Wed, 21 Oct 2025 07:28:00 GMT"). Returns 0 for absent, malformed, or
-// past-dated values.
-func parseRetryAfterHeader(header string) time.Duration {
+// parseRetryAfterHeader parses a Retry-After header value. It supports both the
+// delay-seconds form ("30") and the HTTP-date form ("Wed, 21 Oct 2025 07:28:00 GMT").
+//
+// Returns (duration, true) when the header is present and parseable. A value of
+// zero is valid and means "retry immediately" (e.g. Retry-After: 0 or a past
+// HTTP-date). Returns (0, false) when the header is absent, malformed, or carries
+// a negative integer.
+func parseRetryAfterHeader(header string) (time.Duration, bool) {
 	if header == "" {
-		return 0
+		return 0, false
 	}
 
-	// delay-seconds form.
+	// delay-seconds form: non-negative integer.
 	secs, secsErr := strconv.Atoi(header)
 	if secsErr == nil {
-		if secs > 0 {
-			return time.Duration(secs) * time.Second
+		if secs >= 0 {
+			return time.Duration(secs) * time.Second, true
 		}
 
-		return 0
+		return 0, false
 	}
 
-	// HTTP-date form.
+	// HTTP-date form. A past-dated value is treated as an instruction to retry
+	// immediately (zero delay) rather than falling back to backoff.
 	t, dateErr := http.ParseTime(header)
 	if dateErr == nil {
-		if d := time.Until(t); d > 0 {
-			return d
-		}
+		return max(time.Until(t), 0), true
 	}
 
-	return 0
+	return 0, false
 }
 
 // drainAndClose discards resp's body and closes it so the connection can be reused.

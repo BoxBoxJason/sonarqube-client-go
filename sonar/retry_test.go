@@ -283,29 +283,21 @@ func TestRetryRoundTripper_RetryAfterSeconds(t *testing.T) {
 	assert.Equal(t, 2, transport.calls)
 }
 
-func TestRetryRoundTripper_RetryAfterDate_Future(t *testing.T) {
-	futureDate := time.Now().Add(50 * time.Millisecond).UTC().Format(http.TimeFormat)
-	transport := &countingTransport{
-		responses: []*http.Response{
-			makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", futureDate),
-			makeResponse(http.StatusOK),
-		},
-	}
+func TestRetryDelay_UsesRetryAfterHTTPDateOnRateLimitResponse(t *testing.T) {
+	// Test retryDelay directly to avoid waiting for the actual delay.
+	// Use 30s in the future — well beyond http.TimeFormat's 1-second precision so
+	// the formatted date is always still in the future when time.Until is called.
 	rt := &retryRoundTripper{
-		base: transport,
-		opts: RetryOptions{
-			MaxAttempts:          3,
-			InitialDelay:         time.Millisecond,
-			MaxDelay:             5 * time.Millisecond,
-			RetryableStatusCodes: []int{429},
-		},
+		base: http.DefaultTransport,
+		opts: RetryOptions{InitialDelay: time.Second, MaxDelay: time.Minute},
 	}
 
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
-	resp, err := rt.RoundTrip(req)
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, 2, transport.calls)
+	future := time.Now().Add(30 * time.Second).UTC()
+	resp := makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", future.Format(http.TimeFormat))
+
+	delay := rt.retryDelay(resp, 0)
+	assert.Greater(t, delay, 25*time.Second)
+	assert.LessOrEqual(t, delay, 31*time.Second)
 }
 
 func TestRetryRoundTripper_RetryAfterAbsent_FallsBackToBackoff(t *testing.T) {
@@ -362,6 +354,19 @@ func TestRetryDelay_UsesRetryAfterOnRateLimitResponse(t *testing.T) {
 	assert.Equal(t, 5*time.Second, delay)
 }
 
+func TestRetryDelay_ZeroRetryAfterOverridesBackoff(t *testing.T) {
+	rt := &retryRoundTripper{
+		base: http.DefaultTransport,
+		opts: RetryOptions{InitialDelay: 10 * time.Second, MaxDelay: time.Minute},
+	}
+
+	// Retry-After: 0 must result in immediate retry, not fall back to the backoff.
+	resp := makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "0")
+	delay := rt.retryDelay(resp, 0)
+
+	assert.Equal(t, time.Duration(0), delay)
+}
+
 func TestRetryDelay_IgnoresRetryAfterOnNon429(t *testing.T) {
 	rt := &retryRoundTripper{
 		base: http.DefaultTransport,
@@ -377,44 +382,55 @@ func TestRetryDelay_IgnoresRetryAfterOnNon429(t *testing.T) {
 
 func TestParseRetryAfterHeader_Seconds(t *testing.T) {
 	tests := []struct {
-		header   string
-		expected time.Duration
+		header      string
+		expected    time.Duration
+		expectValid bool
 	}{
-		{"10", 10 * time.Second},
-		{"0", 0},
-		{"-1", 0},
-		{"3600", 3600 * time.Second},
+		{"10", 10 * time.Second, true},
+		{"0", 0, true},   // zero is a valid instruction to retry immediately
+		{"-1", 0, false}, // negative integers are invalid
+		{"3600", 3600 * time.Second, true},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.header, func(t *testing.T) {
-			assert.Equal(t, tc.expected, parseRetryAfterHeader(tc.header))
+			d, ok := parseRetryAfterHeader(tc.header)
+			assert.Equal(t, tc.expected, d)
+			assert.Equal(t, tc.expectValid, ok)
 		})
 	}
 }
 
 func TestParseRetryAfterHeader_HTTPDate(t *testing.T) {
-	future := time.Now().Add(time.Minute).UTC()
+	// Use 30s in the future to survive http.TimeFormat's 1-second precision.
+	future := time.Now().Add(30 * time.Second).UTC()
 	header := future.Format(http.TimeFormat)
 
-	delay := parseRetryAfterHeader(header)
-	assert.Greater(t, delay, time.Duration(0))
-	assert.LessOrEqual(t, delay, time.Minute)
+	d, ok := parseRetryAfterHeader(header)
+	assert.True(t, ok)
+	assert.Greater(t, d, 25*time.Second)
+	assert.LessOrEqual(t, d, 31*time.Second)
 }
 
 func TestParseRetryAfterHeader_PastDate(t *testing.T) {
+	// A past HTTP-date is valid: the server's intended wait has already elapsed,
+	// so the result is zero delay (retry immediately) rather than falling back to backoff.
 	past := time.Now().Add(-time.Minute).UTC()
 	header := past.Format(http.TimeFormat)
 
-	assert.Equal(t, time.Duration(0), parseRetryAfterHeader(header))
+	d, ok := parseRetryAfterHeader(header)
+	assert.True(t, ok)
+	assert.Equal(t, time.Duration(0), d)
 }
 
 func TestParseRetryAfterHeader_Empty(t *testing.T) {
-	assert.Equal(t, time.Duration(0), parseRetryAfterHeader(""))
+	_, ok := parseRetryAfterHeader("")
+	assert.False(t, ok)
 }
 
 func TestParseRetryAfterHeader_Invalid(t *testing.T) {
-	assert.Equal(t, time.Duration(0), parseRetryAfterHeader("not-a-date-or-number"))
+	_, ok := parseRetryAfterHeader("not-a-date-or-number")
+	assert.False(t, ok)
 }
 
 // makeResponseWithHeader creates a test response with a single header set.
