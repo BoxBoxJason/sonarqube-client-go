@@ -33,55 +33,56 @@ type Client struct {
 	middlewares     []Middleware
 	userAgent       string
 
-	AlmIntegrations    *AlmIntegrationsService
-	AlmSettings        *AlmSettingsService
-	AnalysisCache      *AnalysisCacheService
-	AnalysisReports    *AnalysisReportsService
-	Authentication     *AuthenticationService
-	Batch              *BatchService
-	Ce                 *CeService
-	Components         *ComponentsService
-	Developers         *DevelopersService
-	DismissMessage     *DismissMessageService
-	Duplications       *DuplicationsService
-	Emails             *EmailsService
-	Favorites          *FavoritesService
-	Features           *FeaturesService
-	GithubProvisioning *GithubProvisioningService
-	Hotspots           *HotspotsService
-	Issues             *IssuesService
-	L10N               *L10NService
-	Editions           *EditionsService
-	Languages          *LanguagesService
-	Measures           *MeasuresService
-	Views              *ViewsService
-	Metrics            *MetricsService
-	Monitoring         *MonitoringService
-	Navigation         *NavigationService
-	NewCodePeriods     *NewCodePeriodsService
-	Notifications      *NotificationsService
-	Permissions        *PermissionsService
-	Plugins            *PluginsService
-	ProjectAnalyses    *ProjectAnalysesService
-	ProjectBadges      *ProjectBadgesService
-	ProjectBranches    *ProjectBranchesService
-	ProjectDump        *ProjectDumpService
-	ProjectLinks       *ProjectLinksService
-	ProjectTags        *ProjectTagsService
-	Projects           *ProjectsService
-	Push               *PushService
-	Qualitygates       *QualitygatesService
-	Qualityprofiles    *QualityprofilesService
-	Rules              *RulesService
-	Server             *ServerService
-	Settings           *SettingsService
-	Sources            *SourcesService
-	System             *SystemService
-	UserGroups         *UserGroupsService
-	UserTokens         *UserTokensService
-	Users              *UsersService
-	Webhooks           *WebhooksService
-	Webservices        *WebservicesService
+	AlmIntegrations     *AlmIntegrationsService
+	AlmSettings         *AlmSettingsService
+	AnalysisCache       *AnalysisCacheService
+	AnalysisReports     *AnalysisReportsService
+	Authentication      *AuthenticationService
+	Batch               *BatchService
+	Ce                  *CeService
+	Components          *ComponentsService
+	Developers          *DevelopersService
+	DismissMessage      *DismissMessageService
+	Duplications        *DuplicationsService
+	Emails              *EmailsService
+	Favorites           *FavoritesService
+	Features            *FeaturesService
+	GithubProvisioning  *GithubProvisioningService
+	Hotspots            *HotspotsService
+	Issues              *IssuesService
+	L10N                *L10NService
+	Editions            *EditionsService
+	Languages           *LanguagesService
+	Measures            *MeasuresService
+	Views               *ViewsService
+	Metrics             *MetricsService
+	Monitoring          *MonitoringService
+	Navigation          *NavigationService
+	NewCodePeriods      *NewCodePeriodsService
+	Notifications       *NotificationsService
+	Permissions         *PermissionsService
+	Plugins             *PluginsService
+	ProjectAnalyses     *ProjectAnalysesService
+	ProjectBadges       *ProjectBadgesService
+	ProjectBranches     *ProjectBranchesService
+	ProjectDump         *ProjectDumpService
+	ProjectLinks        *ProjectLinksService
+	ProjectPullRequests *ProjectPullRequestsService
+	ProjectTags         *ProjectTagsService
+	Projects            *ProjectsService
+	Push                *PushService
+	Qualitygates        *QualitygatesService
+	Qualityprofiles     *QualityprofilesService
+	Rules               *RulesService
+	Server              *ServerService
+	Settings            *SettingsService
+	Sources             *SourcesService
+	System              *SystemService
+	UserGroups          *UserGroupsService
+	UserTokens          *UserTokensService
+	Users               *UsersService
+	Webhooks            *WebhooksService
+	Webservices         *WebservicesService
 
 	// V2 contains all V2 API services.
 	V2 *ServicesV2
@@ -427,6 +428,7 @@ func initServices(client *Client) {
 	client.ProjectBranches = &ProjectBranchesService{client: client}
 	client.ProjectDump = &ProjectDumpService{client: client}
 	client.ProjectLinks = &ProjectLinksService{client: client}
+	client.ProjectPullRequests = &ProjectPullRequestsService{client: client}
 	client.ProjectTags = &ProjectTagsService{client: client}
 	client.Projects = &ProjectsService{client: client}
 	client.Push = &PushService{client: client}
