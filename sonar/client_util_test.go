@@ -128,6 +128,84 @@ func TestNewRequest_BasicAuth(t *testing.T) {
 	assert.Equal(t, "pass", password)
 }
 
+func TestCheckResponse_PopulatesStatusCode(t *testing.T) {
+	for _, code := range []int{http.StatusNotFound, http.StatusUnauthorized, http.StatusForbidden, http.StatusConflict, http.StatusTooManyRequests, http.StatusInternalServerError} {
+		t.Run(fmt.Sprintf("%d", code), func(t *testing.T) {
+			resp := &http.Response{
+				StatusCode: code,
+				Header:     make(http.Header),
+				Body:       io.NopCloser(bytes.NewReader(nil)),
+				Request:    httptest.NewRequest(http.MethodGet, "/api/test", nil),
+			}
+
+			err := CheckResponse(resp)
+			require.Error(t, err)
+
+			var re *ResponseError
+			require.ErrorAs(t, err, &re)
+			assert.Equal(t, code, re.StatusCode)
+		})
+	}
+}
+
+func TestIsNotFound(t *testing.T) {
+	assert.True(t, IsNotFound(makeAPIError(http.StatusNotFound)))
+	assert.False(t, IsNotFound(makeAPIError(http.StatusUnauthorized)))
+	assert.False(t, IsNotFound(nil))
+	assert.False(t, IsNotFound(fmt.Errorf("plain error")))
+}
+
+func TestIsUnauthorized(t *testing.T) {
+	assert.True(t, IsUnauthorized(makeAPIError(http.StatusUnauthorized)))
+	assert.False(t, IsUnauthorized(makeAPIError(http.StatusNotFound)))
+}
+
+func TestIsForbidden(t *testing.T) {
+	assert.True(t, IsForbidden(makeAPIError(http.StatusForbidden)))
+	assert.False(t, IsForbidden(makeAPIError(http.StatusUnauthorized)))
+}
+
+func TestIsConflict(t *testing.T) {
+	assert.True(t, IsConflict(makeAPIError(http.StatusConflict)))
+	assert.False(t, IsConflict(makeAPIError(http.StatusNotFound)))
+}
+
+func TestIsRateLimited(t *testing.T) {
+	assert.True(t, IsRateLimited(makeAPIError(http.StatusTooManyRequests)))
+	assert.False(t, IsRateLimited(makeAPIError(http.StatusForbidden)))
+}
+
+func TestIsServerError(t *testing.T) {
+	assert.True(t, IsServerError(makeAPIError(http.StatusInternalServerError)))
+	assert.True(t, IsServerError(makeAPIError(http.StatusBadGateway)))
+	assert.True(t, IsServerError(makeAPIError(599)))
+	assert.False(t, IsServerError(makeAPIError(http.StatusNotFound)))
+	assert.False(t, IsServerError(makeAPIError(http.StatusTooManyRequests)))
+}
+
+func TestSentinels_WorkThroughWrappingChain(t *testing.T) {
+	inner := makeAPIError(http.StatusNotFound)
+	wrapped := fmt.Errorf("operation failed: %w", inner)
+
+	assert.True(t, IsNotFound(wrapped))
+	assert.False(t, IsUnauthorized(wrapped))
+}
+
+// makeAPIError creates a *ResponseError with the given status code for testing.
+func makeAPIError(statusCode int) *ResponseError {
+	req := httptest.NewRequest(http.MethodGet, "/api/test", nil)
+
+	//nolint:exhaustruct // only fields needed for test populated
+	return &ResponseError{
+		Response: &http.Response{
+			StatusCode: statusCode,
+			Request:    req,
+		},
+		StatusCode: statusCode,
+		Message:    fmt.Sprintf("status %d", statusCode),
+	}
+}
+
 func TestJsonStructToQueryValues(t *testing.T) {
 	tests := []struct {
 		name    string

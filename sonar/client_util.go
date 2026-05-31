@@ -3,6 +3,7 @@ package sonar
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -72,9 +73,10 @@ func Do(httpClient *http.Client, req *http.Request, dest any) (*http.Response, e
 //
 //nolint:govet // fieldalignment: keeping logical field grouping for readability
 type ResponseError struct {
-	Body     []byte
-	Response *http.Response
-	Message  string
+	Body       []byte
+	Response   *http.Response
+	Message    string
+	StatusCode int
 }
 
 // Error returns the error message.
@@ -83,6 +85,36 @@ func (e *ResponseError) Error() string {
 	urlStr := fmt.Sprintf("%s://%s%s", e.Response.Request.URL.Scheme, e.Response.Request.URL.Host, path)
 
 	return fmt.Sprintf("%s %s: %d %s", e.Response.Request.Method, urlStr, e.Response.StatusCode, e.Message)
+}
+
+// IsNotFound reports whether err represents a 404 Not Found response.
+func IsNotFound(err error) bool { return httpStatusIs(err, http.StatusNotFound) }
+
+// IsUnauthorized reports whether err represents a 401 Unauthorized response.
+func IsUnauthorized(err error) bool { return httpStatusIs(err, http.StatusUnauthorized) }
+
+// IsForbidden reports whether err represents a 403 Forbidden response.
+func IsForbidden(err error) bool { return httpStatusIs(err, http.StatusForbidden) }
+
+// IsConflict reports whether err represents a 409 Conflict response.
+func IsConflict(err error) bool { return httpStatusIs(err, http.StatusConflict) }
+
+// IsRateLimited reports whether err represents a 429 Too Many Requests response.
+func IsRateLimited(err error) bool { return httpStatusIs(err, http.StatusTooManyRequests) }
+
+// IsServerError reports whether err represents a 5xx server-side error response.
+func IsServerError(err error) bool {
+	var re *ResponseError
+
+	return errors.As(err, &re) && re.StatusCode >= http.StatusInternalServerError && re.StatusCode < 600
+}
+
+// httpStatusIs reports whether err is a *ResponseError with the given status code.
+// It traverses the error chain via errors.As.
+func httpStatusIs(err error, statusCode int) bool {
+	var re *ResponseError
+
+	return errors.As(err, &re) && re.StatusCode == statusCode
 }
 
 // CheckResponse checks the API response for errors.
@@ -95,7 +127,8 @@ func CheckResponse(resp *http.Response) error {
 	}
 
 	errorResponse := &ResponseError{
-		Response: resp,
+		Response:   resp,
+		StatusCode: resp.StatusCode,
 	}
 
 	data, err := io.ReadAll(resp.Body)
