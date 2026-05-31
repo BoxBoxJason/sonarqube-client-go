@@ -894,9 +894,12 @@ var _ = Describe("Issues Service", Ordered, func() {
 				result, resp, err := client.Issues.ListAll(context.Background(), &sonar.IssuesListOptions{
 					Project: projectKey,
 				})
+				// 503 while indexing is in progress on a fresh instance
+				if resp != nil && resp.StatusCode == http.StatusServiceUnavailable {
+					Skip("Issue indexing is in progress")
+				}
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
-				// Result may be empty on a fresh project; just verify it's a valid slice
 				_ = result
 			})
 		})
@@ -920,6 +923,10 @@ var _ = Describe("Issues Service", Ordered, func() {
 				result, resp, err := client.Issues.SearchAll(context.Background(), &sonar.IssuesSearchOptions{
 					Projects: []string{projectKey},
 				})
+				// 503 while indexing is in progress on a fresh instance
+				if resp != nil && resp.StatusCode == http.StatusServiceUnavailable {
+					Skip("Issue indexing is in progress")
+				}
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
 				_ = result
@@ -927,6 +934,10 @@ var _ = Describe("Issues Service", Ordered, func() {
 
 			It("should accept nil options", func() {
 				result, resp, err := client.Issues.SearchAll(context.Background(), nil)
+				// 503 while indexing is in progress on a fresh instance
+				if resp != nil && resp.StatusCode == http.StatusServiceUnavailable {
+					Skip("Issue indexing is in progress")
+				}
 				Expect(err).NotTo(HaveOccurred())
 				Expect(resp).NotTo(BeNil())
 				_ = result
