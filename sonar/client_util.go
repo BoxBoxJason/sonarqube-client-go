@@ -36,7 +36,9 @@ func Do(httpClient *http.Client, req *http.Request, dest any) (*http.Response, e
 		return nil, err
 	}
 
-	defer func() { _ = resp.Body.Close() }()
+	// Drain any unread body before closing so the underlying connection can be
+	// reused by the keep-alive pool, even when a decoder stops short of EOF.
+	defer drainAndClose(resp)
 
 	err = CheckResponse(resp)
 	if err != nil {

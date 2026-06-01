@@ -121,6 +121,58 @@ func TestDo_DecodeError_WrapsRequestContext(t *testing.T) {
 	assert.Contains(t, err.Error(), "projects/search", "wrapped error should include the endpoint path")
 }
 
+// drainTrackingBody records whether it was fully read (to EOF) and closed.
+type drainTrackingBody struct {
+	r       io.Reader
+	readEOF bool
+	closed  bool
+}
+
+func (b *drainTrackingBody) Read(p []byte) (int, error) {
+	n, err := b.r.Read(p)
+	if err == io.EOF {
+		b.readEOF = true
+	}
+
+	return n, err //nolint:wrapcheck // test stub mirrors the underlying reader
+}
+
+func (b *drainTrackingBody) Close() error {
+	b.closed = true
+
+	return nil
+}
+
+// fixedRoundTripper returns a fixed response regardless of the request.
+type fixedRoundTripper struct{ resp *http.Response }
+
+func (t fixedRoundTripper) RoundTrip(*http.Request) (*http.Response, error) {
+	return t.resp, nil
+}
+
+func TestDo_DrainsBodyOnSuccess(t *testing.T) {
+	// A JSON value followed by trailing bytes the decoder will not consume, so the
+	// drain (not the decode) is what reaches EOF.
+	payload := append([]byte(`{"foo":"bar"}`), bytes.Repeat([]byte(" "), 4096)...)
+	body := &drainTrackingBody{r: bytes.NewReader(payload)} //nolint:exhaustruct
+
+	resp := &http.Response{ //nolint:exhaustruct // only fields needed for the test
+		StatusCode: http.StatusOK,
+		Header:     make(http.Header),
+		Body:       body,
+	}
+	client := &http.Client{Transport: fixedRoundTripper{resp: resp}} //nolint:exhaustruct
+
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+
+	var v map[string]any
+	_, err := Do(client, req, &v)
+	require.NoError(t, err)
+	assert.Equal(t, "bar", v["foo"])
+	assert.True(t, body.readEOF, "body should be drained to EOF before close")
+	assert.True(t, body.closed, "body should be closed")
+}
+
 func TestNewRequest_WithQueryParams(t *testing.T) {
 	baseURL, _ := url.Parse("http://localhost/api/")
 	opt := struct {
