@@ -151,7 +151,9 @@ func TestRetryRoundTripper_NonReplayableBodyNotRetried(t *testing.T) {
 		opts: RetryOptions{MaxAttempts: 4, RetryableStatusCodes: []int{503}},
 	}
 
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "http://example.com", io.NopCloser(bytes.NewReader([]byte("body"))))
+	// Use an idempotent method so the non-replayable body is the reason the
+	// request is not retried, not the method.
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodPut, "http://example.com", io.NopCloser(bytes.NewReader([]byte("body"))))
 	// GetBody is nil because we used io.NopCloser directly, not bytes.NewReader via http.NewRequest.
 	require.Nil(t, req.GetBody)
 
@@ -179,7 +181,8 @@ func TestRetryRoundTripper_ReplayableBodyRetried(t *testing.T) {
 	}
 
 	body := bytes.NewReader([]byte(`{"key":"value"}`))
-	req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "http://example.com", body)
+	// PUT is idempotent and has a replayable body, so it is retried by default.
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodPut, "http://example.com", body)
 	// http.NewRequest with bytes.Reader sets GetBody automatically.
 	require.NotNil(t, req.GetBody)
 
@@ -187,6 +190,78 @@ func TestRetryRoundTripper_ReplayableBodyRetried(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, 2, transport.calls)
+}
+
+func TestRetryRoundTripper_NonIdempotentNotRetriedByDefault(t *testing.T) {
+	transport := &countingTransport{
+		responses: []*http.Response{
+			makeResponse(http.StatusServiceUnavailable),
+			makeResponse(http.StatusOK),
+		},
+	}
+	rt := &retryRoundTripper{
+		base: transport,
+		opts: RetryOptions{
+			MaxAttempts:          3,
+			InitialDelay:         time.Millisecond,
+			MaxDelay:             5 * time.Millisecond,
+			RetryableStatusCodes: []int{503},
+		},
+	}
+
+	body := bytes.NewReader([]byte(`{"key":"value"}`))
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "http://example.com", body)
+	require.NotNil(t, req.GetBody)
+
+	resp, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+	// POST is not retried by default even with a replayable body and a retryable status.
+	assert.Equal(t, http.StatusServiceUnavailable, resp.StatusCode)
+	assert.Equal(t, 1, transport.calls)
+}
+
+func TestRetryRoundTripper_NonIdempotentRetriedWhenOptedIn(t *testing.T) {
+	transport := &countingTransport{
+		responses: []*http.Response{
+			makeResponse(http.StatusServiceUnavailable),
+			makeResponse(http.StatusOK),
+		},
+	}
+	rt := &retryRoundTripper{
+		base: transport,
+		opts: RetryOptions{
+			MaxAttempts:          3,
+			InitialDelay:         time.Millisecond,
+			MaxDelay:             5 * time.Millisecond,
+			RetryableStatusCodes: []int{503},
+			RetryNonIdempotent:   true,
+		},
+	}
+
+	body := bytes.NewReader([]byte(`{"key":"value"}`))
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodPost, "http://example.com", body)
+	require.NotNil(t, req.GetBody)
+
+	resp, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, 2, transport.calls)
+}
+
+func TestIsIdempotentMethod(t *testing.T) {
+	t.Parallel()
+
+	idempotent := []string{
+		http.MethodGet, http.MethodHead, http.MethodPut,
+		http.MethodDelete, http.MethodOptions, http.MethodTrace,
+	}
+	for _, method := range idempotent {
+		assert.True(t, isIdempotentMethod(method), "%s should be idempotent", method)
+	}
+
+	for _, method := range []string{http.MethodPost, http.MethodPatch} {
+		assert.False(t, isIdempotentMethod(method), "%s should not be idempotent", method)
+	}
 }
 
 func TestWithRetry_ClientIntegration(t *testing.T) {
