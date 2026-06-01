@@ -129,6 +129,8 @@ type ServicesV2 struct {
 	DopTranslation *DopTranslationService
 	// Marketplace provides methods for the Marketplace V2 API.
 	Marketplace *MarketplaceService
+	// Sca provides methods for the SCA V2 API.
+	Sca *ScaService
 	// System provides methods for the System V2 API.
 	System *SystemServiceV2
 	// UsersManagement provides methods for the Users Management V2 API.
@@ -550,6 +552,7 @@ func initServicesV2(client *Client) {
 		CleanCodePolicy: &CleanCodePolicyService{client: client},
 		DopTranslation:  &DopTranslationService{client: client},
 		Marketplace:     &MarketplaceService{client: client},
+		Sca:             &ScaService{client: client},
 		System:          &SystemServiceV2{client: client},
 		UsersManagement: &UsersManagementService{client: client},
 	}
