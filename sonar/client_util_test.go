@@ -101,6 +101,26 @@ func TestDo_NoBody(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
+func TestDo_DecodeError_WrapsRequestContext(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`not valid json`))
+	}))
+	t.Cleanup(ts.Close)
+
+	baseURL, _ := url.Parse(ts.URL + "/")
+	req, err := newRequest(http.MethodGet, "projects/search", baseURL, "u", "p", nil)
+	require.NoError(t, err)
+
+	var v map[string]any
+	_, err = Do(http.DefaultClient, req, &v)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to decode", "decode error should be wrapped with context")
+	assert.Contains(t, err.Error(), http.MethodGet, "wrapped error should include the method")
+	assert.Contains(t, err.Error(), "projects/search", "wrapped error should include the endpoint path")
+}
+
 func TestNewRequest_WithQueryParams(t *testing.T) {
 	baseURL, _ := url.Parse("http://localhost/api/")
 	opt := struct {

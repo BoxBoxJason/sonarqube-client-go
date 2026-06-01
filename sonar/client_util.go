@@ -67,8 +67,23 @@ func Do(httpClient *http.Client, req *http.Request, dest any) (*http.Response, e
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(dest)
+	if err != nil {
+		return resp, fmt.Errorf("failed to decode %s %s response body: %w", req.Method, requestEndpoint(req), err)
+	}
 
-	return resp, err
+	return resp, nil
+}
+
+// requestEndpoint formats a request's endpoint as scheme://host/path, with the
+// path unescaped and the query string omitted (it may carry sensitive values).
+func requestEndpoint(req *http.Request) string {
+	if req.URL == nil {
+		return ""
+	}
+
+	path, _ := url.PathUnescape(req.URL.Path)
+
+	return fmt.Sprintf("%s://%s%s", req.URL.Scheme, req.URL.Host, path)
 }
 
 // ResponseError represents an error response from the SonarQube API.
@@ -87,10 +102,7 @@ func (e *ResponseError) Error() string {
 		return fmt.Sprintf("%d %s", e.StatusCode, e.Message)
 	}
 
-	path, _ := url.PathUnescape(e.Response.Request.URL.Path)
-	urlStr := fmt.Sprintf("%s://%s%s", e.Response.Request.URL.Scheme, e.Response.Request.URL.Host, path)
-
-	return fmt.Sprintf("%s %s: %d %s", e.Response.Request.Method, urlStr, e.StatusCode, e.Message)
+	return fmt.Sprintf("%s %s: %d %s", e.Response.Request.Method, requestEndpoint(e.Response.Request), e.StatusCode, e.Message)
 }
 
 // IsNotFound reports whether err represents a 404 Not Found response.
