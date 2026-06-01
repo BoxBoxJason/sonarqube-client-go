@@ -32,7 +32,7 @@ else
   container_engine := docker
 endif
 
-.PHONY: setup.sonar setup.sonar.enterprise test lint coverage api api.enterprise build
+.PHONY: setup.sonar setup.sonar.enterprise test lint vuln coverage api api.enterprise build
 
 # Run all unit tests (use target=sdk|cli|all to filter)
 test:
@@ -91,6 +91,11 @@ lint:
 	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2; }
 	@mkdir -p codequality
 	golangci-lint run ${target_paths}
+
+# Scan dependencies and stdlib for known vulnerabilities (govulncheck).
+vuln:
+	@command -v govulncheck >/dev/null 2>&1 || { echo "Installing govulncheck..."; go install golang.org/x/vuln/cmd/govulncheck@v1.3.0; }
+	govulncheck ./...
 
 # Fetch SonarQube community edition API specification
 api: setup.sonar
