@@ -729,7 +729,7 @@ func (c *Client) setRequestHeaders(req *http.Request, method string, extraHeader
 
 	// Set authentication headers.
 	switch authMethod {
-	case basicAuth, oAuthToken:
+	case basicAuth:
 		req.SetBasicAuth(username, password)
 	case privateToken:
 		req.SetBasicAuth(token, "")

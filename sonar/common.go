@@ -198,7 +198,6 @@ type authType int
 
 const (
 	basicAuth authType = iota
-	oAuthToken
 	privateToken
 )
 
