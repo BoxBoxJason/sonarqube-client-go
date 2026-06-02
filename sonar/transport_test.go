@@ -58,7 +58,7 @@ func TestWithTransportConfig_DefaultUnchanged(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, client)
 
-	assert.Same(t, http.DefaultClient, client.httpClient, "expected http.DefaultClient when no options are provided")
+	assert.Equal(t, defaultHTTPTimeout, client.httpClient.Timeout, "expected default timeout when no options are provided")
 }
 
 func TestWithTransportConfig_TLSConfig(t *testing.T) {

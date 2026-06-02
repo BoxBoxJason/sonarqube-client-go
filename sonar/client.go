@@ -212,10 +212,14 @@ func setDefaults(client *Client) error {
 
 	if client.httpClient == nil {
 		if client.transportConfig != nil {
-			//nolint:exhaustruct // Timeout, Jar, CheckRedirect intentionally left at zero values
-			client.httpClient = &http.Client{Transport: buildTransport(*client.transportConfig)}
+			client.httpClient = &http.Client{
+				Timeout:   defaultHTTPTimeout,
+				Transport: buildTransport(*client.transportConfig),
+			}
 		} else {
-			client.httpClient = http.DefaultClient
+			client.httpClient = &http.Client{
+				Timeout: defaultHTTPTimeout,
+			}
 		}
 	}
 

@@ -3,6 +3,7 @@ package sonar
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 const (
@@ -10,6 +11,12 @@ const (
 	defaultBaseURL = "http://localhost:9000/api/"
 	// defaultUserAgent is the default User-Agent header value.
 	defaultUserAgent = "sonarqube-client-go"
+
+	// defaultHTTPTimeout is the default timeout applied to the SDK-managed
+	// HTTP client when the caller does not supply their own. A zero timeout
+	// means no limit, which can hang goroutines indefinitely behind load
+	// balancers or NAT gateways.
+	defaultHTTPTimeout = 30 * time.Second
 
 	// MaxPageSize is the maximum allowed page size for pagination.
 	MaxPageSize = 500
