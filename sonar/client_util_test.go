@@ -148,6 +148,61 @@ func TestCheckResponse_PopulatesStatusCode(t *testing.T) {
 	}
 }
 
+func TestCheckResponse_PreservesJSONErrorBody(t *testing.T) {
+	body := []byte(`"api error"`)
+	resp := &http.Response{
+		StatusCode: http.StatusBadRequest,
+		Header:     make(http.Header),
+		Body:       io.NopCloser(bytes.NewReader(body)),
+		Request:    httptest.NewRequest(http.MethodGet, "/api/test", nil),
+	}
+
+	err := CheckResponse(resp)
+	require.Error(t, err)
+
+	var re *ResponseError
+	require.ErrorAs(t, err, &re)
+	assert.Equal(t, body, re.Body)
+	assert.Equal(t, "api error", re.Message)
+}
+
+func TestCheckResponse_PreservesTextErrorBody(t *testing.T) {
+	body := []byte("plain error")
+	resp := &http.Response{
+		StatusCode: http.StatusBadRequest,
+		Header:     make(http.Header),
+		Body:       io.NopCloser(bytes.NewReader(body)),
+		Request:    httptest.NewRequest(http.MethodGet, "/api/test", nil),
+	}
+
+	err := CheckResponse(resp)
+	require.Error(t, err)
+
+	var re *ResponseError
+	require.ErrorAs(t, err, &re)
+	assert.Equal(t, body, re.Body)
+	assert.Equal(t, string(body), re.Message)
+}
+
+func TestCheckResponse_TruncatesLargeErrorBody(t *testing.T) {
+	body := bytes.Repeat([]byte("x"), maxErrorResponseBodyBytes+1)
+	resp := &http.Response{
+		StatusCode: http.StatusBadRequest,
+		Header:     make(http.Header),
+		Body:       io.NopCloser(bytes.NewReader(body)),
+		Request:    httptest.NewRequest(http.MethodGet, "/api/test", nil),
+	}
+
+	err := CheckResponse(resp)
+	require.Error(t, err)
+
+	var re *ResponseError
+	require.ErrorAs(t, err, &re)
+	assert.Len(t, re.Body, maxErrorResponseBodyBytes)
+	assert.Equal(t, body[:maxErrorResponseBodyBytes], re.Body)
+	assert.Contains(t, re.Message, "(response body truncated after 1048576 bytes)")
+}
+
 func TestIsNotFound(t *testing.T) {
 	assert.True(t, IsNotFound(makeAPIError(http.StatusNotFound)))
 	assert.False(t, IsNotFound(makeAPIError(http.StatusUnauthorized)))

@@ -13,6 +13,8 @@ import (
 	"strings"
 )
 
+const maxErrorResponseBodyBytes = 1 << 20
+
 // Do sends an API request and returns the API response. The API response is
 // JSON decoded and stored in the value pointed to by v, or returned as an
 // error if an API error has occurred. If v implements the io.Writer
@@ -135,8 +137,13 @@ func CheckResponse(resp *http.Response) error {
 		StatusCode: resp.StatusCode,
 	}
 
-	data, err := io.ReadAll(resp.Body)
+	data, err := io.ReadAll(io.LimitReader(resp.Body, maxErrorResponseBodyBytes+1))
 	if err == nil && data != nil {
+		truncated := len(data) > maxErrorResponseBodyBytes
+		if truncated {
+			data = data[:maxErrorResponseBodyBytes]
+		}
+
 		errorResponse.Body = data
 
 		var raw any
@@ -146,6 +153,14 @@ func CheckResponse(resp *http.Response) error {
 			errorResponse.Message = string(data)
 		} else {
 			errorResponse.Message = parseError(raw)
+		}
+
+		if truncated {
+			errorResponse.Message = fmt.Sprintf(
+				"%s\n(response body truncated after %d bytes)",
+				errorResponse.Message,
+				maxErrorResponseBodyBytes,
+			)
 		}
 	}
 
