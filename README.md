@@ -247,7 +247,7 @@ func main() {
 
  // Search for projects
  projects, _, err := client.Projects.Search(context.Background(), &sonar.ProjectsSearchOptions{
-  Ps: sonar.Int(10),
+  PaginationArgs: sonar.PaginationArgs{PageSize: 10},
  })
  if err != nil {
   log.Fatal(err)
@@ -260,14 +260,14 @@ func main() {
 
  // Search for open issues
  issues, _, err := client.Issues.Search(context.Background(), &sonar.IssuesSearchOptions{
-  Projects: sonar.String("my-project-key"),
-  Statuses: sonar.String("OPEN,CONFIRMED"),
+  Projects:      []string{"my-project-key"},
+  IssueStatuses: []string{"OPEN", "CONFIRMED"},
  })
  if err != nil {
   log.Fatal(err)
  }
 
- fmt.Printf("Found %d open issues\n", issues.Total)
+ fmt.Printf("Found %d open issues\n", issues.Paging.Total)
 }
 ```
 
@@ -390,7 +390,7 @@ client, err := sonar.NewClient(nil,
 
 ```go
 status, _, err := client.Qualitygates.ProjectStatus(ctx, &sonar.QualitygatesProjectStatusOptions{
- ProjectKey: sonar.String("my-project"),
+ ProjectKey: "my-project",
 })
 fmt.Printf("Quality Gate: %s\n", status.ProjectStatus.Status)
 ```
@@ -398,7 +398,7 @@ fmt.Printf("Quality Gate: %s\n", status.ProjectStatus.Status)
 **User management:**
 
 ```go
-users, _, err := client.Users.Search(&sonar.UsersSearchOptions{
+users, _, err := client.Users.Search(context.Background(), &sonar.UsersSearchOptions{
  Query: "john",
 })
 for _, user := range users.Users {
