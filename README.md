@@ -333,6 +333,59 @@ client, err := sonar.NewClient(&sonar.ClientCreateOptions{
 })
 ```
 
+**Middleware & observability:**
+
+`WithMiddleware` attaches `http.RoundTripper` wrappers to the client transport - the
+natural place for request logging, metrics, or distributed tracing. Middleware sits
+inside the retry layer, so it observes every individual attempt, not just the first.
+
+```go
+import (
+ "log"
+ "net/http"
+ "time"
+)
+
+// roundTripperFunc adapts a function to http.RoundTripper.
+type roundTripperFunc func(*http.Request) (*http.Response, error)
+
+func (f roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+// loggingMiddleware logs the method, path and duration of every request.
+func loggingMiddleware(next http.RoundTripper) http.RoundTripper {
+ return roundTripperFunc(func(req *http.Request) (*http.Response, error) {
+  start := time.Now()
+  resp, err := next.RoundTrip(req)
+  log.Printf("sonar %s %s (%s)", req.Method, req.URL.Path, time.Since(start))
+
+  return resp, err
+ })
+}
+
+client, err := sonar.NewClient(nil,
+ sonar.WithBaseURL("https://sonar.example.com/api/"),
+ sonar.WithToken(token),
+ sonar.WithMiddleware(loggingMiddleware),
+)
+```
+
+For OpenTelemetry tracing, wrap `otelhttp.NewTransport` as middleware (requires
+`go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp`):
+
+```go
+import "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+
+otelMiddleware := func(next http.RoundTripper) http.RoundTripper {
+ return otelhttp.NewTransport(next)
+}
+
+client, err := sonar.NewClient(nil,
+ sonar.WithBaseURL("https://sonar.example.com/api/"),
+ sonar.WithToken(token),
+ sonar.WithMiddleware(otelMiddleware),
+)
+```
+
 **Quality gate status:**
 
 ```go
