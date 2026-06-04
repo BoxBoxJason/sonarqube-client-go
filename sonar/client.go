@@ -33,6 +33,7 @@ type Client struct {
 	middlewares     []Middleware
 	userAgent       string
 
+	AuditLogs          *AuditLogsService
 	AlmIntegrations    *AlmIntegrationsService
 	AlmSettings        *AlmSettingsService
 	AnalysisCache      *AnalysisCacheService
@@ -393,6 +394,7 @@ func (c *Client) BaseURL() *url.URL {
 //
 //nolint:funlen // necessary to initialize all services
 func initServices(client *Client) {
+	client.AuditLogs = &AuditLogsService{client: client}
 	client.AlmIntegrations = &AlmIntegrationsService{client: client}
 	client.AlmSettings = &AlmSettingsService{client: client}
 	client.AnalysisCache = &AnalysisCacheService{client: client}
