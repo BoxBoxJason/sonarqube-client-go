@@ -30,7 +30,7 @@ func vcsRevision(info *debug.BuildInfo) string {
 	for _, setting := range info.Settings {
 		switch setting.Key {
 		case "vcs.revision":
-			if len(setting.Value) > 7 {//nolint:mnd // 7 is the conventional short-hash length
+			if len(setting.Value) > 7 { //nolint:mnd // 7 is the conventional short-hash length
 				revision = setting.Value[:7]
 			} else {
 				revision = setting.Value
