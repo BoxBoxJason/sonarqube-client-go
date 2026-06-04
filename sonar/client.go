@@ -74,6 +74,7 @@ type Client struct {
 	Qualitygates       *QualitygatesService
 	Qualityprofiles    *QualityprofilesService
 	Rules              *RulesService
+	ScimManagement     *ScimManagementService
 	Server             *ServerService
 	Settings           *SettingsService
 	Sources            *SourcesService
@@ -435,6 +436,7 @@ func initServices(client *Client) {
 	client.Qualitygates = &QualitygatesService{client: client}
 	client.Qualityprofiles = &QualityprofilesService{client: client}
 	client.Rules = &RulesService{client: client}
+	client.ScimManagement = &ScimManagementService{client: client}
 	client.Server = &ServerService{client: client}
 	client.Settings = &SettingsService{client: client}
 	client.Sources = &SourcesService{client: client}
