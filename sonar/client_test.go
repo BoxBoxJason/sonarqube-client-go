@@ -77,3 +77,21 @@ func TestNewClient_ServicesInitialized(t *testing.T) {
 	assert.NotNil(t, client.Rules)
 	assert.NotNil(t, client.Users)
 }
+func TestNewClient_DefaultUserAgentContainsVersion(t *testing.T) {
+	client, err := NewClient(nil)
+	require.NoError(t, err)
+	require.NotNil(t, client)
+
+	assert.Contains(t, client.userAgent, "sonarqube-client-go/")
+}
+func TestNewClient_WithUserAgent(t *testing.T) {
+	client, err := NewClient(
+		nil,
+		WithUserAgent("custom-agent"),
+	)
+
+	require.NoError(t, err)
+	require.NotNil(t, client)
+
+	assert.Equal(t, "custom-agent", client.userAgent)
+}

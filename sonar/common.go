@@ -8,8 +8,6 @@ import (
 const (
 	// defaultBaseURL is the default base URL for the SonarQube API.
 	defaultBaseURL = "http://localhost:9000/api/"
-	// defaultUserAgent is the default User-Agent header value.
-	defaultUserAgent = "sonarqube-client-go"
 
 	// MaxPageSize is the maximum allowed page size for pagination.
 	MaxPageSize = 500

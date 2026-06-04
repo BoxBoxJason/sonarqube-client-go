@@ -246,7 +246,7 @@ func setDefaults(client *Client) error {
 	}
 
 	if client.userAgent == "" {
-		client.userAgent = defaultUserAgent
+		client.userAgent = buildUserAgent()
 	}
 
 	return nil
