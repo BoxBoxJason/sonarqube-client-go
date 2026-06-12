@@ -1,8 +1,8 @@
 package sonar
 
 import (
-	"context"
 	"bytes"
+	"context"
 	"io"
 	"net/http"
 	"testing"
@@ -19,7 +19,7 @@ func TestAnalysisV2_GetVersion(t *testing.T) {
 	server := newTestServer(t, mockTextHandler(t, http.MethodGet, "/v2/analysis/version", http.StatusOK, "10.5.0.12345"))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetVersion(context.Background(), )
+	result, resp, err := client.V2.Analysis.GetVersion(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "10.5.0.12345", *result)
@@ -168,7 +168,7 @@ func TestAnalysisV2_GetScannerEngineMetadata(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/analysis/engine", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.Analysis.GetScannerEngineMetadata(context.Background(), )
+	result, resp, err := client.V2.Analysis.GetScannerEngineMetadata(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "scanner-engine.jar", result.Filename)

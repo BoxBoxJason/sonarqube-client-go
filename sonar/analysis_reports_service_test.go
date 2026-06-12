@@ -25,7 +25,7 @@ func TestAnalysisReports_QueueStatus(t *testing.T) {
 			server := newTestServer(t, handler)
 			client := newTestClient(t, server.url())
 
-			result, resp, err := client.AnalysisReports.QueueStatus(context.Background(), )
+			result, resp, err := client.AnalysisReports.QueueStatus(context.Background())
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusOK, resp.StatusCode)
 			require.NotNil(t, result)

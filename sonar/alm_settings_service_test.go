@@ -591,7 +591,7 @@ func TestAlmSettings_ListDefinitions(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/alm_settings/list_definitions", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.AlmSettings.ListDefinitions(context.Background(), )
+	result, resp, err := client.AlmSettings.ListDefinitions(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

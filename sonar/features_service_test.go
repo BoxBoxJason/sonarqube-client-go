@@ -14,7 +14,7 @@ func TestFeatures_List(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Features.List(context.Background(), )
+	result, resp, err := client.Features.List(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -28,7 +28,7 @@ func TestFeatures_List_Empty(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Features.List(context.Background(), )
+	result, resp, err := client.Features.List(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

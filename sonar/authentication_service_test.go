@@ -49,7 +49,7 @@ func TestAuthentication_Logout(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	resp, err := client.Authentication.Logout(context.Background(), )
+	resp, err := client.Authentication.Logout(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -70,7 +70,7 @@ func TestAuthentication_Validate(t *testing.T) {
 			server := newTestServer(t, handler)
 			client := newTestClient(t, server.url())
 
-			result, resp, err := client.Authentication.Validate(context.Background(), )
+			result, resp, err := client.Authentication.Validate(context.Background())
 			require.NoError(t, err)
 			assert.Equal(t, http.StatusOK, resp.StatusCode)
 			require.NotNil(t, result)

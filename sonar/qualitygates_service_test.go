@@ -199,7 +199,7 @@ func TestQualityGates_List(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualitygates/list", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Qualitygates.List(context.Background(), )
+	result, resp, err := client.Qualitygates.List(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

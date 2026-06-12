@@ -15,7 +15,7 @@ func TestRules_App(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/rules/app", 200, `{"canWrite":true,"languages":{"java":"Java"}}`))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Rules.App(context.Background(), )
+	result, resp, err := client.Rules.App(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, 200, resp.StatusCode)
 	require.NotNil(t, result)

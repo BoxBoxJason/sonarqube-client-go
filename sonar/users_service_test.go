@@ -184,7 +184,7 @@ func TestUsers_Current(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/current", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Users.Current(context.Background(), )
+	result, resp, err := client.Users.Current(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -450,7 +450,7 @@ func TestUsers_IdentityProviders(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/users/identity_providers", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Users.IdentityProviders(context.Background(), )
+	result, resp, err := client.Users.IdentityProviders(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

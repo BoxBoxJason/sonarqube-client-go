@@ -703,7 +703,7 @@ func TestQualityprofiles_Exporters(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/exporters", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Qualityprofiles.Exporters(context.Background(), )
+	result, resp, err := client.Qualityprofiles.Exporters(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -721,7 +721,7 @@ func TestQualityprofiles_Importers(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/qualityprofiles/importers", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Qualityprofiles.Importers(context.Background(), )
+	result, resp, err := client.Qualityprofiles.Importers(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
