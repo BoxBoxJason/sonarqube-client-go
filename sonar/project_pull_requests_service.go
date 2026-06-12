@@ -17,6 +17,8 @@ type ProjectPullRequestsService struct {
 // -----------------------------------------------------------------------------
 
 // ProjectPullRequest represents a pull request analysis in SonarQube.
+//
+//nolint:govet // Field alignment is less important than logical grouping
 type ProjectPullRequest struct {
 	// Key is the pull request key/identifier.
 	Key string `json:"key,omitempty"`
