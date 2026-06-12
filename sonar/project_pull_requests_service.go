@@ -29,18 +29,23 @@ type ProjectPullRequest struct {
 	// URL is the URL of the pull request in the source code manager.
 	URL string `json:"url,omitempty"`
 	// Status contains the quality gate status and issue counts for the pull request.
-	Status struct {
-		// QualityGateStatus is the quality gate status (e.g. "OK", "ERROR").
-		QualityGateStatus string `json:"qualityGateStatus,omitempty"`
-		// Bugs is the number of bugs found.
-		Bugs int `json:"bugs,omitempty"`
-		// Vulnerabilities is the number of vulnerabilities found.
-		Vulnerabilities int `json:"vulnerabilities,omitempty"`
-		// CodeSmells is the number of code smells found.
-		CodeSmells int `json:"codeSmells,omitempty"`
-	} `json:"status,omitzero"`
+	Status ProjectPullRequestStatus `json:"status,omitzero"`
 	// IsOrphan indicates whether the pull request is orphaned (target branch no longer exists).
 	IsOrphan bool `json:"isOrphan,omitempty"`
+	// AnalysisDate is the date and time when the pull request was last analyzed, in ISO 8601 format.
+	AnalysisDate string `json:"analysisDate,omitempty"`
+}
+
+// ProjectPullRequestStatus represents the status of a pull request analysis, including quality gate status and issue counts.
+type ProjectPullRequestStatus struct {
+	// QualityGateStatus is the quality gate status (e.g. "OK", "ERROR").
+	QualityGateStatus string `json:"qualityGateStatus,omitempty"`
+	// Bugs is the number of bugs found.
+	Bugs int `json:"bugs,omitempty"`
+	// Vulnerabilities is the number of vulnerabilities found.
+	Vulnerabilities int `json:"vulnerabilities,omitempty"`
+	// CodeSmells is the number of code smells found.
+	CodeSmells int `json:"codeSmells,omitempty"`
 }
 
 // ProjectPullRequestsList represents the response from the list endpoint.
