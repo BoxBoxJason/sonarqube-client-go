@@ -34,15 +34,17 @@ var _ = Describe("Applications Service", Ordered, func() {
 	Describe("Create", func() {
 		Context("Parameter Validation", func() {
 			It("should fail with nil options", func() {
-				resp, err := client.Applications.Create(context.Background(), nil)
+				result, resp, err := client.Applications.Create(context.Background(), nil)
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring("required"))
+				Expect(result).To(BeNil())
 				Expect(resp).To(BeNil())
 			})
 
 			It("should fail without required name", func() {
-				resp, err := client.Applications.Create(context.Background(), &sonar.ApplicationsCreateOptions{})
+				result, resp, err := client.Applications.Create(context.Background(), &sonar.ApplicationsCreateOptions{})
 				Expect(err).To(HaveOccurred())
+				Expect(result).To(BeNil())
 				Expect(resp).To(BeNil())
 			})
 		})
@@ -50,7 +52,7 @@ var _ = Describe("Applications Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should create application or return an enterprise-only error", func() {
 				appKey := helpers.UniqueResourceName("application")
-				resp, err := client.Applications.Create(context.Background(), &sonar.ApplicationsCreateOptions{
+				result, resp, err := client.Applications.Create(context.Background(), &sonar.ApplicationsCreateOptions{
 					Name: appKey,
 					Key:  appKey,
 				})
@@ -58,6 +60,7 @@ var _ = Describe("Applications Service", Ordered, func() {
 					Expect(resp).NotTo(BeNil())
 				} else {
 					Expect(resp.StatusCode).To(BeNumerically("<", 400))
+					Expect(result).NotTo(BeNil())
 					cleanup.RegisterCleanup("application", appKey, func() error {
 						_, cleanupErr := client.Applications.Delete(context.Background(), &sonar.ApplicationsDeleteOptions{
 							Application: appKey,

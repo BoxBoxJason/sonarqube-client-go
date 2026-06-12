@@ -26,6 +26,22 @@ type Application struct {
 	Description string `json:"description,omitempty"`
 	// Visibility is the application visibility (public or private).
 	Visibility string `json:"visibility,omitempty"`
+	// Projects is the list of projects in the application.
+	Projects []string `json:"projects,omitempty"`
+}
+
+// ApplicationsCreate represents the response from the create endpoint.
+type ApplicationsCreate struct {
+	// Application contains the created application.
+	Application Application `json:"application,omitzero"`
+}
+
+// ApplicationBranch represents a branch of an application.
+type ApplicationBranch struct {
+	// Name is the branch name.
+	Name string `json:"name,omitempty"`
+	// IsMain indicates whether this is the main branch.
+	IsMain bool `json:"isMain,omitempty"`
 }
 
 // ApplicationDetails represents detailed information about an application.
@@ -40,14 +56,8 @@ type ApplicationDetails struct {
 	Visibility string `json:"visibility,omitempty"`
 	// Tags is the list of tags assigned to the application.
 	Tags []string `json:"tags,omitempty"`
-}
-
-// ApplicationBranch represents a branch of an application.
-type ApplicationBranch struct {
-	// Name is the branch name.
-	Name string `json:"name,omitempty"`
-	// IsMain indicates whether this is the main branch.
-	IsMain bool `json:"isMain,omitempty"`
+	// Branches is the list of branches of the application.
+	Branches []ApplicationBranch `json:"branches,omitempty"`
 }
 
 // ApplicationProject represents a project within an application.
@@ -298,7 +308,20 @@ func (s *ApplicationsService) ValidateCreateBranchOpt(opt *ApplicationsCreateBra
 		return err
 	}
 
-	return ValidateRequired(opt.Branch, "Branch")
+	err = ValidateRequired(opt.Branch, "Branch")
+	if err != nil {
+		return err
+	}
+
+	if len(opt.Project) == 0 {
+		return NewValidationError("Project", "at least one project is required", ErrMissingRequired)
+	}
+
+	if len(opt.ProjectBranch) == 0 {
+		return NewValidationError("ProjectBranch", "at least one project branch is required", ErrMissingRequired)
+	}
+
+	return nil
 }
 
 // ValidateDeleteBranchOpt validates the options for the DeleteBranch method.
@@ -331,7 +354,20 @@ func (s *ApplicationsService) ValidateUpdateBranchOpt(opt *ApplicationsUpdateBra
 		return err
 	}
 
-	return ValidateRequired(opt.Name, "Name")
+	err = ValidateRequired(opt.Name, "Name")
+	if err != nil {
+		return err
+	}
+
+	if len(opt.Project) == 0 {
+		return NewValidationError("Project", "at least one project is required", ErrMissingRequired)
+	}
+
+	if len(opt.ProjectBranch) == 0 {
+		return NewValidationError("ProjectBranch", "at least one project branch is required", ErrMissingRequired)
+	}
+
+	return nil
 }
 
 // ValidateSetTagsOpt validates the options for the SetTags method.
@@ -377,18 +413,25 @@ func (s *ApplicationsService) ValidateSearchProjectsOpt(opt *ApplicationsSearchP
 // API endpoint: POST /api/applications/create.
 // Since: 7.3.
 // Enterprise Edition only.
-func (s *ApplicationsService) Create(ctx context.Context, opt *ApplicationsCreateOptions) (*http.Response, error) {
+func (s *ApplicationsService) Create(ctx context.Context, opt *ApplicationsCreateOptions) (*ApplicationsCreate, *http.Response, error) {
 	err := s.ValidateCreateOpt(opt)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "applications/create", opt)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return s.client.Do(req, nil)
+	result := new(ApplicationsCreate)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
 }
 
 // Delete deletes an application definition.
@@ -603,6 +646,28 @@ func (s *ApplicationsService) SearchProjects(ctx context.Context, opt *Applicati
 	}
 
 	return result, resp, nil
+}
+
+// SearchAllProjects fetches all pages from SearchProjects and returns a flat slice of projects.
+// Requires 'Administrator' permission on the application.
+//
+// Enterprise Edition only.
+func (s *ApplicationsService) SearchAllProjects(ctx context.Context, opt *ApplicationsSearchProjectsOptions) ([]ApplicationProject, *http.Response, error) {
+	err := s.ValidateSearchProjectsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	o := *opt
+
+	return allPages(ctx, &o.Page, &o.PageSize, func(ctx context.Context) ([]ApplicationProject, int64, *http.Response, error) {
+		r, resp, err := s.SearchProjects(ctx, &o)
+		if err != nil {
+			return nil, 0, resp, err
+		}
+
+		return r.Projects, r.Paging.Total, resp, nil
+	})
 }
 
 // Refresh triggers a recomputation of an application's measures.

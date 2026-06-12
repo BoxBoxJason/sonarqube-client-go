@@ -14,33 +14,43 @@ import (
 // -----------------------------------------------------------------------------
 
 func TestApplicationsService_Create(t *testing.T) {
-	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/applications/create", http.StatusNoContent))
+	response := ApplicationsCreate{
+		Application: Application{
+			Key:  "my-application",
+			Name: "My Application",
+		},
+	}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/applications/create", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Applications.Create(context.Background(), &ApplicationsCreateOptions{
+	result, resp, err := client.Applications.Create(context.Background(), &ApplicationsCreateOptions{
 		Name: "My Application",
 		Key:  "my-application",
 	})
 	require.NoError(t, err)
-	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "my-application", result.Application.Key)
 }
 
 func TestApplicationsService_Create_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
-	resp, err := client.Applications.Create(context.Background(), nil)
+	result, resp, err := client.Applications.Create(context.Background(), nil)
 	assert.Error(t, err)
+	assert.Nil(t, result)
 	assert.Nil(t, resp)
 
-	resp, err = client.Applications.Create(context.Background(), &ApplicationsCreateOptions{})
+	result, resp, err = client.Applications.Create(context.Background(), &ApplicationsCreateOptions{})
 	assert.Error(t, err)
+	assert.Nil(t, result)
 	assert.Nil(t, resp)
 
-	resp, err = client.Applications.Create(context.Background(), &ApplicationsCreateOptions{
+	result, resp, err = client.Applications.Create(context.Background(), &ApplicationsCreateOptions{
 		Name:       "My App",
 		Visibility: "invalid",
 	})
 	assert.Error(t, err)
+	assert.Nil(t, result)
 	assert.Nil(t, resp)
 }
 
@@ -174,6 +184,22 @@ func TestApplicationsService_RemoveProject(t *testing.T) {
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
 
+func TestApplicationsService_RemoveProject_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	resp, err := client.Applications.RemoveProject(context.Background(), nil)
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.RemoveProject(context.Background(), &ApplicationsRemoveProjectOptions{Project: "proj"})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.RemoveProject(context.Background(), &ApplicationsRemoveProjectOptions{Application: "app"})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+}
+
 // -----------------------------------------------------------------------------
 // CreateBranch / DeleteBranch / UpdateBranch
 // -----------------------------------------------------------------------------
@@ -202,6 +228,21 @@ func TestApplicationsService_CreateBranch_ValidationError(t *testing.T) {
 	resp, err = client.Applications.CreateBranch(context.Background(), &ApplicationsCreateBranchOptions{Branch: "b"})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
+
+	resp, err = client.Applications.CreateBranch(context.Background(), &ApplicationsCreateBranchOptions{
+		Application: "app",
+		Branch:      "b",
+	})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.CreateBranch(context.Background(), &ApplicationsCreateBranchOptions{
+		Application: "app",
+		Branch:      "b",
+		Project:     []string{"proj1"},
+	})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
 }
 
 func TestApplicationsService_DeleteBranch(t *testing.T) {
@@ -214,6 +255,22 @@ func TestApplicationsService_DeleteBranch(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestApplicationsService_DeleteBranch_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	resp, err := client.Applications.DeleteBranch(context.Background(), nil)
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.DeleteBranch(context.Background(), &ApplicationsDeleteBranchOptions{Branch: "b"})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.DeleteBranch(context.Background(), &ApplicationsDeleteBranchOptions{Application: "app"})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
 }
 
 func TestApplicationsService_UpdateBranch(t *testing.T) {
@@ -241,6 +298,23 @@ func TestApplicationsService_UpdateBranch_ValidationError(t *testing.T) {
 	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{
 		Application: "app",
 		Branch:      "branch",
+	})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{
+		Application: "app",
+		Branch:      "branch",
+		Name:        "new-name",
+	})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{
+		Application: "app",
+		Branch:      "branch",
+		Name:        "new-name",
+		Project:     []string{"proj1"},
 	})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
@@ -311,6 +385,29 @@ func TestApplicationsService_SearchProjects_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, result)
 	assert.Nil(t, resp)
+}
+
+// -----------------------------------------------------------------------------
+// SearchAllProjects
+// -----------------------------------------------------------------------------
+
+func TestApplicationsService_SearchAllProjects(t *testing.T) {
+	response := ApplicationsSearchProjects{
+		Projects: []ApplicationProject{
+			{Key: "proj1", Name: "Project 1", Selected: true},
+			{Key: "proj2", Name: "Project 2", Selected: false},
+		},
+		Paging: Paging{Total: 2, PageIndex: 1, PageSize: 100},
+	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/applications/search_projects", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
+
+	results, resp, err := client.Applications.SearchAllProjects(context.Background(), &ApplicationsSearchProjectsOptions{
+		Application: "my-application",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Len(t, results, 2)
 }
 
 // -----------------------------------------------------------------------------
