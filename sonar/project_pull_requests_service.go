@@ -118,7 +118,7 @@ func (s *ProjectPullRequestsService) Delete(ctx context.Context, opt *ProjectPul
 }
 
 // List lists the pull request analyses of a project.
-// Requires Browse permission on the project.
+// Requires Browse or Execute Analysis permission on the project.
 //
 // API endpoint: GET /api/project_pull_requests/list.
 // Since: 7.1.
