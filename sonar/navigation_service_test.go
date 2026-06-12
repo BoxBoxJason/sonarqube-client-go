@@ -91,7 +91,7 @@ func TestNavigationService_Global(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/global", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Navigation.Global(context.Background(), )
+		result, resp, err := client.Navigation.Global(context.Background())
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		assert.Equal(t, "10.5.0", result.Version)
@@ -109,7 +109,7 @@ func TestNavigationService_Marketplace(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/marketplace", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Navigation.Marketplace(context.Background(), )
+		result, resp, err := client.Navigation.Marketplace(context.Background())
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		assert.Equal(t, int64(1000000), result.Ncloc)
@@ -128,7 +128,7 @@ func TestNavigationService_Settings(t *testing.T) {
 		server := newTestServer(t, mockHandler(t, http.MethodGet, "/navigation/settings", http.StatusOK, response))
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Navigation.Settings(context.Background(), )
+		result, resp, err := client.Navigation.Settings(context.Background())
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)
 		assert.True(t, result.ShowUpdateCenter)

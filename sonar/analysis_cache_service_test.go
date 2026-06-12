@@ -1,8 +1,8 @@
 package sonar
 
 import (
-	"context"
 	"bytes"
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"

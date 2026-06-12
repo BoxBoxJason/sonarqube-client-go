@@ -37,7 +37,7 @@ func TestPluginsService_Available(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/available", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Plugins.Available(context.Background(), )
+	result, resp, err := client.Plugins.Available(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -50,7 +50,7 @@ func TestPluginsService_CancelAll(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/plugins/cancel_all", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Plugins.CancelAll(context.Background(), )
+	resp, err := client.Plugins.CancelAll(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -213,7 +213,7 @@ func TestPluginsService_Pending(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/pending", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Plugins.Pending(context.Background(), )
+	result, resp, err := client.Plugins.Pending(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -312,7 +312,7 @@ func TestPluginsService_Updates(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/plugins/updates", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Plugins.Updates(context.Background(), )
+	result, resp, err := client.Plugins.Updates(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

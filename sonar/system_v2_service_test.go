@@ -25,7 +25,7 @@ func TestSystemV2_GetMigrationsStatus(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/system/migrations-status", http.StatusOK, response))
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.V2.System.GetMigrationsStatus(context.Background(), )
+	result, resp, err := client.V2.System.GetMigrationsStatus(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "MIGRATION_RUNNING", result.Status)

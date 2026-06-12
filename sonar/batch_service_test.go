@@ -51,7 +51,7 @@ func TestBatchService_GetIndex(t *testing.T) {
 		server := newTestServer(t, handler)
 		client := newTestClient(t, server.URL)
 
-		result, resp, err := client.Batch.GetIndex(context.Background(), )
+		result, resp, err := client.Batch.GetIndex(context.Background())
 
 		require.NoError(t, err)
 		assert.Equal(t, http.StatusOK, resp.StatusCode)

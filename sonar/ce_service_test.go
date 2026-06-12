@@ -289,7 +289,7 @@ func TestCe_CancelAll(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Ce.CancelAll(context.Background(), )
+	resp, err := client.Ce.CancelAll(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -411,7 +411,7 @@ func TestCe_IndexationStatus(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.IndexationStatus(context.Background(), )
+	result, resp, err := client.Ce.IndexationStatus(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -428,7 +428,7 @@ func TestCe_Info(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.Info(context.Background(), )
+	result, resp, err := client.Ce.Info(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -440,7 +440,7 @@ func TestCe_Pause(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Ce.Pause(context.Background(), )
+	resp, err := client.Ce.Pause(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -450,7 +450,7 @@ func TestCe_Resume(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	resp, err := client.Ce.Resume(context.Background(), )
+	resp, err := client.Ce.Resume(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
 }
@@ -604,7 +604,7 @@ func TestCe_TaskTypes(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.TaskTypes(context.Background(), )
+	result, resp, err := client.Ce.TaskTypes(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -622,7 +622,7 @@ func TestCe_WorkerCount(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Ce.WorkerCount(context.Background(), )
+	result, resp, err := client.Ce.WorkerCount(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

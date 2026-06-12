@@ -18,7 +18,7 @@ sonarqube_health 1`
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.Monitoring.Metrics(context.Background(), )
+	result, resp, err := client.Monitoring.Metrics(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)

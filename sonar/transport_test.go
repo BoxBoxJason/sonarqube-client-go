@@ -35,7 +35,7 @@ func TestWithTransportConfig_SetsCustomTransport(t *testing.T) {
 }
 
 func TestWithTransportConfig_IgnoredWhenHTTPClientProvided(t *testing.T) {
-	customTransport := &http.Transport{MaxIdleConns: 99} //nolint:exhaustruct
+	customTransport := &http.Transport{MaxIdleConns: 99}     //nolint:exhaustruct
 	customClient := &http.Client{Transport: customTransport} //nolint:exhaustruct
 
 	cfg := TransportConfig{

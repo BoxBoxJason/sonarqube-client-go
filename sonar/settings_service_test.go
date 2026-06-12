@@ -24,7 +24,7 @@ func TestSettingsService_CheckSecretKey(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Settings.CheckSecretKey(context.Background(), )
+	result, resp, err := client.Settings.CheckSecretKey(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.True(t, result.SecretKeyAvailable)
@@ -68,7 +68,7 @@ func TestSettingsService_GenerateSecretKey(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Settings.GenerateSecretKey(context.Background(), )
+	result, resp, err := client.Settings.GenerateSecretKey(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "AaBbCcDdEeFfGgHhIiJjKk==", result.SecretKey)
@@ -114,7 +114,7 @@ func TestSettingsService_LoginMessage(t *testing.T) {
 
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Settings.LoginMessage(context.Background(), )
+	result, resp, err := client.Settings.LoginMessage(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "Welcome to SonarQube!", result.Message)

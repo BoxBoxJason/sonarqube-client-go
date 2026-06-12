@@ -51,7 +51,7 @@ func TestSystem_DbMigrationStatus(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.DbMigrationStatus(context.Background(), )
+	result, resp, err := client.System.DbMigrationStatus(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -64,7 +64,7 @@ func TestSystem_Health(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Health(context.Background(), )
+	result, resp, err := client.System.Health(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -78,7 +78,7 @@ func TestSystem_Health_WithCauses(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, _, err := client.System.Health(context.Background(), )
+	result, _, err := client.System.Health(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, "YELLOW", result.Health)
@@ -102,7 +102,7 @@ func TestSystem_Info(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Info(context.Background(), )
+	result, resp, err := client.System.Info(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -115,7 +115,7 @@ func TestSystem_Liveness(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	_, resp, err := client.System.Liveness(context.Background(), )
+	_, resp, err := client.System.Liveness(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -165,7 +165,7 @@ func TestSystem_MigrateDb(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.MigrateDb(context.Background(), )
+	result, resp, err := client.System.MigrateDb(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -177,7 +177,7 @@ func TestSystem_Ping(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Ping(context.Background(), )
+	result, resp, err := client.System.Ping(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -190,7 +190,7 @@ func TestSystem_Restart(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	resp, err := client.System.Restart(context.Background(), )
+	resp, err := client.System.Restart(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
@@ -202,7 +202,7 @@ func TestSystem_Status(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Status(context.Background(), )
+	result, resp, err := client.System.Status(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -235,7 +235,7 @@ func TestSystem_Upgrades(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.System.Upgrades(context.Background(), )
+	result, resp, err := client.System.Upgrades(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -255,7 +255,7 @@ func TestSystem_Upgrades_NoUpgrades(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, _, err := client.System.Upgrades(context.Background(), )
+	result, _, err := client.System.Upgrades(context.Background())
 
 	require.NoError(t, err)
 	assert.Empty(t, result.Upgrades)

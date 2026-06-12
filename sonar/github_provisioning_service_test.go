@@ -27,7 +27,7 @@ func TestGithubProvisioning_Check(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.GithubProvisioning.Check(context.Background(), )
+	result, resp, err := client.GithubProvisioning.Check(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -49,7 +49,7 @@ func TestGithubProvisioning_Check_WithError(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.GithubProvisioning.Check(context.Background(), )
+	result, resp, err := client.GithubProvisioning.Check(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "failed", result.Application.AutoProvisioning.Status)
@@ -61,7 +61,7 @@ func TestGithubProvisioning_Check_EmptyResponse(t *testing.T) {
 	server := newTestServer(t, handler)
 	client := newTestClient(t, server.url())
 
-	result, resp, err := client.GithubProvisioning.Check(context.Background(), )
+	result, resp, err := client.GithubProvisioning.Check(context.Background())
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
