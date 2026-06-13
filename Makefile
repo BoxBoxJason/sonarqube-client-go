@@ -38,7 +38,7 @@ endif
 test:
 	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@v1.13.0; }
 	@mkdir -p codequality
-	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- ${target_paths}
+	CGO_ENABLED=1 gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -race ${target_paths}
 
 # Run tests with coverage report (use target=sdk|cli|all to filter)
 coverage:

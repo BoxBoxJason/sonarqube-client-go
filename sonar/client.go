@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 
 	"github.com/google/go-querystring/query"
 )
@@ -20,8 +21,19 @@ import (
 
 // Client is the SonarQube API client.
 //
+// A Client is safe for concurrent use by multiple goroutines, including while
+// its connection or authentication settings are reconfigured at runtime via the
+// SetBaseURL, SetHTTPClient, SetBasicAuth and SetPrivateToken methods (for
+// example to rotate a token). The mutable fields those methods touch are guarded
+// by mu; everything else is set once at construction and not mutated afterwards.
+//
 //nolint:govet // fieldalignment: keeping logical field grouping for readability
 type Client struct {
+	// mu guards the mutable connection and authentication fields below
+	// (baseURL, username, password, token, authType, httpClient) so they can be
+	// reconfigured concurrently with in-flight requests.
+	mu sync.RWMutex
+
 	baseURL         *url.URL
 	username        string
 	password        string
@@ -355,27 +367,35 @@ func (c *Client) SetBaseURL(urlStr *string) error {
 		return fmt.Errorf("failed to parse URL: %w", err)
 	}
 
+	c.mu.Lock()
 	c.baseURL = baseURL
+	c.mu.Unlock()
 
 	return nil
 }
 
 // SetHTTPClient sets the HTTP client for API requests.
 func (c *Client) SetHTTPClient(httpClient *http.Client) {
+	c.mu.Lock()
 	c.httpClient = httpClient
+	c.mu.Unlock()
 }
 
 // SetBasicAuth sets the username and password for basic authentication.
 func (c *Client) SetBasicAuth(username, password string) {
+	c.mu.Lock()
 	c.username = username
 	c.password = password
 	c.authType = basicAuth
+	c.mu.Unlock()
 }
 
 // SetPrivateToken sets the token for private token authentication.
 func (c *Client) SetPrivateToken(token string) {
+	c.mu.Lock()
 	c.token = token
 	c.authType = privateToken
+	c.mu.Unlock()
 }
 
 // =============================================
@@ -384,6 +404,9 @@ func (c *Client) SetPrivateToken(token string) {
 
 // BaseURL returns a copy of the base URL.
 func (c *Client) BaseURL() *url.URL {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
 	baseURLCopy := *c.baseURL
 
 	return &baseURLCopy
@@ -586,7 +609,11 @@ func (c *Client) NewSonarQubeV2APIRequest(ctx context.Context, method, path stri
 // interface, the raw response body will be written to v, without attempting to
 // first decode it.
 func (c *Client) Do(req *http.Request, dest any) (*http.Response, error) {
-	return Do(c.httpClient, req, dest)
+	c.mu.RLock()
+	httpClient := c.httpClient
+	c.mu.RUnlock()
+
+	return Do(httpClient, req, dest)
 }
 
 // =============================================
@@ -596,8 +623,11 @@ func (c *Client) Do(req *http.Request, dest any) (*http.Response, error) {
 // buildRequestURL constructs the full URL from the base URL, path and query
 // parameters provided in the request parameters.
 func (c *Client) buildRequestURL(params SonarAPIRequestParameters) string {
+	c.mu.RLock()
 	baseURLCopy := *c.baseURL
-	baseURLCopy.Path = c.baseURL.Path + params.Path
+	c.mu.RUnlock()
+
+	baseURLCopy.Path += params.Path
 
 	if params.RawQuery != nil {
 		baseURLCopy.RawQuery = params.RawQuery.Encode()
@@ -635,12 +665,20 @@ func (c *Client) setRequestHeaders(req *http.Request, method string, extraHeader
 
 	req.Header.Set("Accept", "application/json")
 
+	// Snapshot the authentication fields under the read lock so concurrent
+	// reconfiguration (e.g. a token rotation via SetPrivateToken) cannot race
+	// with request building.
+	c.mu.RLock()
+	authMethod := c.authType
+	username, password, token := c.username, c.password, c.token
+	c.mu.RUnlock()
+
 	// Set authentication headers.
-	switch c.authType {
+	switch authMethod {
 	case basicAuth, oAuthToken:
-		req.SetBasicAuth(c.username, c.password)
+		req.SetBasicAuth(username, password)
 	case privateToken:
-		req.SetBasicAuth(c.token, "")
+		req.SetBasicAuth(token, "")
 	}
 
 	req.Header.Set("User-Agent", c.userAgent)
