@@ -49,12 +49,12 @@ coverage:
 
 # Run integration tests
 e2e: setup.sonar
-	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1; }
+	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.30.0; }
 	SONAR_TOKEN= SONAR_URL=${endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
 # Run enterprise edition integration tests
 e2e.enterprise: setup.sonar.enterprise
-	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1; }
+	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.30.0; }
 	SONAR_TOKEN= SONAR_URL=${enterprise_endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
 # Build the CLI binary to ./bin/sonar-cli.
