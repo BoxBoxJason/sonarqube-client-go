@@ -2,6 +2,7 @@ package sonar
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -60,6 +61,23 @@ func TestNewClientFromEnv_OptionsOverrideEnv(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, "from-option.example.com", client.baseURL.Host, "functional options should override the environment")
+}
+
+func TestNewClientFromEnv_Timeout(t *testing.T) {
+	t.Setenv(EnvTimeout, "90s")
+
+	client, err := NewClientFromEnv()
+	require.NoError(t, err)
+
+	assert.Equal(t, 90*time.Second, client.timeout)
+}
+
+func TestNewClientFromEnv_TimeoutInvalid(t *testing.T) {
+	t.Setenv(EnvTimeout, "not-a-duration")
+
+	_, err := NewClientFromEnv()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), EnvTimeout)
 }
 
 func TestNewClientFromEnv_NoEnvUsesDefaults(t *testing.T) {
