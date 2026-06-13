@@ -350,10 +350,19 @@ func TestApplicationsService_UpdateBranch_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
-	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{
-		Application: "app",
-		Branch:      "branch",
-	})
+	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{Application: "app", Branch: "branch"})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{Application: "app", Branch: "branch", Name: "name"})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{Application: "app", Branch: "branch", Name: "name", Project: []string{"p1"}})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
+	resp, err = client.Applications.UpdateBranch(context.Background(), &ApplicationsUpdateBranchOptions{Application: "app", Branch: "branch", Name: "name", Project: []string{"p1", "p2"}, ProjectBranch: []string{"main"}})
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 
