@@ -45,6 +45,8 @@ type ApplicationBranch struct {
 }
 
 // ApplicationDetails represents detailed information about an application.
+//
+//nolint:govet // fieldalignment: logical field grouping takes priority over optimal packing
 type ApplicationDetails struct {
 	// Key is the application key.
 	Key string `json:"key,omitempty"`
@@ -54,18 +56,30 @@ type ApplicationDetails struct {
 	Description string `json:"description,omitempty"`
 	// Visibility is the application visibility.
 	Visibility string `json:"visibility,omitempty"`
+	// Branch is the name of the branch currently being viewed.
+	Branch string `json:"branch,omitempty"`
+	// IsMain indicates whether the currently viewed branch is the main branch.
+	IsMain bool `json:"isMain,omitempty"`
 	// Tags is the list of tags assigned to the application.
 	Tags []string `json:"tags,omitempty"`
+	// Projects is the list of projects configured in the application.
+	Projects []ApplicationProject `json:"projects,omitempty"`
 	// Branches is the list of branches of the application.
 	Branches []ApplicationBranch `json:"branches,omitempty"`
 }
 
-// ApplicationProject represents a project within an application.
+// ApplicationProject represents a project configured within an application.
 type ApplicationProject struct {
 	// Key is the project key.
 	Key string `json:"key,omitempty"`
 	// Name is the project name.
 	Name string `json:"name,omitempty"`
+	// Branch is the project branch used in this application branch.
+	Branch string `json:"branch,omitempty"`
+	// IsMain indicates whether the project branch is the main branch.
+	IsMain bool `json:"isMain,omitempty"`
+	// Enabled indicates whether the project is enabled in the application.
+	Enabled bool `json:"enabled,omitempty"`
 	// Selected indicates whether the project is selected in the application.
 	Selected bool `json:"selected,omitempty"`
 }
@@ -74,6 +88,22 @@ type ApplicationProject struct {
 type ApplicationsShow struct {
 	// Application contains the application details.
 	Application ApplicationDetails `json:"application,omitzero"`
+}
+
+// ApplicationLeakPeriod represents the new code period start date for a project within an application.
+type ApplicationLeakPeriod struct {
+	// Project is the project key.
+	Project string `json:"project,omitempty"`
+	// ProjectName is the project name.
+	ProjectName string `json:"projectName,omitempty"`
+	// Date is the start date of the new code period.
+	Date string `json:"date,omitempty"`
+}
+
+// ApplicationsShowLeak represents the response from the show_leak endpoint.
+type ApplicationsShowLeak struct {
+	// Leaks is the list of new code period dates per project in the application.
+	Leaks []ApplicationLeakPeriod `json:"leaks,omitempty"`
 }
 
 // ApplicationsSearchProjects represents the response from the search_projects endpoint.
@@ -108,6 +138,14 @@ type ApplicationsDeleteOptions struct {
 
 // ApplicationsShowOptions contains parameters for the Show method.
 type ApplicationsShowOptions struct {
+	// Application is the application key. This field is required.
+	Application string `url:"application"`
+	// Branch is the branch name. Optional.
+	Branch string `url:"branch,omitempty"`
+}
+
+// ApplicationsShowLeakOptions contains parameters for the ShowLeak method.
+type ApplicationsShowLeakOptions struct {
 	// Application is the application key. This field is required.
 	Application string `url:"application"`
 	// Branch is the branch name. Optional.
@@ -178,8 +216,8 @@ type ApplicationsUpdateBranchOptions struct {
 type ApplicationsSetTagsOptions struct {
 	// Application is the application key. This field is required.
 	Application string `url:"application"`
-	// Tags is a comma-separated list of tags. This field is required.
-	Tags string `url:"tags"`
+	// Tags is the list of tags to set on the application. This field is required.
+	Tags []string `url:"tags,comma"`
 }
 
 // ApplicationsSearchProjectsOptions contains parameters for the SearchProjects method.
@@ -190,8 +228,8 @@ type ApplicationsSearchProjectsOptions struct {
 
 	// Application is the application key. This field is required.
 	Application string `url:"application"`
-	// Q limits search to project names containing this string. Optional.
-	Q string `url:"q,omitempty"`
+	// Query limits search to project names containing this string. Optional.
+	Query string `url:"q,omitempty"`
 	// Selected filters by selection state (selected, deselected, all). Optional.
 	Selected string `url:"selected,omitempty"`
 }
@@ -248,6 +286,15 @@ func (s *ApplicationsService) ValidateDeleteOpt(opt *ApplicationsDeleteOptions) 
 
 // ValidateShowOpt validates the options for the Show method.
 func (s *ApplicationsService) ValidateShowOpt(opt *ApplicationsShowOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	return ValidateRequired(opt.Application, "Application")
+}
+
+// ValidateShowLeakOpt validates the options for the ShowLeak method.
+func (s *ApplicationsService) ValidateShowLeakOpt(opt *ApplicationsShowLeakOptions) error {
 	if opt == nil {
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
@@ -381,7 +428,11 @@ func (s *ApplicationsService) ValidateSetTagsOpt(opt *ApplicationsSetTagsOptions
 		return err
 	}
 
-	return ValidateRequired(opt.Tags, "Tags")
+	if len(opt.Tags) == 0 {
+		return NewValidationError("Tags", "is required", ErrMissingRequired)
+	}
+
+	return nil
 }
 
 // ValidateSearchProjectsOpt validates the options for the SearchProjects method.
@@ -472,6 +523,33 @@ func (s *ApplicationsService) Show(ctx context.Context, opt *ApplicationsShowOpt
 	}
 
 	result := new(ApplicationsShow)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
+// ShowLeak returns an application and its associated projects with new code period metrics.
+// Requires 'Browse' permission on the application and on its child projects.
+//
+// API endpoint: GET /api/applications/show_leak.
+// Since: 7.3.
+// Enterprise Edition only.
+func (s *ApplicationsService) ShowLeak(ctx context.Context, opt *ApplicationsShowLeakOptions) (*ApplicationsShowLeak, *http.Response, error) {
+	err := s.ValidateShowLeakOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "applications/show_leak", opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	result := new(ApplicationsShowLeak)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {

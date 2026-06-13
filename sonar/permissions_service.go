@@ -373,9 +373,9 @@ type PermissionsBulkApplyTemplateOptions struct {
 	AnalyzedBefore string `url:"analyzedBefore,omitempty"`
 	// OnProvisionedOnly filters to only provisioned projects.
 	OnProvisionedOnly bool `url:"onProvisionedOnly,omitempty"`
-	// Projects is a comma-separated list of project keys.
+	// Projects is the list of project keys to restrict the operation to.
 	// Maximum 1000 values allowed.
-	Projects []string `url:"projects,omitempty"`
+	Projects []string `url:"projects,omitempty,comma"`
 	// Query limits search to project names containing the string or project keys matching exactly.
 	Query string `url:"q,omitempty"`
 	// Qualifiers filters by component qualifiers. Default is TRK (projects).

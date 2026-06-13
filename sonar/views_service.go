@@ -170,8 +170,8 @@ type ViewsDeleteOptions struct {
 type ViewsSearchOptions struct {
 	PaginationArgs
 
-	// Q limits search to portfolios whose name or key contains this value.
-	Q string `url:"q,omitempty"`
+	// Query limits search to portfolios whose name or key contains this value.
+	Query string `url:"q,omitempty"`
 	// Qualifiers filters by component qualifier (VW for portfolio, SVW for sub-portfolio).
 	Qualifiers string `url:"qualifiers,omitempty"`
 	// OnlyFavorites if true restricts results to favorite portfolios only.
@@ -377,8 +377,8 @@ type ViewsSetTagsModeOptions struct {
 	Branch string `url:"branch,omitempty"`
 	// Portfolio is the portfolio key. This field is required.
 	Portfolio string `url:"portfolio"`
-	// Tags is a comma-separated list of project tags. This field is required.
-	Tags string `url:"tags"`
+	// Tags is the list of project tags to match. This field is required.
+	Tags []string `url:"tags,comma"`
 }
 
 // -----------------------------------------------------------------------------
@@ -734,7 +734,11 @@ func (s *ViewsService) ValidateSetTagsModeOpt(opt *ViewsSetTagsModeOptions) erro
 		return err
 	}
 
-	return ValidateRequired(opt.Tags, "Tags")
+	if len(opt.Tags) == 0 {
+		return NewValidationError("Tags", "is required", ErrMissingRequired)
+	}
+
+	return nil
 }
 
 // -----------------------------------------------------------------------------

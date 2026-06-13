@@ -88,25 +88,80 @@ func TestApplicationsService_Delete_ValidationError(t *testing.T) {
 func TestApplicationsService_Show(t *testing.T) {
 	response := ApplicationsShow{
 		Application: ApplicationDetails{
-			Key:  "my-application",
-			Name: "My Application",
+			Key:        "MY_APP",
+			Name:       "My Application",
+			Branch:     "main",
+			IsMain:     true,
+			Visibility: "private",
+			Tags:       []string{"react", "spring"},
+			Projects: []ApplicationProject{
+				{Key: "project:one", Name: "Project One", Branch: "main", IsMain: true, Enabled: true, Selected: true},
+				{Key: "project:two", Name: "Project Two", Branch: "main", IsMain: true, Enabled: true, Selected: true},
+			},
+			Branches: []ApplicationBranch{
+				{Name: "main", IsMain: true},
+				{Name: "branch-2.0", IsMain: false},
+			},
 		},
 	}
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/applications/show", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
 	result, resp, err := client.Applications.Show(context.Background(), &ApplicationsShowOptions{
-		Application: "my-application",
+		Application: "MY_APP",
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "my-application", result.Application.Key)
+	assert.Equal(t, "MY_APP", result.Application.Key)
+	assert.True(t, result.Application.IsMain)
+	assert.Equal(t, "main", result.Application.Branch)
+	assert.Len(t, result.Application.Projects, 2)
+	assert.True(t, result.Application.Projects[0].Enabled)
+	assert.Len(t, result.Application.Branches, 2)
+	assert.Len(t, result.Application.Tags, 2)
 }
 
 func TestApplicationsService_Show_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 
 	result, resp, err := client.Applications.Show(context.Background(), nil)
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Nil(t, resp)
+}
+
+// -----------------------------------------------------------------------------
+// ShowLeak
+// -----------------------------------------------------------------------------
+
+func TestApplicationsService_ShowLeak(t *testing.T) {
+	response := ApplicationsShowLeak{
+		Leaks: []ApplicationLeakPeriod{
+			{Project: "my_project", ProjectName: "My Project", Date: "2017-01-01T11:39:03+0100"},
+			{Project: "another_project", ProjectName: "Another Project", Date: "2017-02-01T11:39:03+0100"},
+		},
+	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/applications/show_leak", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.Applications.ShowLeak(context.Background(), &ApplicationsShowLeakOptions{
+		Application: "my-application",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Len(t, result.Leaks, 2)
+	assert.Equal(t, "my_project", result.Leaks[0].Project)
+}
+
+func TestApplicationsService_ShowLeak_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	result, resp, err := client.Applications.ShowLeak(context.Background(), nil)
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Nil(t, resp)
+
+	result, resp, err = client.Applications.ShowLeak(context.Background(), &ApplicationsShowLeakOptions{})
 	assert.Error(t, err)
 	assert.Nil(t, result)
 	assert.Nil(t, resp)
@@ -330,7 +385,7 @@ func TestApplicationsService_SetTags(t *testing.T) {
 
 	resp, err := client.Applications.SetTags(context.Background(), &ApplicationsSetTagsOptions{
 		Application: "my-application",
-		Tags:        "tag1,tag2",
+		Tags:        []string{"tag1", "tag2"},
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
