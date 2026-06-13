@@ -648,7 +648,7 @@ func TestViewsService_Search(t *testing.T) {
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/search", http.StatusOK, response))
 	client := newTestClient(t, server.URL)
 
-	result, resp, err := client.Views.Search(context.Background(), &ViewsSearchOptions{Q: "Portfolio"})
+	result, resp, err := client.Views.Search(context.Background(), &ViewsSearchOptions{Query: "Portfolio"})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
@@ -769,7 +769,7 @@ func TestViewsService_SetTagsMode(t *testing.T) {
 
 	resp, err := client.Views.SetTagsMode(context.Background(), &ViewsSetTagsModeOptions{
 		Portfolio: "my-portfolio",
-		Tags:      "java,security",
+		Tags:      []string{"java", "security"},
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
