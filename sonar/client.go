@@ -11,9 +11,16 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/google/go-querystring/query"
 )
+
+// defaultHTTPTimeout is the request timeout applied to the SDK-managed HTTP
+// client when the caller does not supply their own *http.Client. It bounds the
+// total time of a request (connection, redirects and body read) so a stalled
+// connection cannot hang a goroutine indefinitely.
+const defaultHTTPTimeout = 30 * time.Second
 
 // =============================================
 // TYPES AND STRUCTS
@@ -44,6 +51,7 @@ type Client struct {
 	transportConfig *TransportConfig
 	middlewares     []Middleware
 	userAgent       string
+	timeout         time.Duration
 
 	Applications        *ApplicationsService
 	AuditLogs           *AuditLogsService
@@ -136,6 +144,10 @@ type ClientCreateOptions struct {
 	HttpClient *http.Client
 	// UserAgent is the User-Agent header to use for API requests.
 	UserAgent *string
+	// Timeout sets the request timeout on the SDK-managed HTTP client.
+	// Ignored when HttpClient is also set. A zero value keeps the default of
+	// defaultHTTPTimeout.
+	Timeout *time.Duration
 }
 
 // ClientOptionFunc can be used to customize a new SonarQube API client.
@@ -200,6 +212,13 @@ func applyCreateOptions(client *Client, createOpts *ClientCreateOptions) error {
 	assignPtrIfNotNil(&client.httpClient, createOpts.HttpClient)
 	assignIfNotNil(&client.userAgent, createOpts.UserAgent)
 
+	if createOpts.Timeout != nil {
+		err := WithTimeout(*createOpts.Timeout)(client)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -227,45 +246,63 @@ func setDefaults(client *Client) error {
 	}
 
 	if client.httpClient == nil {
-		if client.transportConfig != nil {
-			//nolint:exhaustruct // Timeout, Jar, CheckRedirect intentionally left at zero values
-			client.httpClient = &http.Client{Transport: buildTransport(*client.transportConfig)}
-		} else {
-			client.httpClient = http.DefaultClient
-		}
+		client.httpClient = newDefaultHTTPClient(client.timeout, client.transportConfig)
 	}
 
-	// Middleware is applied first so that retry sits outermost. Each retry attempt
-	// therefore passes through the full middleware chain, letting middleware observe
-	// every individual attempt rather than just the first one.
-	if len(client.middlewares) > 0 {
-		baseTransport := client.httpClient.Transport
-		if baseTransport == nil {
-			baseTransport = http.DefaultTransport
-		}
-
-		transport := applyMiddlewares(baseTransport, client.middlewares)
-		clone := *client.httpClient
-		clone.Transport = transport
-		client.httpClient = &clone
-	}
-
-	if client.retryOptions != nil {
-		baseTransport := client.httpClient.Transport
-		if baseTransport == nil {
-			baseTransport = http.DefaultTransport
-		}
-
-		clone := *client.httpClient
-		clone.Transport = &retryRoundTripper{base: baseTransport, opts: *client.retryOptions}
-		client.httpClient = &clone
-	}
+	applyTransportWrappers(client)
 
 	if client.userAgent == "" {
 		client.userAgent = buildUserAgent()
 	}
 
 	return nil
+}
+
+// newDefaultHTTPClient builds the SDK-managed HTTP client used when the caller
+// does not supply their own via WithHTTPClient. A fresh *http.Client is created
+// (rather than reusing http.DefaultClient) so the timeout never leaks onto the
+// shared global client. A nil Transport falls back to http.DefaultTransport at
+// request time.
+func newDefaultHTTPClient(timeout time.Duration, cfg *TransportConfig) *http.Client {
+	if timeout == 0 {
+		timeout = defaultHTTPTimeout
+	}
+
+	var transport http.RoundTripper
+	if cfg != nil {
+		transport = buildTransport(*cfg)
+	}
+
+	//nolint:exhaustruct // Jar and CheckRedirect intentionally left at zero values
+	return &http.Client{Transport: transport, Timeout: timeout}
+}
+
+// applyTransportWrappers wraps the client transport with middleware and retry.
+// Middleware is applied first so that retry sits outermost: each retry attempt
+// therefore passes through the full middleware chain, letting middleware observe
+// every individual attempt rather than just the first one.
+func applyTransportWrappers(client *Client) {
+	if len(client.middlewares) > 0 {
+		clone := *client.httpClient
+		clone.Transport = applyMiddlewares(baseTransport(client.httpClient), client.middlewares)
+		client.httpClient = &clone
+	}
+
+	if client.retryOptions != nil {
+		clone := *client.httpClient
+		clone.Transport = &retryRoundTripper{base: baseTransport(client.httpClient), opts: *client.retryOptions}
+		client.httpClient = &clone
+	}
+}
+
+// baseTransport returns the client's transport, falling back to
+// http.DefaultTransport when none is set.
+func baseTransport(httpClient *http.Client) http.RoundTripper {
+	if httpClient.Transport != nil {
+		return httpClient.Transport
+	}
+
+	return http.DefaultTransport
 }
 
 // WithToken is a ClientOptionFunc that sets the token for private token authentication.
@@ -338,6 +375,23 @@ func WithMiddleware(middlewares ...Middleware) ClientOptionFunc {
 func WithUserAgent(userAgent string) ClientOptionFunc {
 	return func(c *Client) error {
 		c.userAgent = userAgent
+
+		return nil
+	}
+}
+
+// WithTimeout is a ClientOptionFunc that sets the request timeout on the
+// SDK-managed HTTP client. It bounds the total duration of each request. A zero
+// value keeps the default of defaultHTTPTimeout; pass a custom *http.Client via
+// WithHTTPClient if you need to disable the timeout entirely. It is ignored when
+// WithHTTPClient is also used.
+func WithTimeout(timeout time.Duration) ClientOptionFunc {
+	return func(c *Client) error {
+		if timeout < 0 {
+			return fmt.Errorf("WithTimeout: timeout must not be negative, got %s", timeout)
+		}
+
+		c.timeout = timeout
 
 		return nil
 	}

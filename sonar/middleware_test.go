@@ -101,14 +101,15 @@ func TestWithMiddleware_WithHTTPClient(t *testing.T) {
 }
 
 // TestWithMiddleware_NoMiddleware_DefaultUnchanged verifies that when no middleware is
-// provided the client uses http.DefaultClient without wrapping it.
+// provided the client transport is left unwrapped (nil, falling back to
+// http.DefaultTransport at request time).
 func TestWithMiddleware_NoMiddleware_DefaultUnchanged(t *testing.T) {
 	t.Parallel()
 
 	client, err := NewClient(nil)
 	require.NoError(t, err)
 
-	assert.Same(t, http.DefaultClient, client.httpClient, "httpClient should be http.DefaultClient when no middleware is provided")
+	assert.Nil(t, client.httpClient.Transport, "transport should be unwrapped when no middleware is provided")
 }
 
 // roundTripFunc is a convenience type that implements http.RoundTripper via a function.

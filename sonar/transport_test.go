@@ -58,7 +58,12 @@ func TestWithTransportConfig_DefaultUnchanged(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, client)
 
-	assert.Same(t, http.DefaultClient, client.httpClient, "expected http.DefaultClient when no options are provided")
+	// The default client is a dedicated *http.Client (not the shared
+	// http.DefaultClient) with the default timeout and no explicit transport
+	// (it falls back to http.DefaultTransport at request time).
+	assert.NotSame(t, http.DefaultClient, client.httpClient, "expected a dedicated http.Client, not the shared default")
+	assert.Equal(t, defaultHTTPTimeout, client.httpClient.Timeout, "expected the default timeout to be applied")
+	assert.Nil(t, client.httpClient.Transport, "expected no explicit transport when no options are provided")
 }
 
 func TestWithTransportConfig_TLSConfig(t *testing.T) {
