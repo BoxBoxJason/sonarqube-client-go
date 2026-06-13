@@ -193,6 +193,8 @@ func TestRetryRoundTripper_ReplayableBodyRetried(t *testing.T) {
 }
 
 func TestRetryRoundTripper_NonIdempotentNotRetriedByDefault(t *testing.T) {
+	t.Parallel()
+
 	transport := &countingTransport{
 		responses: []*http.Response{
 			makeResponse(http.StatusServiceUnavailable),
@@ -221,6 +223,8 @@ func TestRetryRoundTripper_NonIdempotentNotRetriedByDefault(t *testing.T) {
 }
 
 func TestRetryRoundTripper_NonIdempotentRetriedWhenOptedIn(t *testing.T) {
+	t.Parallel()
+
 	transport := &countingTransport{
 		responses: []*http.Response{
 			makeResponse(http.StatusServiceUnavailable),
