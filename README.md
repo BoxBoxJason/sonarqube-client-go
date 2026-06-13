@@ -294,11 +294,35 @@ client, err := sonar.NewClient(&sonar.ClientCreateOptions{
 
 ### Advanced Usage
 
+**Custom request timeout:**
+
+The SDK-managed HTTP client applies a 30-second default timeout. Use `WithTimeout` to override it:
+
+```go
+import "time"
+
+client, err := sonar.NewClient(
+ &sonar.ClientCreateOptions{URL: &url, Token: &token},
+ sonar.WithTimeout(60*time.Second),
+)
+```
+
+Or pass it directly in `ClientCreateOptions`:
+
+```go
+timeout := 60 * time.Second
+
+client, err := sonar.NewClient(&sonar.ClientCreateOptions{
+ URL:     &url,
+ Token:   &token,
+ Timeout: &timeout,
+})
+```
+
 **Custom HTTP client:**
 
 ```go
 import "net/http"
-import "time"
 
 httpClient := &http.Client{Timeout: 60 * time.Second}
 

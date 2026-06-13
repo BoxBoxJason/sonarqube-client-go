@@ -144,6 +144,10 @@ type ClientCreateOptions struct {
 	HttpClient *http.Client
 	// UserAgent is the User-Agent header to use for API requests.
 	UserAgent *string
+	// Timeout sets the request timeout on the SDK-managed HTTP client.
+	// Ignored when HttpClient is also set. A zero value keeps the default of
+	// defaultHTTPTimeout.
+	Timeout *time.Duration
 }
 
 // ClientOptionFunc can be used to customize a new SonarQube API client.
@@ -207,6 +211,13 @@ func applyCreateOptions(client *Client, createOpts *ClientCreateOptions) error {
 
 	assignPtrIfNotNil(&client.httpClient, createOpts.HttpClient)
 	assignIfNotNil(&client.userAgent, createOpts.UserAgent)
+
+	if createOpts.Timeout != nil {
+		err := WithTimeout(*createOpts.Timeout)(client)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

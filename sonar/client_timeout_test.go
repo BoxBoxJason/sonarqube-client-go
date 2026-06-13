@@ -60,6 +60,32 @@ func TestNewClient_TransportConfigKeepsDefaultTimeout(t *testing.T) {
 	}
 }
 
+func TestClientCreateOptions_Timeout(t *testing.T) {
+	t.Parallel()
+
+	custom := 7 * time.Second
+
+	client, err := NewClient(&ClientCreateOptions{Timeout: &custom}) //nolint:exhaustruct
+	if err != nil {
+		t.Fatalf("NewClient returned error: %v", err)
+	}
+
+	if client.httpClient.Timeout != custom {
+		t.Errorf("expected timeout %s, got %s", custom, client.httpClient.Timeout)
+	}
+}
+
+func TestClientCreateOptions_Timeout_Negative(t *testing.T) {
+	t.Parallel()
+
+	neg := -time.Second
+
+	_, err := NewClient(&ClientCreateOptions{Timeout: &neg}) //nolint:exhaustruct
+	if err == nil {
+		t.Fatal("expected error for negative timeout, got nil")
+	}
+}
+
 func TestWithHTTPClient_TimeoutNotOverridden(t *testing.T) {
 	t.Parallel()
 
