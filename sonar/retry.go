@@ -28,6 +28,13 @@ type RetryOptions struct {
 	MaxDelay time.Duration
 	// RetryableStatusCodes lists HTTP status codes that should trigger a retry.
 	RetryableStatusCodes []int
+	// RetryNonIdempotent enables automatic retries for non-idempotent methods
+	// (POST, PATCH). It is disabled by default: only idempotent methods (GET,
+	// HEAD, PUT, DELETE, OPTIONS, TRACE) are retried, because resending a
+	// non-idempotent request after a network error or 5xx can duplicate a
+	// server-side side effect (for example creating a resource twice). Enable
+	// this only for endpoints you know are safe to repeat.
+	RetryNonIdempotent bool
 }
 
 // WithRetry is a ClientOptionFunc that enables opt-in retry with exponential
@@ -52,12 +59,22 @@ type retryRoundTripper struct {
 // errors with exponential backoff and full jitter. Retries stop immediately when
 // the request context is cancelled or its deadline is exceeded.
 //
+// Only idempotent methods are retried by default; non-idempotent methods (POST,
+// PATCH) are passed straight through unless RetryNonIdempotent is set, so a
+// resend cannot accidentally duplicate a server-side side effect.
+//
 // When retries occur, the final response carries an X-Retry-Attempts header with
 // the total number of attempts made.
 //
 //nolint:wrapcheck // pass-through transport: errors from base RoundTripper are intentionally not wrapped
 func (r *retryRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	if r.opts.MaxAttempts <= 1 {
+		return r.base.RoundTrip(req)
+	}
+
+	// Non-idempotent methods are not retried unless explicitly opted in, to avoid
+	// duplicating server-side side effects on a resend.
+	if !r.opts.RetryNonIdempotent && !isIdempotentMethod(req.Method) {
 		return r.base.RoundTrip(req)
 	}
 
@@ -68,6 +85,19 @@ func (r *retryRoundTripper) RoundTrip(req *http.Request) (*http.Response, error)
 	}
 
 	return r.retryLoop(req, hasBody)
+}
+
+// isIdempotentMethod reports whether an HTTP method is safe to retry
+// automatically. Per RFC 7231, GET, HEAD, PUT, DELETE, OPTIONS and TRACE are
+// idempotent; POST and PATCH are not.
+func isIdempotentMethod(method string) bool {
+	switch method {
+	case http.MethodGet, http.MethodHead, http.MethodPut,
+		http.MethodDelete, http.MethodOptions, http.MethodTrace:
+		return true
+	default:
+		return false
+	}
 }
 
 // retryLoop runs up to MaxAttempts, sleeping between retries.
