@@ -57,10 +57,10 @@ We strive to maintain a welcoming and inclusive community. When contributing, pl
    go install gotest.tools/gotestsum@v1.13.0
 
    # Linter
-   go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.8.0
+   go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2
 
    # Integration test framework
-   go install github.com/onsi/ginkgo/v2/ginkgo@v2.28.1
+   go install github.com/onsi/ginkgo/v2/ginkgo@v2.30.0
    ```
 
 4. **Verify your setup**:
