@@ -97,6 +97,7 @@ type Client struct {
 	Qualityprofiles     *QualityprofilesService
 	RegulatoryReports   *RegulatoryReportsService
 	Rules               *RulesService
+	Saml                *SamlService
 	Server              *ServerService
 	Settings            *SettingsService
 	Sources             *SourcesService
@@ -518,6 +519,7 @@ func initServices(client *Client) {
 	client.Qualityprofiles = &QualityprofilesService{client: client}
 	client.RegulatoryReports = &RegulatoryReportsService{client: client}
 	client.Rules = &RulesService{client: client}
+	client.Saml = &SamlService{client: client}
 	client.Server = &ServerService{client: client}
 	client.Settings = &SettingsService{client: client}
 	client.Sources = &SourcesService{client: client}
@@ -690,11 +692,20 @@ func (c *Client) buildRequestURL(params SonarAPIRequestParameters) string {
 	return baseURLCopy.String()
 }
 
-// marshalBody JSON-encodes the request body if non-nil. Returns http.NoBody
-// when body is nil.
+// marshalBody encodes the request body if non-nil. Returns http.NoBody when
+// body is nil. A url.Values body is encoded as
+// "application/x-www-form-urlencoded" (the wire format expected by endpoints
+// that mimic HTML form posts, such as SAML assertion callbacks); callers must
+// pair this with a matching Content-Type header since the default set by
+// setRequestHeaders is "application/json". Any other body type is
+// JSON-encoded.
 func marshalBody(body any) (io.Reader, error) {
 	if body == nil {
 		return http.NoBody, nil
+	}
+
+	if values, ok := body.(url.Values); ok {
+		return strings.NewReader(values.Encode()), nil
 	}
 
 	data, err := json.Marshal(body)
