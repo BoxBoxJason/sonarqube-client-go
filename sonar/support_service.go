@@ -1,7 +1,6 @@
 package sonar
 
 import (
-	"bytes"
 	"context"
 	"net/http"
 )
@@ -34,24 +33,32 @@ type SupportInfo struct {
 // Service Methods
 // -----------------------------------------------------------------------------
 
-// Info returns raw support information as bytes.
+// Info returns support information about the system and the currently
+// installed license.
 // Requires 'Administer System' permission.
 //
 // API endpoint: GET /api/support/info.
 // Since: 3.1.
 // Enterprise Edition only.
-func (s *SupportService) Info(ctx context.Context) ([]byte, *http.Response, error) {
+// WARNING: This is an internal API and may change without notice.
+// WARNING: Live-verified against SonarQube 2025.2 Enterprise: this endpoint
+// requires an actual installed commercial license to succeed, independent of
+// Enterprise Edition + 'Administer System' permission. Without one it fails
+// with HTTP 400 and body {"errors":[{"msg":"License not found"}]}, so the
+// success-path JSON shape of SupportInfo below could not be confirmed against
+// a live server and remains a best-effort guess (see .github/reviews/pr-265.md).
+func (s *SupportService) Info(ctx context.Context) (*SupportInfo, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "support/info", nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	var buf bytes.Buffer
+	result := new(SupportInfo)
 
-	resp, err := s.client.Do(req, &buf)
+	resp, err := s.client.Do(req, result)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return buf.Bytes(), resp, nil
+	return result, resp, nil
 }
