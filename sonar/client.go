@@ -98,6 +98,7 @@ type Client struct {
 	RegulatoryReports   *RegulatoryReportsService
 	Rules               *RulesService
 	Saml                *SamlService
+	SecurityReports     *SecurityReportsService
 	ScimManagement      *ScimManagementService
 	Server              *ServerService
 	Settings            *SettingsService
@@ -524,6 +525,7 @@ func initServices(client *Client) {
 	client.RegulatoryReports = &RegulatoryReportsService{client: client}
 	client.Rules = &RulesService{client: client}
 	client.Saml = &SamlService{client: client}
+	client.SecurityReports = &SecurityReportsService{client: client}
 	client.ScimManagement = &ScimManagementService{client: client}
 	client.Server = &ServerService{client: client}
 	client.Settings = &SettingsService{client: client}
