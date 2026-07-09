@@ -128,6 +128,8 @@ type ServicesV2 struct {
 	CleanCodePolicy *CleanCodePolicyService
 	// DopTranslation provides methods for the Dop Translation V2 API.
 	DopTranslation *DopTranslationService
+	// FixSuggestions provides methods for the Fix Suggestions V2 API.
+	FixSuggestions *FixSuggestionsService
 	// Marketplace provides methods for the Marketplace V2 API.
 	Marketplace *MarketplaceService
 	// Sca provides methods for the SCA V2 API.
@@ -553,6 +555,7 @@ func initServicesV2(client *Client) {
 		Authorizations:  &AuthorizationsService{client: client},
 		CleanCodePolicy: &CleanCodePolicyService{client: client},
 		DopTranslation:  &DopTranslationService{client: client},
+		FixSuggestions:  &FixSuggestionsService{client: client},
 		Marketplace:     &MarketplaceService{client: client},
 		Sca:             &ScaService{client: client},
 		System:          &SystemServiceV2{client: client},
