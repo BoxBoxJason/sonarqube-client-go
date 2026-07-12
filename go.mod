@@ -1,4 +1,4 @@
-module github.com/boxboxjason/sonarqube-client-go
+module github.com/boxboxjason/sonarqube-client-go/v2
 
 go 1.26.4
 

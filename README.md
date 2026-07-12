@@ -1,7 +1,6 @@
 # SonarQube Go Client
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/boxboxjason/sonarqube-client-go.svg)](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/boxboxjason/sonarqube-client-go)](https://goreportcard.com/report/github.com/boxboxjason/sonarqube-client-go)
+[![Go Reference](https://pkg.go.dev/badge/github.com/boxboxjason/sonarqube-client-go/v2.svg)](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2)
 [![License](https://img.shields.io/github/license/BoxBoxJason/sonarqube-client-go)](LICENSE)
 
 A comprehensive, type-safe Go client library **and command-line interface** for the SonarQube Web API. Whether you're building automation tools, integrating SonarQube into your CI/CD pipeline, or managing your SonarQube instance from the terminal - this project has you covered.
@@ -59,7 +58,7 @@ A comprehensive, type-safe Go client library **and command-line interface** for 
 **From source:**
 
 ```bash
-go install github.com/boxboxjason/sonarqube-client-go/cmd/sonar-cli@latest
+go install github.com/boxboxjason/sonarqube-client-go/v2/cmd/sonar-cli@latest
 ```
 
 **From a release binary:**
@@ -215,7 +214,7 @@ sonar-cli completion powershell | Out-String | Invoke-Expression
 ### SDK Installation
 
 ```bash
-go get github.com/boxboxjason/sonarqube-client-go/sonar
+go get github.com/boxboxjason/sonarqube-client-go/v2/sonar
 ```
 
 **Requirements**: Go 1.25 or higher, access to a SonarQube instance (version 25+ recommended).
@@ -230,7 +229,7 @@ import (
  "fmt"
  "log"
 
- "github.com/boxboxjason/sonarqube-client-go/sonar"
+ "github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
 func main() {
@@ -584,7 +583,7 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 ## Additional Resources
 
 - [SonarQube Web API Documentation](https://docs.sonarsource.com/sonarqube/latest/extension-guide/web-api/)
-- [Go Package Documentation](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go)
+- [Go Package Documentation](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2)
 - [Contributing Guide](CONTRIBUTING.md)
 - [GitHub Issues](https://github.com/BoxBoxJason/sonarqube-client-go/issues)
 

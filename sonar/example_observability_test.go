@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
 // roundTripperFunc adapts a function to http.RoundTripper.

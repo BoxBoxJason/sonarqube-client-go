@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )

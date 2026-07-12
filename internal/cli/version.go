@@ -12,8 +12,8 @@ import (
 //
 //nolint:gochecknoglobals // intentional ldflags injection targets
 var (
-	version   string // set via -X github.com/boxboxjason/sonarqube-client-go/internal/cli.version=x.y.z
-	buildTime string // set via -X github.com/boxboxjason/sonarqube-client-go/internal/cli.buildTime=2006-01-02T15:04:05Z
+	version   string // set via -X github.com/boxboxjason/sonarqube-client-go/v2/internal/cli.version=x.y.z
+	buildTime string // set via -X github.com/boxboxjason/sonarqube-client-go/v2/internal/cli.buildTime=2006-01-02T15:04:05Z
 )
 
 // versionInfo returns a human-readable version string of the form:
