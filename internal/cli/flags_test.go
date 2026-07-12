@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/v2/integration_testing/helpers"
 )
 
 var _ = BeforeSuite(func() {

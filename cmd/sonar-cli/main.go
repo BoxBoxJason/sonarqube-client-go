@@ -4,7 +4,7 @@
 //
 // Install:
 //
-//	go install github.com/boxboxjason/sonarqube-client-go/cmd/sonar-cli@latest
+//	go install github.com/boxboxjason/sonarqube-client-go/v2/cmd/sonar-cli@latest
 //
 // Usage:
 //
@@ -14,7 +14,7 @@ package main
 import (
 	"os"
 
-	"github.com/boxboxjason/sonarqube-client-go/internal/cli"
+	"github.com/boxboxjason/sonarqube-client-go/v2/internal/cli"
 )
 
 func main() {

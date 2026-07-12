@@ -7,8 +7,8 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/boxboxjason/sonarqube-client-go/integration_testing/helpers"
-	"github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/v2/integration_testing/helpers"
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
 var _ = Describe("DismissMessage Service", Ordered, func() {

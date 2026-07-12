@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
 // Create a client with token authentication and search for projects.

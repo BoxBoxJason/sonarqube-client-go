@@ -61,7 +61,7 @@ e2e.enterprise: setup.sonar.enterprise
 # Version defaults to the latest git tag/commit. Override with: make build version=1.2.3
 # Build time is stamped automatically at build time.
 build:
-	go build -o bin/sonar-cli -ldflags "-X github.com/boxboxjason/sonarqube-client-go/internal/cli.version=$(version) -X github.com/boxboxjason/sonarqube-client-go/internal/cli.buildTime=$(build_time)" ./cmd/sonar-cli
+	go build -o bin/sonar-cli -ldflags "-X github.com/boxboxjason/sonarqube-client-go/v2/internal/cli.version=$(version) -X github.com/boxboxjason/sonarqube-client-go/v2/internal/cli.buildTime=$(build_time)" ./cmd/sonar-cli
 
 # Generate changelog using git-cliff
 changelog:

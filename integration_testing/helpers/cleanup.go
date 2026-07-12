@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
 // IgnoreNotFoundError returns nil if the error indicates a resource was not found,

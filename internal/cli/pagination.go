@@ -3,7 +3,7 @@ package cli
 import (
 	"reflect"
 
-	"github.com/boxboxjason/sonarqube-client-go/sonar"
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
 const (
