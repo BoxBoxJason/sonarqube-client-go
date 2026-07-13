@@ -457,6 +457,65 @@ func TestAlmSettings_CreateGitlab_ValidationError(t *testing.T) {
 }
 
 // -----------------------------------------------------------------------------
+// CreateGithubFromManifest Tests
+// -----------------------------------------------------------------------------
+
+func TestAlmSettings_CreateGithubFromManifest(t *testing.T) {
+	response := &AlmSettingsGithubManifest{
+		Manifest: `{"name":"SonarQube"}`,
+		State:    "my-state-token",
+	}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/alm_settings/create_github_from_manifest", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
+
+	opt := &AlmSettingsCreateGithubFromManifestOptions{
+		Key:          "my-github-setting",
+		Name:         "SonarQube",
+		Organization: "my-org",
+	}
+
+	result, resp, err := client.AlmSettings.CreateGithubFromManifest(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, `{"name":"SonarQube"}`, result.Manifest)
+	assert.Equal(t, "my-state-token", result.State)
+}
+
+func TestAlmSettings_CreateGithubFromManifest_NilOpt(t *testing.T) {
+	response := &AlmSettingsGithubManifest{Manifest: `{}`, State: "state"}
+	server := newTestServer(t, mockHandler(t, http.MethodPost, "/alm_settings/create_github_from_manifest", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.AlmSettings.CreateGithubFromManifest(context.Background(), nil)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+}
+
+func TestAlmSettings_CreateGithubFromManifest_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	// Test Key too long
+	_, _, err := client.AlmSettings.CreateGithubFromManifest(context.Background(), &AlmSettingsCreateGithubFromManifestOptions{
+		Key: strings.Repeat("a", MaxAlmKeyLength+1),
+	})
+	assert.Error(t, err)
+
+	// Test Name too long
+	_, _, err = client.AlmSettings.CreateGithubFromManifest(context.Background(), &AlmSettingsCreateGithubFromManifestOptions{
+		Name: strings.Repeat("a", MaxAlmKeyLength+1),
+	})
+	assert.Error(t, err)
+
+	// Test Organization too long
+	_, _, err = client.AlmSettings.CreateGithubFromManifest(context.Background(), &AlmSettingsCreateGithubFromManifestOptions{
+		Organization: strings.Repeat("a", MaxAlmKeyLength+1),
+	})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
 // Delete Tests
 // -----------------------------------------------------------------------------
 
@@ -523,6 +582,354 @@ func TestAlmSettings_GetBinding_ValidationError(t *testing.T) {
 
 	// Test missing Project
 	_, _, err = client.AlmSettings.GetBinding(context.Background(), &AlmSettingsGetBindingOptions{})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// DeleteBinding Tests
+// -----------------------------------------------------------------------------
+
+func TestAlmSettings_DeleteBinding(t *testing.T) {
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/delete_binding", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
+
+	opt := &AlmSettingsDeleteBindingOptions{
+		Project: "my-project",
+	}
+
+	resp, err := client.AlmSettings.DeleteBinding(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestAlmSettings_DeleteBinding_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	// Test nil option
+	_, err := client.AlmSettings.DeleteBinding(context.Background(), nil)
+	assert.Error(t, err)
+
+	// Test missing Project
+	_, err = client.AlmSettings.DeleteBinding(context.Background(), &AlmSettingsDeleteBindingOptions{})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// SetAzureBinding Tests
+// -----------------------------------------------------------------------------
+
+func TestAlmSettings_SetAzureBinding(t *testing.T) {
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/set_azure_binding", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
+
+	opt := &AlmSettingsSetAzureBindingOptions{
+		AlmSetting:     "my-azure-setting",
+		Monorepo:       false,
+		Project:        "my-project",
+		ProjectName:    "my-azure-project",
+		RepositoryName: "my-azure-repo",
+	}
+
+	resp, err := client.AlmSettings.SetAzureBinding(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestAlmSettings_SetAzureBinding_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	// Test nil option
+	_, err := client.AlmSettings.SetAzureBinding(context.Background(), nil)
+	assert.Error(t, err)
+
+	// Test missing AlmSetting
+	_, err = client.AlmSettings.SetAzureBinding(context.Background(), &AlmSettingsSetAzureBindingOptions{
+		Project:        "my-project",
+		ProjectName:    "my-azure-project",
+		RepositoryName: "my-azure-repo",
+	})
+	assert.Error(t, err)
+
+	// Test AlmSetting too long
+	_, err = client.AlmSettings.SetAzureBinding(context.Background(), &AlmSettingsSetAzureBindingOptions{
+		AlmSetting:     strings.Repeat("a", MaxAlmKeyLength+1),
+		Project:        "my-project",
+		ProjectName:    "my-azure-project",
+		RepositoryName: "my-azure-repo",
+	})
+	assert.Error(t, err)
+
+	// Test missing Project
+	_, err = client.AlmSettings.SetAzureBinding(context.Background(), &AlmSettingsSetAzureBindingOptions{
+		AlmSetting:     "my-azure-setting",
+		ProjectName:    "my-azure-project",
+		RepositoryName: "my-azure-repo",
+	})
+	assert.Error(t, err)
+
+	// Test missing ProjectName
+	_, err = client.AlmSettings.SetAzureBinding(context.Background(), &AlmSettingsSetAzureBindingOptions{
+		AlmSetting:     "my-azure-setting",
+		Project:        "my-project",
+		RepositoryName: "my-azure-repo",
+	})
+	assert.Error(t, err)
+
+	// Test missing RepositoryName
+	_, err = client.AlmSettings.SetAzureBinding(context.Background(), &AlmSettingsSetAzureBindingOptions{
+		AlmSetting:  "my-azure-setting",
+		Project:     "my-project",
+		ProjectName: "my-azure-project",
+	})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// SetBitbucketBinding Tests
+// -----------------------------------------------------------------------------
+
+func TestAlmSettings_SetBitbucketBinding(t *testing.T) {
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/set_bitbucket_binding", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
+
+	opt := &AlmSettingsSetBitbucketBindingOptions{
+		AlmSetting: "my-bitbucket-setting",
+		Monorepo:   false,
+		Project:    "my-project",
+		Repository: "my-repo",
+		Slug:       "my-slug",
+	}
+
+	resp, err := client.AlmSettings.SetBitbucketBinding(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestAlmSettings_SetBitbucketBinding_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	// Test nil option
+	_, err := client.AlmSettings.SetBitbucketBinding(context.Background(), nil)
+	assert.Error(t, err)
+
+	// Test missing AlmSetting
+	_, err = client.AlmSettings.SetBitbucketBinding(context.Background(), &AlmSettingsSetBitbucketBindingOptions{
+		Project:    "my-project",
+		Repository: "my-repo",
+		Slug:       "my-slug",
+	})
+	assert.Error(t, err)
+
+	// Test AlmSetting too long
+	_, err = client.AlmSettings.SetBitbucketBinding(context.Background(), &AlmSettingsSetBitbucketBindingOptions{
+		AlmSetting: strings.Repeat("a", MaxAlmKeyLength+1),
+		Project:    "my-project",
+		Repository: "my-repo",
+		Slug:       "my-slug",
+	})
+	assert.Error(t, err)
+
+	// Test missing Project
+	_, err = client.AlmSettings.SetBitbucketBinding(context.Background(), &AlmSettingsSetBitbucketBindingOptions{
+		AlmSetting: "my-bitbucket-setting",
+		Repository: "my-repo",
+		Slug:       "my-slug",
+	})
+	assert.Error(t, err)
+
+	// Test missing Repository
+	_, err = client.AlmSettings.SetBitbucketBinding(context.Background(), &AlmSettingsSetBitbucketBindingOptions{
+		AlmSetting: "my-bitbucket-setting",
+		Project:    "my-project",
+		Slug:       "my-slug",
+	})
+	assert.Error(t, err)
+
+	// Test missing Slug
+	_, err = client.AlmSettings.SetBitbucketBinding(context.Background(), &AlmSettingsSetBitbucketBindingOptions{
+		AlmSetting: "my-bitbucket-setting",
+		Project:    "my-project",
+		Repository: "my-repo",
+	})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// SetBitbucketCloudBinding Tests
+// -----------------------------------------------------------------------------
+
+func TestAlmSettings_SetBitbucketCloudBinding(t *testing.T) {
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/set_bitbucketcloud_binding", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
+
+	opt := &AlmSettingsSetBitbucketCloudBindingOptions{
+		AlmSetting: "my-bitbucketcloud-setting",
+		Monorepo:   false,
+		Project:    "my-project",
+		Repository: "my-repo",
+	}
+
+	resp, err := client.AlmSettings.SetBitbucketCloudBinding(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestAlmSettings_SetBitbucketCloudBinding_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	// Test nil option
+	_, err := client.AlmSettings.SetBitbucketCloudBinding(context.Background(), nil)
+	assert.Error(t, err)
+
+	// Test missing AlmSetting
+	_, err = client.AlmSettings.SetBitbucketCloudBinding(context.Background(), &AlmSettingsSetBitbucketCloudBindingOptions{
+		Project:    "my-project",
+		Repository: "my-repo",
+	})
+	assert.Error(t, err)
+
+	// Test AlmSetting too long
+	_, err = client.AlmSettings.SetBitbucketCloudBinding(context.Background(), &AlmSettingsSetBitbucketCloudBindingOptions{
+		AlmSetting: strings.Repeat("a", MaxAlmKeyLength+1),
+		Project:    "my-project",
+		Repository: "my-repo",
+	})
+	assert.Error(t, err)
+
+	// Test missing Project
+	_, err = client.AlmSettings.SetBitbucketCloudBinding(context.Background(), &AlmSettingsSetBitbucketCloudBindingOptions{
+		AlmSetting: "my-bitbucketcloud-setting",
+		Repository: "my-repo",
+	})
+	assert.Error(t, err)
+
+	// Test missing Repository
+	_, err = client.AlmSettings.SetBitbucketCloudBinding(context.Background(), &AlmSettingsSetBitbucketCloudBindingOptions{
+		AlmSetting: "my-bitbucketcloud-setting",
+		Project:    "my-project",
+	})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// SetGithubBinding Tests
+// -----------------------------------------------------------------------------
+
+func TestAlmSettings_SetGithubBinding(t *testing.T) {
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/set_github_binding", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
+
+	opt := &AlmSettingsSetGithubBindingOptions{
+		AlmSetting: "my-github-setting",
+		Monorepo:   false,
+		Project:    "my-project",
+		Repository: "my-org/my-repo",
+	}
+
+	resp, err := client.AlmSettings.SetGithubBinding(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestAlmSettings_SetGithubBinding_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	// Test nil option
+	_, err := client.AlmSettings.SetGithubBinding(context.Background(), nil)
+	assert.Error(t, err)
+
+	// Test missing AlmSetting
+	_, err = client.AlmSettings.SetGithubBinding(context.Background(), &AlmSettingsSetGithubBindingOptions{
+		Project:    "my-project",
+		Repository: "my-org/my-repo",
+	})
+	assert.Error(t, err)
+
+	// Test AlmSetting too long
+	_, err = client.AlmSettings.SetGithubBinding(context.Background(), &AlmSettingsSetGithubBindingOptions{
+		AlmSetting: strings.Repeat("a", MaxAlmKeyLength+1),
+		Project:    "my-project",
+		Repository: "my-org/my-repo",
+	})
+	assert.Error(t, err)
+
+	// Test missing Project
+	_, err = client.AlmSettings.SetGithubBinding(context.Background(), &AlmSettingsSetGithubBindingOptions{
+		AlmSetting: "my-github-setting",
+		Repository: "my-org/my-repo",
+	})
+	assert.Error(t, err)
+
+	// Test missing Repository
+	_, err = client.AlmSettings.SetGithubBinding(context.Background(), &AlmSettingsSetGithubBindingOptions{
+		AlmSetting: "my-github-setting",
+		Project:    "my-project",
+	})
+	assert.Error(t, err)
+
+	// Test Repository too long
+	_, err = client.AlmSettings.SetGithubBinding(context.Background(), &AlmSettingsSetGithubBindingOptions{
+		AlmSetting: "my-github-setting",
+		Project:    "my-project",
+		Repository: strings.Repeat("a", MaxGitHubRepositoryLength+1),
+	})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// SetGitlabBinding Tests
+// -----------------------------------------------------------------------------
+
+func TestAlmSettings_SetGitlabBinding(t *testing.T) {
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/alm_settings/set_gitlab_binding", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
+
+	opt := &AlmSettingsSetGitlabBindingOptions{
+		AlmSetting: "my-gitlab-setting",
+		Monorepo:   false,
+		Project:    "my-project",
+		Repository: "42",
+	}
+
+	resp, err := client.AlmSettings.SetGitlabBinding(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestAlmSettings_SetGitlabBinding_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	// Test nil option
+	_, err := client.AlmSettings.SetGitlabBinding(context.Background(), nil)
+	assert.Error(t, err)
+
+	// Test missing AlmSetting
+	_, err = client.AlmSettings.SetGitlabBinding(context.Background(), &AlmSettingsSetGitlabBindingOptions{
+		Project:    "my-project",
+		Repository: "42",
+	})
+	assert.Error(t, err)
+
+	// Test AlmSetting too long
+	_, err = client.AlmSettings.SetGitlabBinding(context.Background(), &AlmSettingsSetGitlabBindingOptions{
+		AlmSetting: strings.Repeat("a", MaxAlmKeyLength+1),
+		Project:    "my-project",
+		Repository: "42",
+	})
+	assert.Error(t, err)
+
+	// Test missing Project
+	_, err = client.AlmSettings.SetGitlabBinding(context.Background(), &AlmSettingsSetGitlabBindingOptions{
+		AlmSetting: "my-gitlab-setting",
+		Repository: "42",
+	})
+	assert.Error(t, err)
+
+	// Test missing Repository
+	_, err = client.AlmSettings.SetGitlabBinding(context.Background(), &AlmSettingsSetGitlabBindingOptions{
+		AlmSetting: "my-gitlab-setting",
+		Project:    "my-project",
+	})
 	assert.Error(t, err)
 }
 

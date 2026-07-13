@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 // DopTranslationService handles communication with the DevOps Platform
@@ -54,6 +55,12 @@ type DopTranslationDopSettings struct {
 	// Page contains pagination information.
 	Page PageResponseV2 `json:"page,omitzero"`
 }
+
+// DopTranslationJfrogEvidence represents a JFrog evidence statement for a Compute
+// Engine task, in the in-toto Statement format. The SonarQube API spec declares
+// this as a generic/loosely typed schema, so it is decoded into a string-keyed map
+// rather than a fixed struct.
+type DopTranslationJfrogEvidence map[string]any
 
 // -----------------------------------------------------------------------------
 // Request Types
@@ -183,6 +190,33 @@ func (s *DopTranslationService) GetDopSettings(ctx context.Context) (*DopTransla
 	}
 
 	result := new(DopTranslationDopSettings)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
+// GetJfrogEvidence returns a JFrog evidence statement for the specified Compute
+// Engine task. The evidence contains quality gate status and conditions in the
+// in-toto Statement format.
+// Requires 'Browse' permission on the project associated with the task.
+//
+// API endpoint: GET /api/v2/dop-translation/jfrog-evidence/{taskId}.
+func (s *DopTranslationService) GetJfrogEvidence(ctx context.Context, taskID string) (*DopTranslationJfrogEvidence, *http.Response, error) {
+	err := ValidateRequired(taskID, "taskID")
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "dop-translation/jfrog-evidence/"+url.PathEscape(taskID), nil, nil)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	result := new(DopTranslationJfrogEvidence)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {

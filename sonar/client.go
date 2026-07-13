@@ -138,6 +138,27 @@ type ServicesV2 struct {
 	System *SystemServiceV2
 	// UsersManagement provides methods for the Users Management V2 API.
 	UsersManagement *UsersManagementService
+
+	// Atlassian provides methods for the Atlassian V2 API.
+	Atlassian *AtlassianService
+
+	// Entitlements provides methods for the Entitlements V2 API.
+	Entitlements *EntitlementsService
+
+	// Integrations provides methods for the Integrations V2 API.
+	Integrations *IntegrationsService
+
+	// Issues provides methods for the Issues V2 API.
+	Issues *IssuesV2Service
+
+	// Jira provides methods for the Jira V2 API.
+	Jira *JiraService
+
+	// Monitoring provides methods for the Monitoring V2 API.
+	Monitoring *MonitoringServiceV2
+
+	// SoftwareQualityReports provides methods for the Software Quality Reports V2 API.
+	SoftwareQualityReports *SoftwareQualityReportsService
 }
 
 // ClientCreateOptions contains options for creating a new Client.
@@ -550,16 +571,23 @@ func initServices(client *Client) {
 // initServicesV2 initializes all V2 service instances for the client.
 func initServicesV2(client *Client) {
 	client.V2 = &ServicesV2{
-		Analysis:        &AnalysisService{client: client},
-		Architecture:    &ArchitectureService{client: client},
-		Authorizations:  &AuthorizationsService{client: client},
-		CleanCodePolicy: &CleanCodePolicyService{client: client},
-		DopTranslation:  &DopTranslationService{client: client},
-		FixSuggestions:  &FixSuggestionsService{client: client},
-		Marketplace:     &MarketplaceService{client: client},
-		Sca:             &ScaService{client: client},
-		System:          &SystemServiceV2{client: client},
-		UsersManagement: &UsersManagementService{client: client},
+		Analysis:               &AnalysisService{client: client},
+		Architecture:           &ArchitectureService{client: client},
+		Atlassian:              &AtlassianService{client: client},
+		Authorizations:         &AuthorizationsService{client: client},
+		CleanCodePolicy:        &CleanCodePolicyService{client: client},
+		DopTranslation:         &DopTranslationService{client: client},
+		Entitlements:           &EntitlementsService{client: client},
+		FixSuggestions:         &FixSuggestionsService{client: client},
+		Integrations:           &IntegrationsService{client: client},
+		Issues:                 &IssuesV2Service{client: client},
+		Jira:                   &JiraService{client: client},
+		Marketplace:            &MarketplaceService{client: client},
+		Monitoring:             &MonitoringServiceV2{client: client},
+		Sca:                    &ScaService{client: client},
+		SoftwareQualityReports: &SoftwareQualityReportsService{client: client},
+		System:                 &SystemServiceV2{client: client},
+		UsersManagement:        &UsersManagementService{client: client},
 	}
 }
 

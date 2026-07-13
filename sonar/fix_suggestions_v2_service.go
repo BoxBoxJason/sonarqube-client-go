@@ -136,6 +136,13 @@ type FixSuggestionsLlmModel struct {
 	Recommended bool `json:"recommended,omitempty"`
 }
 
+// FixSuggestionsSupportedRules represents the list of rules for which a fix
+// suggestion can be generated.
+type FixSuggestionsSupportedRules struct {
+	// Rules is the list of supported rule keys.
+	Rules []string `json:"rules,omitempty"`
+}
+
 // FixSuggestionsLlmProvider represents a supported LLM provider.
 //
 //nolint:govet // fieldalignment: keeping logical field grouping for readability
@@ -378,6 +385,8 @@ func (s *FixSuggestionsService) GetServiceInfo(ctx context.Context) (*FixSuggest
 //
 // API endpoint: GET /api/v2/fix-suggestions/service-info/subscription-type.
 // Enterprise Edition only.
+//
+// Deprecated: This endpoint has been removed from the SonarQube API as of version 2026.3 and will return an error if called.
 func (s *FixSuggestionsService) GetSubscriptionType(ctx context.Context) (*FixSuggestionsSubscriptionType, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "fix-suggestions/service-info/subscription-type", nil, nil)
 	if err != nil {
@@ -410,6 +419,28 @@ func (s *FixSuggestionsService) GetSupportedLlmProviders(ctx context.Context) ([
 	var result []FixSuggestionsLlmProvider
 
 	resp, err := s.client.Do(req, &result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
+// GetSupportedRules returns the list of rules for which a fix suggestion can be generated.
+// Requires 'Administer System' permission.
+//
+// API endpoint: GET /api/v2/fix-suggestions/supported-rules.
+// Enterprise Edition only. Marked internal by SonarQube and subject to change
+// without notice.
+func (s *FixSuggestionsService) GetSupportedRules(ctx context.Context) (*FixSuggestionsSupportedRules, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "fix-suggestions/supported-rules", nil, nil)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	result := new(FixSuggestionsSupportedRules)
+
+	resp, err := s.client.Do(req, result)
 	if err != nil {
 		return nil, resp, err
 	}

@@ -127,3 +127,31 @@ func TestDopTranslationV2_GetDopSettings(t *testing.T) {
 	assert.Equal(t, "github", result.DopSettings[0].Type)
 	assert.Equal(t, int32(2), result.Page.Total)
 }
+
+// =============================================================================
+// GetJfrogEvidence
+// =============================================================================
+
+func TestDopTranslationV2_GetJfrogEvidence(t *testing.T) {
+	response := map[string]any{
+		"_type":         "https://in-toto.io/Statement/v1",
+		"predicateType": "https://sonarsource.com/quality-gate/v1",
+	}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/dop-translation/jfrog-evidence/task-1", http.StatusOK, response))
+	client := newTestClient(t, server.url())
+
+	result, resp, err := client.V2.DopTranslation.GetJfrogEvidence(context.Background(), "task-1")
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "https://in-toto.io/Statement/v1", (*result)["_type"])
+}
+
+func TestDopTranslationV2_GetJfrogEvidence_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	result, resp, err := client.V2.DopTranslation.GetJfrogEvidence(context.Background(), "")
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Nil(t, resp)
+}

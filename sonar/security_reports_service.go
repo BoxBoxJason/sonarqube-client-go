@@ -82,6 +82,10 @@ type SecurityReportsDownloadOptions struct {
 	Branch string `url:"branch,omitempty"`
 	// Project is the project key. This field is required.
 	Project string `url:"project"`
+
+	// Standards is the list of standards to include in the report.
+	// If omitted, all standards are included. Optional.
+	Standards []string `url:"standards,omitempty,comma"`
 }
 
 // SecurityReportsShowOptions contains parameters for the Show method.
@@ -109,6 +113,9 @@ var allowedSecurityStandards = map[string]struct{}{
 	"owaspAsvs":           {},
 	"stig":                {},
 	"casa":                {},
+	"owaspMasvs-v2":       {},
+	"owaspLlmTop10":       {},
+	"owaspMobileTop10":    {},
 }
 
 // -----------------------------------------------------------------------------
@@ -121,7 +128,16 @@ func (s *SecurityReportsService) ValidateDownloadOpt(opt *SecurityReportsDownloa
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
 
-	return ValidateRequired(opt.Project, "Project")
+	err := ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	if len(opt.Standards) > 0 {
+		return AreValuesAuthorized(opt.Standards, allowedSecurityStandards, "Standards")
+	}
+
+	return nil
 }
 
 // ValidateShowOpt validates the options for the Show method.

@@ -109,6 +109,7 @@ func (s *EditionsService) ActivateGracePeriod(ctx context.Context) (*http.Respon
 // Get returns the details of the current SonarQube Enterprise Edition license.
 // Requires 'Administer System' permission.
 //
+// Deprecated: Since SonarQube 2025.6.
 // API endpoint: GET /api/editions/show_license.
 // Since: 7.2.
 // Enterprise Edition only.
@@ -152,6 +153,7 @@ func (s *EditionsService) IsValidLicense(ctx context.Context) (*LicenseIsValid, 
 // Set activates a new SonarQube Enterprise Edition license.
 // Requires 'Administer System' permission.
 //
+// Deprecated: Since SonarQube 2025.6.
 // API endpoint: POST /api/editions/set_license.
 // Since: 7.2.
 // Enterprise Edition only.
@@ -172,6 +174,7 @@ func (s *EditionsService) Set(ctx context.Context, opt *LicenseSetOptions) (*htt
 // UnsetLicense removes the current license.
 // Requires 'Administer System' permission.
 //
+// Deprecated: Since SonarQube 2025.6.
 // API endpoint: POST /api/editions/unset_license.
 // Since: 7.2.
 // Enterprise Edition only.

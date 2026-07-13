@@ -951,6 +951,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "GitHub, GitLab and Azure bindings now contain a repositoryUrl field with the URL to the repository",
+              "version": "2025.6"
+            },
+            {
               "description": "Azure binding now contains a inlineAnnotationsEnabled flag for inline annotations feature",
               "version": "2025.1"
             },
@@ -2277,6 +2281,7 @@
                 "AUDIT_PURGE",
                 "PROJECT_EXPORT",
                 "APP_REFRESH",
+                "SCA_RESCAN_BRANCH",
                 "PROJECT_IMPORT",
                 "VIEW_REFRESH",
                 "REPORT_SUBMIT",
@@ -2468,7 +2473,7 @@
         },
         {
           "key": "info",
-          "description": "Gets information about Compute Engine. Requires the system administration permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).",
+          "description": "Gets information about Compute Engine. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
           "since": "7.2",
           "internal": true,
           "post": false,
@@ -2477,7 +2482,7 @@
         },
         {
           "key": "pause",
-          "description": "Requests pause of Compute Engine workers. Requires the system administration permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).",
+          "description": "Requests pause of Compute Engine workers. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
           "since": "7.2",
           "internal": true,
           "post": true,
@@ -2486,7 +2491,7 @@
         },
         {
           "key": "resume",
-          "description": "Resumes pause of Compute Engine workers. Requires the system administration permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).",
+          "description": "Resumes pause of Compute Engine workers. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
           "since": "7.2",
           "internal": true,
           "post": true,
@@ -2738,6 +2743,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Field \u0027uuid\u0027 response field has been added.",
+              "version": "2025.6"
+            },
             {
               "description": "Field \u0027containsAiCode\u0027 response field has added.",
               "version": "2025.1"
@@ -3300,10 +3309,16 @@
           "key": "set_license",
           "description": "Set the license for enabling features of commercial editions. Require \u0027Administer System\u0027 permission.",
           "since": "7.2",
+          "deprecatedSince": "2025.6",
           "internal": false,
           "post": true,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "This endpoint is deprecated in favor of /api/v2/entitlements/legacy-activation for legacy licenses, and /api/v2/entitlements/online-activation for new licenses",
+              "version": "2025.6"
+            }
+          ],
           "params": [
             {
               "key": "license",
@@ -3316,19 +3331,31 @@
           "key": "show_license",
           "description": "Show information about currently installed license. \u003cbr\u003e Requires \u0027Administer System\u0027 permission.",
           "since": "7.2",
+          "deprecatedSince": "2025.6",
           "internal": true,
           "post": false,
           "hasResponseExample": true,
-          "changelog": []
+          "changelog": [
+            {
+              "description": "This endpoint is deprecated in favor of /api/v2/entitlements/license",
+              "version": "2025.6"
+            }
+          ]
         },
         {
           "key": "unset_license",
           "description": "Un-sets license. Require \u0027Administer System\u0027 permission.",
           "since": "7.2",
+          "deprecatedSince": "2025.6",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
-          "changelog": []
+          "changelog": [
+            {
+              "description": "This endpoint is deprecated in favor of /api/v2/entitlements/license",
+              "version": "2025.6"
+            }
+          ]
         }
       ]
     },
@@ -4045,6 +4072,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "Param \u0027complianceStandards\u0027 has been added",
+              "version": "2025.6"
+            },
+            {
               "description": "Added parameter \u0027stig-ASD_V5R3\u0027 and \u0027casa\u0027",
               "version": "10.7"
             },
@@ -4091,6 +4122,14 @@
               "since": "10.7",
               "required": false,
               "internal": false
+            },
+            {
+              "key": "complianceStandards",
+              "description": "Comma-separated list of compliance standards",
+              "since": "2025.6",
+              "required": false,
+              "internal": false,
+              "exampleValue": "asvs:4.0.3\u003d6.1.2"
             },
             {
               "key": "cwe",
@@ -4279,6 +4318,7 @@
               "required": false,
               "internal": false,
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -4642,8 +4682,6 @@
                 "resolve",
                 "falsepositive",
                 "wontfix",
-                "close",
-                "setinreview",
                 "resolveasreviewed",
                 "resetastoreview",
                 "accept"
@@ -4931,8 +4969,6 @@
                 "resolve",
                 "falsepositive",
                 "wontfix",
-                "close",
-                "setinreview",
                 "resolveasreviewed",
                 "resetastoreview",
                 "accept"
@@ -5055,6 +5091,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Response field \u0027internalTags\u0027 has been added",
+              "version": "2025.5"
+            },
             {
               "description": "The parameter \u0027types\u0027 are not deprecated anymore.",
               "version": "10.8"
@@ -5295,6 +5335,38 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Param \u0027complianceStandards\u0027 has been added",
+              "version": "2025.6"
+            },
+            {
+              "description": "Facet \u0027complianceStandards\u0027 has been added",
+              "version": "2025.6"
+            },
+            {
+              "description": "Facet \u0027linkedTicketStatus\u0027 has been added",
+              "version": "2025.6"
+            },
+            {
+              "description": "Response field \u0027internalTags\u0027 has been added",
+              "version": "2025.5"
+            },
+            {
+              "description": "Facet \u0027fromSonarQubeUpdate\u0027 has been added",
+              "version": "2025.5"
+            },
+            {
+              "description": "Param \u0027fromSonarQubeUpdate\u0027 has been added",
+              "version": "2025.5"
+            },
+            {
+              "description": "Facet \u0027owaspMobileTop10-2024\u0027 has been added",
+              "version": "2025.3"
+            },
+            {
+              "description": "Param \u0027owaspMobileTop10-2024\u0027 has been added",
+              "version": "2025.3"
+            },
             {
               "description": "The response fields \u0027severity\u0027 and \u0027type\u0027 are not deprecated anymore..",
               "version": "10.8"
@@ -5679,6 +5751,14 @@
               "exampleValue": "windows,linux"
             },
             {
+              "key": "complianceStandards",
+              "description": "Comma-separated list of compliance standards",
+              "since": "2025.6",
+              "required": false,
+              "internal": false,
+              "exampleValue": "asvs:4.0.3\u003d6.1.2"
+            },
+            {
               "key": "components",
               "description": "Comma-separated list of component keys. Retrieve issues associated to a specific list of components (and all its descendants). A component can be a portfolio, project, module, directory or file.",
               "required": false,
@@ -5753,6 +5833,7 @@
                 "pciDss-3.2",
                 "pciDss-4.0",
                 "owaspAsvs-4.0",
+                "owaspMobileTop10-2024",
                 "owaspTop10",
                 "owaspTop10-2021",
                 "stig-ASD_V5R3",
@@ -5766,7 +5847,10 @@
                 "impactSoftwareQualities",
                 "impactSeverities",
                 "issueStatuses",
-                "prioritizedRule"
+                "prioritizedRule",
+                "complianceStandards",
+                "fromSonarQubeUpdate",
+                "linkedTicketStatus"
               ]
             },
             {
@@ -5783,6 +5867,18 @@
               "required": false,
               "internal": false,
               "exampleValue": "5461"
+            },
+            {
+              "key": "fromSonarQubeUpdate",
+              "description": "To match issues detected because of SonarQube updates",
+              "required": false,
+              "internal": false,
+              "possibleValues": [
+                "true",
+                "false",
+                "yes",
+                "no"
+              ]
             },
             {
               "key": "impactSeverities",
@@ -5837,7 +5933,8 @@
                 "CONFIRMED",
                 "FALSE_POSITIVE",
                 "ACCEPTED",
-                "FIXED"
+                "FIXED",
+                "IN_SANDBOX"
               ]
             },
             {
@@ -5853,6 +5950,17 @@
               "required": false,
               "internal": false,
               "exampleValue": "java,js"
+            },
+            {
+              "key": "linkedTicketStatus",
+              "description": "Has linked JIRA work item",
+              "required": false,
+              "internal": false,
+              "exampleValue": "LINKED",
+              "possibleValues": [
+                "LINKED",
+                "NOT_LINKED"
+              ]
             },
             {
               "key": "onComponentOnly",
@@ -5885,6 +5993,25 @@
                 "1",
                 "2",
                 "3"
+              ]
+            },
+            {
+              "key": "owaspMobileTop10-2024",
+              "description": "Comma-separated list of OWASP Mobile Top 10 2024 lowercase categories.",
+              "since": "2025.3",
+              "required": false,
+              "internal": false,
+              "possibleValues": [
+                "m1",
+                "m2",
+                "m3",
+                "m4",
+                "m5",
+                "m6",
+                "m7",
+                "m8",
+                "m9",
+                "m10"
               ]
             },
             {
@@ -6077,6 +6204,7 @@
               "required": false,
               "internal": false,
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -6115,7 +6243,8 @@
                 "CONFIRMED",
                 "REOPENED",
                 "RESOLVED",
-                "CLOSED"
+                "CLOSED",
+                "IN_SANDBOX"
               ]
             },
             {
@@ -6518,6 +6647,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "The following SCA metrics are available on licensed enterprise/datacenter editions with SCA enabled: \u0027sca_rating_licensing\u0027, \u0027sca_rating_vulnerability\u0027, \u0027sca_rating_any_issue\u0027, \u0027sca_severity_licensing\u0027, \u0027sca_severity_vulnerability\u0027, \u0027sca_severity_any_issue\u0027, \u0027sca_count_any_issue\u0027, \u0027new_sca_rating_licensing\u0027, \u0027new_sca_rating_vulnerability\u0027, \u0027new_sca_rating_any_issue\u0027, \u0027new_sca_severity_licensing\u0027, \u0027new_sca_severity_vulnerability\u0027, \u0027new_sca_severity_any_issue\u0027, \u0027new_sca_count_any_issue\u0027",
+              "version": "2025.4"
+            },
+            {
               "description": "The \u0027Execute Analysis\u0027 permission also allows to access the endpoint",
               "version": "2025.2"
             },
@@ -6678,6 +6811,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "The following SCA metrics are available on licensed enterprise/datacenter editions with SCA enabled: \u0027sca_rating_licensing\u0027, \u0027sca_rating_vulnerability\u0027, \u0027sca_rating_any_issue\u0027, \u0027sca_severity_licensing\u0027, \u0027sca_severity_vulnerability\u0027, \u0027sca_severity_any_issue\u0027, \u0027sca_count_any_issue\u0027, \u0027new_sca_rating_licensing\u0027, \u0027new_sca_rating_vulnerability\u0027, \u0027new_sca_rating_any_issue\u0027, \u0027new_sca_severity_licensing\u0027, \u0027new_sca_severity_vulnerability\u0027, \u0027new_sca_severity_any_issue\u0027, \u0027new_sca_count_any_issue\u0027",
+              "version": "2025.4"
+            },
             {
               "description": "Number of metric keys is limited to 75",
               "version": "10.8"
@@ -6853,7 +6990,7 @@
             },
             {
               "key": "metricKeys",
-              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only new_reliability_issues, security_issues, maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues metrics are supported",
+              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only new_maintainability_issues, new_security_issues, new_reliability_issues, security_issues, maintainability_issues, reliability_issues metrics are supported",
               "required": true,
               "internal": false,
               "exampleValue": "ncloc,complexity,violations",
@@ -6973,6 +7110,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "The following SCA metrics are available on licensed enterprise/datacenter editions with SCA enabled: \u0027sca_rating_licensing\u0027, \u0027sca_rating_vulnerability\u0027, \u0027sca_rating_any_issue\u0027, \u0027sca_severity_licensing\u0027, \u0027sca_severity_vulnerability\u0027, \u0027sca_severity_any_issue\u0027, \u0027sca_count_any_issue\u0027, \u0027new_sca_rating_licensing\u0027, \u0027new_sca_rating_vulnerability\u0027, \u0027new_sca_rating_any_issue\u0027, \u0027new_sca_severity_licensing\u0027, \u0027new_sca_severity_vulnerability\u0027, \u0027new_sca_severity_any_issue\u0027, \u0027new_sca_count_any_issue\u0027",
+              "version": "2025.4"
+            },
+            {
               "description": "The following metrics are not deprecated anymore: \u0027bugs\u0027, \u0027new_bugs\u0027, \u0027vulnerabilities\u0027, \u0027new_vulnerabilities\u0027, \u0027code_smells\u0027, \u0027new_code_smells\u0027, \u0027high_impact_accepted_issues\u0027, \u0027new_blocker_violations\u0027, \u0027new_critical_violations\u0027, \u0027new_major_violations\u0027, \u0027new_minor_violations\u0027, \u0027new_info_violations\u0027, \u0027blocker_violations\u0027, \u0027critical_violations\u0027, \u0027major_violations\u0027, \u0027minor_violations\u0027, \u0027info_violations\u0027",
               "version": "10.8"
             },
@@ -7058,6 +7199,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "The following SCA metrics are available on licensed enterprise/datacenter editions with SCA enabled: \u0027sca_rating_licensing\u0027, \u0027sca_rating_vulnerability\u0027, \u0027sca_rating_any_issue\u0027, \u0027sca_severity_licensing\u0027, \u0027sca_severity_vulnerability\u0027, \u0027sca_severity_any_issue\u0027, \u0027sca_count_any_issue\u0027, \u0027new_sca_rating_licensing\u0027, \u0027new_sca_rating_vulnerability\u0027, \u0027new_sca_rating_any_issue\u0027, \u0027new_sca_severity_licensing\u0027, \u0027new_sca_severity_vulnerability\u0027, \u0027new_sca_severity_any_issue\u0027, \u0027new_sca_count_any_issue\u0027",
+              "version": "2025.4"
+            },
             {
               "description": "The following metrics are not deprecated anymore: \u0027bugs\u0027, \u0027new_bugs\u0027, \u0027vulnerabilities\u0027, \u0027new_vulnerabilities\u0027, \u0027code_smells\u0027, \u0027new_code_smells\u0027, \u0027high_impact_accepted_issues\u0027, \u0027new_blocker_violations\u0027, \u0027new_critical_violations\u0027, \u0027new_major_violations\u0027, \u0027new_minor_violations\u0027, \u0027new_info_violations\u0027, \u0027blocker_violations\u0027, \u0027critical_violations\u0027, \u0027major_violations\u0027, \u0027minor_violations\u0027, \u0027info_violations\u0027",
               "version": "10.8"
@@ -7246,7 +7391,12 @@
           "internal": false,
           "post": false,
           "hasResponseExample": true,
-          "changelog": []
+          "changelog": [
+            {
+              "description": "Added \u0027sonarqube_elasticsearch_read_only_indices_total\u0027 and \u0027sonarqube_elasticsearch_disk_usage_percent\u0027 metrics",
+              "version": "2026.3"
+            }
+          ]
         }
       ]
     },
@@ -7345,11 +7495,11 @@
     {
       "path": "api/new_code_periods",
       "since": "8.0",
-      "description": "Manage \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2025.2/project-administration/setting-up-clean-as-you-code/#setting-a-new-code-definition\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.",
+      "description": "Manage \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.3/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.",
       "actions": [
         {
           "key": "list",
-          "description": "Lists the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2025.2/project-administration/setting-up-clean-as-you-code/#setting-a-new-code-definition\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for all branches in a project.\u003cbr\u003eRequires the permission to browse the project",
+          "description": "Lists the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.3/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for all branches in a project.\u003cbr\u003eRequires the permission to browse the project",
           "since": "8.0",
           "internal": false,
           "post": false,
@@ -7366,7 +7516,7 @@
         },
         {
           "key": "set",
-          "description": "Updates the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2025.2/project-administration/setting-up-clean-as-you-code/#setting-a-new-code-definition\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e on different levels:\u003cbr\u003e\u003cul\u003e\u003cli\u003eNot providing a project key and a branch key will update the default value at global level. Existing projects or branches having a specific new code definition will not be impacted\u003c/li\u003e\u003cli\u003eProject key must be provided to update the value for a project\u003c/li\u003e\u003cli\u003eBoth project and branch keys must be provided to update the value for a branch\u003c/li\u003e\u003c/ul\u003eRequires one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified project to change the project setting\u003c/li\u003e\u003c/ul\u003e",
+          "description": "Updates the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.3/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e on different levels:\u003cbr\u003e\u003cul\u003e\u003cli\u003eNot providing a project key and a branch key will update the default value at global level. Existing projects or branches having a specific new code definition will not be impacted\u003c/li\u003e\u003cli\u003eProject key must be provided to update the value for a project\u003c/li\u003e\u003cli\u003eBoth project and branch keys must be provided to update the value for a branch\u003c/li\u003e\u003c/ul\u003eRequires one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified project to change the project setting\u003c/li\u003e\u003c/ul\u003e",
           "since": "8.0",
           "internal": false,
           "post": true,
@@ -7401,7 +7551,7 @@
         },
         {
           "key": "show",
-          "description": "Shows the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2025.2/project-administration/setting-up-clean-as-you-code/#setting-a-new-code-definition\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.\u003cbr\u003e If the component requested doesn\u0027t exist or if no new code definition is set for it, a value is inherited from the project or from the global setting.Requires one of the following permissions if a component is specified: \u003cul\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified component\u003c/li\u003e\u003cli\u003e\u0027Execute analysis\u0027 rights on the specified component\u003c/li\u003e\u003c/ul\u003e",
+          "description": "Shows the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.3/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.\u003cbr\u003e If the component requested doesn\u0027t exist or if no new code definition is set for it, a value is inherited from the project or from the global setting.Requires one of the following permissions if a component is specified: \u003cul\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified component\u003c/li\u003e\u003cli\u003e\u0027Execute analysis\u0027 rights on the specified component\u003c/li\u003e\u003c/ul\u003e",
           "since": "8.0",
           "internal": false,
           "post": false,
@@ -7424,7 +7574,7 @@
         },
         {
           "key": "unset",
-          "description": "Unsets the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2025.2/project-administration/setting-up-clean-as-you-code/#setting-a-new-code-definition\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for a branch, project or global. It requires the inherited New Code Definition to be compatible with the Clean as You Code methodology, and one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights for a specified component\u003c/li\u003e\u003c/ul\u003e",
+          "description": "Unsets the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.3/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for a branch, project or global. It requires the inherited New Code Definition to be compatible with the Clean as You Code methodology, and one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights for a specified component\u003c/li\u003e\u003c/ul\u003e",
           "since": "8.0",
           "internal": false,
           "post": true,
@@ -8274,8 +8424,27 @@
           "internal": false,
           "post": false,
           "hasResponseExample": true,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Add optional pagination support to search_templates API.",
+              "version": "2026.2"
+            }
+          ],
           "params": [
+            {
+              "key": "p",
+              "description": "1-based page number",
+              "required": false,
+              "internal": false,
+              "exampleValue": "2"
+            },
+            {
+              "key": "ps",
+              "description": "Page size. Must be greater than or equal to 0 and less or equal than 500. If this and p param are not provided, pagination is disabled and all results are returned. If pageSize\u003d0, no results are returned but the response will contain the total count of matching templates.",
+              "required": false,
+              "internal": false,
+              "exampleValue": "100"
+            },
             {
               "key": "q",
               "description": "Limit search to permission template names that contain the supplied string.",
@@ -8982,7 +9151,7 @@
             },
             {
               "key": "token",
-              "description": "Project badge token",
+              "description": "Project badge token. Required for private projects or if the \u0027sonar.forceAuthentication\u0027 setting is enabled.",
               "required": false,
               "internal": false,
               "exampleValue": "8bb493196edb5896ccb64582499895f187a2ae8f"
@@ -9050,7 +9219,7 @@
             },
             {
               "key": "token",
-              "description": "Project badge token",
+              "description": "Project badge token. Required for private projects or if the \u0027sonar.forceAuthentication\u0027 setting is enabled.",
               "required": false,
               "internal": false,
               "exampleValue": "8bb493196edb5896ccb64582499895f187a2ae8f"
@@ -9082,7 +9251,7 @@
             },
             {
               "key": "token",
-              "description": "Project badge token",
+              "description": "Project badge token. Required for private projects or if the \u0027sonar.forceAuthentication\u0027 setting is enabled.",
               "required": false,
               "internal": false,
               "exampleValue": "8bb493196edb5896ccb64582499895f187a2ae8f"
@@ -9091,7 +9260,7 @@
         },
         {
           "key": "renew_token",
-          "description": "Creates new token replacing any existing token for project or application badge access for private projects and applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Administer\u0027 permission on the specified project or application.",
+          "description": "Creates new token replacing any existing token for project or application badge access for private projects and applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Administer\u0027 permission on the specified project or application.\u003cbr/\u003eIf the \u0027sonar.forceAuthentication\u0027 setting is enabled, then a token is required for public projects as well.",
           "since": "9.2",
           "internal": false,
           "post": true,
@@ -9114,7 +9283,7 @@
         },
         {
           "key": "token",
-          "description": "Retrieve a token to use for project or application badge access for private projects or applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Browse\u0027 permission on the specified project or application.",
+          "description": "Retrieve a token to use for project or application badge access for private projects or applications.\u003cbr/\u003eThis token can be used to authenticate with api/project_badges/quality_gate and api/project_badges/measure endpoints.\u003cbr/\u003eRequires \u0027Browse\u0027 permission on the specified project or application.\u003cbr/\u003eIf the \u0027sonar.forceAuthentication\u0027 setting is enabled, then a token is required for public projects as well.",
           "since": "9.2",
           "internal": false,
           "post": false,
@@ -9864,10 +10033,16 @@
           "key": "get_detected_ai_code",
           "description": "Get detected AI code",
           "since": "2025.1",
+          "deprecatedSince": "2026.1",
           "internal": true,
           "post": false,
           "hasResponseExample": true,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "This endpoint is deprecated",
+              "version": "2026.1"
+            }
+          ],
           "params": [
             {
               "key": "project",
@@ -9900,6 +10075,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Response includes \u0027projectUuid\u0027 field.",
+              "version": "2025.6"
+            },
             {
               "description": "Response includes \u0027managed\u0027 field.",
               "version": "10.2"
@@ -10399,7 +10578,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -11200,7 +11379,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -11495,6 +11674,25 @@
               "exampleValue": "java,js"
             },
             {
+              "key": "owaspMobileTop10-2024",
+              "description": "Comma-separated list of OWASP Mobile Top 10 2024 lowercase categories.",
+              "since": "2025.4",
+              "required": false,
+              "internal": false,
+              "possibleValues": [
+                "m1",
+                "m2",
+                "m3",
+                "m4",
+                "m5",
+                "m6",
+                "m7",
+                "m8",
+                "m9",
+                "m10"
+              ]
+            },
+            {
               "key": "owaspTop10",
               "description": "Comma-separated list of OWASP Top 10 2017 lowercase categories.",
               "since": "7.3",
@@ -11579,12 +11777,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "updatedAt",
+              "exampleValue": "name",
               "possibleValues": [
-                "updatedAt",
-                "key",
                 "name",
-                "createdAt"
+                "createdAt",
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -11622,6 +11820,7 @@
               "internal": false,
               "exampleValue": "sql-injection,command-injection,others",
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -11739,19 +11938,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -11767,11 +11969,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -11806,19 +12011,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -11834,11 +12042,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -11880,19 +12091,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -11908,11 +12122,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -11963,19 +12180,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -11991,11 +12211,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -12030,19 +12253,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -12058,11 +12284,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -12149,19 +12378,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -12177,11 +12409,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -12312,6 +12547,7 @@
                 "abap",
                 "ansible",
                 "apex",
+                "azurepipelines",
                 "azureresourcemanager",
                 "c",
                 "cloudformation",
@@ -12322,7 +12558,9 @@
                 "dart",
                 "docker",
                 "flex",
+                "githubactions",
                 "go",
+                "groovy",
                 "ipynb",
                 "java",
                 "jcl",
@@ -12335,11 +12573,14 @@
                 "php",
                 "pli",
                 "plsql",
+                "powershell",
                 "py",
                 "rpg",
                 "ruby",
+                "rust",
                 "scala",
                 "secrets",
+                "shell",
                 "swift",
                 "terraform",
                 "text",
@@ -12568,6 +12809,25 @@
               "exampleValue": "java,js"
             },
             {
+              "key": "owaspMobileTop10-2024",
+              "description": "Comma-separated list of OWASP Mobile Top 10 2024 lowercase categories.",
+              "since": "2025.4",
+              "required": false,
+              "internal": false,
+              "possibleValues": [
+                "m1",
+                "m2",
+                "m3",
+                "m4",
+                "m5",
+                "m6",
+                "m7",
+                "m8",
+                "m9",
+                "m10"
+              ]
+            },
+            {
               "key": "owaspTop10",
               "description": "Comma-separated list of OWASP Top 10 2017 lowercase categories.",
               "since": "7.3",
@@ -12639,12 +12899,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "updatedAt",
+              "exampleValue": "name",
               "possibleValues": [
-                "updatedAt",
-                "key",
                 "name",
-                "createdAt"
+                "createdAt",
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -12682,6 +12942,7 @@
               "internal": false,
               "exampleValue": "sql-injection,command-injection,others",
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -12779,19 +13040,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -12807,11 +13071,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -12850,6 +13117,7 @@
                 "abap",
                 "ansible",
                 "apex",
+                "azurepipelines",
                 "azureresourcemanager",
                 "c",
                 "cloudformation",
@@ -12860,7 +13128,9 @@
                 "dart",
                 "docker",
                 "flex",
+                "githubactions",
                 "go",
+                "groovy",
                 "ipynb",
                 "java",
                 "jcl",
@@ -12873,11 +13143,14 @@
                 "php",
                 "pli",
                 "plsql",
+                "powershell",
                 "py",
                 "rpg",
                 "ruby",
+                "rust",
                 "scala",
                 "secrets",
+                "shell",
                 "swift",
                 "terraform",
                 "text",
@@ -12945,19 +13218,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -12973,11 +13249,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -13102,19 +13381,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -13130,11 +13412,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -13169,19 +13454,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -13197,11 +13485,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -13243,19 +13534,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -13271,11 +13565,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -13396,6 +13693,7 @@
                 "abap",
                 "ansible",
                 "apex",
+                "azurepipelines",
                 "azureresourcemanager",
                 "c",
                 "cloudformation",
@@ -13406,7 +13704,9 @@
                 "dart",
                 "docker",
                 "flex",
+                "githubactions",
                 "go",
+                "groovy",
                 "ipynb",
                 "java",
                 "jcl",
@@ -13419,11 +13719,14 @@
                 "php",
                 "pli",
                 "plsql",
+                "powershell",
                 "py",
                 "rpg",
                 "ruby",
+                "rust",
                 "scala",
                 "secrets",
+                "shell",
                 "swift",
                 "terraform",
                 "text",
@@ -13473,19 +13776,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -13501,11 +13807,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -13575,19 +13884,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -13603,11 +13915,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -13677,19 +13992,22 @@
                 "jsp",
                 "py",
                 "js",
-                "ansible",
                 "docker",
+                "ansible",
                 "plsql",
                 "apex",
                 "dart",
+                "rust",
                 "jcl",
                 "java",
                 "web",
                 "flex",
                 "xml",
+                "powershell",
                 "json",
                 "ipynb",
                 "text",
+                "azurepipelines",
                 "vbnet",
                 "cloudformation",
                 "yaml",
@@ -13705,11 +14023,14 @@
                 "secrets",
                 "ruby",
                 "cs",
+                "groovy",
                 "cobol",
+                "shell",
                 "php",
                 "terraform",
                 "azureresourcemanager",
                 "abap",
+                "githubactions",
                 "objc",
                 "ts"
               ]
@@ -14114,11 +14435,23 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "Description-related fields in the response are obfuscated for anonymous users.",
+              "version": "2026.2"
+            },
+            {
+              "description": "The facet \u0027complianceStandards\u0027 was added.",
+              "version": "2025.6"
+            },
+            {
+              "description": "The parameter \u0027complianceStandards\u0027 was added.",
+              "version": "2025.6"
+            },
+            {
               "description": "The facet \u0027active_impactSeverities\u0027 has been added.",
               "version": "2025.1"
             },
             {
-              "description": "The deprecated field \u0027htmlDesc\u0027 is not returned anymore, even if specified in the \u0027f\u0027 parameter.",
+              "description": "The deprecated field \u0027htmlDesc\u0027 is not returned anymore, even if specified in the \u0027fields\u0027 parameter.",
               "version": "2025.1"
             },
             {
@@ -14150,7 +14483,7 @@
               "version": "10.8"
             },
             {
-              "description": "The value \u0027severity\u0027 for the \u0027f\u0027 parameter is not deprecated anymore.",
+              "description": "The value \u0027severity\u0027 for the \u0027fields\u0027 parameter is not deprecated anymore.",
               "version": "10.8"
             },
             {
@@ -14166,11 +14499,11 @@
               "version": "10.2"
             },
             {
-              "description": "The field \u0027cleanCodeAttribute\u0027 has been added to the \u0027f\u0027 parameter.",
+              "description": "The field \u0027cleanCodeAttribute\u0027 has been added to the \u0027fields\u0027 parameter.",
               "version": "10.2"
             },
             {
-              "description": "The value \u0027severity\u0027 for the \u0027f\u0027 parameter has been deprecated.",
+              "description": "The value \u0027severity\u0027 for the \u0027fields\u0027 parameter has been deprecated.",
               "version": "10.2"
             },
             {
@@ -14218,11 +14551,11 @@
               "version": "10.0"
             },
             {
-              "description": "The value \u0027debtRemFn\u0027 for the \u0027f\u0027 parameter has been deprecated, use \u0027remFn\u0027 instead",
+              "description": "The value \u0027debtRemFn\u0027 for the \u0027fields\u0027 parameter has been deprecated, use \u0027remFn\u0027 instead",
               "version": "10.0"
             },
             {
-              "description": "The value \u0027defaultDebtRemFn\u0027 for the \u0027f\u0027 parameter has been deprecated, use \u0027defaultRemFn\u0027 instead",
+              "description": "The value \u0027defaultDebtRemFn\u0027 for the \u0027fields\u0027 parameter has been deprecated, use \u0027defaultRemFn\u0027 instead",
               "version": "10.0"
             },
             {
@@ -14234,7 +14567,7 @@
               "version": "10.0"
             },
             {
-              "description": "response fields \u0027total\u0027, \u0027s\u0027, \u0027ps\u0027 have been deprecated, please use \u0027paging\u0027 object instead",
+              "description": "response fields \u0027total\u0027, \u0027s\u0027, \u0027pageSize\u0027 have been deprecated, please use \u0027paging\u0027 object instead",
               "version": "9.8"
             },
             {
@@ -14246,7 +14579,7 @@
               "version": "9.6"
             },
             {
-              "description": "The field \u0027educationPrinciples\u0027 has been added to the \u0027f\u0027 parameter",
+              "description": "The field \u0027educationPrinciples\u0027 has been added to the \u0027fields\u0027 parameter",
               "version": "9.6"
             },
             {
@@ -14258,11 +14591,11 @@
               "version": "9.5"
             },
             {
-              "description": "The field \u0027descriptionSections\u0027 has been added to the \u0027f\u0027 parameter",
+              "description": "The field \u0027descriptionSections\u0027 has been added to the \u0027fields\u0027 parameter",
               "version": "9.5"
             },
             {
-              "description": "The field \u0027updatedAt\u0027 has been added to the \u0027f\u0027 parameter",
+              "description": "The field \u0027updatedAt\u0027 has been added to the \u0027fields\u0027 parameter",
               "version": "7.5"
             },
             {
@@ -14270,7 +14603,7 @@
               "version": "7.2"
             },
             {
-              "description": "The field \u0027includeExternal\u0027 has been added to the \u0027f\u0027 parameter",
+              "description": "The field \u0027includeExternal\u0027 has been added to the \u0027fields\u0027 parameter",
               "version": "7.2"
             },
             {
@@ -14278,7 +14611,7 @@
               "version": "7.1"
             },
             {
-              "description": "The field \u0027scope\u0027 has been added to the \u0027f\u0027 parameter",
+              "description": "The field \u0027scope\u0027 has been added to the \u0027fields\u0027 parameter",
               "version": "7.1"
             },
             {
@@ -14391,6 +14724,14 @@
               "exampleValue": "AU-TpxcA-iU5OvuD2FLz"
             },
             {
+              "key": "complianceStandards",
+              "description": "Comma-separated list of compliance standards",
+              "since": "2025.6",
+              "required": false,
+              "internal": false,
+              "exampleValue": "asvs:4.0.3\u003d6.1.2"
+            },
+            {
               "key": "cwe",
               "description": "Comma-separated list of CWE identifiers. Use \u0027unknown\u0027 to select rules not associated to any CWE.",
               "required": false,
@@ -14402,7 +14743,7 @@
               "description": "Comma-separated list of additional fields to be returned in the response. All the fields are returned by default, except actives.",
               "required": false,
               "internal": false,
-              "exampleValue": "cleanCodeAttribute,mdNote",
+              "exampleValue": "scope,isExternal",
               "possibleValues": [
                 "actives",
                 "cleanCodeAttribute",
@@ -14456,12 +14797,14 @@
                 "cwe",
                 "owaspTop10",
                 "owaspTop10-2021",
+                "owaspMobileTop10-2024",
                 "sansTop25",
                 "sonarsourceSecurity",
                 "cleanCodeAttributeCategories",
                 "impactSeverities",
                 "impactSoftwareQualities",
-                "active_impactSeverities"
+                "active_impactSeverities",
+                "complianceStandards"
               ]
             },
             {
@@ -14536,6 +14879,25 @@
               "required": false,
               "internal": false,
               "exampleValue": "java,js"
+            },
+            {
+              "key": "owaspMobileTop10-2024",
+              "description": "Comma-separated list of OWASP Mobile Top 10 2024 lowercase categories.",
+              "since": "2025.4",
+              "required": false,
+              "internal": false,
+              "possibleValues": [
+                "m1",
+                "m2",
+                "m3",
+                "m4",
+                "m5",
+                "m6",
+                "m7",
+                "m8",
+                "m9",
+                "m10"
+              ]
             },
             {
               "key": "owaspTop10",
@@ -14639,12 +15001,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "updatedAt",
+              "exampleValue": "name",
               "possibleValues": [
-                "updatedAt",
-                "key",
                 "name",
-                "createdAt"
+                "createdAt",
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -14682,6 +15044,7 @@
               "internal": false,
               "exampleValue": "sql-injection,command-injection,others",
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -14760,7 +15123,11 @@
           "hasResponseExample": true,
           "changelog": [
             {
-              "description": "The deprecated field \u0027htmlDesc\u0027 is not returned anymore, even if specified in the \u0027f\u0027 parameter.",
+              "description": "Description-related fields in the response are obfuscated for anonymous users.",
+              "version": "2026.2"
+            },
+            {
+              "description": "The deprecated field \u0027htmlDesc\u0027 is not returned anymore, even if specified in the \u0027fields\u0027 parameter.",
               "version": "2025.1"
             },
             {
@@ -15104,7 +15471,12 @@
           "internal": true,
           "post": false,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Added optional \u0027standards\u0027 param",
+              "version": "17 Jun 2025"
+            }
+          ],
           "params": [
             {
               "key": "branch",
@@ -15119,6 +15491,12 @@
               "required": true,
               "internal": false,
               "exampleValue": "my_project"
+            },
+            {
+              "key": "standards",
+              "description": "Comma-separated list of standards to include in the report. If omitted, all standards are included.",
+              "required": false,
+              "internal": false
             }
           ]
         },
@@ -15130,6 +15508,18 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Add owaspMasvs-v2 value to \u0027standard\u0027 parameter",
+              "version": "2026.1"
+            },
+            {
+              "description": "Add owaspLlmTop10 value to \u0027standard\u0027 parameter",
+              "version": "2025.12"
+            },
+            {
+              "description": "Add owaspMobileTop10 value to \u0027standard\u0027 parameter",
+              "version": "2025.3"
+            },
             {
               "description": "Add CASA value to \u0027standard\u0027 parameter",
               "version": "10.7"
@@ -15192,6 +15582,9 @@
               "required": true,
               "internal": false,
               "possibleValues": [
+                "owaspMasvs-v2",
+                "owaspLlmTop10",
+                "owaspMobileTop10",
                 "owaspTop10",
                 "sonarsourceSecurity",
                 "cweTop25",
@@ -15755,7 +16148,7 @@
         },
         {
           "key": "health",
-          "description": "Provide health status of SonarQube.\u003cp\u003eAlthough global health is calculated based on both application and search nodes, detailed information is returned only for application nodes.\u003c/p\u003e\u003cp\u003e  \u003cul\u003e \u003cli\u003eGREEN: SonarQube is fully operational\u003c/li\u003e \u003cli\u003eYELLOW: SonarQube is usable, but it needs attention in order to be fully operational\u003c/li\u003e \u003cli\u003eRED: SonarQube is not operational\u003c/li\u003e \u003c/ul\u003e\u003c/p\u003e\u003cbr\u003eRequires the \u0027Administer System\u0027 permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).\u003cbr\u003eWhen SonarQube is in safe mode (waiting or running a database upgrade), only the authentication with a system passcode is supported.",
+          "description": "Provide health status of SonarQube.\u003cp\u003eAlthough global health is calculated based on both application and search nodes, detailed information is returned only for application nodes.\u003c/p\u003e\u003cp\u003e  \u003cul\u003e \u003cli\u003eGREEN: SonarQube is fully operational\u003c/li\u003e \u003cli\u003eYELLOW: SonarQube is usable, but it needs attention in order to be fully operational\u003c/li\u003e \u003cli\u003eRED: SonarQube is not operational\u003c/li\u003e \u003c/ul\u003e\u003c/p\u003e\u003cbr\u003eRequires the \u0027Administer System\u0027 permission or system passcode (see sonar.web.systemPasscode in sonar.properties).\u003cbr\u003eWhen SonarQube is in safe mode (waiting or running a database upgrade), only the authentication with a system passcode is supported.",
           "since": "6.6",
           "internal": false,
           "post": false,
@@ -15890,6 +16283,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "The field \u0027documentationUrl\u0027 is added to each upgrade entry to point to the target version\u0027s documentation",
+              "version": "2026.2"
+            },
             {
               "description": "The field \u0027ltsVersion\u0027 is deprecated from the response",
               "version": "10.5"
@@ -16557,6 +16954,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "Response field \u0027id\u0027 has been added",
+              "version": "2025.6"
+            },
+            {
               "description": "\u0027sonarLintAdSeen\u0027 is removed and replaced by a \u0027dismissedNotices\u0027 map that support multiple values",
               "version": "9.6"
             },
@@ -16625,28 +17026,24 @@
           "hasResponseExample": false,
           "changelog": [
             {
-              "description": "Support for new notice \u0027showDesignAndArchitectureOptInBanner, showDesignAndArchitectureBanner, showDesignAndArchitectureTour\u0027 was added.",
-              "version": "25.4"
+              "description": "Support for new notice \u0027showSandboxedIssuesIntro\u0027 was added.",
+              "version": "2026.1"
             },
             {
-              "description": "Support for new notice \u0027showNewModesTour\u0027 was added.",
-              "version": "10.8"
+              "description": "Support for new notice \u0027showEnableSca\u0027 was added.",
+              "version": "2025.3"
+            },
+            {
+              "description": "Support for new notice \u0027showDesignAndArchitectureOptInBanner, showDesignAndArchitectureBanner, showDesignAndArchitectureTour\u0027 was added.",
+              "version": "2025.3"
             },
             {
               "description": "Support for new notice \u0027showNewModesBanner\u0027 was added.",
               "version": "10.8"
             },
             {
-              "description": "Support for new notice \u0027onboardingDismissCaycBranchSummaryGuide\u0027 was added.",
-              "version": "10.6"
-            },
-            {
               "description": "Support for new notice \u0027issueNewIssueStatusAndTransitionGuide\u0027 was added.",
               "version": "10.4"
-            },
-            {
-              "description": "Support for new notice \u0027qualityGateCaYCConditionsSimplification\u0027 was added.",
-              "version": "10.3"
             },
             {
               "description": "Support for new notice \u0027issueCleanCodeGuide\u0027 was added.",
@@ -16661,18 +17058,17 @@
               "internal": false,
               "exampleValue": "EDUCATION_PRINCIPLES",
               "possibleValues": [
-                "qualityGateCaYCConditionsSimplification",
                 "educationPrinciples",
                 "sonarlintAd",
-                "showNewModesTour",
                 "showDesignAndArchitectureBanner",
                 "showNewModesBanner",
+                "showSandboxedIssuesIntro",
                 "issueCleanCodeGuide",
                 "issueNewIssueStatusAndTransitionGuide",
-                "onboardingDismissCaycBranchSummaryGuide",
                 "showDesignAndArchitectureOptInBanner",
                 "overviewZeroNewIssuesSimplification",
-                "showDesignAndArchitectureTour"
+                "showDesignAndArchitectureTour",
+                "showEnableSca"
               ]
             }
           ]
@@ -16916,10 +17312,16 @@
           "key": "set_ai_tool_usage",
           "description": "Indicates whether the current user utilizes any tool that generates AI code for a given project.\u003cbr/\u003eRequires \u0027Browse\u0027 permission on the specified project.",
           "since": "2025.1",
+          "deprecatedSince": "2026.1",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "This endpoint is deprecated",
+              "version": "2026.1"
+            }
+          ],
           "params": [
             {
               "key": "project",

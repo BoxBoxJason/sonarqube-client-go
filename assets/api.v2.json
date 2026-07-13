@@ -3,7 +3,7 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "26.3.0.120487"
+    "version": "26.7.0.124771"
   },
   "servers": [
     {
@@ -124,7 +124,10 @@
             "description": "Return managed or non-managed users. Only available for managed instances, throws for non-managed instances",
             "required": false,
             "schema": {
-              "type": "boolean",
+              "type": [
+                "boolean",
+                "null"
+              ],
               "description": "Return managed or non-managed users. Only available for managed instances, throws for non-managed instances"
             }
           },
@@ -134,7 +137,10 @@
             "description": "Filter on login, name and email.\nThis parameter performs a partial match (contains), it is case insensitive.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on login, name and email.\nThis parameter performs a partial match (contains), it is case insensitive."
             }
           },
@@ -144,7 +150,10 @@
             "description": "Filter on externalIdentity.\nThis parameter perform a case-sensitive exact match",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on externalIdentity.\nThis parameter perform a case-sensitive exact match"
             }
           },
@@ -154,7 +163,10 @@
             "description": "Filter users based on the last connection date field. Only users who interacted with this instance at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the last connection date field. Only users who interacted with this instance at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -166,7 +178,10 @@
             "description": "Filter users based on the last connection date field. Only users that never connected or who interacted with this instance at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the last connection date field. Only users that never connected or who interacted with this instance at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -178,7 +193,10 @@
             "description": "Filter users based on the SonarLint last connection date field Only users who interacted with this instance using SonarLint at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the SonarLint last connection date field Only users who interacted with this instance using SonarLint at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -190,7 +208,10 @@
             "description": "Filter users based on the SonarLint last connection date field. Only users that never connected or who interacted with this instance using SonarLint at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the SonarLint last connection date field. Only users that never connected or who interacted with this instance using SonarLint at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -202,7 +223,10 @@
             "description": "Filter users belonging to group. Only available for system administrators. Using != operator will exclude users from this group.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users belonging to group. Only available for system administrators. Using != operator will exclude users from this group.",
               "internal": "true"
             },
@@ -363,7 +387,7 @@
           "Dop Translation"
         ],
         "summary": "Search GitLab configs",
-        "description": "  Get the list of GitLab configurations.\n  Note that a single configuration is supported at this time.\n  Requires 'Administer System' permission.\n",
+        "description": "  Get the list of GitLab configurations.\n  Note that a single configuration is supported at this time.\n  Requires authentication. System administrators receive the full configuration; other\n  logged-in users receive a reduced response with only the provisioning status.\n",
         "operationId": "searchGitlabConfiguration",
         "responses": {
           "200": {
@@ -402,7 +426,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GitlabConfigurationResource"
+                  "$ref": "#/components/schemas/GitlabConfigurationRestResponseForAdmins"
                 }
               }
             }
@@ -513,7 +537,10 @@
             "description": "Return managed or non-managed groups. Only available for managed instances, throws for non-managed instances",
             "required": false,
             "schema": {
-              "type": "boolean",
+              "type": [
+                "boolean",
+                "null"
+              ],
               "description": "Return managed or non-managed groups. Only available for managed instances, throws for non-managed instances"
             }
           },
@@ -523,7 +550,10 @@
             "description": "Filter on name.\nThis parameter performs a partial match (contains), it is case insensitive.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on name.\nThis parameter performs a partial match (contains), it is case insensitive."
             }
           },
@@ -533,7 +563,10 @@
             "description": "Filter groups containing the user. Only available for system administrators. Using != operator will search for groups without the user.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter groups containing the user. Only available for system administrators. Using != operator will search for groups without the user.",
               "internal": "true"
             },
@@ -627,7 +660,10 @@
             "description": "ID of the user for which to search groups. If not set, all groups are returned.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "ID of the user for which to search groups. If not set, all groups are returned."
             }
           },
@@ -637,7 +673,10 @@
             "description": "ID of the group for which to search members. If not set, all groups are returned.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "ID of the group for which to search members. If not set, all groups are returned."
             }
           },
@@ -927,7 +966,7 @@
           "Dop Translation"
         ],
         "summary": "Fetch a GitLab configuration",
-        "description": "Fetch a GitLab configuration. Requires 'Administer System' permission.\n",
+        "description": "Fetch a GitLab configuration. Requires authentication. System administrators receive the full\nconfiguration; other logged-in users receive a reduced response with only the provisioning status.\n",
         "operationId": "getGitlabConfiguration",
         "parameters": [
           {
@@ -946,7 +985,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GitlabConfigurationResource"
+                  "$ref": "#/components/schemas/GitlabConfigurationRestResponseForAdmins"
                 }
               }
             }
@@ -1012,7 +1051,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GitlabConfigurationResource"
+                  "$ref": "#/components/schemas/GitlabConfigurationRestResponseForAdmins"
                 }
               }
             }
@@ -1367,7 +1406,10 @@
             "description": "Filter on the repository name.\nThis parameter performs an exact, case insensitive, match.\n",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on the repository name.\nThis parameter performs an exact, case insensitive, match.\n"
             }
           },
@@ -1377,7 +1419,10 @@
             "description": "Filter on the DevOps Platform setting id.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on the DevOps Platform setting id."
             }
           },
@@ -1387,7 +1432,10 @@
             "description": "Filter on the repository URL.\nThis parameter can be in different formats, the traditional URL or the git remote URL (https or ssh).\n",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on the repository URL.\nThis parameter can be in different formats, the traditional URL or the git remote URL (https or ssh).\n"
             }
           },
@@ -1713,15 +1761,24 @@
             "minLength": 1
           },
           "projectIdentifier": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Identifier of the DevOps platform project in which the repository is located.\nThis is only needed for Azure and BitBucket Server platforms\n"
           },
           "newCodeDefinitionType": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "  Project New Code Definition Type\n  New code definitions of the following types are allowed:\n    - PREVIOUS_VERSION\n    - NUMBER_OF_DAYS\n    - REFERENCE_BRANCH - will default to the main branch.\n"
           },
           "newCodeDefinitionValue": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "  Project New Code Definition Value\n  For each new code definition type, a different value is expected:\n  - no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH\n  - a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS\n"
           },
           "monorepo": {
@@ -1758,14 +1815,20 @@
         "type": "object",
         "properties": {
           "email": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "format": "email",
             "description": "User email",
             "maxLength": 100,
             "minLength": 1
           },
           "local": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "default": true,
             "description": "Specify if the user should be authenticated from SonarQube server or from an external authentication system. Password should not be set when local is set to false."
           },
@@ -1782,12 +1845,18 @@
             "minLength": 0
           },
           "password": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "User password. Only mandatory when creating local user, otherwise it should not be set",
             "writeOnly": true
           },
           "scmAccounts": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "List of SCM accounts.",
             "items": {
               "type": "string"
@@ -1813,42 +1882,75 @@
             "type": "string"
           },
           "email": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "active": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "readOnly": true
           },
           "local": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "readOnly": true
           },
           "managed": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "readOnly": true
           },
           "externalLogin": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "externalProvider": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "externalId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "avatar": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "sonarQubeLastConnectionDate": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "readOnly": true
           },
           "sonarLintLastConnectionDate": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "readOnly": true
           },
           "scmAccounts": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "type": "string"
             }
@@ -1906,26 +2008,41 @@
             "minLength": 1
           },
           "basicPassword": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For basic authentication: password used to authenticate to the SMTP server",
             "writeOnly": true
           },
           "oauthAuthenticationHost": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: host of the Identity Provider issuing access tokens"
           },
           "oauthClientId": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Client ID provided by Microsoft Exchange when registering the application",
             "writeOnly": true
           },
           "oauthClientSecret": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Client secret provided by Microsoft Exchange when registering the application",
             "writeOnly": true
           },
           "oauthTenant": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Microsoft tenant"
           }
         },
@@ -1985,7 +2102,10 @@
             ]
           },
           "username": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For Basic and OAuth authentication: username used to authenticate to the SMTP server"
           },
           "isBasicPasswordSet": {
@@ -1993,7 +2113,10 @@
             "description": "For Basic authentication: has the password field been set?"
           },
           "oauthAuthenticationHost": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: host of the Identity Provider issuing access tokens"
           },
           "isOauthClientIdSet": {
@@ -2005,7 +2128,10 @@
             "description": "For OAuth authentication: has the Client secret field been set?"
           },
           "oauthTenant": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Microsoft tenant"
           }
         }
@@ -2017,7 +2143,10 @@
             "type": "boolean"
           },
           "message": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -2050,10 +2179,17 @@
           },
           "allowedGroups": {
             "type": "array",
-            "description": "GitLab groups allowed to authenticate.\nSubgroups will automatically be included.\nWhen Auto-provisioning is enabled, members of these groups will be automatically provisioned in SonarQube.\nThis field is required to be non-empty for Auto-provisioning.\n",
+            "description": "GitLab groups allowed to authenticate.\nSubgroups will automatically be included.\nWhen Auto-provisioning is enabled, members of these groups will be automatically provisioned in SonarQube.\nThis field is required to be non-empty for Auto-provisioning unless allowAllGroups is true.\nIgnored when allowAllGroups is true.\n",
             "items": {
               "type": "string"
             }
+          },
+          "allowAllGroups": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "When true with Auto-provisioning, every group visible to the provisioning token is provisioned and the allowedGroups list is ignored. Has no effect with Just-in-Time provisioning. Security risk: any user belonging to any group accessible by the provisioning token will be granted access. Restrict access using allowedGroups unless broad access is intentional. Not supported on GitLab.com (SaaS): the request is rejected when the configured URL is gitlab.com, since the provisioning token may have visibility into a much larger and unbounded set of groups. Performance note: login may be slower for users belonging to a large number of groups, as all their groups must be fetched from GitLab on every authentication."
           },
           "provisioningType": {
             "type": "string",
@@ -2064,12 +2200,18 @@
             ]
           },
           "provisioningToken": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Gitlab token for provisioning",
             "writeOnly": true
           },
           "allowUsersToSignUp": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Allow user to sign up"
           }
         },
@@ -2083,7 +2225,7 @@
           "url"
         ]
       },
-      "GitlabConfigurationResource": {
+      "GitlabConfigurationRestResponseForAdmins": {
         "type": "object",
         "properties": {
           "id": {
@@ -2106,10 +2248,14 @@
           },
           "allowedGroups": {
             "type": "array",
-            "description": "Root Gitlab groups allowed to authenticate and provisioned",
+            "description": "Root Gitlab groups allowed to authenticate and provisioned. Ignored when allowAllGroups is true.",
             "items": {
               "type": "string"
             }
+          },
+          "allowAllGroups": {
+            "type": "boolean",
+            "description": "When true with Auto-provisioning, every group visible to the provisioning token is provisioned and the allowedGroups list is ignored. Has no effect with Just-in-Time provisioning. Security risk: any user belonging to any group accessible by the provisioning token will be granted access. Restrict access using allowedGroups unless broad access is intentional. Not supported on GitLab.com (SaaS): the request is rejected when the configured URL is gitlab.com, since the provisioning token may have visibility into a much larger and unbounded set of groups. Performance note: login may be slower for users belonging to a large number of groups, as all their groups must be fetched from GitLab on every authentication."
           },
           "allowUsersToSignUp": {
             "type": "boolean"
@@ -2127,7 +2273,10 @@
             "readOnly": true
           },
           "errorMessage": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "In case the GitLab configuration is incorrect, error message",
             "readOnly": true
           }
@@ -2193,15 +2342,24 @@
             ]
           },
           "allowUsersToSignUp": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Allow user to sign up"
           },
           "projectVisibility": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Change project visibility based on GitHub repository visibility.\nIf disabled, every provisioned project will be private in SonarQube and visible only to users with explicit GitHub permissions for the corresponding repository.\nChanges take effect at the next synchronization.\n"
           },
           "userConsentRequiredAfterUpgrade": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Admin consent to synchronize permissions from GitHub"
           }
         },
@@ -2267,7 +2425,10 @@
             "type": "boolean"
           },
           "errorMessage": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "In case the GitHub configuration is incorrect, error message",
             "readOnly": true
           }
@@ -2307,7 +2468,10 @@
             "readOnly": true
           },
           "defaultValue": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "type": {
             "type": "string",
@@ -2348,7 +2512,10 @@
             "description": "Rule description in markdown format"
           },
           "status": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "default": "READY",
             "description": "Rule status",
             "enum": [
@@ -2359,14 +2526,20 @@
             ]
           },
           "parameters": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Custom rule parameters",
             "items": {
               "$ref": "#/components/schemas/Parameter"
             }
           },
           "cleanCodeAttribute": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Clean code attribute",
             "enum": [
               "CONVENTIONAL",
@@ -2393,11 +2566,17 @@
             }
           },
           "severity": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Severity"
           },
           "type": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Rule type",
             "enum": [
               "CODE_SMELL",
@@ -2416,7 +2595,7 @@
         ]
       },
       "RuleDescriptionSectionContextRestResponse": {
-        "type": "object",
+        "type": "null",
         "properties": {
           "key": {
             "type": "string"
@@ -2460,7 +2639,10 @@
             "type": "string"
           },
           "severity": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "type": {
             "type": "string",
@@ -2478,7 +2660,10 @@
             }
           },
           "cleanCodeAttribute": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
               "CONVENTIONAL",
               "FORMATTED",
@@ -2497,7 +2682,10 @@
             ]
           },
           "cleanCodeAttributeCategory": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
               "ADAPTABLE",
               "CONSISTENT",
@@ -2506,7 +2694,10 @@
             ]
           },
           "status": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
               "BETA",
               "DEPRECATED",
@@ -2518,7 +2709,10 @@
             "type": "boolean"
           },
           "createdAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "descriptionSections": {
             "type": "array",
@@ -2530,13 +2724,22 @@
             "type": "string"
           },
           "gapDescription": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "htmlNote": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "markdownNote": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "educationPrinciples": {
             "type": "array",
@@ -2548,7 +2751,10 @@
             "type": "boolean"
           },
           "templateId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tags": {
             "type": "array",
@@ -2563,10 +2769,16 @@
             }
           },
           "languageKey": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "languageName": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "parameters": {
             "type": "array",
@@ -2596,7 +2808,10 @@
             "minLength": 1
           },
           "description": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Description for the new group.",
             "maxLength": 200,
             "minLength": 0
@@ -2617,7 +2832,10 @@
             "type": "string"
           },
           "description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "managed": {
             "type": "boolean",
@@ -2699,8 +2917,7 @@
             "$ref": "#/components/schemas/UpdateFieldListString",
             "description": "List of SCM accounts.",
             "items": {
-              "type": "string",
-              "description": "List of SCM accounts."
+              "type": "string"
             }
           },
           "externalProvider": {
@@ -2803,7 +3020,10 @@
             "description": "Url of Gitlab instance for authentication (for instance https://gitlab.com/api/v4)"
           },
           "secret": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Secret of the application"
           },
           "synchronizeGroups": {
@@ -2812,11 +3032,14 @@
           },
           "allowedGroups": {
             "$ref": "#/components/schemas/UpdateFieldListString",
-            "description": "Root Gitlab groups allowed to authenticate and provisioned",
+            "description": "Root Gitlab groups allowed to authenticate and provisioned. Ignored when allowAllGroups is true.",
             "items": {
-              "type": "string",
-              "description": "Root Gitlab groups allowed to authenticate and provisioned"
+              "type": "string"
             }
+          },
+          "allowAllGroups": {
+            "type": "boolean",
+            "description": "When true with Auto-provisioning, every group visible to the provisioning token is provisioned and the allowedGroups list is ignored. Has no effect with Just-in-Time provisioning. Security risk: any user belonging to any group accessible by the provisioning token will be granted access. Restrict access using allowedGroups unless broad access is intentional. Not supported on GitLab.com (SaaS): the request is rejected when the configured URL is gitlab.com, since the provisioning token may have visibility into a much larger and unbounded set of groups. Performance note: login may be slower for users belonging to a large number of groups, as all their groups must be fetched from GitLab on every authentication."
           },
           "provisioningType": {
             "type": "string",
@@ -2831,7 +3054,10 @@
             "description": "Allow user to sign up"
           },
           "provisioningToken": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Gitlab token for provisioning",
             "maxLength": 2147483647,
             "minLength": 1
@@ -2877,8 +3103,7 @@
             "$ref": "#/components/schemas/UpdateFieldListString",
             "description": "GitHub organizations allowed to authenticate and provisioned",
             "items": {
-              "type": "string",
-              "description": "GitHub organizations allowed to authenticate and provisioned"
+              "type": "string"
             }
           },
           "provisioningType": {
@@ -2977,21 +3202,36 @@
             "type": "string"
           },
           "completedSteps": {
-            "type": "integer",
+            "type": [
+              "integer",
+              "null"
+            ],
             "format": "int32"
           },
           "totalSteps": {
-            "type": "integer",
+            "type": [
+              "integer",
+              "null"
+            ],
             "format": "int32"
           },
           "startedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "message": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "expectedFinishTimestamp": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -3045,10 +3285,16 @@
             "type": "string"
           },
           "repository": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "slug": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -3078,7 +3324,7 @@
           "gitlabConfigurations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GitlabConfigurationResource"
+              "$ref": "#/components/schemas/GitlabConfigurationRestResponseForAdmins"
             }
           },
           "page": {
@@ -3115,10 +3361,16 @@
             "type": "string"
           },
           "url": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "appId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -3217,13 +3469,19 @@
             "type": "string"
           },
           "internalKey": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "language": {
             "type": "string"
           },
           "templateRuleKey": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "qProfileKey": {
             "type": "string"

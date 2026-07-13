@@ -411,6 +411,13 @@ type UsersSearchOptions struct {
 	SlLastConnectedBefore string `url:"slLastConnectedBefore,omitempty"`
 }
 
+// UsersSetAiToolUsageOptions contains parameters for the SetAiToolUsage method.
+type UsersSetAiToolUsageOptions struct {
+	// Project is the project key.
+	// This field is required.
+	Project string `url:"project"`
+}
+
 // UsersSetHomepageOptions contains parameters for the SetHomepage method.
 type UsersSetHomepageOptions struct {
 	// Branch is the branch key. Only used when Type is PROJECT.
@@ -633,6 +640,15 @@ func (s *UsersService) ValidateSearchOpt(opt *UsersSearchOptions) error {
 	}
 
 	return nil
+}
+
+// ValidateSetAiToolUsageOpt validates the options for the SetAiToolUsage method.
+func (s *UsersService) ValidateSetAiToolUsageOpt(opt *UsersSetAiToolUsageOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	return ValidateRequired(opt.Project, "Project")
 }
 
 // ValidateSetHomepageOpt validates the options for the SetHomepage method.
@@ -960,6 +976,33 @@ func (s *UsersService) Search(ctx context.Context, opt *UsersSearchOptions) (*Us
 	}
 
 	return result, resp, nil
+}
+
+// SetAiToolUsage indicates whether the current user utilizes any tool that generates
+// AI code for a given project.
+// Requires Browse permission on the specified project.
+//
+// Deprecated: Since SonarQube 2026.1.
+// API endpoint: POST /api/users/set_ai_tool_usage.
+// Since: 2025.1.
+// Enterprise Edition only.
+func (s *UsersService) SetAiToolUsage(ctx context.Context, opt *UsersSetAiToolUsageOptions) (*http.Response, error) {
+	err := s.ValidateSetAiToolUsageOpt(opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "users/set_ai_tool_usage", opt)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 // SetHomepage sets the homepage of the current user.

@@ -863,6 +863,64 @@
           ]
         },
         {
+          "key": "create_github_from_manifest",
+          "description": "Initiate the creation of a GitHub instance Setting using the GitHub App Manifest flow. Returns the manifest and a single-use state to be POSTed to GitHub by the browser. \u003cbr/\u003eRequires the \u0027Administer System\u0027 permission",
+          "since": "2026.4",
+          "internal": true,
+          "post": true,
+          "hasResponseExample": true,
+          "changelog": [],
+          "params": [
+            {
+              "key": "auth",
+              "description": "Whether to also set up GitHub authentication (sign-in) using this App.",
+              "required": false,
+              "internal": false,
+              "defaultValue": "false",
+              "possibleValues": [
+                "true",
+                "false",
+                "yes",
+                "no"
+              ]
+            },
+            {
+              "key": "devops",
+              "description": "Whether to create the DevOps Platform integration (project import / PR analysis) for this App.",
+              "required": false,
+              "internal": false,
+              "defaultValue": "true",
+              "possibleValues": [
+                "true",
+                "false",
+                "yes",
+                "no"
+              ]
+            },
+            {
+              "key": "key",
+              "description": "Unique key of the GitHub instance setting that will be created. Required when \u0027devops\u0027 is true.",
+              "required": false,
+              "internal": false,
+              "maximumLength": 200
+            },
+            {
+              "key": "name",
+              "description": "Suggested name for the GitHub App (the user can change it on GitHub). Defaults to \u0027SonarQube - \u003cadd_unique_name\u003e\u0027.",
+              "required": false,
+              "internal": false,
+              "maximumLength": 200
+            },
+            {
+              "key": "organization",
+              "description": "GitHub organization the App should be created under. Leave empty to create it under the user\u0027s personal account.",
+              "required": false,
+              "internal": false,
+              "maximumLength": 200
+            }
+          ]
+        },
+        {
           "key": "create_gitlab",
           "description": "Create GitLab instance Setting. \u003cbr/\u003eRequires the \u0027Administer System\u0027 permission",
           "since": "8.1",
@@ -1743,7 +1801,7 @@
         },
         {
           "key": "info",
-          "description": "Gets information about Compute Engine. Requires the system administration permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).",
+          "description": "Gets information about Compute Engine. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
           "since": "7.2",
           "internal": true,
           "post": false,
@@ -1752,7 +1810,7 @@
         },
         {
           "key": "pause",
-          "description": "Requests pause of Compute Engine workers. Requires the system administration permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).",
+          "description": "Requests pause of Compute Engine workers. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
           "since": "7.2",
           "internal": true,
           "post": true,
@@ -1761,7 +1819,7 @@
         },
         {
           "key": "resume",
-          "description": "Resumes pause of Compute Engine workers. Requires the system administration permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).",
+          "description": "Resumes pause of Compute Engine workers. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
           "since": "7.2",
           "internal": true,
           "post": true,
@@ -2076,6 +2134,7 @@
                 "new_lines",
                 "new_maintainability_rating",
                 "new_reliability_rating",
+                "new_sca_rating_any_issue",
                 "new_security_hotspots_reviewed",
                 "new_security_rating",
                 "new_security_review_rating",
@@ -2084,6 +2143,7 @@
                 "new_software_quality_security_rating",
                 "qualifier",
                 "reliability_rating",
+                "sca_rating_any_issue",
                 "security_hotspots_reviewed",
                 "security_rating",
                 "security_review_rating",
@@ -2096,7 +2156,7 @@
             },
             {
               "key": "filter",
-              "description": "Filter of projects on name, key, measure value, quality gate, language, tag or whether a project is a favorite or not.\u003cbr\u003eThe filter must be encoded to form a valid URL (for example \u0027\u003d\u0027 must be replaced by \u0027%3D\u0027).\u003cbr\u003eExamples of use:\u003cul\u003e \u003cli\u003eto filter my favorite projects with a failed quality gate and a coverage greater than or equals to 60% and a coverage strictly lower than 80%:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"alert_status \u003d ERROR and isFavorite and coverage \u003e\u003d 60 and coverage \u003c 80\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects with a reliability, security and maintainability rating equals or worse than B:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"reliability_rating\u003e\u003d2 and security_rating\u003e\u003d2 and sqale_rating\u003e\u003d2\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects without duplication data:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"duplicated_lines_density \u003d NO_DATA\"\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on project name or key, use the \u0027query\u0027 keyword, for instance : \u003ccode\u003efilter\u003d\u0027query \u003d \"Sonar\"\u0027\u003c/code\u003e.\u003cbr\u003e\u003cbr\u003eTo filter on a numeric metric, provide the metric key.\u003cbr\u003eThese are the supported metric keys:\u003cbr\u003e\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003ecoverage\u003c/li\u003e\u003cli\u003eduplicated_lines_density\u003c/li\u003e\u003cli\u003elines\u003c/li\u003e\u003cli\u003encloc\u003c/li\u003e\u003cli\u003encloc_language_distribution\u003c/li\u003e\u003cli\u003enew_coverage\u003c/li\u003e\u003cli\u003enew_duplicated_lines_density\u003c/li\u003e\u003cli\u003enew_lines\u003c/li\u003e\u003cli\u003enew_maintainability_rating\u003c/li\u003e\u003cli\u003enew_reliability_rating\u003c/li\u003e\u003cli\u003enew_security_hotspots_reviewed\u003c/li\u003e\u003cli\u003enew_security_rating\u003c/li\u003e\u003cli\u003enew_security_review_rating\u003c/li\u003e\u003cli\u003enew_software_quality_maintainability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_reliability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_security_rating\u003c/li\u003e\u003cli\u003ereliability_rating\u003c/li\u003e\u003cli\u003esecurity_hotspots_reviewed\u003c/li\u003e\u003cli\u003esecurity_rating\u003c/li\u003e\u003cli\u003esecurity_review_rating\u003c/li\u003e\u003cli\u003esoftware_quality_maintainability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_reliability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_security_rating\u003c/li\u003e\u003cli\u003esqale_rating\u003c/li\u003e\u003c/ul\u003e\u003cbr\u003eTo filter on a rating, provide the corresponding metric key (ex: reliability_rating for reliability rating).\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u00271\u0027 for rating A\u003c/li\u003e \u003cli\u003e\u00272\u0027 for rating B\u003c/li\u003e \u003cli\u003e\u00273\u0027 for rating C\u003c/li\u003e \u003cli\u003e\u00274\u0027 for rating D\u003c/li\u003e \u003cli\u003e\u00275\u0027 for rating E\u003c/li\u003e\u003c/ul\u003eTo filter on a Quality Gate status use the metric key \u0027alert_status\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u0027OK\u0027 for Passed\u003c/li\u003e \u003cli\u003e\u0027WARN\u0027 for Warning\u003c/li\u003e \u003cli\u003e\u0027ERROR\u0027 for Failed\u003c/li\u003e\u003c/ul\u003eTo filter on languages use the \u0027languages\u0027 keyword: \u003cul\u003e \u003cli\u003eto filter on a single language you can use \u0027languages \u003d java\u0027\u003c/li\u003e \u003cli\u003eto filter on several languages you must use \u0027languages IN (java, js)\u0027\u003c/li\u003e\u003c/ul\u003eUse the WS api/languages/list to find the key of a language.\u003cbr\u003e To filter on tags use the \u0027tags\u0027 keyword:\u003cul\u003e \u003cli\u003eto filter on one tag you can use \u003ccode\u003etags \u003d finance\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter on several tags you must use \u003ccode\u003etags in (offshore, java)\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on a qualifier use key \u0027qualifier\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003eTRK - for projects\u003c/li\u003e \u003cli\u003eAPP - for applications\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Filter of projects on name, key, measure value, quality gate, language, tag or whether a project is a favorite or not.\u003cbr\u003eThe filter must be encoded to form a valid URL (for example \u0027\u003d\u0027 must be replaced by \u0027%3D\u0027).\u003cbr\u003eExamples of use:\u003cul\u003e \u003cli\u003eto filter my favorite projects with a failed quality gate and a coverage greater than or equals to 60% and a coverage strictly lower than 80%:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"alert_status \u003d ERROR and isFavorite and coverage \u003e\u003d 60 and coverage \u003c 80\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects with a reliability, security and maintainability rating equals or worse than B:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"reliability_rating\u003e\u003d2 and security_rating\u003e\u003d2 and sqale_rating\u003e\u003d2\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects without duplication data:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"duplicated_lines_density \u003d NO_DATA\"\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on project name or key, use the \u0027query\u0027 keyword, for instance : \u003ccode\u003efilter\u003d\u0027query \u003d \"Sonar\"\u0027\u003c/code\u003e.\u003cbr\u003e\u003cbr\u003eTo filter on a numeric metric, provide the metric key.\u003cbr\u003eThese are the supported metric keys:\u003cbr\u003e\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003ecoverage\u003c/li\u003e\u003cli\u003eduplicated_lines_density\u003c/li\u003e\u003cli\u003elines\u003c/li\u003e\u003cli\u003encloc\u003c/li\u003e\u003cli\u003encloc_language_distribution\u003c/li\u003e\u003cli\u003enew_coverage\u003c/li\u003e\u003cli\u003enew_duplicated_lines_density\u003c/li\u003e\u003cli\u003enew_lines\u003c/li\u003e\u003cli\u003enew_maintainability_rating\u003c/li\u003e\u003cli\u003enew_reliability_rating\u003c/li\u003e\u003cli\u003enew_sca_rating_any_issue\u003c/li\u003e\u003cli\u003enew_security_hotspots_reviewed\u003c/li\u003e\u003cli\u003enew_security_rating\u003c/li\u003e\u003cli\u003enew_security_review_rating\u003c/li\u003e\u003cli\u003enew_software_quality_maintainability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_reliability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_security_rating\u003c/li\u003e\u003cli\u003ereliability_rating\u003c/li\u003e\u003cli\u003esca_rating_any_issue\u003c/li\u003e\u003cli\u003esecurity_hotspots_reviewed\u003c/li\u003e\u003cli\u003esecurity_rating\u003c/li\u003e\u003cli\u003esecurity_review_rating\u003c/li\u003e\u003cli\u003esoftware_quality_maintainability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_reliability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_security_rating\u003c/li\u003e\u003cli\u003esqale_rating\u003c/li\u003e\u003c/ul\u003e\u003cbr\u003eTo filter on a rating, provide the corresponding metric key (ex: reliability_rating for reliability rating).\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u00271\u0027 for rating A\u003c/li\u003e \u003cli\u003e\u00272\u0027 for rating B\u003c/li\u003e \u003cli\u003e\u00273\u0027 for rating C\u003c/li\u003e \u003cli\u003e\u00274\u0027 for rating D\u003c/li\u003e \u003cli\u003e\u00275\u0027 for rating E\u003c/li\u003e\u003c/ul\u003eTo filter on a Quality Gate status use the metric key \u0027alert_status\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u0027OK\u0027 for Passed\u003c/li\u003e \u003cli\u003e\u0027WARN\u0027 for Warning\u003c/li\u003e \u003cli\u003e\u0027ERROR\u0027 for Failed\u003c/li\u003e\u003c/ul\u003eTo filter on languages use the \u0027languages\u0027 keyword: \u003cul\u003e \u003cli\u003eto filter on a single language you can use \u0027languages \u003d java\u0027\u003c/li\u003e \u003cli\u003eto filter on several languages you must use \u0027languages IN (java, js)\u0027\u003c/li\u003e\u003c/ul\u003eUse the WS api/languages/list to find the key of a language.\u003cbr\u003e To filter on tags use the \u0027tags\u0027 keyword:\u003cul\u003e \u003cli\u003eto filter on one tag you can use \u003ccode\u003etags \u003d finance\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter on several tags you must use \u003ccode\u003etags in (offshore, java)\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on a qualifier use key \u0027qualifier\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003eTRK - for projects\u003c/li\u003e \u003cli\u003eAPP - for applications\u003c/li\u003e\u003c/ul\u003e",
               "required": false,
               "internal": false,
               "minimumLength": 2
@@ -2140,6 +2200,7 @@
                 "new_lines",
                 "new_maintainability_rating",
                 "new_reliability_rating",
+                "new_sca_rating_any_issue",
                 "new_security_hotspots_reviewed",
                 "new_security_rating",
                 "new_security_review_rating",
@@ -2147,6 +2208,7 @@
                 "new_software_quality_reliability_rating",
                 "new_software_quality_security_rating",
                 "reliability_rating",
+                "sca_rating_any_issue",
                 "security_hotspots_reviewed",
                 "security_rating",
                 "security_review_rating",
@@ -2709,10 +2771,16 @@
           "key": "add_comment",
           "description": "Add a comment to a Security Hotpot.\u003cbr/\u003eRequires authentication and the following permission: \u0027Browse\u0027 on the project of the specified Security Hotspot.",
           "since": "8.1",
+          "deprecatedSince": "2026.4",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            }
+          ],
           "params": [
             {
               "key": "comment",
@@ -2735,10 +2803,15 @@
           "key": "assign",
           "description": "Assign a hotspot to an active user. Requires authentication and Browse permission on project",
           "since": "8.2",
+          "deprecatedSince": "2026.4",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
           "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            },
             {
               "description": "Parameter \u0027assignee\u0027 is no longer mandatory",
               "version": "8.9"
@@ -2772,10 +2845,15 @@
           "key": "change_status",
           "description": "Change the status of a Security Hotpot.\u003cbr/\u003eRequires the \u0027Administer Security Hotspot\u0027 permission.",
           "since": "8.1",
+          "deprecatedSince": "2026.4",
           "internal": false,
           "post": true,
           "hasResponseExample": false,
           "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            },
             {
               "description": "The following \u0027resolution\u0027 values are not deprecated anymore: FIXED, SAFE, ACKNOWLEDGED",
               "version": "2025.1"
@@ -2831,10 +2909,16 @@
           "key": "delete_comment",
           "description": "Delete comment from Security Hotpot.\u003cbr/\u003eRequires authentication and the following permission: \u0027Browse\u0027 on the project of the specified Security Hotspot.",
           "since": "8.2",
+          "deprecatedSince": "2026.4",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            }
+          ],
           "params": [
             {
               "key": "comment",
@@ -2849,10 +2933,16 @@
           "key": "edit_comment",
           "description": "Edit a comment.\u003cbr/\u003eRequires authentication and the following permission: \u0027Browse\u0027 on the project of the specified hotspot.",
           "since": "8.2",
+          "deprecatedSince": "2026.4",
           "internal": true,
           "post": true,
           "hasResponseExample": true,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            }
+          ],
           "params": [
             {
               "key": "comment",
@@ -2873,12 +2963,18 @@
         },
         {
           "key": "list",
-          "description": "List Security Hotpots. This endpoint is used in degraded mode, when issue indexing is running.\u003cbr\u003eTotal number of Security Hotspots will be always equal to a page size, as counting all issues is not supported. \u003cbr\u003eRequires the \u0027Browse\u0027 permission on the specified project. ",
+          "description": "List Security Hotpots. This endpoint is used in degraded mode, when issue indexing is running.\u003cbr\u003eTotal number of Security Hotspots will be always equal to a page size, as counting all issues is not supported. \u003cbr\u003eRequires the \u0027Browse\u0027 permission on the specified project.",
           "since": "10.2",
+          "deprecatedSince": "2026.4",
           "internal": true,
           "post": false,
           "hasResponseExample": true,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            }
+          ],
           "params": [
             {
               "key": "branch",
@@ -2958,10 +3054,15 @@
           "key": "pull",
           "description": "This endpoint fetches and returns all (unless filtered by optional params) the hotspots for a given branch. The hotspots returned are not paginated, so the response size can be big. Requires project \u0027Browse\u0027 permission.",
           "since": "10.1",
+          "deprecatedSince": "2026.4",
           "internal": true,
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            },
             {
               "description": "The response field \u0027creationDate\u0027 contains the functional issue creation date instead of the database operation date",
               "version": "10.3"
@@ -3002,10 +3103,15 @@
           "key": "search",
           "description": "Search for Security Hotpots. \u003cbr\u003eRequires the \u0027Browse\u0027 permission on the specified project(s). \u003cbr\u003eFor applications, it also requires \u0027Browse\u0027 permission on its child projects. \u003cbr\u003eWhen issue indexing is in progress returns 503 service unavailable HTTP code.",
           "since": "8.1",
+          "deprecatedSince": "2026.4",
           "internal": false,
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            },
             {
               "description": "Param \u0027complianceStandards\u0027 has been added",
               "version": "2025.6"
@@ -3253,6 +3359,7 @@
               "required": false,
               "internal": false,
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -3302,10 +3409,15 @@
           "key": "show",
           "description": "Provides the details of a Security Hotspot.",
           "since": "8.1",
+          "deprecatedSince": "2026.4",
           "internal": false,
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
+              "version": "2026.4"
+            },
             {
               "description": "Add the \u0027codeVariants\u0027 response field",
               "version": "10.1"
@@ -5027,13 +5139,15 @@
               "required": false,
               "internal": false,
               "possibleValues": [
-                "STATUS",
-                "FILE_LINE",
                 "HOTSPOTS",
+                "TYPE_SEVERITY",
                 "UPDATE_DATE",
-                "CREATION_DATE",
                 "CLOSE_DATE",
-                "SEVERITY"
+                "QUALITY_SEVERITY",
+                "FILE_LINE",
+                "STATUS",
+                "SEVERITY",
+                "CREATION_DATE"
               ]
             },
             {
@@ -5081,6 +5195,7 @@
               "required": false,
               "internal": false,
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -5866,7 +5981,7 @@
             },
             {
               "key": "metricKeys",
-              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only security_issues, maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues metrics are supported",
+              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues, security_issues, maintainability_issues metrics are supported",
               "required": true,
               "internal": false,
               "exampleValue": "ncloc,complexity,violations",
@@ -5967,9 +6082,9 @@
               "internal": false,
               "defaultValue": "all",
               "possibleValues": [
+                "children",
                 "leaves",
-                "all",
-                "children"
+                "all"
               ]
             }
           ]
@@ -6264,7 +6379,12 @@
           "internal": false,
           "post": false,
           "hasResponseExample": true,
-          "changelog": []
+          "changelog": [
+            {
+              "description": "Added \u0027sonarqube_elasticsearch_read_only_indices_total\u0027 and \u0027sonarqube_elasticsearch_disk_usage_percent\u0027 metrics",
+              "version": "2026.3"
+            }
+          ]
         }
       ]
     },
@@ -6606,7 +6726,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to grant to the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to grant to the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -6738,7 +6858,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to grant to the user\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to grant to the user\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -7021,7 +7141,7 @@
             },
             {
               "key": "permission",
-              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": false,
               "internal": false
             },
@@ -7085,7 +7205,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to revoke from the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to revoke from the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -7217,7 +7337,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to revoke from the user.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to revoke from the user.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -7550,7 +7670,7 @@
             },
             {
               "key": "permission",
-              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": false,
               "internal": false
             },
@@ -8733,12 +8853,22 @@
               "exampleValue": "42"
             },
             {
+              "key": "projectKeys",
+              "description": "Comma-separated list of project keys (case insensitive)",
+              "since": "2026.3",
+              "required": false,
+              "internal": false,
+              "exampleValue": "my_project,another_project",
+              "maxValuesAllowed": 1000
+            },
+            {
               "key": "projects",
-              "description": "Comma-separated list of project keys",
+              "description": "Comma-separated list of project keys. Deprecated, use projectKeys instead",
               "since": "6.6",
               "required": false,
               "internal": false,
               "exampleValue": "my_project,another_project",
+              "deprecatedSince": "2026.3",
               "maxValuesAllowed": 1000
             },
             {
@@ -9126,7 +9256,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -9897,7 +10027,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -10338,6 +10468,7 @@
               "internal": false,
               "exampleValue": "sql-injection,command-injection,others",
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -11319,6 +11450,7 @@
               "internal": false,
               "exampleValue": "sql-injection,command-injection,others",
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -12887,7 +13019,7 @@
               "description": "Comma-separated list of additional fields to be returned in the response. All the fields are returned by default, except actives.",
               "required": false,
               "internal": false,
-              "exampleValue": "createdAt,remFnOverloaded",
+              "exampleValue": "deprecatedKeys,updatedAt",
               "possibleValues": [
                 "actives",
                 "cleanCodeAttribute",
@@ -13188,6 +13320,7 @@
               "internal": false,
               "exampleValue": "sql-injection,command-injection,others",
               "possibleValues": [
+                "malicious-dependencies",
                 "buffer-overflow",
                 "sql-injection",
                 "rce",
@@ -14103,7 +14236,7 @@
         },
         {
           "key": "health",
-          "description": "Provide health status of SonarQube.\u003cp\u003eAlthough global health is calculated based on both application and search nodes, detailed information is returned only for application nodes.\u003c/p\u003e\u003cp\u003e  \u003cul\u003e \u003cli\u003eGREEN: SonarQube is fully operational\u003c/li\u003e \u003cli\u003eYELLOW: SonarQube is usable, but it needs attention in order to be fully operational\u003c/li\u003e \u003cli\u003eRED: SonarQube is not operational\u003c/li\u003e \u003c/ul\u003e\u003c/p\u003e\u003cbr\u003eRequires the \u0027Administer System\u0027 permission or system passcode (see WEB_SYSTEM_PASS_CODE in sonar.properties).\u003cbr\u003eWhen SonarQube is in safe mode (waiting or running a database upgrade), only the authentication with a system passcode is supported.",
+          "description": "Provide health status of SonarQube.\u003cp\u003eAlthough global health is calculated based on both application and search nodes, detailed information is returned only for application nodes.\u003c/p\u003e\u003cp\u003e  \u003cul\u003e \u003cli\u003eGREEN: SonarQube is fully operational\u003c/li\u003e \u003cli\u003eYELLOW: SonarQube is usable, but it needs attention in order to be fully operational\u003c/li\u003e \u003cli\u003eRED: SonarQube is not operational\u003c/li\u003e \u003c/ul\u003e\u003c/p\u003e\u003cbr\u003eRequires the \u0027Administer System\u0027 permission or system passcode (see sonar.web.systemPasscode in sonar.properties).\u003cbr\u003eWhen SonarQube is in safe mode (waiting or running a database upgrade), only the authentication with a system passcode is supported.",
           "since": "6.6",
           "internal": false,
           "post": false,
@@ -14238,6 +14371,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "The field \u0027documentationUrl\u0027 is added to each upgrade entry to point to the target version\u0027s documentation",
+              "version": "2026.2"
+            },
             {
               "description": "The field \u0027ltsVersion\u0027 is deprecated from the response",
               "version": "10.5"

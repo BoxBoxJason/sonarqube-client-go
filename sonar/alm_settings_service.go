@@ -32,6 +32,8 @@ const (
 	MaxBitbucketCloudClientSecretUpdateLength = 160
 	// MaxBitbucketCloudWorkspaceUpdateLength is the maximum length for Bitbucket Cloud Workspace (update).
 	MaxBitbucketCloudWorkspaceUpdateLength = 80
+	// MaxGitHubRepositoryLength is the maximum length for a GitHub repository binding.
+	MaxGitHubRepositoryLength = 256
 )
 
 // AlmSettingsService handles communication with the DevOps Platform Settings related methods
@@ -155,6 +157,14 @@ type GitlabDefinition struct {
 	URL string `json:"url,omitempty"`
 }
 
+// AlmSettingsGithubManifest represents the response from initiating the GitHub App Manifest flow.
+type AlmSettingsGithubManifest struct {
+	// Manifest is the GitHub App Manifest JSON to be POSTed to GitHub by the browser.
+	Manifest string `json:"manifest,omitempty"`
+	// State is the single-use state token to be POSTed to GitHub alongside the manifest.
+	State string `json:"state,omitempty"`
+}
+
 // AlmSettingsValidation represents the response from validating a DevOps Platform setting.
 type AlmSettingsValidation struct {
 	// Errors contains validation error messages, if any.
@@ -258,6 +268,29 @@ type AlmSettingsCreateGitlabOptions struct {
 	URL string `url:"url"`
 }
 
+// AlmSettingsCreateGithubFromManifestOptions contains parameters for the CreateGithubFromManifest method.
+type AlmSettingsCreateGithubFromManifestOptions struct {
+	// Auth indicates whether to also set up GitHub authentication (sign-in) using this App.
+	// Allowed values: true, false, yes, no
+	// This field is optional. Default: false.
+	Auth string `url:"auth,omitempty"`
+	// Devops indicates whether to create the DevOps Platform integration (project import / PR analysis) for this App.
+	// Allowed values: true, false, yes, no
+	// This field is optional. Default: true.
+	Devops string `url:"devops,omitempty"`
+	// Key is the unique key of the GitHub instance setting that will be created. Required when Devops is true.
+	// This field is optional. Maximum length: 200 characters.
+	Key string `url:"key,omitempty"`
+	// Name is the suggested name for the GitHub App (the user can change it on GitHub).
+	// Defaults to 'SonarQube - <add_unique_name>'.
+	// This field is optional. Maximum length: 200 characters.
+	Name string `url:"name,omitempty"`
+	// Organization is the GitHub organization the App should be created under.
+	// Leave empty to create it under the user's personal account.
+	// This field is optional. Maximum length: 200 characters.
+	Organization string `url:"organization,omitempty"`
+}
+
 // AlmSettingsDeleteOptions contains parameters for the Delete method.
 type AlmSettingsDeleteOptions struct {
 	// Key is the DevOps Platform Setting key.
@@ -265,11 +298,110 @@ type AlmSettingsDeleteOptions struct {
 	Key string `url:"key"`
 }
 
+// AlmSettingsDeleteBindingOptions contains parameters for the DeleteBinding method.
+type AlmSettingsDeleteBindingOptions struct {
+	// Project is the project key.
+	// This field is required.
+	Project string `url:"project"`
+}
+
 // AlmSettingsGetBindingOptions contains parameters for the GetBinding method.
 type AlmSettingsGetBindingOptions struct {
 	// Project is the project key.
 	// This field is required.
 	Project string `url:"project"`
+}
+
+// AlmSettingsSetAzureBindingOptions contains parameters for the SetAzureBinding method.
+type AlmSettingsSetAzureBindingOptions struct {
+	// InlineAnnotationsEnabled enables inline annotations during Pull Request decoration.
+	// This field is optional (since 2025.1). Default: true.
+	InlineAnnotationsEnabled *bool `url:"inlineAnnotationsEnabled,omitempty"`
+	// AlmSetting is the Azure DevOps setting key.
+	// This field is required. Maximum length: 200 characters.
+	AlmSetting string `url:"almSetting"`
+	// Project is the SonarQube project key.
+	// This field is required.
+	Project string `url:"project"`
+	// ProjectName is the Azure DevOps project name.
+	// This field is required (since 8.6).
+	ProjectName string `url:"projectName"`
+	// RepositoryName is the Azure DevOps repository name.
+	// This field is required (since 8.6).
+	RepositoryName string `url:"repositoryName"`
+	// Monorepo indicates if this project is part of a monorepo.
+	// This field is required (since 8.7).
+	Monorepo bool `url:"monorepo"`
+}
+
+// AlmSettingsSetBitbucketBindingOptions contains parameters for the SetBitbucketBinding method.
+type AlmSettingsSetBitbucketBindingOptions struct {
+	// AlmSetting is the Bitbucket Server setting key.
+	// This field is required. Maximum length: 200 characters.
+	AlmSetting string `url:"almSetting"`
+	// Project is the project key.
+	// This field is required.
+	Project string `url:"project"`
+	// Repository is the Bitbucket Server repository key.
+	// This field is required.
+	Repository string `url:"repository"`
+	// Slug is the Bitbucket Server repository slug.
+	// This field is required.
+	Slug string `url:"slug"`
+	// Monorepo indicates if this project is part of a monorepo.
+	// This field is required (since 8.7).
+	Monorepo bool `url:"monorepo"`
+}
+
+// AlmSettingsSetBitbucketCloudBindingOptions contains parameters for the SetBitbucketCloudBinding method.
+type AlmSettingsSetBitbucketCloudBindingOptions struct {
+	// AlmSetting is the Bitbucket Cloud setting key.
+	// This field is required. Maximum length: 200 characters.
+	AlmSetting string `url:"almSetting"`
+	// Project is the project key.
+	// This field is required.
+	Project string `url:"project"`
+	// Repository is the Bitbucket Cloud repository key.
+	// This field is required.
+	Repository string `url:"repository"`
+	// Monorepo indicates if this project is part of a monorepo.
+	// This field is required (since 8.8).
+	Monorepo bool `url:"monorepo"`
+}
+
+// AlmSettingsSetGithubBindingOptions contains parameters for the SetGithubBinding method.
+type AlmSettingsSetGithubBindingOptions struct {
+	// SummaryCommentEnabled enables/disables the analysis summary in the PR discussion tab.
+	// This field is optional (since 8.3). Default: true.
+	SummaryCommentEnabled *bool `url:"summaryCommentEnabled,omitempty"`
+	// AlmSetting is the GitHub setting key.
+	// This field is required. Maximum length: 200 characters.
+	AlmSetting string `url:"almSetting"`
+	// Project is the project key.
+	// This field is required.
+	Project string `url:"project"`
+	// Repository is the GitHub repository.
+	// This field is required. Maximum length: 256 characters.
+	Repository string `url:"repository"`
+	// Monorepo indicates if this project is part of a monorepo.
+	// This field is required (since 8.7).
+	Monorepo bool `url:"monorepo"`
+}
+
+// AlmSettingsSetGitlabBindingOptions contains parameters for the SetGitlabBinding method.
+type AlmSettingsSetGitlabBindingOptions struct {
+	// AlmSetting is the GitLab setting key.
+	// This field is required. Maximum length: 200 characters.
+	AlmSetting string `url:"almSetting"`
+	// Project is the project key.
+	// This field is required.
+	Project string `url:"project"`
+	// Repository is the GitLab project ID.
+	// This field is required.
+	Repository string `url:"repository"`
+	// Monorepo indicates if this project is part of a monorepo.
+	// This field is required (since 8.7).
+	Monorepo bool `url:"monorepo"`
 }
 
 // AlmSettingsListOptions contains parameters for the List method.
@@ -638,6 +770,37 @@ func (s *AlmSettingsService) ValidateCreateGitlabOpt(opt *AlmSettingsCreateGitla
 	return nil
 }
 
+// ValidateCreateGithubFromManifestOpt validates the options for the CreateGithubFromManifest method.
+func (s *AlmSettingsService) ValidateCreateGithubFromManifestOpt(opt *AlmSettingsCreateGithubFromManifestOptions) error {
+	if opt == nil {
+		// Options are optional; nothing to validate.
+		return nil
+	}
+
+	if opt.Key != "" {
+		err := ValidateMaxLength(opt.Key, MaxAlmKeyLength, "Key")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.Name != "" {
+		err := ValidateMaxLength(opt.Name, MaxAlmKeyLength, "Name")
+		if err != nil {
+			return err
+		}
+	}
+
+	if opt.Organization != "" {
+		err := ValidateMaxLength(opt.Organization, MaxAlmKeyLength, "Organization")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ValidateDeleteOpt validates the options for the Delete method.
 func (s *AlmSettingsService) ValidateDeleteOpt(opt *AlmSettingsDeleteOptions) error {
 	if opt == nil {
@@ -659,6 +822,180 @@ func (s *AlmSettingsService) ValidateGetBindingOpt(opt *AlmSettingsGetBindingOpt
 	}
 
 	err := ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateDeleteBindingOpt validates the options for the DeleteBinding method.
+func (s *AlmSettingsService) ValidateDeleteBindingOpt(opt *AlmSettingsDeleteBindingOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateSetAzureBindingOpt validates the options for the SetAzureBinding method.
+func (s *AlmSettingsService) ValidateSetAzureBindingOpt(opt *AlmSettingsSetAzureBindingOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.AlmSetting, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.AlmSetting, MaxAlmKeyLength, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.ProjectName, "ProjectName")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.RepositoryName, "RepositoryName")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateSetBitbucketBindingOpt validates the options for the SetBitbucketBinding method.
+func (s *AlmSettingsService) ValidateSetBitbucketBindingOpt(opt *AlmSettingsSetBitbucketBindingOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.AlmSetting, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.AlmSetting, MaxAlmKeyLength, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Repository, "Repository")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Slug, "Slug")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateSetBitbucketCloudBindingOpt validates the options for the SetBitbucketCloudBinding method.
+func (s *AlmSettingsService) ValidateSetBitbucketCloudBindingOpt(opt *AlmSettingsSetBitbucketCloudBindingOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.AlmSetting, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.AlmSetting, MaxAlmKeyLength, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Repository, "Repository")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateSetGithubBindingOpt validates the options for the SetGithubBinding method.
+func (s *AlmSettingsService) ValidateSetGithubBindingOpt(opt *AlmSettingsSetGithubBindingOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.AlmSetting, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.AlmSetting, MaxAlmKeyLength, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Repository, "Repository")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.Repository, MaxGitHubRepositoryLength, "Repository")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateSetGitlabBindingOpt validates the options for the SetGitlabBinding method.
+func (s *AlmSettingsService) ValidateSetGitlabBindingOpt(opt *AlmSettingsSetGitlabBindingOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.AlmSetting, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.AlmSetting, MaxAlmKeyLength, "AlmSetting")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Project, "Project")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.Repository, "Repository")
 	if err != nil {
 		return err
 	}
@@ -1104,6 +1441,32 @@ func (s *AlmSettingsService) CreateGitlab(ctx context.Context, opt *AlmSettingsC
 	return resp, nil
 }
 
+// CreateGithubFromManifest creates a GitHub App configuration from a manifest.
+// Requires the 'Administer System' permission.
+//
+// API endpoint: POST /api/alm_settings/create_github_from_manifest.
+// Since: 2026.4.
+func (s *AlmSettingsService) CreateGithubFromManifest(ctx context.Context, opt *AlmSettingsCreateGithubFromManifestOptions) (*AlmSettingsGithubManifest, *http.Response, error) {
+	err := s.ValidateCreateGithubFromManifestOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/create_github_from_manifest", opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	result := new(AlmSettingsGithubManifest)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
 // Delete deletes a DevOps Platform setting.
 // Requires the 'Administer System' permission.
 //
@@ -1152,6 +1515,155 @@ func (s *AlmSettingsService) GetBinding(ctx context.Context, opt *AlmSettingsGet
 	}
 
 	return result, resp, nil
+}
+
+// DeleteBinding deletes the DevOps Platform binding of a project.
+// Requires the 'Administer' permission on the project.
+//
+// API endpoint: POST /api/alm_settings/delete_binding.
+// Since: 8.1.
+func (s *AlmSettingsService) DeleteBinding(ctx context.Context, opt *AlmSettingsDeleteBindingOptions) (*http.Response, error) {
+	err := s.ValidateDeleteBindingOpt(opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/delete_binding", opt)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// SetAzureBinding binds an Azure DevOps instance to a project.
+// If the project is already bound to a previous Azure DevOps instance, the binding will be updated to the new one.
+// Requires the 'Administer' permission on the project.
+//
+// API endpoint: POST /api/alm_settings/set_azure_binding.
+// Since: 8.1.
+func (s *AlmSettingsService) SetAzureBinding(ctx context.Context, opt *AlmSettingsSetAzureBindingOptions) (*http.Response, error) {
+	err := s.ValidateSetAzureBindingOpt(opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/set_azure_binding", opt)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// SetBitbucketBinding binds a Bitbucket Server instance to a project.
+// If the project is already bound to a previous Bitbucket instance, the binding will be updated to the new one.
+// Requires the 'Administer' permission on the project.
+//
+// API endpoint: POST /api/alm_settings/set_bitbucket_binding.
+// Since: 8.1.
+func (s *AlmSettingsService) SetBitbucketBinding(ctx context.Context, opt *AlmSettingsSetBitbucketBindingOptions) (*http.Response, error) {
+	err := s.ValidateSetBitbucketBindingOpt(opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/set_bitbucket_binding", opt)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// SetBitbucketCloudBinding binds a Bitbucket Cloud setting to a project.
+// If the project is already bound to a different Bitbucket Cloud setting, the binding will be updated to the new one.
+// Requires the 'Administer' permission on the project.
+//
+// API endpoint: POST /api/alm_settings/set_bitbucketcloud_binding.
+// Since: 8.7.
+func (s *AlmSettingsService) SetBitbucketCloudBinding(ctx context.Context, opt *AlmSettingsSetBitbucketCloudBindingOptions) (*http.Response, error) {
+	err := s.ValidateSetBitbucketCloudBindingOpt(opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/set_bitbucketcloud_binding", opt)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// SetGithubBinding binds a GitHub instance to a project.
+// If the project is already bound to a previous GitHub instance, the binding will be updated to the new one.
+// Requires the 'Administer' permission on the project.
+//
+// API endpoint: POST /api/alm_settings/set_github_binding.
+// Since: 8.1.
+func (s *AlmSettingsService) SetGithubBinding(ctx context.Context, opt *AlmSettingsSetGithubBindingOptions) (*http.Response, error) {
+	err := s.ValidateSetGithubBindingOpt(opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/set_github_binding", opt)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// SetGitlabBinding binds a GitLab instance to a project.
+// If the project is already bound to a previous GitLab instance, the binding will be updated to the new one.
+// Requires the 'Administer' permission on the project.
+//
+// API endpoint: POST /api/alm_settings/set_gitlab_binding.
+// Since: 8.1.
+func (s *AlmSettingsService) SetGitlabBinding(ctx context.Context, opt *AlmSettingsSetGitlabBindingOptions) (*http.Response, error) {
+	err := s.ValidateSetGitlabBindingOpt(opt)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "alm_settings/set_gitlab_binding", opt)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 // List lists DevOps Platform settings available for a given project, sorted by DevOps Platform key.
