@@ -18,7 +18,7 @@ var (
 
 // versionInfo returns a human-readable version string of the form:
 //
-//	v1.2.3 (go1.26.4, built: 2026-02-22T20:00:00Z)
+//	v1.2.3 (go1.26.5, built: 2026-02-22T20:00:00Z)
 //
 // Version resolution order:
 //  1. ldflags-injected version  (make build / make build version=x.y.z)

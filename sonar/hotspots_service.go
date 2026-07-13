@@ -733,6 +733,7 @@ func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOptions) error {
 // AddComment adds a comment to a Security Hotspot.
 // Requires authentication and the 'Browse' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: POST /api/hotspots/add_comment.
 // Since: 8.1.
 // Internal: true.
@@ -758,6 +759,7 @@ func (s *HotspotsService) AddComment(ctx context.Context, opt *HotspotsAddCommen
 // Assign assigns a hotspot to an active user.
 // Requires authentication and 'Browse' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: POST /api/hotspots/assign.
 // Since: 8.2.
 // Internal: true.
@@ -783,6 +785,7 @@ func (s *HotspotsService) Assign(ctx context.Context, opt *HotspotsAssignOptions
 // ChangeStatus changes the status of a Security Hotspot.
 // Requires the 'Administer Security Hotspot' permission.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: POST /api/hotspots/change_status.
 // Since: 8.1.
 func (s *HotspotsService) ChangeStatus(ctx context.Context, opt *HotspotsChangeStatusOptions) (*http.Response, error) {
@@ -807,6 +810,7 @@ func (s *HotspotsService) ChangeStatus(ctx context.Context, opt *HotspotsChangeS
 // DeleteComment deletes a comment from a Security Hotspot.
 // Requires authentication and the 'Browse' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: POST /api/hotspots/delete_comment.
 // Since: 8.2.
 // Internal: true.
@@ -832,6 +836,7 @@ func (s *HotspotsService) DeleteComment(ctx context.Context, opt *HotspotsDelete
 // EditComment edits a comment on a Security Hotspot.
 // Requires authentication and the 'Browse' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: POST /api/hotspots/edit_comment.
 // Since: 8.2.
 // Internal: true.
@@ -863,6 +868,7 @@ func (s *HotspotsService) EditComment(ctx context.Context, opt *HotspotsEditComm
 // Note: Total number of Security Hotspots will always equal the page size,
 // as counting all issues is not supported.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: GET /api/hotspots/list.
 // Since: 10.2.
 // Internal: true.
@@ -891,6 +897,7 @@ func (s *HotspotsService) List(ctx context.Context, opt *HotspotsListOptions) (*
 // The hotspots returned are not paginated, so the response size can be big.
 // Requires 'Browse' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: GET /api/hotspots/pull.
 // Since: 10.1.
 // Internal: true.
@@ -920,6 +927,7 @@ func (s *HotspotsService) Pull(ctx context.Context, opt *HotspotsPullOptions) ([
 // For applications, also requires 'Browse' permission on child projects.
 // Returns 503 Service Unavailable when issue indexing is in progress.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: GET /api/hotspots/search.
 // Since: 8.1.
 func (s *HotspotsService) Search(ctx context.Context, opt *HotspotsSearchOptions) (*HotspotsSearch, *http.Response, error) {
@@ -945,6 +953,7 @@ func (s *HotspotsService) Search(ctx context.Context, opt *HotspotsSearchOptions
 
 // Show provides the details of a Security Hotspot.
 //
+// Deprecated: Since SonarQube 2026.4.
 // API endpoint: GET /api/hotspots/show.
 // Since: 8.1.
 func (s *HotspotsService) Show(ctx context.Context, opt *HotspotsShowOptions) (*HotspotsShow, *http.Response, error) {

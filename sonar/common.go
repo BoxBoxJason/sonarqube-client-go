@@ -23,6 +23,8 @@ const (
 	// MaxBranchNameLength is the maximum length for a branch name.
 	MaxBranchNameLength = 255
 
+	// LanguageAzurePipelines is the language key for Azure Pipelines.
+	LanguageAzurePipelines = "azurepipelines"
 	// LanguageAzureResourceManager is the language key for Azure Resource Manager.
 	LanguageAzureResourceManager = "azureresourcemanager"
 	// LanguageCloudFormation is the language key for CloudFormation.
@@ -35,8 +37,12 @@ const (
 	LanguageDocker = "docker"
 	// LanguageFlex is the language key for Flex.
 	LanguageFlex = "flex"
+	// LanguageGithubActions is the language key for GitHub Actions.
+	LanguageGithubActions = "githubactions"
 	// LanguageGo is the language key for Go.
 	LanguageGo = "go"
+	// LanguageGroovy is the language key for Groovy.
+	LanguageGroovy = "groovy"
 	// LanguageIPYNB is the language key for Jupyter Notebooks.
 	LanguageIPYNB = "ipynb"
 	// LanguageJava is the language key for Java.
@@ -53,6 +59,8 @@ const (
 	LanguageKubernetes = "kubernetes"
 	// LanguagePHP is the language key for PHP.
 	LanguagePHP = "php"
+	// LanguagePowershell is the language key for PowerShell.
+	LanguagePowershell = "powershell"
 	// LanguagePython is the language key for Python.
 	LanguagePython = "py"
 	// LanguageRuby is the language key for Ruby On Rails.
@@ -63,6 +71,8 @@ const (
 	LanguageScala = "scala"
 	// LanguageSecrets is the language key for Secrets.
 	LanguageSecrets = "secrets"
+	// LanguageShell is the language key for Shell scripts.
+	LanguageShell = "shell"
 	// LanguageTerraform is the language key for Terraform.
 	LanguageTerraform = "terraform"
 	// LanguageText is the language key for Text files.
@@ -205,13 +215,16 @@ const (
 var (
 	// allowedLanguages is the set of supported programming languages.
 	allowedLanguages = map[string]struct{}{
+		LanguageAzurePipelines:       {},
 		LanguageAzureResourceManager: {},
 		LanguageCloudFormation:       {},
 		LanguageCS:                   {},
 		LanguageCSS:                  {},
 		LanguageDocker:               {},
 		LanguageFlex:                 {},
+		LanguageGithubActions:        {},
 		LanguageGo:                   {},
+		LanguageGroovy:               {},
 		LanguageIPYNB:                {},
 		LanguageJava:                 {},
 		LanguageJS:                   {},
@@ -220,11 +233,13 @@ var (
 		LanguageKotlin:               {},
 		LanguageKubernetes:           {},
 		LanguagePHP:                  {},
+		LanguagePowershell:           {},
 		LanguagePython:               {},
 		LanguageRuby:                 {},
 		LanguageRust:                 {},
 		LanguageScala:                {},
 		LanguageSecrets:              {},
+		LanguageShell:                {},
 		LanguageTerraform:            {},
 		LanguageText:                 {},
 		LanguageTypeScript:           {},
@@ -374,7 +389,6 @@ var (
 		IssueTransitionFalsePositive:     {},
 		IssueTransitionWontFix:           {},
 		IssueTransitionAccept:            {},
-		IssueTransitionClose:             {},
 		IssueTransitionResolveAsReviewed: {},
 		IssueTransitionResetAsReviewed:   {},
 	}

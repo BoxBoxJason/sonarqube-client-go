@@ -132,9 +132,9 @@ var _ = Describe("SCA V2 Service", Ordered, func() {
 		Context("Functional Tests", func() {
 			It("should return SBOM or an expected error", func() {
 				result, resp, err := client.V2.Sca.GetSbomReport(context.Background(), &sonar.ScaSbomReportOptions{
-					ProjectKey: "nonexistent-project",
-					Type:       sonar.ScaSbomReportTypeCycloneDX,
-					Format:     sonar.ScaSbomReportFormatJSON,
+					Component: "nonexistent-project",
+					Type:      sonar.ScaSbomReportTypeCycloneDX,
+					Format:    sonar.ScaSbomReportFormatJSON,
 				})
 				if err != nil {
 					Expect(resp).NotTo(BeNil())

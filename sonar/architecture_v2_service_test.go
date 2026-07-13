@@ -82,3 +82,96 @@ func TestArchitectureService_FileGraph_ValidationError(t *testing.T) {
 	assert.Nil(t, result)
 	assert.Nil(t, resp)
 }
+
+// -----------------------------------------------------------------------------
+// SearchGraphs
+// -----------------------------------------------------------------------------
+
+func TestArchitectureService_SearchGraphs(t *testing.T) {
+	response := map[string]any{
+		"graphs": []map[string]any{
+			{
+				"id":             "graph-1",
+				"branchId":       "branch-1",
+				"type":           "file_graph",
+				"ecosystem":      "java",
+				"perspectiveKey": "default",
+				"graphVersion":   "1",
+			},
+		},
+	}
+
+	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/v2/architecture/graphs", http.StatusOK,
+		map[string]string{"projectKey": "my-project", "branchKey": "main"}, response))
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.V2.Architecture.SearchGraphs(context.Background(), &ArchitectureSearchGraphsOptions{
+		ProjectKey: "my-project",
+		BranchKey:  "main",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.Len(t, result, 1)
+	assert.Equal(t, "graph-1", result[0]["id"])
+	assert.Equal(t, "file_graph", result[0]["type"])
+}
+
+func TestArchitectureService_SearchGraphs_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	result, resp, err := client.V2.Architecture.SearchGraphs(context.Background(), nil)
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Nil(t, resp)
+
+	result, resp, err = client.V2.Architecture.SearchGraphs(context.Background(), &ArchitectureSearchGraphsOptions{
+		BranchKey: "main",
+	})
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Nil(t, resp)
+
+	result, resp, err = client.V2.Architecture.SearchGraphs(context.Background(), &ArchitectureSearchGraphsOptions{
+		ProjectKey: "my-project",
+	})
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Nil(t, resp)
+}
+
+// -----------------------------------------------------------------------------
+// GetGraph
+// -----------------------------------------------------------------------------
+
+func TestArchitectureService_GetGraph(t *testing.T) {
+	// As with FileGraph, this payload intentionally contains quotes/newlines that
+	// only round-trip correctly if the response is treated as a JSON-encoded
+	// string and unescaped, rather than copied as opaque raw bytes.
+	rawPayload := "{\"nodes\":[{\"id\":\"1\"}],\"edges\":[]}\nwith a \"quote\""
+
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method, "unexpected HTTP method")
+		assert.Equal(t, "/v2/architecture/graphs/graph-1", r.URL.Path, "unexpected URL path")
+		assert.Equal(t, "application/json", r.Header.Get("Accept"), "GetGraph must not request text/plain")
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		require.NoError(t, json.NewEncoder(w).Encode(rawPayload))
+	})
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.V2.Architecture.GetGraph(context.Background(), "graph-1")
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, rawPayload, *result)
+}
+
+func TestArchitectureService_GetGraph_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	result, resp, err := client.V2.Architecture.GetGraph(context.Background(), "")
+	assert.Error(t, err)
+	assert.Nil(t, result)
+	assert.Nil(t, resp)
+}

@@ -634,3 +634,22 @@ func TestComponents_SearchProjects_AllowedFields(t *testing.T) {
 		assert.NoError(t, err, "expected field %s to be valid", f)
 	}
 }
+
+func TestComponents_SearchProjects_AllowedScaRatingFacetsAndSort(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	validScaRatingValues := []string{"new_sca_rating_any_issue", "sca_rating_any_issue"}
+	for _, v := range validScaRatingValues {
+		facetOpt := &ComponentsSearchProjectsOptions{
+			Facets: []string{v},
+		}
+		err := client.Components.ValidateSearchProjectsOpt(facetOpt)
+		assert.NoError(t, err, "expected facet %s to be valid", v)
+
+		sortOpt := &ComponentsSearchProjectsOptions{
+			Sort: v,
+		}
+		err = client.Components.ValidateSearchProjectsOpt(sortOpt)
+		assert.NoError(t, err, "expected sort field %s to be valid", v)
+	}
+}

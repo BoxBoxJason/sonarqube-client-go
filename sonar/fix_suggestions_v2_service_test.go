@@ -161,6 +161,17 @@ func TestFixSuggestionsService_GetSubscriptionType(t *testing.T) {
 	assert.Equal(t, "PAID", result.SubscriptionType)
 }
 
+func TestFixSuggestionsService_GetSupportedRules(t *testing.T) {
+	response := FixSuggestionsSupportedRules{Rules: []string{"java:S1234", "python:S5678"}}
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/fix-suggestions/supported-rules", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.V2.FixSuggestions.GetSupportedRules(context.Background())
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, []string{"java:S1234", "python:S5678"}, result.Rules)
+}
+
 func TestFixSuggestionsService_GetSupportedLlmProviders(t *testing.T) {
 	// The real endpoint returns a bare JSON array (verified live against a
 	// SonarQube 2025.2 Enterprise instance's OpenAPI schema and server

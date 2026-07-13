@@ -21,6 +21,8 @@ const (
 	// IssueTransitionAccept represents the "accept" transition for issues.
 	IssueTransitionAccept = "accept"
 	// IssueTransitionClose represents the "close" transition for issues.
+	//
+	// Deprecated: Since SonarQube 2026.4. The API no longer accepts "close" as a manual transition value.
 	IssueTransitionClose = "close"
 	// IssueTransitionResolveAsReviewed represents the "resolveasreviewed" transition for issues.
 	IssueTransitionResolveAsReviewed = "resolveasreviewed"
@@ -736,6 +738,12 @@ type IssuesSearchOptions struct {
 	Assigned *bool `url:"assigned,omitempty"`
 	// Asc sorts in ascending order.
 	Asc bool `url:"asc,omitempty"`
+
+	// FromSonarQubeUpdate matches issues detected because of SonarQube updates.
+	FromSonarQubeUpdate *bool `url:"fromSonarQubeUpdate,omitempty"`
+	// LinkedTicketStatus filters by linked work item status.
+	// Allowed values: LINKED, NOT_LINKED
+	LinkedTicketStatus string `url:"linkedTicketStatus,omitempty"`
 }
 
 // IssuesSetSeverityOptions contains options for setting severity.

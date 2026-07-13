@@ -544,6 +544,44 @@ func TestUsers_Search_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 }
 
+func TestUsers_SetAiToolUsage(t *testing.T) {
+	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/set_ai_tool_usage", http.StatusNoContent))
+	client := newTestClient(t, server.URL)
+
+	opt := &UsersSetAiToolUsageOptions{
+		Project: "my-project",
+	}
+
+	resp, err := client.Users.SetAiToolUsage(context.Background(), opt)
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestUsers_SetAiToolUsage_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	tests := []struct {
+		name string
+		opt  *UsersSetAiToolUsageOptions
+	}{
+		{
+			name: "nil option",
+			opt:  nil,
+		},
+		{
+			name: "missing project",
+			opt:  &UsersSetAiToolUsageOptions{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := client.Users.SetAiToolUsage(context.Background(), tt.opt)
+			assert.Error(t, err)
+		})
+	}
+}
+
 func TestUsers_SetHomepage(t *testing.T) {
 	server := newTestServer(t, mockEmptyHandler(t, http.MethodPost, "/users/set_homepage", http.StatusNoContent))
 	client := newTestClient(t, server.URL)
