@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":assignAndReview(BoxBoxJason)",
+    ":combinePatchMinorReleases",
+    ":dependencyDashboard",
+    ":disableRateLimiting",
+    ":docker",
+    ":enableRenovate",
+    ":enableVulnerabilityAlertsWithAdditionalLabel(security)",
+    ":gitSignOff",
+    ":gomod",
+    ":ignoreModulesAndTests",
+    ":labels(deps,source::bot)",
+    ":rebaseStalePrs",
+    ":renovatePrefix",
+    ":semanticCommits",
+    ":semanticCommitScope(deps)",
+    ":semanticCommitType(chore)",
+    "group:all",
+    "helpers:githubDigestChangelogs",
+    "helpers:gitlabDigestChangelogs",
+    "helpers:goXPackagesNameLink",
+    "helpers:renovateChangelog",
+    "mergeConfidence:all-badges",
+    "security:openssf-scorecard",
+    "workarounds:all"
+  ],
+  "minimumReleaseAge": "7 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "updateInternalDeps": true,
+  "dependencyDashboardAutoclose": true,
+  "dependencyDashboardLabels": [
+    "deps",
+    "source::bot"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ]
+}
