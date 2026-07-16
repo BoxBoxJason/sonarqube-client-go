@@ -29,6 +29,12 @@ type QualityprofilesChangelog struct {
 	Paging Paging `json:"paging,omitzero"`
 	// Events is the list of changelog events.
 	Events []ChangelogEvent `json:"events,omitempty"`
+	// Page is the current page number (legacy duplicate of Paging.PageIndex).
+	Page int64 `json:"p,omitempty"`
+	// PageSize is the page size (legacy duplicate of Paging.PageSize).
+	PageSize int64 `json:"ps,omitempty"`
+	// Total is the total number of events (legacy duplicate of Paging.Total).
+	Total int64 `json:"total,omitempty"`
 }
 
 // ChangelogEvent represents a single event in the quality profile changelog.
@@ -234,8 +240,6 @@ type QualityprofilesImporter struct {
 }
 
 // QualityprofilesInheritance represents the response from getting inheritance info.
-//
-//nolint:govet // Field alignment is less important than logical grouping
 type QualityprofilesInheritance struct {
 	// Profile contains the current profile information.
 	Profile QualityprofilesInheritanceProfile `json:"profile,omitzero"`
@@ -246,6 +250,8 @@ type QualityprofilesInheritance struct {
 }
 
 // QualityprofilesInheritanceProfile represents a profile in an inheritance hierarchy.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type QualityprofilesInheritanceProfile struct {
 	// Key is the unique key of the profile.
 	Key string `json:"key,omitempty"`
@@ -259,6 +265,8 @@ type QualityprofilesInheritanceProfile struct {
 	OverridingRuleCount int64 `json:"overridingRuleCount,omitempty"`
 	// IsBuiltIn indicates if this is a built-in profile.
 	IsBuiltIn bool `json:"isBuiltIn,omitempty"`
+	// Parent is the key of the parent profile, present on the current profile entry.
+	Parent string `json:"parent,omitempty"`
 }
 
 // QualityprofilesProjects represents the response from listing associated projects.
@@ -318,7 +326,7 @@ type QualityProfile struct {
 	// LastUsed is the timestamp when the profile was last used.
 	LastUsed string `json:"lastUsed,omitempty"`
 	// RuleUpdatedAt is the timestamp when rules were last updated.
-	RuleUpdatedAt string `json:"ruleUpdatedAt,omitempty"`
+	RuleUpdatedAt string `json:"rulesUpdatedAt,omitempty"`
 	// UserUpdatedAt is the timestamp when the profile was last updated by a user.
 	UserUpdatedAt string `json:"userUpdatedAt,omitempty"`
 	// ActiveDeprecatedRuleCount is the count of active deprecated rules.

@@ -23,6 +23,12 @@ type MetricsSearch struct {
 	Metrics []Metric `json:"metrics,omitempty"`
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
+	// Page is the current page number (legacy duplicate of Paging.PageIndex).
+	Page int64 `json:"p,omitempty"`
+	// PageSize is the page size (legacy duplicate of Paging.PageSize).
+	PageSize int64 `json:"ps,omitempty"`
+	// Total is the total number of metrics (legacy duplicate of Paging.Total).
+	Total int64 `json:"total,omitempty"`
 }
 
 // Metric represents a SonarQube metric.
@@ -31,6 +37,8 @@ type MetricsSearch struct {
 type Metric struct {
 	// Custom indicates whether this is a custom metric.
 	Custom bool `json:"custom,omitempty"`
+	// DecimalScale is the number of decimal places to display for this metric.
+	DecimalScale int64 `json:"decimalScale,omitempty"`
 	// Description is the metric description.
 	Description string `json:"description,omitempty"`
 	// Direction indicates the metric direction (-1: lower is better, 0: neutral, 1: higher is better).

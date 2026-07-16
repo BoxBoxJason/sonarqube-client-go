@@ -56,6 +56,8 @@ type SettingDefinition struct {
 	DefaultValue string `json:"defaultValue,omitempty"`
 	// Description is the description of the setting.
 	Description string `json:"description,omitempty"`
+	// DeprecatedKey is the previous key of the setting, kept for backward compatibility.
+	DeprecatedKey string `json:"deprecatedKey,omitempty"`
 	// Key is the unique key of the setting.
 	Key string `json:"key,omitempty"`
 	// Name is the display name of the setting.
@@ -101,6 +103,8 @@ type SettingsValues struct {
 }
 
 // SettingValue represents a setting value.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type SettingValue struct {
 	// Key is the unique key of the setting.
 	Key string `json:"key,omitempty"`
@@ -112,6 +116,8 @@ type SettingValue struct {
 	FieldValues []map[string]string `json:"fieldValues,omitempty"`
 	// Inherited indicates if the value is inherited from a parent component.
 	Inherited bool `json:"inherited,omitempty"`
+	// ParentValue is the value inherited from the parent component (for single-value settings).
+	ParentValue string `json:"parentValue,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

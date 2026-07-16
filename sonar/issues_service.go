@@ -409,6 +409,14 @@ type IssuesSearch struct {
 	Rules      []IssueRule      `json:"rules,omitempty"`
 	Users      []IssueUser      `json:"users,omitempty"`
 	Paging     Paging           `json:"paging,omitzero"`
+	// Page is the current page number (legacy duplicate of Paging.PageIndex).
+	Page int64 `json:"p,omitempty"`
+	// PageSize is the page size (legacy duplicate of Paging.PageSize).
+	PageSize int64 `json:"ps,omitempty"`
+	// Total is the total number of issues (legacy duplicate of Paging.Total).
+	Total int64 `json:"total,omitempty"`
+	// EffortTotal is the total remediation effort, in minutes, of the returned issues.
+	EffortTotal int64 `json:"effortTotal,omitempty"`
 }
 
 // IssuesSetSeverity represents the response from setting severity.

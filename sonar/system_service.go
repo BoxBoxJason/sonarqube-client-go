@@ -141,6 +141,8 @@ type SystemInfo struct {
 	Health string `json:"Health,omitempty"`
 	// HealthCauses contains reasons for any health issues.
 	HealthCauses []any `json:"Health Causes,omitempty"`
+	// MCP contains Model Context Protocol integration status.
+	MCP SystemInfoMCP `json:"MCP,omitzero"`
 	// Plugins contains installed plugin information.
 	Plugins map[string]string `json:"Plugins,omitempty"`
 	// SearchIndexes contains search index statistics.
@@ -175,10 +177,38 @@ type SystemInfoALMs struct {
 
 // SystemInfoBundled contains versions of bundled plugins.
 type SystemInfoBundled struct {
+	// Abap is the ABAP plugin version.
+	Abap string `json:"abap,omitempty"`
+	// Architecture is the architecture plugin version.
+	Architecture string `json:"architecture,omitempty"`
+	// Architecturejavafrontend is the architecture Java frontend plugin version.
+	Architecturejavafrontend string `json:"architecturejavafrontend,omitempty"`
+	// Architecturejavascriptfrontend is the architecture JavaScript frontend plugin version.
+	Architecturejavascriptfrontend string `json:"architecturejavascriptfrontend,omitempty"`
+	// Cayc is the Clean-as-You-Code plugin version.
+	Cayc string `json:"cayc,omitempty"`
+	// Cfamilydependencies is the C-family dependencies plugin version.
+	Cfamilydependencies string `json:"cfamilydependencies,omitempty"`
+	// Cobol is the COBOL plugin version.
+	Cobol string `json:"cobol,omitempty"`
 	// Config is the config plugin version.
 	Config string `json:"config,omitempty"`
+	// Cpp is the C++ plugin version.
+	Cpp string `json:"cpp,omitempty"`
 	// Csharp is the C# plugin version.
 	Csharp string `json:"csharp,omitempty"`
+	// Csharpenterprise is the C# enterprise plugin version.
+	Csharpenterprise string `json:"csharpenterprise,omitempty"`
+	// Dart is the Dart plugin version.
+	Dart string `json:"dart,omitempty"`
+	// Dbd is the database design plugin version.
+	Dbd string `json:"dbd,omitempty"`
+	// Dbdjavafrontend is the database design Java frontend plugin version.
+	Dbdjavafrontend string `json:"dbdjavafrontend,omitempty"`
+	// Dbdpythonfrontend is the database design Python frontend plugin version.
+	Dbdpythonfrontend string `json:"dbdpythonfrontend,omitempty"`
+	// Dre is the DRE plugin version.
+	Dre string `json:"dre,omitempty"`
 	// Flex is the Flex plugin version.
 	Flex string `json:"flex,omitempty"`
 	// Go is the Go plugin version.
@@ -187,28 +217,80 @@ type SystemInfoBundled struct {
 	Iac string `json:"iac,omitempty"`
 	// Jacoco is the JaCoCo plugin version.
 	Jacoco string `json:"jacoco,omitempty"`
+	// Jasmin is the Jasmin plugin version.
+	Jasmin string `json:"jasmin,omitempty"`
 	// Java is the Java plugin version.
 	Java string `json:"java,omitempty"`
 	// Javascript is the JavaScript plugin version.
 	Javascript string `json:"javascript,omitempty"`
+	// Javasymbolicexecution is the Java symbolic execution plugin version.
+	Javasymbolicexecution string `json:"javasymbolicexecution,omitempty"`
+	// Jcl is the JCL plugin version.
+	Jcl string `json:"jcl,omitempty"`
 	// Kotlin is the Kotlin plugin version.
 	Kotlin string `json:"kotlin,omitempty"`
 	// Php is the PHP plugin version.
 	Php string `json:"php,omitempty"`
+	// Pli is the PL/I plugin version.
+	Pli string `json:"pli,omitempty"`
+	// Plsql is the PL/SQL plugin version.
+	Plsql string `json:"plsql,omitempty"`
 	// Python is the Python plugin version.
 	Python string `json:"python,omitempty"`
+	// Rpg is the RPG plugin version.
+	Rpg string `json:"rpg,omitempty"`
 	// Ruby is the Ruby plugin version.
 	Ruby string `json:"ruby,omitempty"`
+	// Rust is the Rust plugin version.
+	Rust string `json:"rust,omitempty"`
+	// Security is the security plugin version.
+	Security string `json:"security,omitempty"`
+	// Securitycsharpfrontend is the security C# frontend plugin version.
+	Securitycsharpfrontend string `json:"securitycsharpfrontend,omitempty"`
+	// Securitygofrontend is the security Go frontend plugin version.
+	Securitygofrontend string `json:"securitygofrontend,omitempty"`
+	// Securityjavafrontend is the security Java frontend plugin version.
+	Securityjavafrontend string `json:"securityjavafrontend,omitempty"`
+	// Securitykotlinfrontend is the security Kotlin frontend plugin version.
+	Securitykotlinfrontend string `json:"securitykotlinfrontend,omitempty"`
+	// Securityphpfrontend is the security PHP frontend plugin version.
+	Securityphpfrontend string `json:"securityphpfrontend,omitempty"`
+	// Securitypythonfrontend is the security Python frontend plugin version.
+	Securitypythonfrontend string `json:"securitypythonfrontend,omitempty"`
+	// Securityvbnetfrontend is the security VB.NET frontend plugin version.
+	Securityvbnetfrontend string `json:"securityvbnetfrontend,omitempty"`
+	// Sonarapex is the Apex plugin version.
+	Sonarapex string `json:"sonarapex,omitempty"`
 	// Sonarscala is the Scala plugin version.
 	Sonarscala string `json:"sonarscala,omitempty"`
+	// Swift is the Swift plugin version.
+	Swift string `json:"swift,omitempty"`
 	// Text is the Text plugin version.
 	Text string `json:"text,omitempty"`
+	// Textenterprise is the text enterprise plugin version.
+	Textenterprise string `json:"textenterprise,omitempty"`
+	// Tsql is the T-SQL plugin version.
+	Tsql string `json:"tsql,omitempty"`
+	// Vb is the VB plugin version.
+	Vb string `json:"vb,omitempty"`
 	// Vbnet is the VB.NET plugin version.
 	Vbnet string `json:"vbnet,omitempty"`
+	// Vbnetenterprise is the VB.NET enterprise plugin version.
+	Vbnetenterprise string `json:"vbnetenterprise,omitempty"`
 	// Web is the Web plugin version.
 	Web string `json:"web,omitempty"`
 	// XML is the XML plugin version.
 	XML string `json:"xml,omitempty"`
+}
+
+// SystemInfoMCP contains Model Context Protocol integration status.
+//
+//nolint:tagliatelle // JSON tags match SonarQube API field names
+type SystemInfoMCP struct {
+	// Enabled indicates whether MCP integration is enabled.
+	Enabled bool `json:"Enabled,omitempty"`
+	// Healthy indicates whether MCP integration is healthy.
+	Healthy bool `json:"Healthy,omitempty"`
 }
 
 // DatabaseConnectionPool contains database connection pool information.
@@ -419,6 +501,8 @@ type ServerPushConnections struct {
 type SystemInfoSystem struct {
 	// AcceptedExternalIdentityProviders lists accepted external identity providers.
 	AcceptedExternalIdentityProviders string `json:"Accepted external identity providers,omitempty"`
+	// Container indicates if running in a container.
+	Container bool `json:"Container,omitempty"`
 	// DataDir is the data directory path.
 	DataDir string `json:"Data Dir,omitempty"`
 	// Docker indicates if running in Docker.
@@ -433,6 +517,8 @@ type SystemInfoSystem struct {
 	HighAvailability bool `json:"High Availability,omitempty"`
 	// HomeDir is the home directory path.
 	HomeDir string `json:"Home Dir,omitempty"`
+	// LinesOfCode is the total number of lines of code analyzed by this instance.
+	LinesOfCode int64 `json:"Lines of Code,omitempty"`
 	// OfficialDistribution indicates if this is an official distribution.
 	OfficialDistribution bool `json:"Official Distribution,omitempty"`
 	// Processors is the number of available processors.

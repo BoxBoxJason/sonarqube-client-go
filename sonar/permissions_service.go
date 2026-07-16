@@ -162,6 +162,10 @@ type PermissionsDefaultTemplate struct {
 type PermissionsTemplateGroup struct {
 	// Description is the group description.
 	Description string `json:"description,omitempty"`
+	// ID is the deprecated unique identifier of the group.
+	//
+	// Deprecated: Since SonarQube 8.4 - use Name instead.
+	ID string `json:"id,omitempty"`
 	// Name is the group name.
 	Name string `json:"name,omitempty"`
 	// Permissions is the list of permissions granted to the group.
@@ -193,6 +197,8 @@ type PermissionsCreateTemplate struct {
 }
 
 // PermissionsTemplateBasic represents basic permission template info returned on create.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type PermissionsTemplateBasic struct {
 	// Description is the template description.
 	Description string `json:"description,omitempty"`
@@ -200,6 +206,8 @@ type PermissionsTemplateBasic struct {
 	ID string `json:"id,omitempty"`
 	// Name is the template name.
 	Name string `json:"name,omitempty"`
+	// Permissions is the list of permissions in the template.
+	Permissions []PermissionsTemplatePermission `json:"permissions,omitempty"`
 	// ProjectKeyPattern is the regex pattern for matching project keys.
 	ProjectKeyPattern string `json:"projectKeyPattern,omitempty"`
 	// CreatedAt is the template creation date.
@@ -222,6 +230,18 @@ type PermissionsSearchTemplates struct {
 	DefaultTemplates []PermissionsDefaultTemplate `json:"defaultTemplates,omitempty"`
 	// PermissionTemplates is the list of permission templates.
 	PermissionTemplates []PermissionTemplate `json:"permissionTemplates,omitempty"`
+	// Permissions is the list of permission definitions available to templates.
+	Permissions []PermissionsSearchTemplatePermission `json:"permissions,omitempty"`
+}
+
+// PermissionsSearchTemplatePermission describes a permission definition available to templates.
+type PermissionsSearchTemplatePermission struct {
+	// Key is the permission key.
+	Key string `json:"key,omitempty"`
+	// Name is the permission display name.
+	Name string `json:"name,omitempty"`
+	// Description is the permission description.
+	Description string `json:"description,omitempty"`
 }
 
 // PermissionsTemplateGroups represents the response from listing template groups.
@@ -249,6 +269,8 @@ type PermissionsUpdateTemplate struct {
 }
 
 // PermissionsTemplateUpdated represents updated permission template info.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type PermissionsTemplateUpdated struct {
 	// CreatedAt is the template creation date.
 	CreatedAt string `json:"createdAt,omitempty"`
@@ -258,6 +280,8 @@ type PermissionsTemplateUpdated struct {
 	ID string `json:"id,omitempty"`
 	// Name is the template name.
 	Name string `json:"name,omitempty"`
+	// Permissions is the list of permissions in the template.
+	Permissions []PermissionsTemplatePermission `json:"permissions,omitempty"`
 	// ProjectKeyPattern is the regex pattern for matching project keys.
 	ProjectKeyPattern string `json:"projectKeyPattern,omitempty"`
 	// UpdatedAt is the template last update date.

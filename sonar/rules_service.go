@@ -106,6 +106,8 @@ type RulesCreate struct {
 }
 
 // RulesDefinition represents a SonarQube rule.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type RulesDefinition struct {
 	// Key is the unique identifier of the rule.
 	Key string `json:"key,omitempty"`
@@ -155,6 +157,28 @@ type RulesDefinition struct {
 	Tags []any `json:"tags,omitempty"`
 	// Impacts is the list of impacts on software quality.
 	Impacts []RulesImpact `json:"impacts,omitempty"`
+	// DescriptionSections is the list of structured description sections of the rule.
+	DescriptionSections []RulesDescriptionSection `json:"descriptionSections,omitempty"`
+	// EducationPrinciples is the list of education principle keys associated with the rule.
+	EducationPrinciples []string `json:"educationPrinciples,omitempty"`
+	// RemFnType is the remediation function type.
+	RemFnType string `json:"remFnType,omitempty"`
+	// RemFnBaseEffort is the base effort of the remediation function.
+	RemFnBaseEffort string `json:"remFnBaseEffort,omitempty"`
+	// DefaultRemFnType is the default remediation function type.
+	DefaultRemFnType string `json:"defaultRemFnType,omitempty"`
+	// DefaultRemFnBaseEffort is the default base effort of the remediation function.
+	DefaultRemFnBaseEffort string `json:"defaultRemFnBaseEffort,omitempty"`
+	// DebtRemFnType is the deprecated remediation function type (legacy debt terminology).
+	//
+	// Deprecated: use RemFnType instead.
+	DebtRemFnType string `json:"debtRemFnType,omitempty"`
+	// DefaultDebtRemFnType is the deprecated default remediation function type (legacy debt terminology).
+	//
+	// Deprecated: use DefaultRemFnType instead.
+	DefaultDebtRemFnType string `json:"defaultDebtRemFnType,omitempty"`
+	// RemFnOverloaded indicates if the remediation function overrides the template's default.
+	RemFnOverloaded bool `json:"remFnOverloaded,omitempty"`
 	// IsTemplate indicates if this is a template rule that can be used to create custom rules.
 	IsTemplate bool `json:"isTemplate,omitempty"`
 	// IsExternal indicates if this is an external rule.
@@ -195,6 +219,12 @@ type RulesSearch struct {
 	Facets  []RulesSearchFacet           `json:"facets,omitempty"`
 	Rules   []RulesDetails               `json:"rules,omitempty"`
 	Paging  Paging                       `json:"paging,omitzero"`
+	// Page is the current page number (legacy duplicate of Paging.PageIndex).
+	Page int64 `json:"p,omitempty"`
+	// PageSize is the page size (legacy duplicate of Paging.PageSize).
+	PageSize int64 `json:"ps,omitempty"`
+	// Total is the total number of rules (legacy duplicate of Paging.Total).
+	Total int64 `json:"total,omitempty"`
 }
 
 // RulesActivation represents how a rule is activated in a quality profile.
@@ -229,6 +259,8 @@ type RulesParamKV struct {
 type RulesSearchFacet struct {
 	// Name is the facet name (e.g., languages, repositories, tags).
 	Name string `json:"name,omitempty"`
+	// Property is the property key the facet was computed on.
+	Property string `json:"property,omitempty"`
 	// Values is the list of facet values with their counts.
 	Values []RulesFacetItem `json:"values,omitempty"`
 }
@@ -243,41 +275,54 @@ type RulesFacetItem struct {
 
 // RulesDetails contains comprehensive information about a rule.
 type RulesDetails struct {
-	Name                       string                    `json:"name,omitempty"`
-	Key                        string                    `json:"key,omitempty"`
-	CreatedAt                  string                    `json:"createdAt,omitempty"`
-	UpdatedAt                  string                    `json:"updatedAt,omitempty"`
-	RemFnType                  string                    `json:"remFnType,omitempty"`
-	HTMLDesc                   string                    `json:"htmlDesc,omitempty"`
-	HTMLNote                   string                    `json:"htmlNote,omitempty"`
-	MdNote                     string                    `json:"mdNote,omitempty"`
-	NoteLogin                  string                    `json:"noteLogin,omitempty"`
-	CleanCodeAttribute         string                    `json:"cleanCodeAttribute,omitempty"`
-	InternalKey                string                    `json:"internalKey,omitempty"`
-	RemFnGapMultiplier         string                    `json:"remFnGapMultiplier,omitempty"`
-	RemFnBaseEffort            string                    `json:"remFnBaseEffort,omitempty"`
-	DefaultRemFnBaseEffort     string                    `json:"defaultRemFnBaseEffort,omitempty"`
-	Lang                       string                    `json:"lang,omitempty"`
-	LangName                   string                    `json:"langName,omitempty"`
-	CleanCodeAttributeCategory string                    `json:"cleanCodeAttributeCategory,omitempty"`
-	GapDescription             string                    `json:"gapDescription,omitempty"`
-	Repo                       string                    `json:"repo,omitempty"`
-	Scope                      string                    `json:"scope,omitempty"`
-	Severity                   string                    `json:"severity,omitempty"`
-	Status                     string                    `json:"status,omitempty"`
-	DefaultRemFnType           string                    `json:"defaultRemFnType,omitempty"`
-	DefaultRemFnGapMultiplier  string                    `json:"defaultRemFnGapMultiplier,omitempty"`
-	TemplateKey                string                    `json:"templateKey,omitempty"`
-	Type                       string                    `json:"type,omitempty"`
-	Impacts                    []RulesImpact             `json:"impacts,omitempty"`
-	Tags                       []any                     `json:"tags,omitempty"`
-	SysTags                    []string                  `json:"sysTags,omitempty"`
-	Params                     []RulesParam              `json:"params,omitempty"`
-	DescriptionSections        []RulesDescriptionSection `json:"descriptionSections,omitempty"`
-	IsTemplate                 bool                      `json:"isTemplate,omitempty"`
-	IsExternal                 bool                      `json:"isExternal,omitempty"`
-	RemFnOverloaded            bool                      `json:"remFnOverloaded,omitempty"`
-	Template                   bool                      `json:"template,omitempty"`
+	Name                   string `json:"name,omitempty"`
+	Key                    string `json:"key,omitempty"`
+	CreatedAt              string `json:"createdAt,omitempty"`
+	UpdatedAt              string `json:"updatedAt,omitempty"`
+	RemFnType              string `json:"remFnType,omitempty"`
+	HTMLDesc               string `json:"htmlDesc,omitempty"`
+	MdDesc                 string `json:"mdDesc,omitempty"`
+	HTMLNote               string `json:"htmlNote,omitempty"`
+	MdNote                 string `json:"mdNote,omitempty"`
+	NoteLogin              string `json:"noteLogin,omitempty"`
+	CleanCodeAttribute     string `json:"cleanCodeAttribute,omitempty"`
+	InternalKey            string `json:"internalKey,omitempty"`
+	RemFnGapMultiplier     string `json:"remFnGapMultiplier,omitempty"`
+	RemFnBaseEffort        string `json:"remFnBaseEffort,omitempty"`
+	DefaultRemFnBaseEffort string `json:"defaultRemFnBaseEffort,omitempty"`
+	// DebtRemFnType is the deprecated remediation function type (legacy debt terminology).
+	//
+	// Deprecated: use RemFnType instead.
+	DebtRemFnType string `json:"debtRemFnType,omitempty"`
+	// DefaultDebtRemFnType is the deprecated default remediation function type (legacy debt terminology).
+	//
+	// Deprecated: use DefaultRemFnType instead.
+	DefaultDebtRemFnType       string        `json:"defaultDebtRemFnType,omitempty"`
+	Lang                       string        `json:"lang,omitempty"`
+	LangName                   string        `json:"langName,omitempty"`
+	CleanCodeAttributeCategory string        `json:"cleanCodeAttributeCategory,omitempty"`
+	GapDescription             string        `json:"gapDescription,omitempty"`
+	Repo                       string        `json:"repo,omitempty"`
+	Scope                      string        `json:"scope,omitempty"`
+	Severity                   string        `json:"severity,omitempty"`
+	Status                     string        `json:"status,omitempty"`
+	DefaultRemFnType           string        `json:"defaultRemFnType,omitempty"`
+	DefaultRemFnGapMultiplier  string        `json:"defaultRemFnGapMultiplier,omitempty"`
+	TemplateKey                string        `json:"templateKey,omitempty"`
+	Type                       string        `json:"type,omitempty"`
+	Impacts                    []RulesImpact `json:"impacts,omitempty"`
+	Tags                       []any         `json:"tags,omitempty"`
+	SysTags                    []string      `json:"sysTags,omitempty"`
+	// DeprecatedKeys contains the deprecated rule keys, for rules that were renamed or moved.
+	DeprecatedKeys RulesDeprecatedKeys `json:"deprecatedKeys,omitzero"`
+	// EducationPrinciples is the list of education principle keys associated with the rule.
+	EducationPrinciples []string                  `json:"educationPrinciples,omitempty"`
+	Params              []RulesParam              `json:"params,omitempty"`
+	DescriptionSections []RulesDescriptionSection `json:"descriptionSections,omitempty"`
+	IsTemplate          bool                      `json:"isTemplate,omitempty"`
+	IsExternal          bool                      `json:"isExternal,omitempty"`
+	RemFnOverloaded     bool                      `json:"remFnOverloaded,omitempty"`
+	Template            bool                      `json:"template,omitempty"`
 }
 
 // RulesDescriptionSection represents a section of a rule's description.
@@ -298,6 +343,12 @@ type RulesDescriptionSectionContext struct {
 	Key string `json:"key,omitempty"`
 }
 
+// RulesDeprecatedKeys represents the deprecated keys of a rule that was renamed or moved.
+type RulesDeprecatedKeys struct {
+	// DeprecatedKey is the list of deprecated rule keys.
+	DeprecatedKey []string `json:"deprecatedKey,omitempty"`
+}
+
 // RulesShow represents the response from showing a specific rule.
 type RulesShow struct {
 	Actives []RulesActivationDetailed `json:"actives,omitempty"`
@@ -305,7 +356,13 @@ type RulesShow struct {
 }
 
 // RulesActivationDetailed contains detailed information about a rule activation.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type RulesActivationDetailed struct {
+	// CreatedAt is the date and time the rule was activated.
+	CreatedAt string `json:"createdAt,omitempty"`
+	// Impacts is the list of software quality impacts of the activated rule.
+	Impacts []RulesImpact `json:"impacts,omitempty"`
 	// Inherit indicates how the rule is inherited (NONE, INHERITED, OVERRIDES).
 	Inherit string `json:"inherit,omitempty"`
 	// QProfile is the key of the quality profile where the rule is activated.
@@ -316,6 +373,8 @@ type RulesActivationDetailed struct {
 	Params []RulesParamKV `json:"params,omitempty"`
 	// PrioritizedRule indicates if the rule is prioritized in this profile.
 	PrioritizedRule bool `json:"prioritizedRule,omitempty"`
+	// UpdatedAt is the date and time the rule activation was last updated.
+	UpdatedAt string `json:"updatedAt,omitempty"`
 }
 
 // RulesTags contains the list of available rule tags.

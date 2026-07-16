@@ -17,11 +17,15 @@ type ViewsService struct {
 // -----------------------------------------------------------------------------
 
 // View represents a SonarQube portfolio/view.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type View struct {
 	// Description is the portfolio description.
 	//
 	// Live-verified: the real API field is "desc", not "description".
 	Description string `json:"desc,omitempty"`
+	// IsFavorite indicates whether the portfolio is marked as favorite by the current user.
+	IsFavorite bool `json:"isFavorite,omitempty"`
 	// Key is the portfolio key. When this View represents a sub-portfolio
 	// nested under a parent (e.g. within ViewDetails.SubViews), this is a
 	// composite "<parent>:<child>" key, not the sub-portfolio's own key -
