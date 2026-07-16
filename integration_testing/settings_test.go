@@ -168,9 +168,16 @@ var _ = Describe("Settings Service", Ordered, func() {
 				Expect(err).NotTo(HaveOccurred())
 				Expect(values.Settings).NotTo(BeEmpty())
 				// Live-verified: sonar.login.message is reported back via the
-				// plural "values" array, not the singular "value" field, even
-				// though it was set via the singular Value option.
-				Expect(values.Settings[0].Values).To(ContainElement("E2E Test Login Message"))
+				// singular "value" field on Community Edition (26.7.0) but via
+				// the plural "values" array on Enterprise Edition
+				// (2026.3.1-enterprise), even though it was set via the same
+				// singular Value option in both cases - check both shapes.
+				setting := values.Settings[0]
+				reportedValues := setting.Values
+				if setting.Value != "" {
+					reportedValues = append(reportedValues, setting.Value)
+				}
+				Expect(reportedValues).To(ContainElement("E2E Test Login Message"))
 
 				// Clean up - reset the setting
 				_, _ = client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
@@ -414,9 +421,16 @@ var _ = Describe("Settings Service", Ordered, func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(values.Settings).NotTo(BeEmpty())
 			// Live-verified: sonar.login.message is reported back via the
-			// plural "values" array, not the singular "value" field, even
-			// though it was set via the singular Value option.
-			Expect(values.Settings[0].Values).To(ContainElement("Welcome to E2E Testing!"))
+			// singular "value" field on Community Edition (26.7.0) but via
+			// the plural "values" array on Enterprise Edition
+			// (2026.3.1-enterprise), even though it was set via the same
+			// singular Value option in both cases - check both shapes.
+			setting := values.Settings[0]
+			reportedValues := setting.Values
+			if setting.Value != "" {
+				reportedValues = append(reportedValues, setting.Value)
+			}
+			Expect(reportedValues).To(ContainElement("Welcome to E2E Testing!"))
 
 			// The LoginMessage endpoint may return empty due to SonarQube behavior
 			// but the setting value is correctly stored
