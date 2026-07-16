@@ -1,6 +1,7 @@
 # SonarQube Go Client
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/boxboxjason/sonarqube-client-go/v2.svg)](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2)
+[![codecov](https://codecov.io/gh/BoxBoxJason/sonarqube-client-go/graph/badge.svg)](https://codecov.io/gh/BoxBoxJason/sonarqube-client-go)
 [![License](https://img.shields.io/github/license/BoxBoxJason/sonarqube-client-go)](LICENSE)
 
 A comprehensive, type-safe Go client library **and command-line interface** for the SonarQube Web API. Whether you're building automation tools, integrating SonarQube into your CI/CD pipeline, or managing your SonarQube instance from the terminal - this project has you covered.
