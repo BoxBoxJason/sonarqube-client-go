@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       sonarqube:
-        image: docker.io/library/sonarqube:26.6.0.123539-community@sha256:1ddbad7b16f754bc3985f336b8ef3ebe885c1655101bdb9cb4156c9560526f58
+        image: docker.io/library/sonarqube:26.7.0.124771-community@sha256:160bd2f6a3485bd09b655ef22dd63c02bd1fa7ba82aa5d9973fd010b8bcca0b3
         ports:
           - 9000:9000
         env:
