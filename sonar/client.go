@@ -617,6 +617,12 @@ type SonarAPIRequestParameters struct {
 	// Body is the request body to include in the API request. It will be
 	// JSON-encoded if not nil.
 	Body any
+	// RootPath resolves Path against the server root instead of the client's
+	// API base path (which always ends in "api/"). A handful of legacy
+	// endpoints (e.g. the SAML assertion consumer service) are mounted
+	// directly on the server root rather than under "api/"; this flag lets
+	// those requests reach the correct URL.
+	RootPath bool
 }
 
 // NewSonarQubeAPIRequest creates a new API request based on the provided
@@ -727,6 +733,10 @@ func (c *Client) buildRequestURL(params SonarAPIRequestParameters) string {
 	c.mu.RLock()
 	baseURLCopy := *c.baseURL
 	c.mu.RUnlock()
+
+	if params.RootPath {
+		baseURLCopy.Path = strings.TrimSuffix(baseURLCopy.Path, "api/")
+	}
 
 	baseURLCopy.Path += params.Path
 

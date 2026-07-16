@@ -124,6 +124,48 @@ jobs:
       - name: Run E2E tests
         run: make e2e
 
+  e2e-enterprise-test:
+    name: E2E Test (Enterprise Edition)
+    runs-on: ubuntu-latest
+    # The Enterprise Edition image exposes enterprise-only API surface without
+    # a license (most endpoints work unlicensed; analysis and a few
+    # license-gated operations do not). This job never blocks the pipeline:
+    # if the image can't be pulled in this environment, or the suite finds
+    # itself pointed at a non-Enterprise instance, it skips cleanly instead
+    # of failing. Set the SONAR_ENTERPRISE_LICENSE repo secret to also
+    # exercise license-dependent behavior.
+    continue-on-error: true
+    services:
+      sonarqube-enterprise:
+        image: docker.io/library/sonarqube:2026.3.1-enterprise
+        ports:
+          - 9001:9000
+        env:
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Set up Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
+        with:
+          go-version: "1.26.5"
+          cache: true
+
+      - name: Cache Go tools
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            /home/runner/go/bin
+          key: ${{ runner.os }}-go-tools-${{ hashFiles('Makefile') }}-e2e-enterprise
+          restore-keys: |
+            ${{ runner.os }}-go-tools-
+
+      - name: Run E2E tests (Enterprise Edition)
+        run: make e2e.enterprise
+        env:
+          SONAR_LICENSE: ${{ secrets.SONAR_ENTERPRISE_LICENSE }}
+
   build:
     runs-on: ubuntu-latest
     steps:

@@ -56,6 +56,12 @@ func (s *SamlService) ValidateValidationOpt(opt *SamlValidationOptions) error {
 // URL query parameter, since real SAML assertions are too large to fit
 // reliably within URL length limits.
 //
+// Unlike the rest of the SonarQube API, this endpoint is mounted on the
+// server root rather than under "api/" (live-verified against a SonarQube
+// Enterprise instance: "api/saml/validation" 404s with "Unknown url", while
+// "saml/validation" reaches the real handler), so the request bypasses the
+// client's API base path.
+//
 // API endpoint: POST saml/validation.
 // Since: 9.7.
 // Internal endpoint.
@@ -71,9 +77,10 @@ func (s *SamlService) Validation(ctx context.Context, opt *SamlValidationOptions
 
 	//nolint:exhaustruct // RawQuery intentionally unset: SAMLResponse is sent in the body, not the query string
 	req, err := s.client.NewSonarQubeAPIRequest(ctx, SonarAPIRequestParameters{
-		Method: http.MethodPost,
-		Path:   "saml/validation",
-		Body:   formBody,
+		Method:   http.MethodPost,
+		Path:     "saml/validation",
+		Body:     formBody,
+		RootPath: true,
 		Headers: map[string]string{
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
@@ -97,11 +104,19 @@ func (s *SamlService) Validation(ctx context.Context, opt *SamlValidationOptions
 // provider so that an administrator can validate the SAML configuration
 // before it is enforced.
 //
+// Like Validation, this endpoint is mounted on the server root rather than
+// under "api/", so the request bypasses the client's API base path.
+//
 // API endpoint: GET saml/validation_init.
 // Since: 9.7.
 // Internal endpoint.
 func (s *SamlService) ValidationInit(ctx context.Context) (*http.Response, error) {
-	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "saml/validation_init", nil)
+	//nolint:exhaustruct // Body and Headers intentionally unset for this GET request
+	req, err := s.client.NewSonarQubeAPIRequest(ctx, SonarAPIRequestParameters{
+		Method:   http.MethodGet,
+		Path:     "saml/validation_init",
+		RootPath: true,
+	})
 	if err != nil {
 		return nil, err
 	}

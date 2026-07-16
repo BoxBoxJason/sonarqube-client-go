@@ -792,15 +792,13 @@ func TestViewsService_SetTagsMode_ValidationError(t *testing.T) {
 // -----------------------------------------------------------------------------
 
 func TestViewsService_Show(t *testing.T) {
-	response := ViewsShow{
-		Portfolio: ViewDetails{
-			Key:           "pf-1",
-			Name:          "Portfolio 1",
-			Qualifier:     "VW",
-			SelectionMode: "MANUAL",
-			SubViews: []View{
-				{Key: "sub-pf-1", Name: "Sub Portfolio 1", Qualifier: "SVW"},
-			},
+	response := ViewDetails{
+		Key:           "pf-1",
+		Name:          "Portfolio 1",
+		Qualifier:     "VW",
+		SelectionMode: "MANUAL",
+		SubViews: []View{
+			{Key: "sub-pf-1", Name: "Sub Portfolio 1", Qualifier: "SVW"},
 		},
 	}
 	server := newTestServer(t, mockHandler(t, http.MethodGet, "/views/show", http.StatusOK, response))
@@ -810,9 +808,9 @@ func TestViewsService_Show(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	require.NotNil(t, result)
-	assert.Equal(t, "pf-1", result.Portfolio.Key)
-	assert.Equal(t, "Portfolio 1", result.Portfolio.Name)
-	assert.Len(t, result.Portfolio.SubViews, 1)
+	assert.Equal(t, "pf-1", result.Key)
+	assert.Equal(t, "Portfolio 1", result.Name)
+	assert.Len(t, result.SubViews, 1)
 }
 
 func TestViewsService_Show_ValidationError(t *testing.T) {

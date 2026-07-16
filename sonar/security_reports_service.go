@@ -83,8 +83,14 @@ type SecurityReportsDownloadOptions struct {
 	// Project is the project key. This field is required.
 	Project string `url:"project"`
 
-	// Standards is the list of standards to include in the report.
-	// If omitted, all standards are included. Optional.
+	// Standards is the list of standards to include in the report. If
+	// omitted, all standards are included. Optional.
+	//
+	// Unlike Show, this endpoint only supports a subset of the standards
+	// accepted by allowedSecurityStandards: live-verified, only
+	// "sonarsourceSecurity", "casa", and "owaspMasvs-v2" are accepted here -
+	// every other standard (including "owaspTop10") fails with 400
+	// {"errors":[{"msg":"Standard '<standard>' is not supported"}]}.
 	Standards []string `url:"standards,omitempty,comma"`
 }
 
@@ -118,6 +124,19 @@ var allowedSecurityStandards = map[string]struct{}{
 	"owaspMobileTop10":    {},
 }
 
+// allowedSecurityReportDownloadStandards is the subset of
+// allowedSecurityStandards actually accepted by the download endpoint.
+// Live-verified: every other standard, including "owaspTop10" (the most
+// commonly expected one), fails with 400 "Standard '<standard>' is not
+// supported" on download, despite being valid for Show.
+//
+//nolint:gochecknoglobals // constant set of allowed values
+var allowedSecurityReportDownloadStandards = map[string]struct{}{
+	"sonarsourceSecurity": {},
+	"casa":                {},
+	"owaspMasvs-v2":       {},
+}
+
 // -----------------------------------------------------------------------------
 // Validation Functions
 // -----------------------------------------------------------------------------
@@ -134,7 +153,7 @@ func (s *SecurityReportsService) ValidateDownloadOpt(opt *SecurityReportsDownloa
 	}
 
 	if len(opt.Standards) > 0 {
-		return AreValuesAuthorized(opt.Standards, allowedSecurityStandards, "Standards")
+		return AreValuesAuthorized(opt.Standards, allowedSecurityReportDownloadStandards, "Standards")
 	}
 
 	return nil
