@@ -20,9 +20,19 @@ const maxErrorResponseBodyBytes = 1 << 20
 // error if an API error has occurred. If v implements the io.Writer
 // interface, the raw response body will be written to v, without attempting to
 // first decode it.
+func Do(httpClient *http.Client, req *http.Request, dest any) (*http.Response, error) {
+	return doWithBodyObserver(httpClient, req, dest, nil)
+}
+
+// doWithBodyObserver implements Do, additionally invoking onBody, when
+// non-nil, with the raw JSON response body right before it is decoded into
+// dest. onBody is only called for the plain-JSON decode path (not for
+// io.Writer or text destinations), and only once the response has been
+// confirmed successful. Passing a nil onBody makes this behave identically to
+// Do, decoding straight from the response stream rather than buffering it.
 //
 //nolint:wrapcheck // error context is clear from call site
-func Do(httpClient *http.Client, req *http.Request, dest any) (*http.Response, error) {
+func doWithBodyObserver(httpClient *http.Client, req *http.Request, dest any, onBody func([]byte)) (*http.Response, error) {
 	isText := false
 
 	if _, ok := dest.(*string); ok {
@@ -56,24 +66,53 @@ func Do(httpClient *http.Client, req *http.Request, dest any) (*http.Response, e
 	}
 
 	if isText {
-		data, readErr := io.ReadAll(resp.Body)
-		if readErr != nil {
-			return resp, readErr
-		}
-
-		if strPtr, ok := dest.(*string); ok {
-			*strPtr = string(data)
-		}
-
-		return resp, nil
+		return resp, decodeTextBody(resp, dest)
 	}
 
-	err = json.NewDecoder(resp.Body).Decode(dest)
+	return resp, decodeJSONBody(req, resp, dest, onBody)
+}
+
+// decodeTextBody reads the response body and, if dest is a *string, stores it
+// verbatim.
+func decodeTextBody(resp *http.Response, dest any) error {
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return resp, fmt.Errorf("failed to decode %s %s response body: %w", req.Method, requestEndpoint(req), err)
+		return fmt.Errorf("failed to read response body: %w", err)
 	}
 
-	return resp, nil
+	if strPtr, ok := dest.(*string); ok {
+		*strPtr = string(data)
+	}
+
+	return nil
+}
+
+// decodeJSONBody JSON-decodes the response body into dest. When onBody is
+// nil, it decodes straight from the response stream; otherwise it buffers the
+// full body first, hands it to onBody, then unmarshals from the buffer.
+func decodeJSONBody(req *http.Request, resp *http.Response, dest any, onBody func([]byte)) error {
+	if onBody == nil {
+		err := json.NewDecoder(resp.Body).Decode(dest)
+		if err != nil {
+			return fmt.Errorf("failed to decode %s %s response body: %w", req.Method, requestEndpoint(req), err)
+		}
+
+		return nil
+	}
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	onBody(data)
+
+	err = json.Unmarshal(data, dest)
+	if err != nil {
+		return fmt.Errorf("failed to decode %s %s response body: %w", req.Method, requestEndpoint(req), err)
+	}
+
+	return nil
 }
 
 // requestEndpoint formats a request's endpoint as scheme://host/path, with the

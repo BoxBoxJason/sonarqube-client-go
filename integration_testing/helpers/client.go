@@ -81,13 +81,21 @@ func NormalizeBaseURL(baseURL string) string {
 	return baseURL
 }
 
-// NewClient creates a new SonarQube client for e2e tests using the provided config.
+// NewClient creates a new SonarQube client for e2e tests using the provided
+// config. Every client is wired with RecordSchemaMismatches so that all API
+// responses observed during the e2e run are checked against their modeled Go
+// struct, catching fields the SDK's structures have drifted away from (see
+// SchemaMismatches).
 func NewClient(cfg *Config) (*sonar.Client, error) {
 	baseURL := NormalizeBaseURL(cfg.BaseURL)
 
 	// Prefer token auth if available
 	if cfg.Token != "" {
-		client, err := sonar.NewClient(nil, sonar.WithBaseURL(baseURL), sonar.WithToken(cfg.Token))
+		client, err := sonar.NewClient(nil,
+			sonar.WithBaseURL(baseURL),
+			sonar.WithToken(cfg.Token),
+			sonar.WithSchemaObserver(RecordSchemaMismatches),
+		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create client with token: %w", err)
 		}
@@ -96,7 +104,11 @@ func NewClient(cfg *Config) (*sonar.Client, error) {
 	}
 
 	// Fall back to basic auth
-	client, err := sonar.NewClient(nil, sonar.WithBaseURL(baseURL), sonar.WithBasicAuth(cfg.Username, cfg.Password))
+	client, err := sonar.NewClient(nil,
+		sonar.WithBaseURL(baseURL),
+		sonar.WithBasicAuth(cfg.Username, cfg.Password),
+		sonar.WithSchemaObserver(RecordSchemaMismatches),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create client with basic auth: %w", err)
 	}

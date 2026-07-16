@@ -50,6 +50,7 @@ type Client struct {
 	retryOptions    *RetryOptions
 	transportConfig *TransportConfig
 	middlewares     []Middleware
+	schemaObserver  SchemaObserver
 	userAgent       string
 	timeout         time.Duration
 
@@ -429,6 +430,24 @@ func WithTimeout(timeout time.Duration) ClientOptionFunc {
 	}
 }
 
+// WithSchemaObserver is a ClientOptionFunc that registers a callback invoked
+// after every successfully decoded API response with any SchemaMismatch found
+// between the raw response body and the destination struct. It is intended
+// for test suites that want strict validation that the SDK's modeled response
+// types still match what the SonarQube API actually returns; it has no effect
+// on decoding itself and is nil (disabled) by default.
+func WithSchemaObserver(observer SchemaObserver) ClientOptionFunc {
+	return func(c *Client) error {
+		if observer == nil {
+			return errors.New("WithSchemaObserver: observer must not be nil")
+		}
+
+		c.schemaObserver = observer
+
+		return nil
+	}
+}
+
 // =============================================
 // SETTERS
 // =============================================
@@ -720,7 +739,20 @@ func (c *Client) Do(req *http.Request, dest any) (*http.Response, error) {
 	httpClient := c.httpClient
 	c.mu.RUnlock()
 
-	return Do(httpClient, req, dest)
+	if c.schemaObserver == nil {
+		return Do(httpClient, req, dest)
+	}
+
+	endpoint := fmt.Sprintf("%s %s", req.Method, requestEndpoint(req))
+
+	return doWithBodyObserver(httpClient, req, dest, func(data []byte) {
+		mismatches, err := CheckSchema(endpoint, data, dest)
+		if err != nil {
+			return
+		}
+
+		c.schemaObserver(endpoint, mismatches)
+	})
 }
 
 // =============================================

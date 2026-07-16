@@ -102,6 +102,12 @@ type User struct {
 	Active bool `json:"active,omitempty"`
 	// Email is the user's email address.
 	Email string `json:"email,omitempty"`
+	// ExternalIdentity is the user's external identity.
+	ExternalIdentity string `json:"externalIdentity,omitempty"`
+	// ExternalProvider is the user's external identity provider.
+	ExternalProvider string `json:"externalProvider,omitempty"`
+	// Groups is the list of groups the user belongs to.
+	Groups []string `json:"groups,omitempty"`
 	// Local indicates whether the user is authenticated locally.
 	Local bool `json:"local,omitempty"`
 	// Login is the user's login.
@@ -152,6 +158,10 @@ type UsersSearchResult struct {
 type UsersDeactivateResult struct {
 	// Active indicates whether the user is active (always false for deactivated users).
 	Active bool `json:"active,omitempty"`
+	// ExternalIdentity is the user's external identity.
+	ExternalIdentity string `json:"externalIdentity,omitempty"`
+	// ExternalProvider is the user's external identity provider.
+	ExternalProvider string `json:"externalProvider,omitempty"`
 	// Groups is the list of groups (empty for deactivated users).
 	Groups []any `json:"groups,omitempty"`
 	// Local indicates whether the user was authenticated locally.
@@ -204,6 +214,24 @@ type UsersCurrentProfile struct {
 type UsersDismissedNotices struct {
 	// EducationPrinciples indicates whether the education principles notice was dismissed.
 	EducationPrinciples bool `json:"educationPrinciples,omitempty"`
+	// IssueCleanCodeGuide indicates whether the issue clean code guide notice was dismissed.
+	IssueCleanCodeGuide bool `json:"issueCleanCodeGuide,omitempty"`
+	// IssueNewIssueStatusAndTransitionGuide indicates whether the issue new status and transition guide notice was dismissed.
+	IssueNewIssueStatusAndTransitionGuide bool `json:"issueNewIssueStatusAndTransitionGuide,omitempty"`
+	// OverviewZeroNewIssuesSimplification indicates whether the overview zero new issues simplification notice was dismissed.
+	OverviewZeroNewIssuesSimplification bool `json:"overviewZeroNewIssuesSimplification,omitempty"`
+	// ShowDesignAndArchitectureBanner indicates whether the design and architecture banner notice was dismissed.
+	ShowDesignAndArchitectureBanner bool `json:"showDesignAndArchitectureBanner,omitempty"`
+	// ShowDesignAndArchitectureOptInBanner indicates whether the design and architecture opt-in banner notice was dismissed.
+	ShowDesignAndArchitectureOptInBanner bool `json:"showDesignAndArchitectureOptInBanner,omitempty"`
+	// ShowDesignAndArchitectureTour indicates whether the design and architecture tour notice was dismissed.
+	ShowDesignAndArchitectureTour bool `json:"showDesignAndArchitectureTour,omitempty"`
+	// ShowEnableSca indicates whether the enable SCA notice was dismissed.
+	ShowEnableSca bool `json:"showEnableSca,omitempty"`
+	// ShowNewModesBanner indicates whether the new modes banner notice was dismissed.
+	ShowNewModesBanner bool `json:"showNewModesBanner,omitempty"`
+	// ShowSandboxedIssuesIntro indicates whether the sandboxed issues intro notice was dismissed.
+	ShowSandboxedIssuesIntro bool `json:"showSandboxedIssuesIntro,omitempty"`
 	// SonarlintAd indicates whether the SonarLint ad notice was dismissed.
 	SonarlintAd bool `json:"sonarlintAd,omitempty"`
 }

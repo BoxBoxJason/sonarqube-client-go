@@ -242,9 +242,13 @@ type ComponentAncestor struct {
 }
 
 // ComponentDetails represents detailed component information in show results.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type ComponentDetails struct {
 	// AnalysisDate is the last analysis date.
 	AnalysisDate string `json:"analysisDate,omitempty"`
+	// IsAiCodeFixEnabled indicates if the AI CodeFix feature is enabled for this component.
+	IsAiCodeFixEnabled bool `json:"isAiCodeFixEnabled,omitempty"`
 	// Key is the component key.
 	Key string `json:"key,omitempty"`
 	// Language is the component language.
@@ -253,12 +257,18 @@ type ComponentDetails struct {
 	LeakPeriodDate string `json:"leakPeriodDate,omitempty"`
 	// Name is the component name.
 	Name string `json:"name,omitempty"`
+	// NeedIssueSync indicates if issue synchronization is needed for this component.
+	NeedIssueSync bool `json:"needIssueSync,omitempty"`
 	// Path is the path to the component.
 	Path string `json:"path,omitempty"`
 	// Qualifier is the component qualifier.
 	Qualifier string `json:"qualifier,omitempty"`
+	// Tags is the list of tags associated with the component.
+	Tags []string `json:"tags,omitempty"`
 	// Version is the component version.
 	Version string `json:"version,omitempty"`
+	// Visibility is the visibility of the component (public or private).
+	Visibility string `json:"visibility,omitempty"`
 }
 
 // ComponentSuggestionItem represents an item in suggestions results.
@@ -297,8 +307,12 @@ type ComponentSuggestionGroup struct {
 type ComponentTreeBase struct {
 	// Description is the component description.
 	Description string `json:"description,omitempty"`
+	// IsAiCodeFixEnabled indicates if the AI CodeFix feature is enabled for this component.
+	IsAiCodeFixEnabled bool `json:"isAiCodeFixEnabled,omitempty"`
 	// Key is the component key.
 	Key string `json:"key,omitempty"`
+	// Name is the component name.
+	Name string `json:"name,omitempty"`
 	// Qualifier is the component qualifier.
 	Qualifier string `json:"qualifier,omitempty"`
 	// Tags is the list of tags.

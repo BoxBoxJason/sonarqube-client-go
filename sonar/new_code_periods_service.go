@@ -61,6 +61,8 @@ type NewCodePeriod struct {
 	Type string `json:"type,omitempty"`
 	// Value is the value of the new code period.
 	Value string `json:"value,omitempty"`
+	// UpdatedAt is the timestamp (Unix epoch milliseconds) of the last update of this new code period.
+	UpdatedAt int64 `json:"updatedAt,omitempty"`
 }
 
 // -----------------------------------------------------------------------------
@@ -87,6 +89,8 @@ type NewCodePeriodsShow struct {
 	Type string `json:"type,omitempty"`
 	// Value is the value of the new code period.
 	Value string `json:"value,omitempty"`
+	// UpdatedAt is the timestamp (Unix epoch milliseconds) of the last update of this new code period.
+	UpdatedAt int64 `json:"updatedAt,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

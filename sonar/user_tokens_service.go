@@ -76,6 +76,8 @@ type UserTokensGenerate struct {
 	Login string `json:"login,omitempty"`
 	// Name is the name of the token.
 	Name string `json:"name,omitempty"`
+	// ProjectKey is the key of the project the token is scoped to.
+	ProjectKey string `json:"projectKey,omitempty"`
 	// Token is the generated token value (only returned once).
 	Token string `json:"token,omitempty"`
 	// Type is the type of the token.

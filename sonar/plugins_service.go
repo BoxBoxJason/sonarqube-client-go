@@ -39,6 +39,10 @@ type PluginAvailable struct {
 	Description string `json:"description,omitempty"`
 	// EditionBundled indicates if the plugin is bundled with an edition.
 	EditionBundled bool `json:"editionBundled,omitempty"`
+	// HomepageURL is the plugin homepage URL.
+	HomepageURL string `json:"homepageUrl,omitempty"`
+	// IssueTrackerURL is the issue tracker URL.
+	IssueTrackerURL string `json:"issueTrackerUrl,omitempty"`
 	// Key is the plugin key.
 	Key string `json:"key,omitempty"`
 	// License is the plugin license.
@@ -129,6 +133,8 @@ type PluginInstalled struct {
 	OrganizationURL string `json:"organizationUrl,omitempty"`
 	// RequiredForLanguages is the list of languages requiring this plugin.
 	RequiredForLanguages []string `json:"requiredForLanguages,omitempty"`
+	// Type is the plugin type (bundled or external).
+	Type string `json:"type,omitempty"`
 	// SonarLintSupported indicates if SonarLint is supported.
 	SonarLintSupported bool `json:"sonarLintSupported,omitempty"`
 	// UpdatedAt is the timestamp when the plugin was updated.
@@ -204,9 +210,13 @@ type PluginPendingUpdate struct {
 }
 
 // PluginsUpdates represents the response from listing plugin updates.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type PluginsUpdates struct {
 	// Plugins is the list of plugins with available updates.
 	Plugins []PluginWithUpdates `json:"plugins,omitempty"`
+	// UpdateCenterRefresh is the timestamp of the last update center refresh.
+	UpdateCenterRefresh string `json:"updateCenterRefresh,omitempty"`
 }
 
 // PluginWithUpdates represents a plugin with available updates.

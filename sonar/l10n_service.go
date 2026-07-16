@@ -23,6 +23,8 @@ type L10NService struct {
 type L10NIndex struct {
 	// Locale is the locale used.
 	Locale string `json:"locale,omitempty"`
+	// EffectiveLocale is the locale actually resolved and used to return messages.
+	EffectiveLocale string `json:"effectiveLocale,omitempty"`
 	// Messages is a map of message keys to their localized values.
 	Messages map[string]string `json:"messages,omitempty"`
 }

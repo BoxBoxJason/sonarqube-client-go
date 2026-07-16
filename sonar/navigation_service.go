@@ -25,6 +25,8 @@ type NavigationService struct {
 type NavigationComponent struct {
 	// AnalysisDate is the date of the last analysis.
 	AnalysisDate string `json:"analysisDate,omitempty"`
+	// Branch is the branch name of the component.
+	Branch string `json:"branch,omitempty"`
 	// Breadcrumbs is the list of breadcrumb items for the component.
 	Breadcrumbs []NavigationBreadcrumb `json:"breadcrumbs,omitempty"`
 	// CanBrowseAllChildProjects indicates if user can browse all child projects.
@@ -49,6 +51,8 @@ type NavigationComponent struct {
 	QualityProfiles []NavigationQualityProfile `json:"qualityProfiles,omitempty"`
 	// Version is the component version.
 	Version string `json:"version,omitempty"`
+	// Visibility is the visibility of the component (public or private).
+	Visibility string `json:"visibility,omitempty"`
 }
 
 // NavigationBreadcrumb represents a breadcrumb item in navigation.
@@ -65,8 +69,12 @@ type NavigationBreadcrumb struct {
 //
 //nolint:govet // fieldalignment - structure kept for readability
 type NavigationConfiguration struct {
+	// CanApplyPermissionTemplate indicates if the user can apply a permission template to the project.
+	CanApplyPermissionTemplate bool `json:"canApplyPermissionTemplate,omitempty"`
 	// CanBrowseProject indicates if user can browse the project.
 	CanBrowseProject bool `json:"canBrowseProject,omitempty"`
+	// CanUpdateProjectVisibilityToPrivate indicates if the user can change the project visibility to private.
+	CanUpdateProjectVisibilityToPrivate bool `json:"canUpdateProjectVisibilityToPrivate,omitempty"`
 	// Extensions is the list of configuration extensions.
 	Extensions []NavigationExtension `json:"extensions,omitempty"`
 	// ShowBackgroundTasks indicates if background tasks should be shown.
@@ -129,10 +137,14 @@ type NavigationGlobal struct {
 	Edition string `json:"edition,omitempty"`
 	// GlobalPages is the list of global pages.
 	GlobalPages []NavigationExtension `json:"globalPages,omitempty"`
+	// InstanceUsesDefaultAdminCredentials indicates if the instance still uses the default admin credentials.
+	InstanceUsesDefaultAdminCredentials bool `json:"instanceUsesDefaultAdminCredentials,omitempty"`
 	// LogoURL is the URL to the logo.
 	LogoURL string `json:"logoUrl,omitempty"`
 	// LogoWidth is the logo width.
 	LogoWidth string `json:"logoWidth,omitempty"`
+	// NeedIssueSync indicates if issue synchronization is needed.
+	NeedIssueSync bool `json:"needIssueSync,omitempty"`
 	// ProductionDatabase indicates if this is a production database.
 	ProductionDatabase bool `json:"productionDatabase,omitempty"`
 	// Qualifiers is the list of supported qualifiers.
@@ -151,6 +163,8 @@ type NavigationGlobal struct {
 //
 //nolint:tagliatelle // API-defined JSON field names
 type NavigationGlobalSettings struct {
+	// DeveloperAggregatedInfoDisabled indicates if developer aggregated info is disabled.
+	DeveloperAggregatedInfoDisabled string `json:"sonar.developerAggregatedInfo.disabled,omitempty"`
 	// EnableGravatar indicates if Gravatar is enabled.
 	EnableGravatar string `json:"sonar.lf.enableGravatar,omitempty"`
 	// GravatarServerURL is the Gravatar server URL.
@@ -185,6 +199,8 @@ type NavigationSettings struct {
 
 // NavigationSettingsExtension represents a settings extension.
 type NavigationSettingsExtension struct {
+	// Key is the extension key.
+	Key string `json:"key,omitempty"`
 	// Name is the extension name.
 	Name string `json:"name,omitempty"`
 	// URL is the extension URL.

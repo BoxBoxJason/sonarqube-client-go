@@ -72,26 +72,36 @@ type FixSuggestion struct {
 	Changes []FixSuggestionChange `json:"changes,omitempty"`
 }
 
-// FixSuggestionProvider represents an LLM provider configuration for fix suggestions.
+// FixSuggestionProvider represents a configured LLM provider for fix suggestions.
+//
+//nolint:govet // fieldalignment: keeping logical field grouping for readability
 type FixSuggestionProvider struct {
-	// Key is the provider key.
-	Key string `json:"key,omitempty"`
-	// ModelKey is the model key used.
-	ModelKey string `json:"modelKey,omitempty"`
-	// Endpoint is the provider endpoint URL.
-	Endpoint string `json:"endpoint,omitempty"`
+	// Type is the provider type (e.g. AZURE_OPENAI, AWS_BEDROCK, CUSTOM, OPENAI).
+	Type string `json:"type,omitempty"`
+	// Name is the display name of the provider.
+	Name string `json:"name,omitempty"`
+	// SelfHosted indicates whether this is a self-hosted provider.
+	SelfHosted bool `json:"selfHosted,omitempty"`
+	// Selected indicates whether this provider is currently selected.
+	Selected bool `json:"selected,omitempty"`
+	// Model is the name of the selected model, if any.
+	Model string `json:"model,omitempty"`
+	// Recommended indicates whether this provider/model is recommended.
+	Recommended bool `json:"recommended,omitempty"`
+	// Config contains provider-specific configuration key/value pairs.
+	Config map[string]string `json:"config,omitempty"`
+	// Headers contains custom HTTP headers for self-hosted/custom providers.
+	Headers []any `json:"headers,omitempty"`
 }
 
 // FixSuggestionsFeatureEnablement represents the AI CodeFix feature enablement state.
-//
-//nolint:govet // fieldalignment: keeping logical field grouping for readability
 type FixSuggestionsFeatureEnablement struct {
 	// Enablement is the enablement state.
 	Enablement string `json:"enablement,omitempty"`
 	// EnabledProjectKeys lists project keys where the feature is enabled.
 	EnabledProjectKeys []string `json:"enabledProjectKeys,omitempty"`
-	// Provider contains the LLM provider configuration.
-	Provider FixSuggestionProvider `json:"provider,omitzero"`
+	// Providers is the list of configured LLM providers.
+	Providers []FixSuggestionProvider `json:"providers,omitempty"`
 }
 
 // FixSuggestionsAwarenessBanner represents the response from a banner interaction.

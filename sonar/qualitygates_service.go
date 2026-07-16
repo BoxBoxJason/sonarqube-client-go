@@ -232,7 +232,7 @@ type QualityGateUser struct {
 
 // QualitygatesShow represents the response from showing a quality gate.
 //
-//nolint:govet // Field alignment is less important than logical grouping
+//nolint:govet,tagliatelle // Field alignment is less important than logical grouping; hasMQRConditions matches the API's JSON field name
 type QualitygatesShow struct {
 	// Actions contains the actions available for this quality gate.
 	Actions QualityGateActions `json:"actions,omitzero"`
@@ -248,6 +248,10 @@ type QualitygatesShow struct {
 	IsBuiltIn bool `json:"isBuiltIn,omitempty"`
 	// IsDefault indicates if this is the default quality gate.
 	IsDefault bool `json:"isDefault,omitempty"`
+	// HasMQRConditions indicates if the gate has conditions based on the Mode Quality Rating (MQR) metrics.
+	HasMQRConditions bool `json:"hasMQRConditions,omitempty"`
+	// HasStandardConditions indicates if the gate has conditions based on standard metrics.
+	HasStandardConditions bool `json:"hasStandardConditions,omitempty"`
 }
 
 // QualityGateCondition represents a condition in a quality gate.
@@ -260,6 +264,8 @@ type QualityGateCondition struct {
 	Metric string `json:"metric,omitempty"`
 	// Op is the comparison operator (LT, GT).
 	Op string `json:"op,omitempty"`
+	// IsCaycCondition indicates if this condition is part of the Clean As You Code standard conditions.
+	IsCaycCondition bool `json:"isCaycCondition,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

@@ -53,6 +53,8 @@ type GithubProvisioningStatus struct {
 
 // GithubProvisioningJitStatus represents the status of Just-In-Time provisioning.
 type GithubProvisioningJitStatus struct {
+	// ErrorMessage contains an error message if JIT provisioning failed.
+	ErrorMessage string `json:"errorMessage,omitempty"`
 	// Status is the JIT provisioning status.
 	Status string `json:"status,omitempty"`
 }

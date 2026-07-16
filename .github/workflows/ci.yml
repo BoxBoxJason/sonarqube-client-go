@@ -129,12 +129,8 @@ jobs:
     runs-on: ubuntu-latest
     # The Enterprise Edition image exposes enterprise-only API surface without
     # a license (most endpoints work unlicensed; analysis and a few
-    # license-gated operations do not). This job never blocks the pipeline:
-    # if the image can't be pulled in this environment, or the suite finds
-    # itself pointed at a non-Enterprise instance, it skips cleanly instead
-    # of failing. Set the SONAR_ENTERPRISE_LICENSE repo secret to also
-    # exercise license-dependent behavior.
-    continue-on-error: true
+    # license-gated operations do not). Set the SONAR_ENTERPRISE_LICENSE repo
+    # secret to also exercise license-dependent behavior.
     services:
       sonarqube-enterprise:
         image: docker.io/library/sonarqube:2026.3.1-enterprise

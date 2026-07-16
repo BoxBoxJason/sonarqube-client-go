@@ -99,6 +99,12 @@ type UserGroupsUsers struct {
 	Users []UserGroupsUser `json:"users,omitempty"`
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
+	// Page is the current page number (legacy duplicate of Paging.PageIndex).
+	Page int64 `json:"p,omitempty"`
+	// PageSize is the page size (legacy duplicate of Paging.PageSize).
+	PageSize int64 `json:"ps,omitempty"`
+	// Total is the total number of users (legacy duplicate of Paging.Total).
+	Total int64 `json:"total,omitempty"`
 }
 
 // -----------------------------------------------------------------------------
