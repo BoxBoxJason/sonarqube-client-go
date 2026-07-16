@@ -19,9 +19,18 @@ type ViewsService struct {
 // View represents a SonarQube portfolio/view.
 type View struct {
 	// Description is the portfolio description.
-	Description string `json:"description,omitempty"`
-	// Key is the portfolio key.
+	//
+	// Live-verified: the real API field is "desc", not "description".
+	Description string `json:"desc,omitempty"`
+	// Key is the portfolio key. When this View represents a sub-portfolio
+	// nested under a parent (e.g. within ViewDetails.SubViews), this is a
+	// composite "<parent>:<child>" key, not the sub-portfolio's own key -
+	// use OriginalKey for that.
 	Key string `json:"key,omitempty"`
+	// OriginalKey is the sub-portfolio's own key, without the parent-key
+	// prefix that Key carries in a nested context. Only populated when this
+	// View represents a sub-portfolio.
+	OriginalKey string `json:"originalKey,omitempty"`
 	// Name is the portfolio name.
 	Name string `json:"name,omitempty"`
 	// Qualifier is the qualifier of the component (VW for portfolio, SVW for sub-portfolio).
@@ -33,7 +42,9 @@ type View struct {
 // ViewDetails is an extended portfolio with sub-portfolios and selection modes.
 type ViewDetails struct {
 	// Description is the portfolio description.
-	Description string `json:"description,omitempty"`
+	//
+	// Live-verified: the real API field is "desc", not "description".
+	Description string `json:"desc,omitempty"`
 	// Key is the portfolio key.
 	Key string `json:"key,omitempty"`
 	// Name is the portfolio name.
@@ -54,8 +65,14 @@ type ViewProject struct {
 	Key string `json:"key,omitempty"`
 	// Name is the project name.
 	Name string `json:"name,omitempty"`
+	// BranchKey lists the branch keys selected for the project, if any.
+	BranchKey []string `json:"branchKey,omitempty"`
 	// Selected indicates whether the project is selected in the portfolio.
 	Selected bool `json:"selected,omitempty"`
+	// Enabled indicates whether the project is enabled in the portfolio.
+	Enabled bool `json:"enabled,omitempty"`
+	// Accessible indicates whether the current user can access the project.
+	Accessible bool `json:"accessible,omitempty"`
 }
 
 // ViewProjectStatus represents a project with its quality gate status in a portfolio.
@@ -100,16 +117,13 @@ type ViewsSearch struct {
 	Paging Paging `json:"paging,omitzero"`
 }
 
-// ViewsShow represents the response from the show endpoint.
-type ViewsShow struct {
-	// Portfolio contains the portfolio details.
-	Portfolio ViewDetails `json:"portfolio,omitzero"`
-}
-
 // ViewsProjects represents the response from the projects endpoint.
 type ViewsProjects struct {
 	// Projects is the list of projects in the portfolio.
-	Projects []ViewProject `json:"projects,omitempty"`
+	//
+	// Live-verified: unlike most list endpoints in this SDK, the real
+	// response wraps this list in a "results" field, not "projects".
+	Projects []ViewProject `json:"results,omitempty"`
 	// Paging contains pagination information.
 	Paging Paging `json:"paging,omitzero"`
 }
@@ -1310,10 +1324,14 @@ func (s *ViewsService) SetTagsMode(ctx context.Context, opt *ViewsSetTagsModeOpt
 // Show returns the details of a portfolio, including sub-portfolios.
 // Requires 'Browse' permission on the portfolio.
 //
+// The response body is the portfolio object itself (live-verified: it is
+// not wrapped in a "portfolio" field, despite what the endpoint's name
+// might suggest).
+//
 // API endpoint: GET /api/views/show.
 // Since: 6.6.
 // Enterprise Edition only.
-func (s *ViewsService) Show(ctx context.Context, opt *ViewsShowOptions) (*ViewsShow, *http.Response, error) {
+func (s *ViewsService) Show(ctx context.Context, opt *ViewsShowOptions) (*ViewDetails, *http.Response, error) {
 	err := s.ValidateShowOpt(opt)
 	if err != nil {
 		return nil, nil, err
@@ -1324,7 +1342,7 @@ func (s *ViewsService) Show(ctx context.Context, opt *ViewsShowOptions) (*ViewsS
 		return nil, nil, err
 	}
 
-	result := new(ViewsShow)
+	result := new(ViewDetails)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {

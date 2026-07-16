@@ -99,7 +99,7 @@ type GovernanceReportsUpdateFrequencyOptions struct {
 	ComponentID string `url:"componentId,omitempty"`
 	// ComponentKey is the component key. Optional.
 	ComponentKey string `url:"componentKey,omitempty"`
-	// Frequency is the report frequency. Optional. Valid values: DAILY, WEEKLY, MONTHLY.
+	// Frequency is the report frequency. Optional. Valid values: daily, weekly, monthly.
 	Frequency string `url:"frequency,omitempty"`
 }
 

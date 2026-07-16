@@ -143,7 +143,10 @@ setup.sonar:
 	fi
 
 # Setup SonarQube Enterprise Edition instance for integration testing.
-# Requires a valid SonarQube Enterprise Edition license.
+# Runs the Enterprise Edition Docker image, which exposes enterprise-only API
+# surface without a license (most endpoints work unlicensed; analysis and a
+# few license-gated operations do not). If SONAR_LICENSE is set, it is
+# applied on top so license-dependent tests can run too; this is optional.
 # Override the endpoint with: make setup.sonar.enterprise enterprise_endpoint=http://my-sonarqube:9000
 setup.sonar.enterprise:
 	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Please install curl."; exit 1; }
@@ -162,6 +165,13 @@ setup.sonar.enterprise:
 			sleep 5; \
 		done; \
 		echo "\nSonarQube Enterprise is ready at ${enterprise_endpoint}."; \
+	fi
+	@if [ -n "$$SONAR_LICENSE" ]; then \
+		echo "SONAR_LICENSE is set; activating license on ${enterprise_endpoint}..."; \
+		curl -s -u ${username}:${password} -X POST --data-urlencode "license=$$SONAR_LICENSE" \
+			"${enterprise_endpoint}/api/editions/set_license" -o /dev/null -w "set_license responded with HTTP %{http_code}\n"; \
+	else \
+		echo "SONAR_LICENSE not set; running unlicensed. License-gated tests will be skipped."; \
 	fi
 
 # Teardown SonarQube instance

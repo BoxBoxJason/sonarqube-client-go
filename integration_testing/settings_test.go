@@ -167,7 +167,10 @@ var _ = Describe("Settings Service", Ordered, func() {
 				})
 				Expect(err).NotTo(HaveOccurred())
 				Expect(values.Settings).NotTo(BeEmpty())
-				Expect(values.Settings[0].Value).To(Equal("E2E Test Login Message"))
+				// Live-verified: sonar.login.message is reported back via the
+				// plural "values" array, not the singular "value" field, even
+				// though it was set via the singular Value option.
+				Expect(values.Settings[0].Values).To(ContainElement("E2E Test Login Message"))
 
 				// Clean up - reset the setting
 				_, _ = client.Settings.Reset(context.Background(), &sonar.SettingsResetOptions{
@@ -410,7 +413,10 @@ var _ = Describe("Settings Service", Ordered, func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(values.Settings).NotTo(BeEmpty())
-			Expect(values.Settings[0].Value).To(Equal("Welcome to E2E Testing!"))
+			// Live-verified: sonar.login.message is reported back via the
+			// plural "values" array, not the singular "value" field, even
+			// though it was set via the singular Value option.
+			Expect(values.Settings[0].Values).To(ContainElement("Welcome to E2E Testing!"))
 
 			// The LoginMessage endpoint may return empty due to SonarQube behavior
 			// but the setting value is correctly stored
