@@ -74,6 +74,15 @@ jobs:
           slug: BoxBoxJason/sonarqube-client-go
           token: ${{ secrets.CODECOV_TOKEN }}
 
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        with:
+          files: codequality/unit-tests.xml
+          report_type: test_results
+          slug: BoxBoxJason/sonarqube-client-go
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   vuln:
     name: Vulnerability Scan
     runs-on: ubuntu-latest
