@@ -5,8 +5,10 @@ endpoint := http://127.0.0.1:9000
 enterprise_endpoint := http://127.0.0.1:9001
 username := admin
 password := admin
+# renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
 sonarqube_version := 26.7.0.124771-community
-sonarqube_enterprise_version := 2026.3.1-enterprise
+# renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
+sonarqube_enterprise_version := 2026.4.1-enterprise
 version := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 build_time := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
