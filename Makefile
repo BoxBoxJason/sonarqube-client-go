@@ -9,6 +9,18 @@ password := admin
 sonarqube_version := 26.7.0.124771-community
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
 sonarqube_enterprise_version := 2026.4.1-enterprise
+
+# Versions of the Go tools installed on demand by the targets below.
+# Kept as annotated variables so Renovate bumps them (see renovate.json customManagers).
+# renovate: datasource=go depName=gotest.tools/gotestsum
+gotestsum_version := v1.13.0
+# renovate: datasource=go depName=github.com/onsi/ginkgo/v2
+ginkgo_version := v2.32.0
+# renovate: datasource=go depName=github.com/golangci/golangci-lint/v2
+golangci_lint_version := v2.12.2
+# renovate: datasource=go depName=golang.org/x/vuln
+govulncheck_version := v1.3.0
+
 version := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 build_time := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
@@ -38,25 +50,25 @@ endif
 
 # Run all unit tests (use target=sdk|cli|all to filter)
 test:
-	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@v1.13.0; }
+	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@$(gotestsum_version); }
 	@mkdir -p codequality
 	CGO_ENABLED=1 gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -race ${target_paths}
 
 # Run tests with coverage report (use target=sdk|cli|all to filter)
 coverage:
-	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@v1.13.0; }
+	@command -v gotestsum >/dev/null 2>&1 || { echo "Installing gotestsum..."; go install gotest.tools/gotestsum@$(gotestsum_version); }
 	@mkdir -p codequality
 	gotestsum --junitfile codequality/unit-tests.xml --format-icons octicons -- -coverprofile=codequality/coverage.out -covermode=atomic ${target_paths}
 	@echo "Coverage report generated: codequality/coverage.html"
 
 # Run integration tests
 e2e: setup.sonar
-	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.32.0; }
+	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@$(ginkgo_version); }
 	SONAR_TOKEN= SONAR_URL=${endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
 # Run enterprise edition integration tests
 e2e.enterprise: setup.sonar.enterprise
-	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@v2.32.0; }
+	@command -v ginkgo >/dev/null 2>&1 || { echo "Installing ginkgo..."; go install github.com/onsi/ginkgo/v2/ginkgo@$(ginkgo_version); }
 	SONAR_TOKEN= SONAR_URL=${enterprise_endpoint} SONAR_USERNAME=${username} SONAR_PASSWORD=${password} ginkgo -r integration_testing
 
 # Build the CLI binary to ./bin/sonar-cli.
@@ -90,13 +102,13 @@ changelog-check:
 
 # Run golangci-lint (use target=sdk|cli|all to filter)
 lint:
-	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2; }
+	@command -v golangci-lint >/dev/null 2>&1 || { echo "Installing golangci-lint..."; go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(golangci_lint_version); }
 	@mkdir -p codequality
 	golangci-lint run ${target_paths}
 
 # Scan dependencies and stdlib for known vulnerabilities (govulncheck).
 vuln:
-	@command -v govulncheck >/dev/null 2>&1 || { echo "Installing govulncheck..."; go install golang.org/x/vuln/cmd/govulncheck@v1.3.0; }
+	@command -v govulncheck >/dev/null 2>&1 || { echo "Installing govulncheck..."; go install golang.org/x/vuln/cmd/govulncheck@$(govulncheck_version); }
 	govulncheck ./...
 
 # Fetch SonarQube community edition API specification
