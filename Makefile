@@ -6,7 +6,7 @@ enterprise_endpoint := http://127.0.0.1:9001
 username := admin
 password := admin
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
-sonarqube_version := 26.7.0.124771-community
+sonarqube_version := 26.8.0.126808-community
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
 sonarqube_enterprise_version := 2026.4.1-enterprise
 
@@ -15,11 +15,11 @@ sonarqube_enterprise_version := 2026.4.1-enterprise
 # renovate: datasource=go depName=gotest.tools/gotestsum
 gotestsum_version := v1.13.0
 # renovate: datasource=go depName=github.com/onsi/ginkgo/v2
-ginkgo_version := v2.32.0
+ginkgo_version := v2.32.1
 # renovate: datasource=go depName=github.com/golangci/golangci-lint/v2
-golangci_lint_version := v2.12.2
+golangci_lint_version := v2.13.2
 # renovate: datasource=go depName=golang.org/x/vuln
-govulncheck_version := v1.3.0
+govulncheck_version := v1.7.0
 
 version := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 build_time := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
