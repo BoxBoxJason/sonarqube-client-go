@@ -69,6 +69,8 @@ type NavigationBreadcrumb struct {
 //
 //nolint:govet // fieldalignment - structure kept for readability
 type NavigationConfiguration struct {
+	// CanAdminArchitecture indicates if the user can administer the architecture feature.
+	CanAdminArchitecture bool `json:"canAdminArchitecture,omitempty"`
 	// CanApplyPermissionTemplate indicates if the user can apply a permission template to the project.
 	CanApplyPermissionTemplate bool `json:"canApplyPermissionTemplate,omitempty"`
 	// CanBrowseProject indicates if user can browse the project.

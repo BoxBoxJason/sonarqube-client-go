@@ -2,7 +2,10 @@ package sonar
 
 import (
 	"context"
+	"encoding/json"
+	"io"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -996,4 +999,164 @@ func TestScaService_GetRiskReport_ValidationError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, result)
 	assert.Nil(t, resp)
+}
+
+// -----------------------------------------------------------------------------
+// BulkChangeIssueReleases
+// -----------------------------------------------------------------------------
+
+func TestScaService_BulkChangeIssueReleases(t *testing.T) {
+	response := []ScaIssueReleaseDetails{
+		{Key: "ir-1", Severity: "HIGH", Status: "OPEN"},
+		{Key: "ir-2", Severity: "HIGH", Status: "OPEN"},
+	}
+
+	server := newTestServer(t, mockJSONBodyHandler(t, http.MethodPost, "/v2/sca/issues-releases/bulk-change", http.StatusOK,
+		map[string]any{
+			"issueReleaseKeys": []string{"ir-1", "ir-2"},
+			"severity":         "HIGH",
+			"transitionKey":    "CONFIRM",
+		}, response))
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.V2.Sca.BulkChangeIssueReleases(context.Background(), &ScaBulkIssueReleaseChangeRequest{
+		IssueReleaseKeys: []string{"ir-1", "ir-2"},
+		Severity:         "HIGH",
+		TransitionKey:    "CONFIRM",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.Len(t, result, 2)
+	assert.Equal(t, "ir-1", result[0].Key)
+}
+
+func TestScaService_BulkChangeIssueReleases_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	_, _, err := client.V2.Sca.BulkChangeIssueReleases(context.Background(), nil)
+	assert.Error(t, err)
+
+	_, _, err = client.V2.Sca.BulkChangeIssueReleases(context.Background(), &ScaBulkIssueReleaseChangeRequest{})
+	assert.Error(t, err)
+
+	_, _, err = client.V2.Sca.BulkChangeIssueReleases(context.Background(), &ScaBulkIssueReleaseChangeRequest{
+		IssueReleaseKeys: []string{"ir-1"},
+		Severity:         "NOT_A_SEVERITY",
+	})
+	assert.Error(t, err)
+
+	_, _, err = client.V2.Sca.BulkChangeIssueReleases(context.Background(), &ScaBulkIssueReleaseChangeRequest{
+		IssueReleaseKeys: []string{"ir-1"},
+		TransitionKey:    "NOT_A_TRANSITION",
+	})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// ParseDependencyFiles
+// -----------------------------------------------------------------------------
+
+func TestScaService_ParseDependencyFiles(t *testing.T) {
+	response := map[string]any{
+		"packages": []map[string]any{
+			{
+				"packageUrl":          "pkg:npm/left-pad@1.3.0",
+				"dependencyFilePaths": []string{"package-lock.json"},
+				"dependencyChains":    [][]string{{"root", "left-pad"}},
+			},
+		},
+		"parsedFiles": []string{"package-lock.json"},
+		"errors": []map[string]any{
+			{"id": "1", "code": "MISSING_LOCKFILE", "path": "pnpm-lock.yaml", "message": "no lockfile"},
+		},
+	}
+
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/v2/sca/analyses/parse", r.URL.Path)
+		assert.Equal(t, "proj", r.URL.Query().Get("projectKey"))
+		assert.Contains(t, r.Header.Get("Content-Type"), "multipart/form-data")
+
+		file, header, ferr := r.FormFile("dependencyFiles")
+		require.NoError(t, ferr)
+
+		defer func() { _ = file.Close() }()
+
+		data, ferr := io.ReadAll(file)
+		require.NoError(t, ferr)
+		assert.Equal(t, "lockfile-contents", string(data))
+		assert.Equal(t, "package-lock.json", header.Filename)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		require.NoError(t, json.NewEncoder(w).Encode(response))
+	})
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.V2.Sca.ParseDependencyFiles(context.Background(), &ScaParseDependencyFilesOptions{
+		ProjectKey: "proj",
+		Files: []ScaDependencyFile{
+			{Filename: "package-lock.json", Content: strings.NewReader("lockfile-contents")},
+		},
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.Len(t, result.Packages, 1)
+	assert.Equal(t, "pkg:npm/left-pad@1.3.0", result.Packages[0].PackageUrl)
+	assert.Equal(t, [][]string{{"root", "left-pad"}}, result.Packages[0].DependencyChains)
+	assert.Equal(t, []string{"package-lock.json"}, result.ParsedFiles)
+	require.Len(t, result.Errors, 1)
+	assert.Equal(t, "MISSING_LOCKFILE", result.Errors[0].Code)
+}
+
+func TestScaService_ParseDependencyFiles_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	_, _, err := client.V2.Sca.ParseDependencyFiles(context.Background(), nil)
+	assert.Error(t, err)
+
+	_, _, err = client.V2.Sca.ParseDependencyFiles(context.Background(), &ScaParseDependencyFilesOptions{ProjectKey: "proj"})
+	assert.Error(t, err)
+
+	_, _, err = client.V2.Sca.ParseDependencyFiles(context.Background(), &ScaParseDependencyFilesOptions{
+		ProjectKey: "proj",
+		Files:      []ScaDependencyFile{{Filename: "x"}},
+	})
+	assert.Error(t, err)
+}
+
+// -----------------------------------------------------------------------------
+// ListReachabilityDefinitions
+// -----------------------------------------------------------------------------
+
+func TestScaService_ListReachabilityDefinitions(t *testing.T) {
+	payload := []byte{0x01, 0x02, 0x03, 0x04}
+
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodGet, r.Method)
+		assert.Equal(t, "/v2/sca/reachability/list-definitions", r.URL.Path)
+		assert.Equal(t, "java", r.URL.Query().Get("languageKey"))
+		assert.Equal(t, "application/octet-stream", r.Header.Get("Accept"))
+
+		w.Header().Set("Content-Type", "application/octet-stream")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(payload)
+	})
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.V2.Sca.ListReachabilityDefinitions(context.Background(), &ScaReachabilityDefinitionsOptions{LanguageKey: "java"})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, payload, result)
+}
+
+func TestScaService_ListReachabilityDefinitions_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	_, _, err := client.V2.Sca.ListReachabilityDefinitions(context.Background(), nil)
+	assert.Error(t, err)
+
+	_, _, err = client.V2.Sca.ListReachabilityDefinitions(context.Background(), &ScaReachabilityDefinitionsOptions{})
+	assert.Error(t, err)
 }

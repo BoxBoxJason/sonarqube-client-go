@@ -3,12 +3,58 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "2026.3.1.123439"
+    "version": "2026.4.1.126914"
   },
   "servers": [
     {
       "url": "http://127.0.0.1:9001/api/v2",
       "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "intended",
+      "description": "the intended API"
+    },
+    {
+      "name": "scanner-data-upload",
+      "description": "the scanner-data-upload API"
+    },
+    {
+      "name": "models",
+      "description": "the models API"
+    },
+    {
+      "name": "scanner-data",
+      "description": "the scanner-data API"
+    },
+    {
+      "name": "private-project-configurations",
+      "description": "the private-project-configurations API"
+    },
+    {
+      "name": "structure",
+      "description": "the structure API"
+    },
+    {
+      "name": "directives",
+      "description": "the directives API"
+    },
+    {
+      "name": "graphs",
+      "description": "the graphs API"
+    },
+    {
+      "name": "project-configurations",
+      "description": "the project-configurations API"
+    },
+    {
+      "name": "snapshots",
+      "description": "the snapshots API"
+    },
+    {
+      "name": "analysis",
+      "description": "the analysis API"
     }
   ],
   "paths": {
@@ -18,7 +64,7 @@
           "Issues-Releases"
         ],
         "summary": "Update the assignee of an (issue,release) pair",
-        "description": "Update the assignee of an (issue,release) pair (dependency risk).\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Update the assignee of an (issue,release) pair (dependency risk).\n\nThis API is subject to change without notice.\n",
         "operationId": "updateAssignee",
         "requestBody": {
           "content": {
@@ -47,14 +93,14 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       },
       "patch": {
         "tags": [
           "Issues-Releases"
         ],
         "summary": "Update the assignee of an (issue,release) pair",
-        "description": "Update the assignee of an (issue,release) pair (dependency risk).\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Update the assignee of an (issue,release) pair (dependency risk).\n\nThis API is subject to change without notice.\n",
         "operationId": "updateAssignee_1",
         "requestBody": {
           "content": {
@@ -83,7 +129,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/issues-releases/change-status": {
@@ -92,7 +138,7 @@
           "Issues-Releases"
         ],
         "summary": "Transition an issue-release pair to a new status",
-        "description": "Transition a single (issue,release) pair (dependency risk) to a new status with a comment about why the status is changing.\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Transition a single (issue,release) pair (dependency risk) to a new status with a comment about why the status is changing.\n\nThis API is subject to change without notice.\n",
         "operationId": "transitionIssueRelease",
         "requestBody": {
           "content": {
@@ -121,14 +167,14 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       },
       "patch": {
         "tags": [
           "Issues-Releases"
         ],
         "summary": "Transition an issue-release pair to a new status",
-        "description": "Transition a single (issue,release) pair (dependency risk) to a new status with a comment about why the status is changing.\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Transition a single (issue,release) pair (dependency risk) to a new status with a comment about why the status is changing.\n\nThis API is subject to change without notice.\n",
         "operationId": "transitionIssueRelease_1",
         "requestBody": {
           "content": {
@@ -157,7 +203,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/dop-translation/bound-projects": {
@@ -272,7 +318,10 @@
             "description": "Return managed or non-managed users. Only available for managed instances, throws for non-managed instances",
             "required": false,
             "schema": {
-              "type": "boolean",
+              "type": [
+                "boolean",
+                "null"
+              ],
               "description": "Return managed or non-managed users. Only available for managed instances, throws for non-managed instances"
             }
           },
@@ -282,7 +331,10 @@
             "description": "Filter on login, name and email.\nThis parameter performs a partial match (contains), it is case insensitive.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on login, name and email.\nThis parameter performs a partial match (contains), it is case insensitive."
             }
           },
@@ -292,7 +344,10 @@
             "description": "Filter on externalIdentity.\nThis parameter perform a case-sensitive exact match",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on externalIdentity.\nThis parameter perform a case-sensitive exact match"
             }
           },
@@ -302,7 +357,10 @@
             "description": "Filter users based on the last connection date field. Only users who interacted with this instance at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the last connection date field. Only users who interacted with this instance at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -314,7 +372,10 @@
             "description": "Filter users based on the last connection date field. Only users that never connected or who interacted with this instance at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the last connection date field. Only users that never connected or who interacted with this instance at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -326,7 +387,10 @@
             "description": "Filter users based on the SonarLint last connection date field Only users who interacted with this instance using SonarLint at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the SonarLint last connection date field Only users who interacted with this instance using SonarLint at or after the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -338,7 +402,10 @@
             "description": "Filter users based on the SonarLint last connection date field. Only users that never connected or who interacted with this instance using SonarLint at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users based on the SonarLint last connection date field. Only users that never connected or who interacted with this instance using SonarLint at or before the date will be returned. The format must be ISO 8601 datetime format (YYYY-MM-DDThh:mm:ss±hhmm)",
               "example": "2020-01-01T00:00:00+0100"
             },
@@ -350,7 +417,10 @@
             "description": "Filter users belonging to group. Only available for system administrators. Using != operator will exclude users from this group.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter users belonging to group. Only available for system administrators. Using != operator will exclude users from this group.",
               "internal": "true"
             },
@@ -641,7 +711,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       },
       "post": {
         "tags": [
@@ -677,7 +747,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/issues-releases/set-severity": {
@@ -686,7 +756,7 @@
           "Issues-Releases"
         ],
         "summary": "Manually change the severity of an issue-release pair",
-        "description": "Change the severity of a (issue,release) pair (dependency risk).\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Change the severity of a (issue,release) pair (dependency risk).\n\nThis API is subject to change without notice.\n",
         "operationId": "setSeverity",
         "requestBody": {
           "content": {
@@ -715,7 +785,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/issues-releases/comments": {
@@ -724,7 +794,7 @@
           "Issues-Releases"
         ],
         "summary": "Add a comment to an issue-release pair",
-        "description": "Add a comment to a (issue,release) pair (dependency risk).\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Add a comment to a (issue,release) pair (dependency risk).\n\nThis API is subject to change without notice.\n",
         "operationId": "addComment",
         "requestBody": {
           "content": {
@@ -739,6 +809,96 @@
         "responses": {
           "201": {
             "description": "Created"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-sonar-internal": true
+      }
+    },
+    "/sca/issues-releases/bulk-change": {
+      "post": {
+        "tags": [
+          "Issues-Releases"
+        ],
+        "summary": "Make updates to a collection of issue-release pairs.",
+        "description": "Update a set of (issue,release) pairs to a desired state.\n\nThe request should specify a set of (issue,release) pair UUIDs and any or all of a severity, assignee, and status. The system will attempt to update all of the\n(issue,release) pairs to have the given properties.\n\nThe change is handled atomically, i.e., if the changes are invalid or fail for any of the (issue,release) pairs, none of the pairs in the request will update.\n\nNOTE: To un-set the assignee, the shouldUnsetAssignee flag must be passed as true, and the assignee field must be null or not set.\n\nThis API is subject to change without notice.\n",
+        "operationId": "bulkChange",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIssueReleaseChangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IssueReleaseDetailsResource"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-sonar-internal": true
+      }
+    },
+    "/sca/analyses/parse": {
+      "post": {
+        "tags": [
+          "Analyses"
+        ],
+        "summary": "Parse dependency files",
+        "description": "Parses an uploaded .tar.xz archive of dependency manifests and lockfiles and\nreturns the discovered package URLs together with the dependency file paths\nand dependency chains they were parsed from. This endpoint performs parsing\nonly — it does not persist anything and does not include vulnerability,\nlicense, malware, or other enrichment in its response.\n\nThe same contract is exposed in SonarQube Cloud and SonarQube Server;\nServer satisfies it by forwarding to Cloud, which is transparent to callers.\n\nAccess is gated the same way as the analyze endpoints: the caller must have\naccess to the named project, and the project's billing entity must have SCA\nenabled.\n",
+        "operationId": "parse",
+        "parameters": [
+          {
+            "name": "projectKey",
+            "in": "query",
+            "description": "Project key used to gate access and resolve SCA enablement.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalysesParseMultipartBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadDependencyFilesResult"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -778,7 +938,7 @@
         ],
         "summary": "Fetch Jira work items",
         "description": "Fetch the Jira work items for a specific Sonar project and resource.\nAccepts only authenticated requests.\n",
-        "operationId": "蚰",
+        "operationId": "饘",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -829,7 +989,7 @@
         ],
         "summary": "Create Jira work item",
         "description": "Create a Jira work item for a specific resource.\nAccepts only authenticated requests with issue administration permission.\n",
-        "operationId": "蚰_1",
+        "operationId": "饘_1",
         "requestBody": {
           "content": {
             "application/json": {
@@ -860,7 +1020,7 @@
         ],
         "summary": "Delete Jira work items",
         "description": "Delete the Jira work items associated with a specific resource.\n",
-        "operationId": "ષ",
+        "operationId": "狗",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -906,7 +1066,7 @@
         ],
         "summary": "Fetch Jira project bindings",
         "description": "Fetch the Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "蚰_2",
+        "operationId": "饘_2",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -937,7 +1097,7 @@
         ],
         "summary": "Create or update Jira project binding",
         "description": "Create or update a Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "蚰_3",
+        "operationId": "饘_3",
         "requestBody": {
           "content": {
             "application/json": {
@@ -968,7 +1128,7 @@
         ],
         "summary": "Delete Jira project binding",
         "description": "Delete the Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "ષ_1",
+        "operationId": "狗_1",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -992,7 +1152,7 @@
         ],
         "summary": "Update Jira project binding",
         "description": "Update an existing Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "蚰_4",
+        "operationId": "饘_4",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1025,7 +1185,7 @@
         ],
         "summary": "Fetch the Jira instance binding",
         "description": "Fetch the Jira instance binding.\nRequires global administrator permission.\n",
-        "operationId": "ષ_2",
+        "operationId": "狗_2",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -1057,7 +1217,7 @@
         ],
         "summary": "Create a new Jira instance binding",
         "description": "Receives the 3LO state and authorization code parameters and attempts to create an instance binding.\nIf successful, returns the binding. Otherwise, returns a list of available resources.\nRequires global administrator permission.\n",
-        "operationId": "蚰_5",
+        "operationId": "饘_5",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1088,7 +1248,7 @@
         ],
         "summary": "Delete the Jira instance binding",
         "description": "Deletes the Jira instance binding from the database.\nRequires global administrator permission.\n",
-        "operationId": "蚰_6",
+        "operationId": "饘_6",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -1113,7 +1273,7 @@
         ],
         "summary": "Binds the specified pending instance binding with the specified jira cloud ID",
         "description": "Binds the specified pending instance binding with the specified jira cloud ID\n",
-        "operationId": "蚰_7",
+        "operationId": "饘_7",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1800,7 +1960,10 @@
             "description": "Return managed or non-managed groups. Only available for managed instances, throws for non-managed instances",
             "required": false,
             "schema": {
-              "type": "boolean",
+              "type": [
+                "boolean",
+                "null"
+              ],
               "description": "Return managed or non-managed groups. Only available for managed instances, throws for non-managed instances"
             }
           },
@@ -1810,7 +1973,10 @@
             "description": "Filter on name.\nThis parameter performs a partial match (contains), it is case insensitive.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on name.\nThis parameter performs a partial match (contains), it is case insensitive."
             }
           },
@@ -1820,7 +1986,10 @@
             "description": "Filter groups containing the user. Only available for system administrators. Using != operator will search for groups without the user.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter groups containing the user. Only available for system administrators. Using != operator will search for groups without the user.",
               "internal": "true"
             },
@@ -1914,7 +2083,10 @@
             "description": "ID of the user for which to search groups. If not set, all groups are returned.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "ID of the user for which to search groups. If not set, all groups are returned."
             }
           },
@@ -1924,7 +2096,10 @@
             "description": "ID of the group for which to search members. If not set, all groups are returned.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "ID of the group for which to search members. If not set, all groups are returned."
             }
           },
@@ -2008,7 +2183,7 @@
         ],
         "summary": "Fetch the Atlassian Authentication details if they exist",
         "description": "Fetch the Atlassian Authentication details if they exist.\nSpecifically, only the client ID is returned for security purposes.\n",
-        "operationId": "蚰_8",
+        "operationId": "饘_8",
         "responses": {
           "200": {
             "description": "OK",
@@ -2029,7 +2204,7 @@
         ],
         "summary": "Create/Update the Atlassian Authentication details",
         "description": "Create/Update the Atlassian Authentication details.\n",
-        "operationId": "蚰_9",
+        "operationId": "饘_9",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2053,6 +2228,657 @@
           }
         },
         "x-sonar-internal": "true"
+      }
+    },
+    "/architecture/scanner-data": {
+      "post": {
+        "tags": [
+          "scanner-data-upload",
+          "scanner-data"
+        ],
+        "summary": "Initiate scanner data upload",
+        "description": "Initiate scanner data upload. External endpoint used by scanner clients.",
+        "operationId": "scannerDataPost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/L"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      }
+    },
+    "/architecture/scanner-data-upload": {
+      "post": {
+        "tags": [
+          "scanner-data-upload",
+          "scanner-data"
+        ],
+        "summary": "Upload scanner data report directly",
+        "description": "Upload a scanner data report directly as multipart/form-data. The target project and branch are resolved server-side from `ceTaskId`, and the report bytes are carried in the `payload` part. Used by SonarQube Server scanner clients. ",
+        "operationId": "scannerDataUploadPost",
+        "parameters": [
+          {
+            "name": "ceTaskId",
+            "in": "query",
+            "description": "Compute Engine task ID. Used to resolve the target project and branch.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "payload": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Scanner data report bytes."
+                  }
+                },
+                "required": [
+                  "payload"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      }
+    },
+    "/architecture/models": {
+      "get": {
+        "tags": [
+          "models"
+        ],
+        "summary": "List models for a project",
+        "description": "Return all models for a project. May be empty.",
+        "operationId": "listModels",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "Project Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Model"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ],
+        "x-sonar-internal": "true"
+      },
+      "post": {
+        "tags": [
+          "models"
+        ],
+        "summary": "Create a model",
+        "description": "Create a model and return it including the generated id",
+        "operationId": "createModel",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Model"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ],
+        "x-sonar-internal": "true"
+      }
+    },
+    "/architecture/directives": {
+      "get": {
+        "tags": [
+          "directives"
+        ],
+        "summary": "List directives for a project",
+        "description": "Return all directives for a project sorted by dateCreated ascending (oldest first). May be empty.",
+        "operationId": "directivesGet",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "Project Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "description": "Page number for pagination (1-based). Specifies which page of results to return.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of items per page. Set to 0 to return only the total count without any items (useful for counting).",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Zq"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "directives"
+        ],
+        "summary": "Store a directive",
+        "description": "Store a directive",
+        "operationId": "directivesPost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Dq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/y"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      }
+    },
+    "/architecture/analysis": {
+      "post": {
+        "tags": [
+          "analysis"
+        ],
+        "summary": "Store analysis data",
+        "description": "Store analysis data. External endpoint used by scanner clients.",
+        "operationId": "analysisPost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
       }
     },
     "/users-management/users/{id}": {
@@ -2298,7 +3124,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       },
       "delete": {
         "tags": [
@@ -2328,7 +3154,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       },
       "patch": {
         "tags": [
@@ -2375,7 +3201,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/license-profiles/{license-profile-key}/licenses/{license-policy-id}": {
@@ -2433,7 +3259,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/license-profiles/{license-profile-key}/categories/{category-key}": {
@@ -2500,7 +3326,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/license-profiles/assigned-projects": {
@@ -2547,7 +3373,7 @@
           "Issues-Releases"
         ],
         "summary": "Delete a comment from an issue-release pair",
-        "description": "Delete a comment from a (issue,release) pair (dependency risk).\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Delete a comment from a (issue,release) pair (dependency risk).\n\nThis API is subject to change without notice.\n",
         "operationId": "deleteComment",
         "parameters": [
           {
@@ -2580,14 +3406,14 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       },
       "patch": {
         "tags": [
           "Issues-Releases"
         ],
         "summary": "Update a comment on an issue-release pair",
-        "description": "Update a comment on a (issue,release) pair (dependency risk).\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Update a comment on a (issue,release) pair (dependency risk).\n\nThis API is subject to change without notice.\n",
         "operationId": "updateComment",
         "parameters": [
           {
@@ -2620,7 +3446,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/issues-releases/{id}": {
@@ -2629,7 +3455,7 @@
           "Issues-Releases"
         ],
         "summary": "Update the issue-release pair's information, specifically around severity",
-        "description": "Update the issue-release pair's information, specifically around severity. This is used to dismiss an increased\nseverity warning, or to manually change the severity.\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Update the issue-release pair's information, specifically around severity. This is used to dismiss an increased\nseverity warning, or to manually change the severity.\n\nThis API is subject to change without notice.\n",
         "operationId": "updateIssueRelease",
         "parameters": [
           {
@@ -2669,7 +3495,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/feature-enablements": {
@@ -2741,7 +3567,7 @@
         ],
         "summary": "Returns a list of all the available Jira work types for a specific Jira project",
         "description": "Returns a list of all the available Jira work types for a specific Jira project.\nAlso checks which work types are selected for a given sonar project. Conditionally, also includes field metadata.\n",
-        "operationId": "蚰_10",
+        "operationId": "饘_10",
         "parameters": [
           {
             "name": "jiraProjectKey",
@@ -2800,7 +3626,7 @@
         ],
         "summary": "Saves the selected Jira work types for a project",
         "description": "Receives a Jira project key and a list of work type and stores the work types.\n",
-        "operationId": "蚰_11",
+        "operationId": "饘_11",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2826,7 +3652,7 @@
         ],
         "summary": "Update Jira organization binding properties",
         "description": "Update properties of an existing Jira organization binding, such as token sharing configuration.\nRequires global administrator permission.\n",
-        "operationId": "蚰_12",
+        "operationId": "饘_12",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3636,6 +4462,302 @@
         }
       }
     },
+    "/architecture/models/{id}": {
+      "get": {
+        "tags": [
+          "models"
+        ],
+        "summary": "Get a model by id",
+        "description": "Return a single model by id",
+        "operationId": "getModel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Model"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ],
+        "x-sonar-internal": "true"
+      },
+      "delete": {
+        "tags": [
+          "models"
+        ],
+        "summary": "Delete a model",
+        "description": "Delete a model by id",
+        "operationId": "deleteModel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ],
+        "x-sonar-internal": "true"
+      },
+      "patch": {
+        "tags": [
+          "models"
+        ],
+        "summary": "Update a model",
+        "description": "Update model data. Only the 'data' field can be updated.",
+        "operationId": "updateModel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/merge-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Model"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ],
+        "x-sonar-internal": "true"
+      }
+    },
     "/system/migrations-status": {
       "get": {
         "tags": [
@@ -3724,7 +4846,7 @@
         ],
         "summary": "Get accessibility report",
         "description": "Get the accessibility report for a project branch.",
-        "operationId": "蚰_13",
+        "operationId": "饘_13",
         "parameters": [
           {
             "name": "branchKey",
@@ -3732,7 +4854,10 @@
             "description": "Branch key. If not provided, the main branch is used.",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": [
+                "string",
+                "null"
+              ]
             },
             "example": "my-branch"
           },
@@ -3840,11 +4965,21 @@
           {
             "name": "branch",
             "in": "query",
-            "description": "Key of the branch to build report for",
+            "description": "Key of the branch to build report for. If not provided, the default branch will be used unless a pull request key is provided.",
             "required": false,
             "schema": {
               "type": "string",
-              "description": "Key of the branch to build report for"
+              "description": "Key of the branch to build report for. If not provided, the default branch will be used unless a pull request key is provided."
+            }
+          },
+          {
+            "name": "pullRequestKey",
+            "in": "query",
+            "description": "Key of the pull request to build report for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Key of the pull request to build report for."
             }
           },
           {
@@ -3930,11 +5065,21 @@
           {
             "name": "branch",
             "in": "query",
-            "description": "Key of the branch to build report for",
+            "description": "Key of the branch to build report for. If not provided, the default branch will be used unless a pull request key is provided.",
             "required": false,
             "schema": {
               "type": "string",
-              "description": "Key of the branch to build report for"
+              "description": "Key of the branch to build report for. If not provided, the default branch will be used unless a pull request key is provided."
+            }
+          },
+          {
+            "name": "pullRequestKey",
+            "in": "query",
+            "description": "Key of the pull request to build report for.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Key of the pull request to build report for."
             }
           },
           {
@@ -3990,7 +5135,7 @@
           "Releases"
         ],
         "summary": "Search for releases",
-        "description": "Search for package releases that appear in the analyzed project,\napplication, or portfolio, as determined by software composition analysis.\n\nThis endpoint returns one result for each release,\nrather than one result for each time a release is pulled in.\nEach result may appear in multiple files or scopes that\nall use the same version of the affected package.\n\nThe search results do not include full details on the dependencies\nthat pull in each release, only a summary. To get the full dependency\ndetails, use the /releases/{key} endpoint for a single release.\n\nIn the terminology of this endpoint, a \"release\" is a version of\na package like \"lodash 1.2.3\", and a \"dependency\" is a specific file\nand scope that pulls in the release such as \"subproject/pom.xml test\".\nEach returned release may have multiple dependencies.\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Search for package releases that appear in the analyzed project,\napplication, or portfolio, as determined by software composition analysis.\n\nThis endpoint returns one result for each release,\nrather than one result for each time a release is pulled in.\nEach result may appear in multiple files or scopes that\nall use the same version of the affected package.\n\nThe search results do not include full details on the dependencies\nthat pull in each release, only a summary. To get the full dependency\ndetails, use the /releases/{key} endpoint for a single release.\n\nIn the terminology of this endpoint, a \"release\" is a version of\na package like \"lodash 1.2.3\", and a \"dependency\" is a specific file\nand scope that pulls in the release such as \"subproject/pom.xml test\".\nEach returned release may have multiple dependencies.\n\nThis API is subject to change without notice.\n",
         "operationId": "search_3",
         "parameters": [
           {
@@ -4122,7 +5267,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/releases/{key}": {
@@ -4131,7 +5276,7 @@
           "Releases"
         ],
         "summary": "Get a single release",
-        "description": "Fetch a single release by its key.\n\nThis single-release endpoint lists full details for all dependencies\nthat mention the release.\n\nIn the terminology of this endpoint, a \"release\" is a version of\na package like \"lodash 1.2.3\", and a \"dependency\" is a specific file\nand scope that pulls in the release such as \"subproject/pom.xml test\".\nEach returned release may have multiple dependencies.\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Fetch a single release by its key.\n\nThis single-release endpoint lists full details for all dependencies\nthat mention the release.\n\nIn the terminology of this endpoint, a \"release\" is a version of\na package like \"lodash 1.2.3\", and a \"dependency\" is a specific file\nand scope that pulls in the release such as \"subproject/pom.xml test\".\nEach returned release may have multiple dependencies.\n\nThis API is subject to change without notice.\n",
         "operationId": "fetchRelease",
         "parameters": [
           {
@@ -4161,7 +5306,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/releases/search": {
@@ -4220,6 +5365,64 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ReleaseSearchRestResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-sonar-internal": "true"
+      }
+    },
+    "/sca/reachability/list-definitions": {
+      "get": {
+        "tags": [
+          "Reachability Definitions"
+        ],
+        "summary": "Get reachability definitions",
+        "description": "Returns the encrypted reachability definitions for the specified language.\n",
+        "operationId": "listDefinitions",
+        "parameters": [
+          {
+            "name": "languageKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectKey",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "organization",
+            "in": "query",
+            "description": "Organization key. Use 'projectKey' instead.",
+            "required": false,
+            "deprecated": true,
+            "schema": {
+              "type": "string",
+              "description": "Organization key. Use 'projectKey' instead."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
                 }
               }
             }
@@ -4337,7 +5540,7 @@
           "Issues-Releases"
         ],
         "summary": "Search for issue-release pairs",
-        "description": "Search for software composition analysis issues (dependency risks)\nof a project, paired with releases that appear in the analyzed\nproject, application, or portfolio.\n\nThis endpoint returns one result for each (issue,release) pair,\nrather than one result for each distinct issue. So for example\nif a library uses two different versions of a package and\nboth versions are affected by the same vulnerability, you will\nget two results not one.\n\nHowever each result may appear in multiple files or scopes that\nall use the same version of the affected package.\n\nIn the terminology of this endpoint, a \"release\" is a version of\na package like \"lodash 1.2.3\", an \"issue\" is a problem such as\n\"CVE-1234\", and a \"dependency\" is a specific file and scope that\npulls in the release such as \"subproject/pom.xml test\".\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Search for software composition analysis issues (dependency risks)\nof a project, paired with releases that appear in the analyzed\nproject, application, or portfolio.\n\nThis endpoint returns one result for each (issue,release) pair,\nrather than one result for each distinct issue. So for example\nif a library uses two different versions of a package and\nboth versions are affected by the same vulnerability, you will\nget two results not one.\n\nHowever each result may appear in multiple files or scopes that\nall use the same version of the affected package.\n\nIn the terminology of this endpoint, a \"release\" is a version of\na package like \"lodash 1.2.3\", an \"issue\" is a problem such as\n\"CVE-1234\", and a \"dependency\" is a specific file and scope that\npulls in the release such as \"subproject/pom.xml test\".\n\nThis API is subject to change without notice.\n",
         "operationId": "search_5",
         "parameters": [
           {
@@ -4591,6 +5794,16 @@
             }
           },
           {
+            "name": "securityStandardLevel",
+            "in": "query",
+            "description": "Level within the security standard (e.g., 'Level 1', 'Level 2', 'Level 3' for OWASP ASVS). Levels are inclusive (e.g., Level 2 includes all Level 1 and Level 2 requirements). Ignored if securityStandard is null or does not support levels.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Level within the security standard (e.g., 'Level 1', 'Level 2', 'Level 3' for OWASP ASVS). Levels are inclusive (e.g., Level 2 includes all Level 1 and Level 2 requirements). Ignored if securityStandard is null or does not support levels."
+            }
+          },
+          {
             "name": "pageSize",
             "in": "query",
             "description": "Number of results per page. A value of 0 will only return the pagination information.",
@@ -4636,7 +5849,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/issues-releases/{key}": {
@@ -4645,7 +5858,7 @@
           "Issues-Releases"
         ],
         "summary": "Get a single issue-release pair",
-        "description": "Fetch a single (issue,release) pair (dependency risk), using the key from the search endpoint.\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Fetch a single (issue,release) pair (dependency risk), using the key from the search endpoint.\n\nThis API is subject to change without notice.\n",
         "operationId": "fetchIssueRelease",
         "parameters": [
           {
@@ -4675,7 +5888,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/issues-releases/{key}/changelogs": {
@@ -4684,7 +5897,7 @@
           "Issues-Releases"
         ],
         "summary": "Get the changelog for a single issue-release pair",
-        "description": "Get the changelog for a single (issue,release) pair (dependency risk), using the key from the search endpoint.\n\nThis is an internal API and is subject to change without notice.\n",
+        "description": "Get the changelog for a single (issue,release) pair (dependency risk), using the key from the search endpoint.\n\nThis API is subject to change without notice.\n",
         "operationId": "getChangelog",
         "parameters": [
           {
@@ -4714,7 +5927,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/issues-releases/all-assignees": {
@@ -4777,7 +5990,7 @@
             "bearerAuth": []
           }
         ],
-        "x-sonar-internal": "true"
+        "x-sonar-internal": true
       }
     },
     "/sca/enabled": {
@@ -5037,7 +6250,7 @@
         ],
         "summary": "Returns a list of available user actions for a project",
         "description": "Returns a list of available user actions for the authenticated user in the context of a specific project.\nIf the user is not authenticated, returns an empty list.\n",
-        "operationId": "蚰_14",
+        "operationId": "饘_14",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -5073,7 +6286,7 @@
         ],
         "summary": "Returns a list of all the available Jira projects",
         "description": "Returns a list of all the available Jira projects",
-        "operationId": "蚰_15",
+        "operationId": "饘_15",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -5110,7 +6323,7 @@
         ],
         "summary": "Count linked Jira issues",
         "description": "Count the number of Jira issues linked to a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "蚰_16",
+        "operationId": "饘_16",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -5315,7 +6528,10 @@
             "description": "Filter on the repository name.\nThis parameter performs an exact, case insensitive, match.\n",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on the repository name.\nThis parameter performs an exact, case insensitive, match.\n"
             }
           },
@@ -5325,7 +6541,10 @@
             "description": "Filter on the DevOps Platform setting id.",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on the DevOps Platform setting id."
             }
           },
@@ -5335,7 +6554,10 @@
             "description": "Filter on the repository URL.\nThis parameter can be in different formats, the traditional URL or the git remote URL (https or ssh).\n",
             "required": false,
             "schema": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Filter on the repository URL.\nThis parameter can be in different formats, the traditional URL or the git remote URL (https or ssh).\n"
             }
           },
@@ -5423,7 +6645,7 @@
         ],
         "summary": "Get JFrog evidence for a Compute Engine task",
         "description": "Returns a JFrog evidence statement for the specified Compute Engine task.\nThe evidence contains quality gate status and conditions in the in-toto Statement format.\nRequires 'Browse' permission on the project associated with the task.",
-        "operationId": "蚰_17",
+        "operationId": "饘_17",
         "parameters": [
           {
             "name": "taskId",
@@ -5441,7 +6663,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/T"
+                  "$ref": "#/components/schemas/K"
                 }
               }
             }
@@ -5478,7 +6700,7 @@
         ],
         "summary": "Generate Jira authentication URL",
         "description": "Generate the authentication URL for Jira OAuth flow.\nRequires authenticated user.\n",
-        "operationId": "蚰_18",
+        "operationId": "饘_18",
         "parameters": [
           {
             "name": "sonarOrganizationKey",
@@ -5513,27 +6735,490 @@
         "x-sonar-internal": "true"
       }
     },
-    "/architecture/graphs": {
+    "/architecture/structure": {
       "get": {
         "tags": [
-          "Architecture"
+          "structure"
         ],
-        "summary": "Search all current graphs available for a branch. This endpoint do not includes graph Data itself",
-        "operationId": "蚰_19",
+        "summary": "Get structure graph for a branch and language",
+        "description": "Return the structure graph for a given organization, branch and ecosystem. All parameters are mandatory.",
+        "operationId": "structureGet",
         "parameters": [
           {
-            "name": "projectKey",
+            "name": "organizationId",
             "in": "query",
-            "description": "The key of the project.",
+            "description": "UUID v4 of the organization.",
             "required": true,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "branchKey",
+            "name": "branchId",
             "in": "query",
-            "description": "The key of the branch.",
+            "description": "branch Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ecosystem",
+            "in": "query",
+            "description": "Ecosystem/language of the graph (e.g. java, js, ts, py, cs).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "java",
+                "js",
+                "ts",
+                "py",
+                "cs"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/d"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      }
+    },
+    "/architecture/snapshots": {
+      "get": {
+        "tags": [
+          "snapshots"
+        ],
+        "summary": "List snapshots for a project",
+        "description": "Return all snapshots for a project, sorted by analysis date descending. May be empty.",
+        "operationId": "snapshotsGet",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "description": "UUID v4 of the organization.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "description": "branch Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "description": "Page number for pagination (1-based). Specifies which page of results to return.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of items per page. Set to 0 to return only the total count without any items (useful for counting).",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/$"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      }
+    },
+    "/architecture/project-configurations": {
+      "get": {
+        "tags": [
+          "project-configurations",
+          "private-project-configurations"
+        ],
+        "summary": "Get project configurations",
+        "description": "Return project configurations for a given project. Used by the scanner to retrieve intended architecture and directives. External endpoint used by scanner clients. Exactly one of projectId or projectKey must be provided.",
+        "operationId": "projectConfigurationsGet",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "Project Id (mutually exclusive with projectKey)",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "projectKey",
+            "in": "query",
+            "description": "Project Key (mutually exclusive with projectId)",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/o"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      }
+    },
+    "/architecture/private/architecture/project-configurations": {
+      "get": {
+        "tags": [
+          "project-configurations",
+          "private-project-configurations"
+        ],
+        "summary": "Get project configurations",
+        "description": "Return project configurations for a given project. Used by the scanner to retrieve intended architecture and directives. Internal endpoint for service-to-service communication using SigV4 authentication. Exactly one of projectId or projectKey must be provided.",
+        "operationId": "privateArchitectureProjectConfigurationsGet",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "Project Id (mutually exclusive with projectKey)",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "projectKey",
+            "in": "query",
+            "description": "Project Key (mutually exclusive with projectId)",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/o"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sigv4": []
+          }
+        ]
+      }
+    },
+    "/architecture/intended": {
+      "get": {
+        "tags": [
+          "intended"
+        ],
+        "summary": "Export intended architecture for a project",
+        "description": "search intended architecture by project. Requires authentication and browse source permission to the project.",
+        "operationId": "intendedGet",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "description": "Project Id",
             "required": true,
             "schema": {
               "type": "string"
@@ -5542,92 +7227,211 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/_T"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/E"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
                 }
               }
             }
           }
         },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      }
+    },
+    "/architecture/graphs": {
+      "get": {
+        "tags": [
+          "graphs"
+        ],
+        "summary": "Return graphs metadata for an analysis",
+        "description": "Return graphs metadata for an analysis",
+        "operationId": "getGraphsMetadata",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "description": "UUID v4 of the organization.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "analysisId",
+            "in": "query",
+            "description": "Analysis Id",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "description": "branch Id",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/k"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ],
         "x-sonar-internal": "true"
       }
     },
     "/architecture/graphs/{id}": {
       "get": {
         "tags": [
-          "Architecture"
+          "graphs"
         ],
-        "summary": "Get graph data by id.",
-        "description": "Fetch the graph data produced by analysis.",
-        "operationId": "蚰_20",
+        "summary": "Return the selected graph",
+        "description": "Return the selected graph",
+        "operationId": "getGraph",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "id of the graph data.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/graph+json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "x-sonar-internal": "true"
-      }
-    },
-    "/architecture/file-graph": {
-      "get": {
-        "tags": [
-          "Architecture"
-        ],
-        "summary": "Find the file graph for this project branch and source.",
-        "operationId": "蚰_21",
-        "parameters": [
-          {
-            "name": "projectKey",
-            "in": "query",
-            "description": "The key of the project.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "branchKey",
-            "in": "query",
-            "description": "The key of the branch.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "source",
-            "in": "query",
-            "description": "The source that produced this graph. eg. java, python, js, etc.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -5635,9 +7439,261 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
           }
         },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ],
         "x-sonar-internal": "true"
+      }
+    },
+    "/architecture/directives/{id}": {
+      "get": {
+        "tags": [
+          "directives"
+        ],
+        "summary": "Get a directive by id",
+        "description": "Return a single directive by id",
+        "operationId": "directivesIdGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/y"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "directives"
+        ],
+        "summary": "Delete a directive",
+        "description": "Delete a directive by id",
+        "operationId": "directivesIdDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/X"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "lambdaAuthorizer": []
+          }
+        ]
       }
     },
     "/analysis/version": {
@@ -5927,6 +7983,13 @@
           "signature": {
             "type": "string"
           },
+          "signatureType": {
+            "type": "string",
+            "enum": [
+              "VULNERABLE_FUNCTION",
+              "PUBLIC_CALLER"
+            ]
+          },
           "filePath": {
             "type": "string"
           },
@@ -5945,6 +8008,20 @@
           "endLineOffset": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "CweResource": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
           }
         }
       },
@@ -6276,8 +8353,16 @@
           },
           "cweIds": {
             "type": "array",
+            "deprecated": true,
             "items": {
-              "type": "string"
+              "type": "string",
+              "deprecated": true
+            }
+          },
+          "cwes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CweResource"
             }
           },
           "publishedOn": {
@@ -6352,15 +8437,24 @@
             "minLength": 1
           },
           "projectIdentifier": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Identifier of the DevOps platform project in which the repository is located.\nThis is only needed for Azure and BitBucket Server platforms\n"
           },
           "newCodeDefinitionType": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "  Project New Code Definition Type\n  New code definitions of the following types are allowed:\n    - PREVIOUS_VERSION\n    - NUMBER_OF_DAYS\n    - REFERENCE_BRANCH - will default to the main branch.\n"
           },
           "newCodeDefinitionValue": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "  Project New Code Definition Value\n  For each new code definition type, a different value is expected:\n  - no value, when the new code definition type is PREVIOUS_VERSION and REFERENCE_BRANCH\n  - a number between 1 and 90, when the new code definition type is NUMBER_OF_DAYS\n"
           },
           "monorepo": {
@@ -6397,14 +8491,20 @@
         "type": "object",
         "properties": {
           "email": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "format": "email",
             "description": "User email",
             "maxLength": 100,
             "minLength": 1
           },
           "local": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "default": true,
             "description": "Specify if the user should be authenticated from SonarQube server or from an external authentication system. Password should not be set when local is set to false."
           },
@@ -6421,12 +8521,18 @@
             "minLength": 0
           },
           "password": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "User password. Only mandatory when creating local user, otherwise it should not be set",
             "writeOnly": true
           },
           "scmAccounts": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "List of SCM accounts.",
             "items": {
               "type": "string"
@@ -6452,42 +8558,75 @@
             "type": "string"
           },
           "email": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "active": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "readOnly": true
           },
           "local": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "readOnly": true
           },
           "managed": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "readOnly": true
           },
           "externalLogin": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "externalProvider": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "externalId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "avatar": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "sonarQubeLastConnectionDate": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "readOnly": true
           },
           "sonarLintLastConnectionDate": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "readOnly": true
           },
           "scmAccounts": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "type": "string"
             }
@@ -6545,26 +8684,41 @@
             "minLength": 1
           },
           "basicPassword": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For basic authentication: password used to authenticate to the SMTP server",
             "writeOnly": true
           },
           "oauthAuthenticationHost": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: host of the Identity Provider issuing access tokens"
           },
           "oauthClientId": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Client ID provided by Microsoft Exchange when registering the application",
             "writeOnly": true
           },
           "oauthClientSecret": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Client secret provided by Microsoft Exchange when registering the application",
             "writeOnly": true
           },
           "oauthTenant": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Microsoft tenant"
           }
         },
@@ -6624,7 +8778,10 @@
             ]
           },
           "username": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For Basic and OAuth authentication: username used to authenticate to the SMTP server"
           },
           "isBasicPasswordSet": {
@@ -6632,7 +8789,10 @@
             "description": "For Basic authentication: has the password field been set?"
           },
           "oauthAuthenticationHost": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: host of the Identity Provider issuing access tokens"
           },
           "isOauthClientIdSet": {
@@ -6644,7 +8804,10 @@
             "description": "For OAuth authentication: has the Client secret field been set?"
           },
           "oauthTenant": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "For OAuth authentication: Microsoft tenant"
           }
         }
@@ -6661,8 +8824,7 @@
             "type": "array",
             "description": "Versioned package URLs (PURLs) to research. Maximum 100 per request.",
             "items": {
-              "type": "string",
-              "description": "Versioned package URLs (PURLs) to research. Maximum 100 per request."
+              "type": "string"
             }
           }
         },
@@ -6752,8 +8914,16 @@
           },
           "cweIds": {
             "type": "array",
+            "deprecated": true,
             "items": {
-              "type": "string"
+              "type": "string",
+              "deprecated": true
+            }
+          },
+          "cwes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CweResource"
             }
           },
           "cvssScore": {
@@ -6819,8 +8989,7 @@
             "type": "array",
             "description": "Package URLs (PURLs) to analyze. Maximum 100 per request. Either 'purls' or the deprecated 'purl' field must be provided.",
             "items": {
-              "type": "string",
-              "description": "Package URLs (PURLs) to analyze. Maximum 100 per request. Either 'purls' or the deprecated 'purl' field must be provided."
+              "type": "string"
             }
           },
           "purl": {
@@ -6910,8 +9079,16 @@
           },
           "cweIds": {
             "type": "array",
+            "deprecated": true,
             "items": {
-              "type": "string"
+              "type": "string",
+              "deprecated": true
+            }
+          },
+          "cwes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CweResource"
             }
           },
           "riskSeverity": {
@@ -7050,6 +9227,55 @@
           "issueReleaseKey"
         ]
       },
+      "BulkIssueReleaseChangeRequest": {
+        "type": "object",
+        "properties": {
+          "issueReleaseKeys": {
+            "type": "array",
+            "description": "Dependency risk identifiers",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "severity": {
+            "type": "string",
+            "description": "Severity assignment",
+            "enum": [
+              "BLOCKER",
+              "HIGH",
+              "MEDIUM",
+              "LOW",
+              "INFO"
+            ]
+          },
+          "transitionKey": {
+            "type": "string",
+            "description": "Transition key",
+            "enum": [
+              "ACCEPT",
+              "CONFIRM",
+              "REOPEN",
+              "SAFE"
+            ]
+          },
+          "comment": {
+            "type": "string",
+            "description": "Transition comment"
+          },
+          "assignee": {
+            "type": "string",
+            "description": "Assignee username"
+          },
+          "shouldUnsetAssignee": {
+            "type": "boolean",
+            "description": "Whether to unset the current assignee"
+          }
+        },
+        "required": [
+          "issueReleaseKeys"
+        ]
+      },
       "AnalysesParseMultipartBody": {
         "type": "object",
         "description": "Multipart body for the parse endpoint",
@@ -7086,48 +9312,48 @@
           }
         }
       },
-      "Q": {
+      "ReadDependencyFilesResult": {
         "type": "object",
         "properties": {
-          "ષ": {
+          "packages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReadDependencyFilesResultEntry"
+            }
+          },
+          "parsedFiles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnalysisErrorResource"
+            }
+          }
+        }
+      },
+      "ReadDependencyFilesResultEntry": {
+        "type": "object",
+        "properties": {
+          "packageUrl": {
+            "type": "string"
+          },
+          "dependencyFilePaths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dependencyChains": {
             "type": "array",
             "items": {
               "type": "array",
               "items": {
                 "type": "string"
               }
-            }
-          },
-          "蚰": {
-            "type": "string"
-          },
-          "氨": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "R": {
-        "type": "object",
-        "properties": {
-          "ષ": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "蚰": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Q"
-            }
-          },
-          "氨": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AnalysisErrorResource"
             }
           }
         }
@@ -7139,7 +9365,10 @@
             "type": "boolean"
           },
           "message": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -7174,12 +9403,18 @@
             "writeOnly": true
           },
           "summary": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Work item summary",
             "writeOnly": true
           },
           "description": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Work item description",
             "writeOnly": true
           }
@@ -7215,7 +9450,10 @@
             "readOnly": true
           },
           "jiraIssueStatus": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Jira issue status",
             "readOnly": true
           }
@@ -7296,7 +9534,7 @@
         ]
       },
       "JiraOrganizationBindingResource": {
-        "type": "object",
+        "type": "null",
         "properties": {
           "id": {
             "type": "string",
@@ -7465,10 +9703,16 @@
             ]
           },
           "clientId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "appId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -7497,10 +9741,16 @@
         "type": "object",
         "properties": {
           "projectKey": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "issueId": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Issue key"
           },
           "issue": {
@@ -7510,7 +9760,7 @@
         }
       },
       "Issue": {
-        "type": "object",
+        "type": "null",
         "properties": {
           "message": {
             "type": "string"
@@ -7562,7 +9812,10 @@
             "format": "uuid"
           },
           "issueId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "explanation": {
             "type": "string"
@@ -7721,7 +9974,10 @@
             }
           },
           "allowAllGroups": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "When true with Auto-provisioning, every group visible to the provisioning token is provisioned and the allowedGroups list is ignored. Has no effect with Just-in-Time provisioning. Security risk: any user belonging to any group accessible by the provisioning token will be granted access. Restrict access using allowedGroups unless broad access is intentional. Not supported on GitLab.com (SaaS): the request is rejected when the configured URL is gitlab.com, since the provisioning token may have visibility into a much larger and unbounded set of groups. Performance note: login may be slower for users belonging to a large number of groups, as all their groups must be fetched from GitLab on every authentication."
           },
           "provisioningType": {
@@ -7733,12 +9989,18 @@
             ]
           },
           "provisioningToken": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Gitlab token for provisioning",
             "writeOnly": true
           },
           "allowUsersToSignUp": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Allow user to sign up"
           }
         },
@@ -7800,7 +10062,10 @@
             "readOnly": true
           },
           "errorMessage": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "In case the GitLab configuration is incorrect, error message",
             "readOnly": true
           }
@@ -7866,15 +10131,24 @@
             ]
           },
           "allowUsersToSignUp": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Allow user to sign up"
           },
           "projectVisibility": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Change project visibility based on GitHub repository visibility.\nIf disabled, every provisioned project will be private in SonarQube and visible only to users with explicit GitHub permissions for the corresponding repository.\nChanges take effect at the next synchronization.\n"
           },
           "userConsentRequiredAfterUpgrade": {
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "null"
+            ],
             "description": "Admin consent to synchronize permissions from GitHub"
           }
         },
@@ -7940,7 +10214,10 @@
             "type": "boolean"
           },
           "errorMessage": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "In case the GitHub configuration is incorrect, error message",
             "readOnly": true
           }
@@ -7980,7 +10257,10 @@
             "readOnly": true
           },
           "defaultValue": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "type": {
             "type": "string",
@@ -8021,7 +10301,10 @@
             "description": "Rule description in markdown format"
           },
           "status": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "default": "READY",
             "description": "Rule status",
             "enum": [
@@ -8032,14 +10315,20 @@
             ]
           },
           "parameters": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Custom rule parameters",
             "items": {
               "$ref": "#/components/schemas/Parameter"
             }
           },
           "cleanCodeAttribute": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Clean code attribute",
             "enum": [
               "CONVENTIONAL",
@@ -8066,11 +10355,17 @@
             }
           },
           "severity": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Severity"
           },
           "type": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Rule type",
             "enum": [
               "CODE_SMELL",
@@ -8089,7 +10384,7 @@
         ]
       },
       "RuleDescriptionSectionContextRestResponse": {
-        "type": "object",
+        "type": "null",
         "properties": {
           "key": {
             "type": "string"
@@ -8133,7 +10428,10 @@
             "type": "string"
           },
           "severity": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "type": {
             "type": "string",
@@ -8151,7 +10449,10 @@
             }
           },
           "cleanCodeAttribute": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
               "CONVENTIONAL",
               "FORMATTED",
@@ -8170,7 +10471,10 @@
             ]
           },
           "cleanCodeAttributeCategory": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
               "ADAPTABLE",
               "CONSISTENT",
@@ -8179,7 +10483,10 @@
             ]
           },
           "status": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
               "BETA",
               "DEPRECATED",
@@ -8191,7 +10498,10 @@
             "type": "boolean"
           },
           "createdAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "descriptionSections": {
             "type": "array",
@@ -8203,13 +10513,22 @@
             "type": "string"
           },
           "gapDescription": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "htmlNote": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "markdownNote": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "educationPrinciples": {
             "type": "array",
@@ -8221,7 +10540,10 @@
             "type": "boolean"
           },
           "templateId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "tags": {
             "type": "array",
@@ -8236,10 +10558,16 @@
             }
           },
           "languageKey": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "languageName": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "parameters": {
             "type": "array",
@@ -8269,7 +10597,10 @@
             "minLength": 1
           },
           "description": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Description for the new group.",
             "maxLength": 200,
             "minLength": 0
@@ -8290,7 +10621,10 @@
             "type": "string"
           },
           "description": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "managed": {
             "type": "boolean",
@@ -8357,6 +10691,397 @@
           }
         }
       },
+      "L": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Presigned upload URL. Present only on the presigned path (no payload supplied)."
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
+      "X": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Bq": {
+        "type": "object",
+        "properties": {
+          "analysisId": {
+            "type": "string",
+            "description": "Analysis UUID identifying the target project and branch."
+          }
+        },
+        "required": [
+          "analysisId"
+        ]
+      },
+      "Model": {
+        "type": "object",
+        "description": "In GET responses, both 'data' and 'model' will be set. 'data' is deprecated, use 'model' instead.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "deprecated": true,
+            "description": "Deprecated. Use 'model' instead.",
+            "maxLength": 50000,
+            "minLength": 0
+          },
+          "organizationId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "UUID v4 of the organization."
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelData"
+          },
+          "projectId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "organizationId",
+          "projectId"
+        ]
+      },
+      "ModelData": {
+        "type": "null",
+        "description": "Structured intended model for the architecture analysis, mirroring ModelDto.",
+        "properties": {
+          "perspectives": {
+            "type": "array",
+            "description": "Model perspectives. Each perspective provides a specific view of the intended model in terms of groups and constraints.",
+            "items": {
+              "$ref": "#/components/schemas/ModelPerspective"
+            }
+          }
+        },
+        "required": [
+          "perspectives"
+        ]
+      },
+      "ModelGroup": {
+        "type": "object",
+        "description": "A component of the intended model.",
+        "properties": {
+          "groups": {
+            "description": "Subgroups."
+          },
+          "label": {
+            "type": "string",
+            "description": "Identifier of this group. Also serves as the display name."
+          },
+          "interface": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "If true, this group is an interface. External access to sibling groups that bypasses this interface group will raise an interface issue, regardless of the parent's interfaceAccess setting. To fully disable interface issue generation for a component, this field must be false on all children and interfaceAccess must be false on the parent. "
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Description of the group."
+          },
+          "interfaceAccess": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Extends interface issue detection beyond what the interface field provides. If true, access to children that are not themselves interfaces (interface: false) from outside this group will raise an interface issue. Additionally, access to unmapped code that resolves to this group's pattern is also considered unauthorized, as it does not go through an interface child, and will raise an interface issue. If false, no additional interface issues are raised by this group — though children with interface: true will still independently raise interface issues for unauthorized sibling access. "
+          },
+          "patternId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "If set, this group imports a pattern. Its subgroups are taken from the referenced pattern instead of the 'groups' field."
+          },
+          "patterns": {
+            "type": "array",
+            "description": "File or namespace pattern for code components associated with this group.",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "label"
+        ]
+      },
+      "ModelPerspective": {
+        "type": "object",
+        "description": "A specific view of the intended model in terms of groups and constraints.",
+        "properties": {
+          "qualifiers": {
+            "type": "string",
+            "enum": [
+              "file",
+              "namespace"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Description of the perspective."
+          },
+          "label": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Display name of the perspective."
+          },
+          "groups": {
+            "type": "array",
+            "description": "Components of the intended model.",
+            "items": {
+              "$ref": "#/components/schemas/ModelGroup"
+            }
+          },
+          "constraints": {
+            "type": "array",
+            "description": "Dependency constraints between groups in this perspective.",
+            "items": {
+              "$ref": "#/components/schemas/T"
+            }
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "java",
+              "js",
+              "ts",
+              "py",
+              "cs"
+            ]
+          }
+        },
+        "required": [
+          "constraints",
+          "language",
+          "qualifiers"
+        ]
+      },
+      "T": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Pattern identifying the target group of the dependency."
+          },
+          "from": {
+            "type": "string",
+            "description": "Pattern identifying the source group of the dependency."
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
+      },
+      "PostModel": {
+        "type": "object",
+        "description": "Either 'data' (deprecated) or 'model' must be set.",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelData"
+          },
+          "organizationId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "deprecated": true,
+            "description": "UUID v4 of the organization."
+          },
+          "data": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "deprecated": true,
+            "description": "Deprecated. Use 'model' instead.",
+            "maxLength": 50000,
+            "minLength": 0
+          }
+        },
+        "required": [
+          "projectId"
+        ]
+      },
+      "a": {
+        "type": "object",
+        "properties": {
+          "toNodeKey": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Key of the dependency target node."
+          },
+          "fromNodeKey": {
+            "type": "string",
+            "description": "Key of the dependency source node."
+          },
+          "graphPerspective": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Key of the graph perspective the directive's node keys refer to. Syntactically optional for backward compatibility with older payloads, but semantically required: directives without a (parseable, resolvable) value are rejected by the validator as INVALID and are removed by the analysis-time garbage collector. "
+          },
+          "graphType": {
+            "type": "string",
+            "description": "Type of the graph.",
+            "enum": [
+              "file_graph",
+              "namespace_graph"
+            ]
+          },
+          "graphEcoSystem": {
+            "type": "string",
+            "description": "Language ecosystem of the graph.",
+            "enum": [
+              "java",
+              "js",
+              "ts",
+              "py",
+              "cs"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of this directive.",
+            "enum": [
+              "REMOVE_EDGE",
+              "RENAME_NODE",
+              "MOVE_NODE"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional human-readable description for this directive."
+          }
+        },
+        "required": [
+          "fromNodeKey",
+          "graphEcoSystem",
+          "graphType",
+          "toNodeKey",
+          "type"
+        ]
+      },
+      "y": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional provenance tag supplied by the creator of the directive (e.g. the UI component or user action that triggered the creation). Null for directives created before this field was introduced.",
+            "maxLength": 255,
+            "minLength": 0
+          },
+          "directiveData": {
+            "$ref": "#/components/schemas/a"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "directiveData",
+          "id",
+          "projectId"
+        ]
+      },
+      "Dq": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "origin": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional provenance tag for this directive (e.g. the UI component or user action that triggered the creation).",
+            "maxLength": 255,
+            "minLength": 0
+          },
+          "directiveData": {
+            "$ref": "#/components/schemas/a"
+          }
+        },
+        "required": [
+          "directiveData",
+          "projectId"
+        ]
+      },
+      "cq": {
+        "type": "object",
+        "properties": {
+          "analysisId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Cloud mode: analysis UUID identifying the target project and branch."
+          },
+          "ceTaskId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Server mode: Compute Engine task ID, used to resolve the target project and branch. Required when analysisId is absent."
+          }
+        }
+      },
       "UpdateFieldListString": {
         "type": "object",
         "properties": {
@@ -8397,8 +11122,7 @@
             "$ref": "#/components/schemas/UpdateFieldListString",
             "description": "List of SCM accounts.",
             "items": {
-              "type": "string",
-              "description": "List of SCM accounts."
+              "type": "string"
             }
           },
           "externalProvider": {
@@ -8782,14 +11506,20 @@
             "description": "Allow projects to override settings"
           },
           "softwareQualities": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Software quality mappings (MQR mode)",
             "items": {
               "$ref": "#/components/schemas/SoftwareQualityMapping"
             }
           },
           "types": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Rule type mappings (Standard Experience mode)",
             "items": {
               "$ref": "#/components/schemas/RuleTypeMapping"
@@ -8837,14 +11567,20 @@
             "description": "Whether sandbox is enabled for this project"
           },
           "softwareQualities": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Software quality mappings (MQR mode)",
             "items": {
               "$ref": "#/components/schemas/SoftwareQualityMapping"
             }
           },
           "types": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Rule type mappings (Standard Experience mode)",
             "items": {
               "$ref": "#/components/schemas/RuleTypeMapping"
@@ -8860,13 +11596,22 @@
         "type": "object",
         "properties": {
           "clientId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "clientSecret": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "signingSecret": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -8883,7 +11628,10 @@
             ]
           },
           "enabledProjectKeys": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Project keys for which AI CodeFix is enabled. Only used when enablement is ENABLED_FOR_SOME_PROJECTS.",
             "items": {
               "type": "string"
@@ -8915,25 +11663,34 @@
         }
       },
       "ProviderDto": {
-        "type": "object",
+        "type": "null",
         "properties": {
           "type": {
             "type": "string",
             "description": "The provider type"
           },
           "model": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "The selected model (managed providers only)"
           },
           "config": {
-            "type": "object",
+            "type": [
+              "object",
+              "null"
+            ],
             "additionalProperties": {
               "type": "string"
             },
             "description": "Provider-specific configuration (self-hosted providers only)"
           },
           "headers": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "description": "Custom HTTP headers (Custom provider only)",
             "items": {
               "$ref": "#/components/schemas/HeaderDto"
@@ -8989,7 +11746,10 @@
             "description": "Url of Gitlab instance for authentication (for instance https://gitlab.com/api/v4)"
           },
           "secret": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Secret of the application"
           },
           "synchronizeGroups": {
@@ -9000,8 +11760,7 @@
             "$ref": "#/components/schemas/UpdateFieldListString",
             "description": "Root Gitlab groups allowed to authenticate and provisioned. Ignored when allowAllGroups is true.",
             "items": {
-              "type": "string",
-              "description": "Root Gitlab groups allowed to authenticate and provisioned. Ignored when allowAllGroups is true."
+              "type": "string"
             }
           },
           "allowAllGroups": {
@@ -9021,7 +11780,10 @@
             "description": "Allow user to sign up"
           },
           "provisioningToken": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "description": "Gitlab token for provisioning",
             "maxLength": 2147483647,
             "minLength": 1
@@ -9067,8 +11829,7 @@
             "$ref": "#/components/schemas/UpdateFieldListString",
             "description": "GitHub organizations allowed to authenticate and provisioned",
             "items": {
-              "type": "string",
-              "description": "GitHub organizations allowed to authenticate and provisioned"
+              "type": "string"
             }
           },
           "provisioningType": {
@@ -9129,6 +11890,25 @@
           }
         }
       },
+      "PatchModel": {
+        "type": "object",
+        "description": "Either 'data' (deprecated) or 'model' must be set.",
+        "properties": {
+          "data": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "deprecated": true,
+            "description": "Deprecated. Use 'model' instead.",
+            "maxLength": 50000,
+            "minLength": 0
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelData"
+          }
+        }
+      },
       "PageRestResponse": {
         "type": "object",
         "properties": {
@@ -9167,21 +11947,36 @@
             "type": "string"
           },
           "completedSteps": {
-            "type": "integer",
+            "type": [
+              "integer",
+              "null"
+            ],
             "format": "int32"
           },
           "totalSteps": {
-            "type": "integer",
+            "type": [
+              "integer",
+              "null"
+            ],
             "format": "int32"
           },
           "startedAt": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "message": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "expectedFinishTimestamp": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -9551,8 +12346,16 @@
           },
           "cweIds": {
             "type": "array",
+            "deprecated": true,
             "items": {
-              "type": "string"
+              "type": "string",
+              "deprecated": true
+            }
+          },
+          "cwes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CweResource"
             }
           },
           "cvssScore": {
@@ -9809,8 +12612,16 @@
           },
           "cweIds": {
             "type": "array",
+            "deprecated": true,
             "items": {
-              "type": "string"
+              "type": "string",
+              "deprecated": true
+            }
+          },
+          "cwes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CweResource"
             }
           },
           "cvssScore": {
@@ -10221,7 +13032,10 @@
             ]
           },
           "enabledProjectKeys": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "type": "string"
             },
@@ -10262,13 +13076,22 @@
             "type": "string"
           },
           "parent": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "startDate": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "endDate": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -10339,9 +13162,6 @@
           "expired": {
             "type": "boolean"
           },
-          "legacy": {
-            "type": "boolean"
-          },
           "validEdition": {
             "type": "boolean"
           },
@@ -10349,6 +13169,9 @@
             "type": "boolean"
           },
           "officialDistribution": {
+            "type": "boolean"
+          },
+          "legacy": {
             "type": "boolean"
           },
           "disabled": {
@@ -10372,10 +13195,16 @@
             "type": "string"
           },
           "repository": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "slug": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -10399,18 +13228,25 @@
           }
         }
       },
-      "N": {
+      "$": {
         "type": "object",
         "properties": {
-          "gates": {
+          "page": {
+            "$ref": "#/components/schemas/O"
+          },
+          "snapshots": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/w"
+              "$ref": "#/components/schemas/Snapshot"
             }
           }
-        }
+        },
+        "required": [
+          "page",
+          "snapshots"
+        ]
       },
-      "T": {
+      "K": {
         "type": "object",
         "properties": {
           "_type": {
@@ -10420,7 +13256,7 @@
             "type": "string"
           },
           "predicate": {
-            "$ref": "#/components/schemas/N"
+            "$ref": "#/components/schemas/$"
           },
           "createdAt": {
             "type": "string",
@@ -10431,67 +13267,6 @@
           },
           "markdown": {
             "type": "string"
-          }
-        }
-      },
-      "k": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "OK",
-              "ERROR",
-              "WARN",
-              "NONE"
-            ]
-          },
-          "metricKey": {
-            "type": "string"
-          },
-          "comparator": {
-            "type": "string",
-            "enum": [
-              "LT",
-              "GT",
-              "EQ",
-              "NE"
-            ]
-          },
-          "errorThreshold": {
-            "type": "string"
-          },
-          "actualValue": {
-            "type": "string"
-          }
-        }
-      },
-      "w": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "QUALITY"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "OK",
-              "ERROR",
-              "WARN",
-              "NONE"
-            ]
-          },
-          "ignoredConditions": {
-            "type": "boolean"
-          },
-          "conditions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/k"
-            }
           }
         }
       },
@@ -10549,10 +13324,16 @@
             "type": "string"
           },
           "url": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "appId": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       },
@@ -10598,32 +13379,104 @@
           }
         }
       },
-      "_T": {
-        "type": "object",
-        "properties": {
-          "graphs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/_W"
-            }
-          }
-        }
-      },
-      "_W": {
+      "Mq": {
         "type": "object",
         "properties": {
           "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/m"
+            }
+          },
+          "mappedKind": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Architectural category this node represents.  For real code nodes this is the same as `kind` and may be omitted. For intended-architecture group nodes (where `kind = \"group\"`), this carries the inferred architectural category — e.g. `\"package\"`, `\"module\"`, `\"namespace\"`, `\"class\"`, `\"folder\"` or `\"file\"`.  An absent or empty value means the category could not be inferred; consumers should apply permissive defaults in that case. "
+          },
+          "name": {
             "type": "string"
           },
-          "branchId": {
-            "type": "string"
+          "nodes": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "required": [
+                "edges",
+                "id",
+                "name"
+              ]
+            }
           },
-          "type": {
+          "kind": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "edges",
+          "id",
+          "kind",
+          "name"
+        ]
+      },
+      "d": {
+        "type": "object",
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Mq"
+            }
+          },
+          "id": {
             "type": "string",
-            "enum": [
-              "file_graph",
-              "namespace_graph"
-            ]
+            "format": "uuid"
+          },
+          "edgeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nodeCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "edgeCount",
+          "id",
+          "nodeCount",
+          "nodes"
+        ]
+      },
+      "m": {
+        "type": "object",
+        "properties": {
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "toId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "toId",
+          "weight"
+        ]
+      },
+      "$q": {
+        "type": "object",
+        "properties": {
+          "values": {
+            "$ref": "#/components/schemas/SnapshotMeasures"
           },
           "ecosystem": {
             "type": "string",
@@ -10632,17 +13485,426 @@
               "js",
               "ts",
               "py",
-              "cs",
-              "xoo"
+              "cs"
             ]
+          }
+        },
+        "required": [
+          "ecosystem",
+          "values"
+        ]
+      },
+      "O": {
+        "type": "object",
+        "properties": {
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "pageIndex",
+          "pageSize",
+          "total"
+        ]
+      },
+      "Snapshot": {
+        "type": "object",
+        "description": "Snapshot metadata and per-ecosystem metrics.",
+        "properties": {
+          "aggregatedMeasures": {
+            "$ref": "#/components/schemas/SnapshotMeasures"
+          },
+          "analysisDate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "UUID v4 of the organization."
+          },
+          "analysisId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branchId": {
+            "type": "string"
+          },
+          "measures": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "description": "Metrics per ecosystem; each entry identifies the ecosystem and its measures.",
+            "items": {
+              "$ref": "#/components/schemas/$q"
+            }
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "aggregatedMeasures",
+          "branchId",
+          "id",
+          "measures",
+          "organizationId",
+          "projectId"
+        ]
+      },
+      "SnapshotMeasures": {
+        "type": "object",
+        "description": "Snapshot measures.",
+        "properties": {
+          "architectureCoverage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numStructuralDirectives": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numRelationshipDirectives": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numUnimplemented": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numWeakTangledNodes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "architectureCoverageSummary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numMisplaced": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numTangles": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numSplitNodes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numWeakTangles": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numGraphNodes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numDisallowed": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numInterfaceIssues": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numGraphEdges": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "maxWeakTangleSize": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "numStructuralIssues": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "o": {
+        "type": "object",
+        "properties": {
+          "boundaryDescriptors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "intendedArchitecture": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "directives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "boundaryDescriptors",
+          "directives",
+          "projectId"
+        ]
+      },
+      "E": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Programming language this intended architecture is defined for.",
+            "enum": [
+              "java",
+              "js",
+              "ts",
+              "py",
+              "cs"
+            ]
+          },
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Type of components that the intended architecture describes.",
+            "enum": [
+              "file",
+              "namespace"
+            ]
+          },
+          "constraints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/v"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Kq"
+            }
+          }
+        },
+        "required": [
+          "constraints",
+          "groups",
+          "id"
+        ]
+      },
+      "Kq": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Identifier of this group in the intended architecture."
+          },
+          "interface": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "If true, this group is an interface. External access to sibling groups that bypasses this interface group will raise an interface issue, regardless of the parent's interfaceAccess setting. To fully disable interface issue generation for a component, this field must be false on all children and interfaceAccess must be false on the parent. "
+          },
+          "patterns": {
+            "type": "array",
+            "description": "patterns for selected code components associated with this group.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "interfaceAccess": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Extends interface issue detection beyond what the interface field provides. If true, access to children that are not themselves interfaces (interface: false) from outside this group will raise an interface issue. Additionally, access to unmapped code that resolves to this group's pattern is also considered unauthorized, as it does not go through an interface child, and will raise an interface issue. If false, no additional interface issues are raised by this group — though children with interface: true will still independently raise interface issues for unauthorized sibling access. "
+          },
+          "groups": {
+            "type": "array",
+            "description": "Sub-groups contained within this group.",
+            "items": {
+              "required": [
+                "label"
+              ]
+            }
+          }
+        },
+        "required": [
+          "label"
+        ]
+      },
+      "v": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "pattern identifying the target group of the dependency."
+          },
+          "from": {
+            "type": "string",
+            "description": "pattern identifying the source group of the dependency."
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
+      },
+      "J": {
+        "type": "object",
+        "properties": {
+          "ecosystem": {
+            "type": "string",
+            "enum": [
+              "java",
+              "js",
+              "ts",
+              "py",
+              "cs"
+            ]
+          },
+          "graphVersion": {
+            "type": "string"
+          },
+          "organizationId": {
+            "type": "string",
+            "description": "UUID v4 of the organization."
+          },
+          "analysisId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "file_graph",
+              "namespace_graph",
+              "structural_issues",
+              "boundaries"
+            ]
+          },
+          "downloadUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "Short-lived URL where the graph payload can be downloaded."
           },
           "perspectiveKey": {
             "type": "string"
           },
-          "graphVersion": {
-            "type": "string"
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
           }
-        }
+        },
+        "required": [
+          "analysisId",
+          "ecosystem",
+          "graphVersion",
+          "id",
+          "organizationId",
+          "perspectiveKey",
+          "type"
+        ]
+      },
+      "k": {
+        "type": "object",
+        "properties": {
+          "graphs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/J"
+            }
+          }
+        },
+        "required": [
+          "graphs"
+        ]
+      },
+      "Zq": {
+        "type": "object",
+        "properties": {
+          "directives": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/y"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/O"
+          }
+        },
+        "required": [
+          "directives",
+          "page"
+        ]
       },
       "JreInfoRestResponse": {
         "type": "object",
@@ -10697,13 +13959,19 @@
             "type": "string"
           },
           "internalKey": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "language": {
             "type": "string"
           },
           "templateRuleKey": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "qProfileKey": {
             "type": "string"

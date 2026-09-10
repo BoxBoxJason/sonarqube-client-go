@@ -784,8 +784,10 @@ func (c *Client) buildRequestURL(params SonarAPIRequestParameters) string {
 // "application/x-www-form-urlencoded" (the wire format expected by endpoints
 // that mimic HTML form posts, such as SAML assertion callbacks); callers must
 // pair this with a matching Content-Type header since the default set by
-// setRequestHeaders is "application/json". Any other body type is
-// JSON-encoded.
+// setRequestHeaders is "application/json". An io.Reader body is streamed as-is,
+// which lets callers pre-encode a payload (e.g. a multipart/form-data upload)
+// and supply the matching Content-Type header themselves. Any other body type
+// is JSON-encoded.
 func marshalBody(body any) (io.Reader, error) {
 	if body == nil {
 		return http.NoBody, nil
@@ -793,6 +795,10 @@ func marshalBody(body any) (io.Reader, error) {
 
 	if values, ok := body.(url.Values); ok {
 		return strings.NewReader(values.Encode()), nil
+	}
+
+	if reader, ok := body.(io.Reader); ok {
+		return reader, nil
 	}
 
 	data, err := json.Marshal(body)

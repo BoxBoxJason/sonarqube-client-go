@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
+	"net/url"
 )
 
 // ScaService handles communication with the Software Composition Analysis (SCA) V2 API endpoints.
@@ -2440,4 +2443,269 @@ func (s *ScaService) GetRiskReport(ctx context.Context, opt *ScaRiskReportOption
 	}
 
 	return result, resp, nil
+}
+
+// =============================================================================
+// Bulk issue-release changes, dependency-file parsing and reachability
+// definitions
+//
+// The endpoints below were added alongside SonarQube's SCA reachability
+// feature. They are Enterprise Edition only and several are marked internal by
+// SonarQube (x-sonar-internal); their request/response contracts may change
+// without notice between SonarQube versions.
+// =============================================================================
+
+// ScaBulkIssueReleaseChangeRequest is the request body for the BulkChangeIssueReleases method.
+//
+//nolint:govet // fieldalignment - structure kept for readability
+type ScaBulkIssueReleaseChangeRequest struct {
+	// IssueReleaseKeys is the list of issue-release keys to update. This field is required.
+	IssueReleaseKeys []string `json:"issueReleaseKeys"`
+	// Severity is the manual severity to set on every listed issue-release. Optional.
+	// One of "BLOCKER", "HIGH", "MEDIUM", "LOW", "INFO".
+	Severity string `json:"severity,omitempty"`
+	// TransitionKey is the workflow transition to apply. Optional.
+	// One of "ACCEPT", "CONFIRM", "REOPEN", "SAFE".
+	TransitionKey string `json:"transitionKey,omitempty"`
+	// Comment is an optional comment recorded with the change.
+	Comment string `json:"comment,omitempty"`
+	// Assignee is the login of the user to assign the issue-releases to. Optional.
+	Assignee string `json:"assignee,omitempty"`
+	// ShouldUnsetAssignee, when true, clears the assignee on every listed issue-release.
+	ShouldUnsetAssignee bool `json:"shouldUnsetAssignee,omitempty"`
+}
+
+// ValidateBulkIssueReleaseChangeOpt validates the request body for the BulkChangeIssueReleases method.
+func (s *ScaService) ValidateBulkIssueReleaseChangeOpt(body *ScaBulkIssueReleaseChangeRequest) error {
+	if body == nil {
+		return NewValidationError("body", "request body is required", ErrMissingRequired)
+	}
+
+	if len(body.IssueReleaseKeys) == 0 {
+		return NewValidationError("IssueReleaseKeys", "at least one issue-release key is required", ErrMissingRequired)
+	}
+
+	if body.Severity != "" {
+		err := IsValueAuthorized(body.Severity, allowedRuleImpactSeverities, "Severity")
+		if err != nil {
+			return err
+		}
+	}
+
+	if body.TransitionKey != "" {
+		return IsValueAuthorized(body.TransitionKey, allowedScaTransitions, "TransitionKey")
+	}
+
+	return nil
+}
+
+// BulkChangeIssueReleases applies a status transition, severity change and/or
+// assignee change to a collection of issue-release pairs in one call, returning
+// the updated issue-release details.
+//
+// API endpoint: POST /api/v2/sca/issues-releases/bulk-change.
+// Enterprise Edition only. Marked internal by SonarQube and subject to change
+// without notice.
+func (s *ScaService) BulkChangeIssueReleases(ctx context.Context, body *ScaBulkIssueReleaseChangeRequest) ([]ScaIssueReleaseDetails, *http.Response, error) {
+	err := s.ValidateBulkIssueReleaseChangeOpt(body)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "sca/issues-releases/bulk-change", nil, body)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	var result []ScaIssueReleaseDetails
+
+	resp, err := s.client.Do(req, &result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
+// ScaDependencyFile is a single dependency or lock file submitted to ParseDependencyFiles.
+type ScaDependencyFile struct {
+	// Content provides the raw bytes of the dependency file. This field is required.
+	Content io.Reader
+	// Filename is the name of the dependency file (e.g. "package-lock.json"). This field is required.
+	Filename string
+}
+
+// ScaParseDependencyFilesOptions contains parameters for the ParseDependencyFiles method.
+type ScaParseDependencyFilesOptions struct {
+	// ProjectKey is the key of the project the files belong to. This field is required.
+	ProjectKey string
+	// Files is the set of dependency files to parse. At least one file is required.
+	Files []ScaDependencyFile
+}
+
+// ScaDependencyFilePackage is a single package discovered while parsing dependency files.
+type ScaDependencyFilePackage struct {
+	// PackageUrl is the package URL (purl) of the discovered package.
+	PackageUrl string `json:"packageUrl,omitempty"`
+	// DependencyFilePaths lists the dependency files that declare this package.
+	DependencyFilePaths []string `json:"dependencyFilePaths,omitempty"`
+	// DependencyChains lists the dependency chains that lead to this package.
+	DependencyChains [][]string `json:"dependencyChains,omitempty"`
+}
+
+// ScaDependencyFileError describes a problem encountered while parsing dependency files.
+type ScaDependencyFileError struct {
+	// Id is the identifier of the errored input.
+	Id string `json:"id,omitempty"`
+	// Code is the machine-readable error code (e.g. "MISSING_LOCKFILE").
+	Code string `json:"code,omitempty"`
+	// Path is the path of the file the error relates to.
+	Path string `json:"path,omitempty"`
+	// Message is the human-readable error message.
+	Message string `json:"message,omitempty"`
+}
+
+// ScaDependencyFilesParseResult is the response returned by ParseDependencyFiles.
+type ScaDependencyFilesParseResult struct {
+	// Packages is the list of packages discovered in the submitted files.
+	Packages []ScaDependencyFilePackage `json:"packages,omitempty"`
+	// ParsedFiles lists the submitted files that were successfully parsed.
+	ParsedFiles []string `json:"parsedFiles,omitempty"`
+	// Errors lists the problems encountered while parsing.
+	Errors []ScaDependencyFileError `json:"errors,omitempty"`
+}
+
+// ValidateParseDependencyFilesOpt validates the options for the ParseDependencyFiles method.
+func (s *ScaService) ValidateParseDependencyFilesOpt(opt *ScaParseDependencyFilesOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	err := ValidateRequired(opt.ProjectKey, "ProjectKey")
+	if err != nil {
+		return err
+	}
+
+	if len(opt.Files) == 0 {
+		return NewValidationError("Files", "at least one dependency file is required", ErrMissingRequired)
+	}
+
+	for fileIdx, file := range opt.Files {
+		err = ValidateRequired(file.Filename, fmt.Sprintf("Files[%d].Filename", fileIdx))
+		if err != nil {
+			return err
+		}
+
+		if file.Content == nil {
+			return NewValidationError(fmt.Sprintf("Files[%d].Content", fileIdx), "is required", ErrMissingRequired)
+		}
+	}
+
+	return nil
+}
+
+// ParseDependencyFiles parses one or more dependency or lock files and returns
+// the packages and dependency chains discovered in them, without persisting an
+// analysis.
+//
+// API endpoint: POST /api/v2/sca/analyses/parse.
+// Enterprise Edition only. Marked internal by SonarQube and subject to change
+// without notice.
+func (s *ScaService) ParseDependencyFiles(ctx context.Context, opt *ScaParseDependencyFilesOptions) (*ScaDependencyFilesParseResult, *http.Response, error) {
+	err := s.ValidateParseDependencyFilesOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var buf bytes.Buffer
+
+	writer := multipart.NewWriter(&buf)
+
+	for _, file := range opt.Files {
+		part, partErr := writer.CreateFormFile("dependencyFiles", file.Filename)
+		if partErr != nil {
+			return nil, nil, fmt.Errorf("failed to create multipart part: %w", partErr)
+		}
+
+		_, partErr = io.Copy(part, file.Content)
+		if partErr != nil {
+			return nil, nil, fmt.Errorf("failed to write multipart part: %w", partErr)
+		}
+	}
+
+	err = writer.Close()
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to finalize multipart body: %w", err)
+	}
+
+	//nolint:exhaustruct // only the fields relevant to a multipart upload are set
+	req, err := s.client.NewSonarQubeAPIRequest(ctx, SonarAPIRequestParameters{
+		Method:   http.MethodPost,
+		Path:     v2BasePath + "sca/analyses/parse",
+		RawQuery: url.Values{"projectKey": {opt.ProjectKey}},
+		Headers:  map[string]string{headerContentType: writer.FormDataContentType()},
+		Body:     &buf,
+	})
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	result := new(ScaDependencyFilesParseResult)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
+// ScaReachabilityDefinitionsOptions contains parameters for the ListReachabilityDefinitions method.
+type ScaReachabilityDefinitionsOptions struct {
+	// LanguageKey is the language to return reachability definitions for. This field is required.
+	LanguageKey string `json:"languageKey"`
+	// ProjectKey scopes the definitions to a project. Optional.
+	ProjectKey string `json:"projectKey,omitempty"`
+	// Organization scopes the definitions to an organization. Optional.
+	// Deprecated by SonarQube in favour of ProjectKey.
+	Organization string `json:"organization,omitempty"`
+}
+
+// ValidateReachabilityDefinitionsOpt validates the options for the ListReachabilityDefinitions method.
+func (s *ScaService) ValidateReachabilityDefinitionsOpt(opt *ScaReachabilityDefinitionsOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
+	}
+
+	return ValidateRequired(opt.LanguageKey, "LanguageKey")
+}
+
+// ListReachabilityDefinitions returns the raw reachability-definition bundle for
+// a language as an opaque byte stream (content type application/octet-stream);
+// its internal format is not published, so the bytes are returned as-is.
+//
+// API endpoint: GET /api/v2/sca/reachability/list-definitions.
+// Enterprise Edition only. Marked internal by SonarQube and subject to change
+// without notice.
+func (s *ScaService) ListReachabilityDefinitions(ctx context.Context, opt *ScaReachabilityDefinitionsOptions) ([]byte, *http.Response, error) {
+	err := s.ValidateReachabilityDefinitionsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/reachability/list-definitions", opt, nil)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("Accept", "application/octet-stream")
+
+	var buf bytes.Buffer
+
+	resp, err := s.client.Do(req, &buf)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return buf.Bytes(), resp, nil
 }
