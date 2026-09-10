@@ -64,20 +64,6 @@
         "Makefile"
       ],
       "pinDigests": false
-    },
-    {
-      "description": "Bump the `go` directive (and `toolchain`, if added) in go.mod to the latest Go release instead of treating it as a minimum floor, so it lands in the same PR as the setup-go `go-version` bump.",
-      "matchManagers": [
-        "gomod"
-      ],
-      "matchDepNames": [
-        "go"
-      ],
-      "matchDepTypes": [
-        "golang",
-        "toolchain"
-      ],
-      "rangeStrategy": "bump"
     }
   ]
 }
