@@ -243,4 +243,50 @@ var _ = Describe("V2 DOP Translation Service", Ordered, func() {
 			})
 		})
 	})
+
+	// =========================================================================
+	// GenerateInstallationToken
+	// =========================================================================
+	Describe("GenerateInstallationToken", func() {
+		Context("parameter validation", func() {
+			It("should fail with nil options", func() {
+				result, resp, err := client.V2.DopTranslation.GenerateInstallationToken(context.Background(), nil)
+				Expect(err).To(HaveOccurred())
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+
+			It("should fail without a project key", func() {
+				result, resp, err := client.V2.DopTranslation.GenerateInstallationToken(context.Background(), &sonar.DopTranslationGenerateInstallationTokenOptions{})
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("Project"))
+				Expect(resp).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+		})
+
+		Context("functional", func() {
+			It("should mint a token or return an expected error", func() {
+				// No GitHub App is configured on a vanilla instance, and the
+				// project is not bound, so an error response is expected. Only
+				// accept the documented failure codes so unrelated failures are
+				// not silently swallowed.
+				result, resp, err := client.V2.DopTranslation.GenerateInstallationToken(context.Background(), &sonar.DopTranslationGenerateInstallationTokenOptions{
+					Project: helpers.UniqueResourceName("v2dopproj"),
+				})
+				if err != nil {
+					Expect(resp).NotTo(BeNil())
+					Expect(resp.StatusCode).To(BeElementOf(
+						http.StatusBadRequest,
+						http.StatusForbidden,
+						http.StatusNotFound,
+						http.StatusInternalServerError,
+					))
+				} else {
+					Expect(resp.StatusCode).To(BeNumerically("<", 400))
+					Expect(result).NotTo(BeNil())
+				}
+			})
+		})
+	})
 })
