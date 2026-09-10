@@ -181,10 +181,14 @@ type SystemInfoBundled struct {
 	Abap string `json:"abap,omitempty"`
 	// Architecture is the architecture plugin version.
 	Architecture string `json:"architecture,omitempty"`
+	// Architecturecsharpfrontend is the architecture C# frontend plugin version.
+	Architecturecsharpfrontend string `json:"architecturecsharpfrontend,omitempty"`
 	// Architecturejavafrontend is the architecture Java frontend plugin version.
 	Architecturejavafrontend string `json:"architecturejavafrontend,omitempty"`
 	// Architecturejavascriptfrontend is the architecture JavaScript frontend plugin version.
 	Architecturejavascriptfrontend string `json:"architecturejavascriptfrontend,omitempty"`
+	// Architecturepythonfrontend is the architecture Python frontend plugin version.
+	Architecturepythonfrontend string `json:"architecturepythonfrontend,omitempty"`
 	// Cayc is the Clean-as-You-Code plugin version.
 	Cayc string `json:"cayc,omitempty"`
 	// Cfamilydependencies is the C-family dependencies plugin version.
@@ -581,8 +585,18 @@ type SystemUpgrade struct {
 	ChangeLogURL string `json:"changeLogUrl,omitempty"`
 	// Description describes the upgrade.
 	Description string `json:"description,omitempty"`
-	// DownloadURL is the URL to download the upgrade.
+	// DocumentationURL is the URL to the upgrade documentation.
+	DocumentationURL string `json:"documentationUrl,omitempty"`
+	// DownloadURL is the URL to download the upgrade (Community edition).
 	DownloadURL string `json:"downloadUrl,omitempty"`
+	// DownloadDeveloperURL is the URL to download the Developer edition of the upgrade.
+	DownloadDeveloperURL string `json:"downloadDeveloperUrl,omitempty"`
+	// DownloadEnterpriseURL is the URL to download the Enterprise edition of the upgrade.
+	DownloadEnterpriseURL string `json:"downloadEnterpriseUrl,omitempty"`
+	// DownloadDatacenterURL is the URL to download the Data Center edition of the upgrade.
+	DownloadDatacenterURL string `json:"downloadDatacenterUrl,omitempty"`
+	// Product is the product name for the upgrade.
+	Product string `json:"product,omitempty"`
 	// Plugins contains plugin compatibility information.
 	Plugins SystemUpgradePlugins `json:"plugins,omitzero"`
 	// ReleaseDate is the release date of the upgrade.

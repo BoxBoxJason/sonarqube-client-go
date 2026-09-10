@@ -447,6 +447,8 @@ const (
 	// client base URL (e.g. "http://localhost:9000/api/" + "v2/" →
 	// "http://localhost:9000/api/v2/").
 	v2BasePath = "v2/"
+	// headerContentType is the canonical name of the Content-Type HTTP header.
+	headerContentType = "Content-Type"
 )
 
 // PageResponseV2 represents the pagination information returned by V2 API endpoints.
