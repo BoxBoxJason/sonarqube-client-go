@@ -131,6 +131,8 @@ type ServicesV2 struct {
 	DopTranslation *DopTranslationService
 	// FixSuggestions provides methods for the Fix Suggestions V2 API.
 	FixSuggestions *FixSuggestionsService
+	// History provides methods for the History V2 API.
+	History *HistoryService
 	// Marketplace provides methods for the Marketplace V2 API.
 	Marketplace *MarketplaceService
 	// Sca provides methods for the SCA V2 API.
@@ -598,6 +600,7 @@ func initServicesV2(client *Client) {
 		DopTranslation:         &DopTranslationService{client: client},
 		Entitlements:           &EntitlementsService{client: client},
 		FixSuggestions:         &FixSuggestionsService{client: client},
+		History:                &HistoryService{client: client},
 		Integrations:           &IntegrationsService{client: client},
 		Issues:                 &IssuesV2Service{client: client},
 		Jira:                   &JiraService{client: client},

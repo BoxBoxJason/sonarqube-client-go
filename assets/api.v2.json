@@ -3,12 +3,30 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "26.7.0.124771"
+    "version": "26.8.0.126808"
   },
   "servers": [
     {
       "url": "http://127.0.0.1:9000/api/v2",
       "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "project-measures",
+      "description": "the project-measures API"
+    },
+    {
+      "name": "measures-history",
+      "description": "the measures-history API"
+    },
+    {
+      "name": "issue-count-history",
+      "description": "the issue-count-history API"
+    },
+    {
+      "name": "project-issue-counts",
+      "description": "the project-issue-counts API"
     }
   ],
   "paths": {
@@ -18,7 +36,7 @@
           "Dop Translation"
         ],
         "summary": "Create or update a bound SonarQube project",
-        "description": "Create a SonarQube project bound to a DevOps platform repository, or update the binding if the project already exists.\nThis is an idempotent operation. If the project already exists with the same key, its binding will be updated.\nAutoconfigure Pull-Request decoration mechanism.\nRequires the 'Create Projects' permission and setting a Personal Access Token with api/alm_integrations/set_pat for a user who will be using this endpoint\n",
+        "description": "Create a SonarQube project bound to a DevOps platform repository, or update the binding if the project already exists.\nThis is an idempotent operation. If the project already exists with the same key, its binding will be updated.\nAutoconfigure Pull-Request decoration mechanism.\nCreating a new project requires the 'Create Projects' permission and setting a Personal Access Token with\napi/alm_integrations/set_pat for a user who will be using this endpoint.\nUpdating an existing project additionally requires the 'Administer' permission on that project.\n",
         "operationId": "createOrUpdateBoundProject",
         "requestBody": {
           "content": {
@@ -49,6 +67,9 @@
           },
           "403": {
             "description": "Insufficient permissions - requires 'Create Projects' permission"
+          },
+          "404": {
+            "description": "Project already exists and the caller lacks 'Administer' permission on it"
           },
           "500": {
             "description": "Internal server error - failed to fetch repository from DevOps platform (e.g., repository not found, invalid PAT, or insufficient permissions)"
@@ -427,6 +448,40 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GitlabConfigurationRestResponseForAdmins"
+                }
+              }
+            }
+          }
+        },
+        "x-sonar-internal": "true"
+      }
+    },
+    "/dop-translation/github-installation-tokens": {
+      "post": {
+        "tags": [
+          "Dop Translation"
+        ],
+        "summary": "Mint a GitHub App installation token",
+        "description": "Mint a short-lived GitHub App installation token, scoped to the bound repository of the given\nproject. Internal endpoint used by the agentic-workflows remediation orchestrator (SONAR-30903).\nRequires the 'Administer System' permission.\n",
+        "operationId": "generateInstallationToken",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "query",
+            "description": "Project key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GithubInstallationTokenRestResponse"
                 }
               }
             }
@@ -1392,6 +1447,913 @@
         }
       }
     },
+    "/history/project-measures": {
+      "get": {
+        "tags": [
+          "project-measures"
+        ],
+        "summary": "Get current project measure values.",
+        "description": "Get current measure values for the flattened list of projects in a portfolio or application. Identify the selection with either the legacy portfolioId parameter, or with both entityType and entityId. The two selector forms are mutually exclusive. ",
+        "operationId": "getProjectMeasures",
+        "parameters": [
+          {
+            "name": "metricKey",
+            "in": "query",
+            "description": "Metric key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "metricValue",
+            "in": "query",
+            "description": "Filter by metric value (exact match). Only supports primitive metric types. It does not support metrics of type DISTR or DATA. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "nameContains",
+            "in": "query",
+            "description": "Search query for project names, case insensitive",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "description": "Index of the page to fetch",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Size of the page to fetch.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "portfolioId",
+            "in": "query",
+            "description": "Legacy portfolio ID. Either portfolioId or both entityType and entityId must be provided, but not both forms. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "Type of the selection whose projects are returned as a flattened list. Must be provided together with entityId and cannot be combined with portfolioId. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "Portfolio ID or application branch ID, according to entityType. Must be provided together with entityType and cannot be combined with portfolioId. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "referenceDate",
+            "in": "query",
+            "description": "The date from which to return reference measure values for computing trends. If omitted, reference values will not be returned in the response. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Defines the sort order of project measures. The value is a comma-separated list of fields to sort by. Each field is prefixed with '+' (URL encoded) for ascending or '-' for descending. Valid sort fields are 'measure.currentValue' and 'projectName'. Sorting is done in lexicographical order, i.e. subsequent sort fields are used as tie breakers. ",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "default": [
+                "-measure.currentValue"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "requireValue",
+            "in": "query",
+            "description": "Only return projects with a non-null metric value.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully got project measure values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMeasuresResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
+    "/history/project-issue-counts": {
+      "get": {
+        "tags": [
+          "project-issue-counts"
+        ],
+        "summary": "Get project issue counts.",
+        "description": "Get issue counts for the flattened list of projects in a portfolio or application. Identify the selection with either the legacy portfolioId parameter, or with both entityType and entityId. The two selector forms are mutually exclusive. ",
+        "operationId": "getProjectIssueCounts",
+        "parameters": [
+          {
+            "name": "portfolioId",
+            "in": "query",
+            "description": "Legacy portfolio ID. Either portfolioId or both entityType and entityId must be provided, but not both forms. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "Type of the selection whose projects are returned as a flattened list. Must be provided together with entityId and cannot be combined with portfolioId. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "Portfolio ID or application branch ID, according to entityType. Must be provided together with entityType and cannot be combined with portfolioId. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "ruleKeys",
+            "in": "query",
+            "description": "Comma separated list of ruleKeys",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "severities",
+            "in": "query",
+            "description": "Limit results to issues with specific severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BLOCKER",
+                  "HIGH",
+                  "INFO",
+                  "LOW",
+                  "MEDIUM"
+                ]
+              }
+            }
+          },
+          {
+            "name": "issueTypes",
+            "in": "query",
+            "description": "Limit results to issues with specific types (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUG",
+                  "CODE_SMELL",
+                  "SECURITY_HOTSPOT",
+                  "VULNERABILITY"
+                ]
+              }
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Limit results to issues with specific statuses (comma-separated). Reviewed security hotspots also support SAFE and FIXED.",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ACCEPTED",
+                  "CONFIRMED",
+                  "FALSE_POSITIVE",
+                  "FIXED",
+                  "OPEN",
+                  "REVIEWED",
+                  "SAFE",
+                  "TO_REVIEW"
+                ]
+              }
+            }
+          },
+          {
+            "name": "impacts",
+            "in": "query",
+            "description": "Limit results to issues with specific impacts (comma-separated). An impact is a combination of software quality and severity. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "nameContains",
+            "in": "query",
+            "description": "Search query for project names, case insensitive",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "referenceDate",
+            "in": "query",
+            "description": "The date from which to return reference measure values for computing trends. If omitted, reference values will not be returned in the response. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "description": "Index of the page to fetch",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Size of the page to fetch.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Defines the sort order of project issue counts. The value is a comma-separated list of fields to sort by. Each field is prefixed with '+' (URL encoded) for ascending or '-' for descending. Valid sort fields are 'issueCount' and 'projectName'. Sorting is done in lexicographical order, i.e. subsequent sort fields are used as tie breakers. ",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "default": [
+                "-issueCount"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "requireIssues",
+            "in": "query",
+            "description": "Only return projects with an issue count greater than 0.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully got project issue counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectIssueCountsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
+    "/history/measures-history": {
+      "get": {
+        "tags": [
+          "measures-history"
+        ],
+        "summary": "Get measures history.",
+        "description": "Returns the history of measures for the given entity.",
+        "operationId": "getMeasuresHistory",
+        "parameters": [
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "Type of entity to retrieve measures history for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PORTFOLIO",
+                "PROJECT_BRANCH"
+              ]
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "UUID of the entity",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 36,
+              "minLength": 36
+            }
+          },
+          {
+            "name": "metricKeys",
+            "in": "query",
+            "description": "Comma-separated list of metric keys to filter by",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "Inclusive start of the date range (ISO-8601)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "Inclusive end of the date range (ISO-8601). Defaults to current date.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Measures history for the given entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeasuresHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
+    "/history/issue-count-history": {
+      "get": {
+        "tags": [
+          "issue-count-history"
+        ],
+        "summary": "Provides issue count history data for an entity",
+        "description": "Returns the history of issue counts for an entity. The maximum resolution for history data is 1 day. You cannot zoom in on a period less than 1 day (e.g. 1hour). All history is recorded in UTC timezone. Issue counts will carry-forward for days with no changes. ",
+        "operationId": "getIssueCountHistory",
+        "parameters": [
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "The ID of the entity to retrieve issue count history for.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 36,
+              "minLength": 36
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "The entity's type.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "The date and time to begin returning issue count history in ISO 8601 format (inclusive). The start date may not be more than 1 year in the past. ",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "The date and time to stop returning issue count history in ISO 8601 format (inclusive). If not specified, the current date and time at UTC offset 0 will be used. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "impacts",
+            "in": "query",
+            "description": "Limit results to issues with specific impacts (comma-separated). An impact is a combination of software quality and severity. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "issueTypes",
+            "in": "query",
+            "description": "Limit results to issues with specific types (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUG",
+                  "CODE_SMELL",
+                  "SECURITY_HOTSPOT",
+                  "VULNERABILITY"
+                ]
+              }
+            }
+          },
+          {
+            "name": "ruleKeys",
+            "in": "query",
+            "description": "Comma separated list of ruleKeys",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "severities",
+            "in": "query",
+            "description": "Limit results to issues with specific severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BLOCKER",
+                  "HIGH",
+                  "INFO",
+                  "LOW",
+                  "MEDIUM"
+                ]
+              }
+            }
+          },
+          {
+            "name": "sliceBy",
+            "in": "query",
+            "description": "Optionally group issue counts by a specific dimension. If not provided, issue counts will contain a single distribution with the count of all issues. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Limit results to issues with specific statuses (comma-separated). Reviewed security hotspots also support SAFE and FIXED.",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ACCEPTED",
+                  "CONFIRMED",
+                  "FALSE_POSITIVE",
+                  "FIXED",
+                  "OPEN",
+                  "REVIEWED",
+                  "SAFE",
+                  "TO_REVIEW"
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueCountHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
     "/dop-translation/project-bindings": {
       "get": {
         "tags": [
@@ -2279,6 +3241,17 @@
             ],
             "description": "In case the GitLab configuration is incorrect, error message",
             "readOnly": true
+          }
+        }
+      },
+      "GithubInstallationTokenRestResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
           }
         }
       },
@@ -3266,6 +4239,305 @@
           },
           "page": {
             "$ref": "#/components/schemas/PageRestResponse"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "pageIndex": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "total": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "ProjectMeasure": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string"
+          },
+          "branchName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "develop"
+          },
+          "measure": {
+            "$ref": "#/components/schemas/ProjectMeasureMetric"
+          },
+          "projectKey": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "projectName": {
+            "type": "string",
+            "example": "My Project"
+          }
+        },
+        "required": [
+          "branchId",
+          "measure",
+          "projectKey",
+          "projectName"
+        ]
+      },
+      "ProjectMeasureMetric": {
+        "type": "object",
+        "properties": {
+          "currentValue": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Value of the measure encoded as a string. Use the measure's type to interpret the value. The value may be null if the measure has no current value. "
+          },
+          "metric": {
+            "type": "string",
+            "description": "Metric key",
+            "example": "coverage"
+          },
+          "referenceValue": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Reference value for the measure encoded as a string, used for trend calculation. Use the measure's type to interpret the value. The value may be null if the measure did not have a value on the reference date. "
+          },
+          "type": {
+            "type": "string",
+            "description": "Identifies the measure's data type.",
+            "example": "PERCENT"
+          }
+        },
+        "required": [
+          "metric",
+          "type"
+        ]
+      },
+      "ProjectMeasuresResponse": {
+        "type": "object",
+        "properties": {
+          "hiddenProjectCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of projects excluded from the response because the user does not have permission to view those projects. "
+          },
+          "projectMeasures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectMeasure"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": [
+          "hiddenProjectCount",
+          "page",
+          "projectMeasures"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Error message"
+          }
+        }
+      },
+      "ProjectIssueCount": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string",
+            "example": "My Project"
+          },
+          "projectKey": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "branchName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "example": "develop"
+          },
+          "issueCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "referenceIssueCount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          }
+        },
+        "required": [
+          "branchId",
+          "issueCount",
+          "projectKey",
+          "projectName"
+        ]
+      },
+      "ProjectIssueCountsResponse": {
+        "type": "object",
+        "properties": {
+          "hiddenProjectCount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of projects excluded from the response because the user does not have permission to view those projects. "
+          },
+          "projectIssueCounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectIssueCount"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": [
+          "hiddenProjectCount",
+          "page",
+          "projectIssueCounts"
+        ]
+      },
+      "MeasureHistoryEntry": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Metric whose value is being recorded",
+            "example": "coverage"
+          },
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Type of value the measure contains",
+            "example": "PERCENT"
+          },
+          "value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Value of the measure",
+            "example": "81.2"
+          }
+        }
+      },
+      "MeasureHistoryItem": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "The date the measures were taken"
+          },
+          "measures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MeasureHistoryEntry"
+            }
+          }
+        }
+      },
+      "MeasuresHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "measuresHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MeasureHistoryItem"
+            }
+          }
+        }
+      },
+      "IssueCountDistribution": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "value": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "IssueCountHistory": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Date and time in ISO 8601 format, including timezone offset",
+            "example": "2024-01-01T12:00Z"
+          },
+          "distribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueCountDistribution"
+            }
+          }
+        }
+      },
+      "IssueCountHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "issueCountHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueCountHistory"
+            }
           }
         }
       },

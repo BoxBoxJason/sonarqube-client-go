@@ -155,3 +155,47 @@ func TestDopTranslationV2_GetJfrogEvidence_ValidationError(t *testing.T) {
 	assert.Nil(t, result)
 	assert.Nil(t, resp)
 }
+
+// =============================================================================
+// GenerateInstallationToken
+// =============================================================================
+
+func TestDopTranslationV2_GenerateInstallationToken(t *testing.T) {
+	response := DopTranslationGithubInstallationToken{
+		Token:     "ghs_exampletoken",
+		ExpiresAt: "2026-09-10T12:00:00Z",
+	}
+	server := newTestServer(t, mockHandlerWithParams(t, http.MethodPost, "/v2/dop-translation/github-installation-tokens", http.StatusOK,
+		map[string]string{"project": "my-project"}, response))
+	client := newTestClient(t, server.url())
+
+	result, resp, err := client.V2.DopTranslation.GenerateInstallationToken(context.Background(), &DopTranslationGenerateInstallationTokenOptions{
+		Project: "my-project",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NotNil(t, result)
+	assert.Equal(t, "ghs_exampletoken", result.Token)
+	assert.Equal(t, "2026-09-10T12:00:00Z", result.ExpiresAt)
+}
+
+func TestDopTranslationV2_GenerateInstallationToken_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	tests := []struct {
+		opt  *DopTranslationGenerateInstallationTokenOptions
+		name string
+	}{
+		{nil, "nil opt"},
+		{&DopTranslationGenerateInstallationTokenOptions{}, "missing Project"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, resp, err := client.V2.DopTranslation.GenerateInstallationToken(context.Background(), tt.opt)
+			assert.Error(t, err)
+			assert.Nil(t, result)
+			assert.Nil(t, resp)
+		})
+	}
+}

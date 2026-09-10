@@ -62,6 +62,15 @@ type DopTranslationDopSettings struct {
 // rather than a fixed struct.
 type DopTranslationJfrogEvidence map[string]any
 
+// DopTranslationGithubInstallationToken represents a minted, short-lived GitHub
+// App installation token scoped to the bound repository of a project.
+type DopTranslationGithubInstallationToken struct {
+	// Token is the short-lived GitHub App installation token.
+	Token string `json:"token,omitempty"`
+	// ExpiresAt is the token expiration timestamp.
+	ExpiresAt string `json:"expiresAt,omitempty"`
+}
+
 // -----------------------------------------------------------------------------
 // Request Types
 // -----------------------------------------------------------------------------
@@ -95,6 +104,14 @@ type DopTranslationBoundProjectOptions struct {
 	RepositoryIdentifier string `json:"repositoryIdentifier"`
 }
 
+// DopTranslationGenerateInstallationTokenOptions contains parameters for minting
+// a GitHub App installation token.
+type DopTranslationGenerateInstallationTokenOptions struct {
+	// Project is the key of the project whose bound repository the token is
+	// scoped to. This field is required.
+	Project string `json:"project"`
+}
+
 // -----------------------------------------------------------------------------
 // Validation
 // -----------------------------------------------------------------------------
@@ -126,6 +143,16 @@ func (s *DopTranslationService) ValidateCreateBoundProjectRequest(opt *DopTransl
 	}
 
 	return nil
+}
+
+// ValidateGenerateInstallationTokenRequest validates the
+// DopTranslationGenerateInstallationTokenOptions.
+func (s *DopTranslationService) ValidateGenerateInstallationTokenRequest(opt *DopTranslationGenerateInstallationTokenOptions) error {
+	if opt == nil {
+		return NewValidationError("opt", "must not be nil", ErrMissingRequired)
+	}
+
+	return ValidateRequired(opt.Project, "Project")
 }
 
 // -----------------------------------------------------------------------------
@@ -217,6 +244,35 @@ func (s *DopTranslationService) GetJfrogEvidence(ctx context.Context, taskID str
 	}
 
 	result := new(DopTranslationJfrogEvidence)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
+// GenerateInstallationToken mints a short-lived GitHub App installation token,
+// scoped to the bound repository of the given project.
+// Requires the 'Administer System' permission.
+//
+// This endpoint is marked internal by SonarQube (x-sonar-internal) and its
+// request/response contract may change without notice between SonarQube versions.
+//
+// API endpoint: POST /api/v2/dop-translation/github-installation-tokens.
+func (s *DopTranslationService) GenerateInstallationToken(ctx context.Context, opt *DopTranslationGenerateInstallationTokenOptions) (*DopTranslationGithubInstallationToken, *http.Response, error) {
+	err := s.ValidateGenerateInstallationTokenRequest(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPost, "dop-translation/github-installation-tokens", opt, nil)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	result := new(DopTranslationGithubInstallationToken)
 
 	resp, err := s.client.Do(req, result)
 	if err != nil {

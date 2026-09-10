@@ -6261,15 +6261,15 @@
               "required": false,
               "internal": false,
               "possibleValues": [
-                "FILE_LINE",
-                "STATUS",
-                "SEVERITY",
                 "CREATION_DATE",
                 "HOTSPOTS",
                 "TYPE_SEVERITY",
                 "UPDATE_DATE",
                 "CLOSE_DATE",
-                "QUALITY_SEVERITY"
+                "QUALITY_SEVERITY",
+                "FILE_LINE",
+                "STATUS",
+                "SEVERITY"
               ]
             },
             {
@@ -7103,7 +7103,7 @@
             },
             {
               "key": "metricKeys",
-              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only security_issues, maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues metrics are supported",
+              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues, security_issues metrics are supported",
               "required": true,
               "internal": false,
               "exampleValue": "ncloc,complexity,violations",
@@ -7207,9 +7207,9 @@
               "internal": false,
               "defaultValue": "all",
               "possibleValues": [
+                "all",
                 "children",
-                "leaves",
-                "all"
+                "leaves"
               ]
             }
           ]
@@ -11912,12 +11912,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "key",
+              "exampleValue": "name",
               "possibleValues": [
-                "key",
                 "name",
                 "createdAt",
-                "updatedAt"
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -13048,12 +13048,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "key",
+              "exampleValue": "name",
               "possibleValues": [
-                "key",
                 "name",
                 "createdAt",
-                "updatedAt"
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -14912,7 +14912,7 @@
               "description": "Comma-separated list of additional fields to be returned in the response. All the fields are returned by default, except actives.",
               "required": false,
               "internal": false,
-              "exampleValue": "repo,status",
+              "exampleValue": "sysTags,gapDescription",
               "possibleValues": [
                 "actives",
                 "cleanCodeAttribute",
@@ -15170,12 +15170,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "key",
+              "exampleValue": "name",
               "possibleValues": [
-                "key",
                 "name",
                 "createdAt",
-                "updatedAt"
+                "updatedAt",
+                "key"
               ]
             },
             {

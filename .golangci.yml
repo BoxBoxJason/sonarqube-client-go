@@ -29,7 +29,10 @@ linters:
     - depguard
     - lll
     - err113
+    - exhaustruct
+    - exhaustruct_v5 # v2.13 rename of exhaustruct; keep the stable name so //nolint:exhaustruct directives still apply
     - gomodguard
+    - modernize # stylistic-only suggestions (e.g. reflect.TypeAssert), too noisy for this codebase
     - nonamedreturns
     - revive
     - wsl
