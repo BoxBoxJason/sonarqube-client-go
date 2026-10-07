@@ -11,6 +11,7 @@ package enterprise_test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -34,6 +35,26 @@ var _ = BeforeSuite(func() {
 
 	err = helpers.CleanupOrphanedResources(client, 0*time.Second)
 	Expect(err).NotTo(HaveOccurred())
+})
+
+// AfterSuite fails the run if any API response observed during the suite had
+// a JSON field with no corresponding field on its destination Go struct, the
+// same strict schema validation the main e2e suite applies.
+var _ = AfterSuite(func() {
+	mismatches := helpers.SchemaMismatches()
+	if len(mismatches) == 0 {
+		return
+	}
+
+	lines := make([]string, 0, len(mismatches))
+	for _, mismatch := range mismatches {
+		lines = append(lines, mismatch.String())
+	}
+
+	Fail(fmt.Sprintf(
+		"strict schema validation found %d field(s) in API responses with no match in their Go struct:\n%s",
+		len(mismatches), strings.Join(lines, "\n"),
+	))
 })
 
 func TestEnterpriseIntegrationTesting(t *testing.T) {

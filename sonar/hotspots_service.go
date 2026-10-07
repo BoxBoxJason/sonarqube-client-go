@@ -206,6 +206,36 @@ type HotspotRule struct {
 // Response Types
 // =============================================================================
 
+// HotspotsMigratedProject represents the migration result of a single project.
+type HotspotsMigratedProject struct {
+	// ProjectKey is the key of the project.
+	ProjectKey string `json:"projectKey,omitempty"`
+	// Migrated is the number of hotspots migrated (or that would be migrated for a dry run).
+	Migrated int64 `json:"migrated,omitempty"`
+}
+
+// HotspotsMigrateToIssues represents the response from migrating Security Hotspots to Issues.
+//
+//nolint:govet // Field alignment less important than maintaining consistent field order for readability
+type HotspotsMigrateToIssues struct {
+	// DryRun indicates whether the call only counted hotspots without performing any writes.
+	DryRun bool `json:"dryRun,omitempty"`
+	// Skipped is the scope-wide number of findings that cannot be migrated because their rule is still a Security Hotspot.
+	Skipped int64 `json:"skipped,omitempty"`
+	// Projects is the per-project migration result.
+	Projects []HotspotsMigratedProject `json:"projects,omitempty"`
+}
+
+// HotspotsMigrationStatus represents the response from the migration status endpoint.
+type HotspotsMigrationStatus struct {
+	// RemainingHotspots is the number of hotspots that remain to be migrated.
+	RemainingHotspots int64 `json:"remainingHotspots,omitempty"`
+	// NotConvertedHotspots is the number of findings whose rule is still a Security Hotspot and cannot be migrated yet.
+	NotConvertedHotspots int64 `json:"notConvertedHotspots,omitempty"`
+	// Complete indicates whether the migration is complete for the requested scope.
+	Complete bool `json:"complete,omitempty"`
+}
+
 // HotspotsEditComment represents the response from editing a hotspot comment.
 type HotspotsEditComment struct {
 	// CreatedAt is the timestamp when the comment was created.
@@ -287,6 +317,20 @@ type HotspotsShow struct {
 // =============================================================================
 // Option Types
 // =============================================================================
+
+// HotspotsMigrateToIssuesOptions contains parameters for the MigrateToIssues method.
+type HotspotsMigrateToIssuesOptions struct {
+	// Project is the project key. If empty, all projects are migrated.
+	Project string `url:"project,omitempty"`
+	// DryRun only counts the hotspots to migrate without performing any writes.
+	DryRun bool `url:"dryRun,omitempty"`
+}
+
+// HotspotsMigrationStatusOptions contains parameters for the MigrationStatus method.
+type HotspotsMigrationStatusOptions struct {
+	// Project is the project key. If empty, the status is reported for the whole instance.
+	Project string `url:"project,omitempty"`
+}
 
 // HotspotsAddCommentOptions contains parameters for the AddComment method.
 type HotspotsAddCommentOptions struct {
@@ -729,6 +773,52 @@ func (s *HotspotsService) ValidateShowOpt(opt *HotspotsShowOptions) error {
 // =============================================================================
 // Service Methods
 // =============================================================================
+
+// MigrateToIssues migrates Security Hotspots to Issues.
+// Requires the 'Administer System' permission.
+// Findings whose rule is still a Security Hotspot cannot be migrated and are reported as skipped.
+//
+// API endpoint: POST /api/hotspots/migrate_to_issues.
+// Since: 2026.4.
+// Internal: true.
+func (s *HotspotsService) MigrateToIssues(ctx context.Context, opt *HotspotsMigrateToIssuesOptions) (*HotspotsMigrateToIssues, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "hotspots/migrate_to_issues", opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	result := new(HotspotsMigrateToIssues)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
+
+// MigrationStatus reports how many Security Hotspots remain to be migrated to Issues.
+// The migration is complete for the scope once RemainingHotspots reaches zero.
+// Requires the 'Administer System' permission.
+//
+// API endpoint: GET /api/hotspots/migration_status.
+// Since: 2026.4.
+// Internal: true.
+func (s *HotspotsService) MigrationStatus(ctx context.Context, opt *HotspotsMigrationStatusOptions) (*HotspotsMigrationStatus, *http.Response, error) {
+	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodGet, "hotspots/migration_status", opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	result := new(HotspotsMigrationStatus)
+
+	resp, err := s.client.Do(req, result)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return result, resp, nil
+}
 
 // AddComment adds a comment to a Security Hotspot.
 // Requires authentication and the 'Browse' permission on the project.

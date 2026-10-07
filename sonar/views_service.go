@@ -61,6 +61,18 @@ type ViewDetails struct {
 	SelectionMode string `json:"selectionMode,omitempty"`
 	// SubViews is the list of sub-portfolios.
 	SubViews []View `json:"subViews,omitempty"`
+	// SelectedProjects is the list of manually selected projects (selectionMode MANUAL).
+	SelectedProjects []ViewSelectedProject `json:"selectedProjects,omitempty"`
+	// ReferencedBy is the list of portfolios that reference this portfolio as a sub-portfolio.
+	ReferencedBy []ViewDetails `json:"referencedBy,omitempty"`
+}
+
+// ViewSelectedProject is a project manually selected in a portfolio.
+type ViewSelectedProject struct {
+	// ProjectKey is the key of the selected project.
+	ProjectKey string `json:"projectKey,omitempty"`
+	// SelectedBranches is the list of explicitly selected branches, if any.
+	SelectedBranches []string `json:"selectedBranches,omitempty"`
 }
 
 // ViewProject represents a project entry in a portfolio.

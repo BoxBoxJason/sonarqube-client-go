@@ -116,6 +116,16 @@ type SystemHealthNode struct {
 	Type string `json:"type,omitempty"`
 }
 
+// SystemInfoAgentStatus represents the status of an agentic component in the system info.
+//
+//nolint:tagliatelle // JSON tags match SonarQube API
+type SystemInfoAgentStatus struct {
+	// Enabled indicates whether the agent is enabled.
+	Enabled bool `json:"Enabled,omitempty"`
+	// Healthy indicates whether the agent is healthy.
+	Healthy bool `json:"Healthy,omitempty"`
+}
+
 // SystemInfo represents the response from getting detailed system information.
 // This contains extensive information about the SonarQube configuration and state.
 //
@@ -123,6 +133,18 @@ type SystemHealthNode struct {
 type SystemInfo struct {
 	// ALMs contains ALM integration configuration.
 	ALMs SystemInfoALMs `json:"ALMs,omitzero"`
+	// AgentOrchestrator contains the agent orchestrator status.
+	AgentOrchestrator SystemInfoAgentStatus `json:"Agent Orchestrator,omitzero"`
+	// AgenticAnalysis contains the agentic analysis status.
+	AgenticAnalysis SystemInfoAgentStatus `json:"Agentic Analysis,omitzero"`
+	// HunterAgent contains the hunter agent status.
+	HunterAgent SystemInfoAgentStatus `json:"Hunter Agent,omitzero"`
+	// RemediationAgent contains the remediation agent status.
+	RemediationAgent SystemInfoAgentStatus `json:"Remediation Agent,omitzero"`
+	// Onboarding contains onboarding statistics (project counts by binding and analysis state).
+	Onboarding map[string]any `json:"Onboarding,omitempty"`
+	// DevOpsPlatformPersonalAccessTokens contains statistics about stored DevOps Platform personal access tokens.
+	DevOpsPlatformPersonalAccessTokens map[string]any `json:"DevOps Platform Personal Access Tokens,omitempty"`
 	// Bundled contains versions of bundled plugins.
 	Bundled SystemInfoBundled `json:"Bundled,omitzero"`
 	// ComputeEngineDatabaseConnection contains CE database connection pool info.
@@ -245,6 +267,18 @@ type SystemInfoBundled struct {
 	Rpg string `json:"rpg,omitempty"`
 	// Ruby is the Ruby plugin version.
 	Ruby string `json:"ruby,omitempty"`
+	// Commona3scontextcollector is the common A3S context collector plugin version.
+	Commona3scontextcollector string `json:"commona3scontextcollector,omitempty"`
+	// Cvereachability is the CVE reachability analysis plugin version.
+	Cvereachability string `json:"cvereachability,omitempty"`
+	// Dreapex is the Apex deterministic rule engine plugin version.
+	Dreapex string `json:"dreapex,omitempty"`
+	// Dreruby is the Ruby deterministic rule engine plugin version.
+	Dreruby string `json:"dreruby,omitempty"`
+	// Javaa3scontextcollector is the Java A3S context collector plugin version.
+	Javaa3scontextcollector string `json:"javaa3scontextcollector,omitempty"`
+	// Rustenterprise is the Rust enterprise plugin version.
+	Rustenterprise string `json:"rustenterprise,omitempty"`
 	// Rust is the Rust plugin version.
 	Rust string `json:"rust,omitempty"`
 	// Security is the security plugin version.
@@ -599,6 +633,8 @@ type SystemUpgrade struct {
 	Product string `json:"product,omitempty"`
 	// Plugins contains plugin compatibility information.
 	Plugins SystemUpgradePlugins `json:"plugins,omitzero"`
+	// Lta indicates whether the upgrade is a Long-Term Active version.
+	Lta bool `json:"lta,omitempty"`
 	// ReleaseDate is the release date of the upgrade.
 	ReleaseDate string `json:"releaseDate,omitempty"`
 	// Version is the version of the upgrade.

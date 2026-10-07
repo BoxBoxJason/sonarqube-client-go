@@ -1008,3 +1008,34 @@ func TestHotspotsService_SearchAll(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
+func TestHotspots_MigrateToIssues(t *testing.T) {
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/hotspots/migrate_to_issues", r.URL.Path)
+		assert.Equal(t, "true", r.URL.Query().Get("dryRun"))
+		assert.Equal(t, "my-project", r.URL.Query().Get("project"))
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"dryRun":true,"skipped":2,"projects":[{"projectKey":"my-project","migrated":12}]}`))
+	})
+	client := newTestClient(t, server.URL)
+
+	result, _, err := client.Hotspots.MigrateToIssues(context.Background(), &HotspotsMigrateToIssuesOptions{DryRun: true, Project: "my-project"})
+	require.NoError(t, err)
+	assert.Equal(t, &HotspotsMigrateToIssues{
+		DryRun:   true,
+		Skipped:  2,
+		Projects: []HotspotsMigratedProject{{ProjectKey: "my-project", Migrated: 12}},
+	}, result)
+}
+
+func TestHotspots_MigrationStatus(t *testing.T) {
+	// Payload captured from a live SonarQube 2026.5 Enterprise instance.
+	response := `{"remainingHotspots":3,"notConvertedHotspots":1,"complete":false}`
+	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/hotspots/migration_status", http.StatusOK, map[string]string{"project": "my-project"}, response))
+	client := newTestClient(t, server.URL)
+
+	result, _, err := client.Hotspots.MigrationStatus(context.Background(), &HotspotsMigrationStatusOptions{Project: "my-project"})
+	require.NoError(t, err)
+	assert.Equal(t, &HotspotsMigrationStatus{RemainingHotspots: 3, NotConvertedHotspots: 1}, result)
+}

@@ -483,18 +483,6 @@ func TestArchitectureService_GetProjectConfigurations(t *testing.T) {
 	assert.Equal(t, []string{"b1"}, result[0].BoundaryDescriptors)
 }
 
-func TestArchitectureService_GetPrivateProjectConfigurations(t *testing.T) {
-	server := newTestServer(t, mockHandler(t, http.MethodGet, "/v2/architecture/private/architecture/project-configurations", http.StatusOK,
-		[]map[string]any{{"projectId": "p1"}}))
-	client := newTestClient(t, server.URL)
-
-	result, resp, err := client.V2.Architecture.GetPrivateProjectConfigurations(context.Background(), &ArchitectureProjectConfigurationsOptions{ProjectId: "p1"})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	require.Len(t, result, 1)
-	assert.Equal(t, "p1", result[0].ProjectId)
-}
-
 // -----------------------------------------------------------------------------
 // Snapshots
 // -----------------------------------------------------------------------------

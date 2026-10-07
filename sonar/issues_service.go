@@ -715,7 +715,7 @@ type IssuesSearchOptions struct {
 	// Rules is the list of rule keys to filter by.
 	Rules []string `url:"rules,omitempty,comma"`
 	// Sort is the sort field.
-	// Allowed values: CREATION_DATE, CLOSE_DATE, SEVERITY, STATUS, FILE_LINE, HOTSPOTS, UPDATE_DATE
+	// Allowed values: CREATION_DATE, CLOSE_DATE, SEVERITY, STATUS, FILE_LINE, HOTSPOTS, UPDATE_DATE, IMPACT_RANK
 	Sort string `url:"s,omitempty"`
 	// SansTop25 is the list of SANS Top 25 categories.
 	// Allowed values: insecure-interaction, risky-resource, porous-defenses

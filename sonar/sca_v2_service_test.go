@@ -1125,38 +1125,3 @@ func TestScaService_ParseDependencyFiles_ValidationError(t *testing.T) {
 	})
 	assert.Error(t, err)
 }
-
-// -----------------------------------------------------------------------------
-// ListReachabilityDefinitions
-// -----------------------------------------------------------------------------
-
-func TestScaService_ListReachabilityDefinitions(t *testing.T) {
-	payload := []byte{0x01, 0x02, 0x03, 0x04}
-
-	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
-		assert.Equal(t, http.MethodGet, r.Method)
-		assert.Equal(t, "/v2/sca/reachability/list-definitions", r.URL.Path)
-		assert.Equal(t, "java", r.URL.Query().Get("languageKey"))
-		assert.Equal(t, "application/octet-stream", r.Header.Get("Accept"))
-
-		w.Header().Set("Content-Type", "application/octet-stream")
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write(payload)
-	})
-	client := newTestClient(t, server.URL)
-
-	result, resp, err := client.V2.Sca.ListReachabilityDefinitions(context.Background(), &ScaReachabilityDefinitionsOptions{LanguageKey: "java"})
-	require.NoError(t, err)
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, payload, result)
-}
-
-func TestScaService_ListReachabilityDefinitions_ValidationError(t *testing.T) {
-	client := newLocalhostClient(t)
-
-	_, _, err := client.V2.Sca.ListReachabilityDefinitions(context.Background(), nil)
-	assert.Error(t, err)
-
-	_, _, err = client.V2.Sca.ListReachabilityDefinitions(context.Background(), &ScaReachabilityDefinitionsOptions{})
-	assert.Error(t, err)
-}

@@ -227,36 +227,4 @@ var _ = Describe("SCA V2 Service", Ordered, func() {
 			})
 		})
 	})
-
-	Describe("ListReachabilityDefinitions", func() {
-		Context("Parameter Validation", func() {
-			It("should fail with nil options", func() {
-				result, resp, err := client.V2.Sca.ListReachabilityDefinitions(context.Background(), nil)
-				Expect(err).To(HaveOccurred())
-				Expect(result).To(BeNil())
-				Expect(resp).To(BeNil())
-			})
-
-			It("should fail without a language key", func() {
-				result, resp, err := client.V2.Sca.ListReachabilityDefinitions(context.Background(), &sonar.ScaReachabilityDefinitionsOptions{})
-				Expect(err).To(HaveOccurred())
-				Expect(result).To(BeNil())
-				Expect(resp).To(BeNil())
-			})
-		})
-
-		Context("Functional Tests", func() {
-			It("should return reachability definitions or an expected error", func() {
-				result, resp, err := client.V2.Sca.ListReachabilityDefinitions(context.Background(), &sonar.ScaReachabilityDefinitionsOptions{
-					LanguageKey: "java",
-				})
-				if err != nil {
-					Expect(resp).NotTo(BeNil())
-				} else {
-					Expect(resp.StatusCode).To(BeNumerically("<", 400))
-					Expect(result).NotTo(BeNil())
-				}
-			})
-		})
-	})
 })

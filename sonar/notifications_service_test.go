@@ -188,3 +188,92 @@ func TestNotifications_ValidateRemoveOpt(t *testing.T) {
 	err = client.Notifications.ValidateRemoveOpt(&NotificationsRemoveOptions{})
 	assert.Error(t, err)
 }
+
+func TestNotifications_AddGroup(t *testing.T) {
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/notifications/add_group", r.URL.Path)
+		assert.Equal(t, "grp-1", r.URL.Query().Get("groupUuid"))
+		assert.Equal(t, "security-alert-raised", r.URL.Query().Get("type"))
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	client := newTestClient(t, server.URL)
+
+	resp, err := client.Notifications.AddGroup(context.Background(), &NotificationsGroupOptions{
+		GroupUuid: "grp-1",
+		Type:      "security-alert-raised",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestNotifications_RemoveGroup(t *testing.T) {
+	server := newTestServer(t, func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, http.MethodPost, r.Method)
+		assert.Equal(t, "/notifications/remove_group", r.URL.Path)
+		w.WriteHeader(http.StatusNoContent)
+	})
+
+	client := newTestClient(t, server.URL)
+
+	resp, err := client.Notifications.RemoveGroup(context.Background(), &NotificationsGroupOptions{
+		GroupUuid: "grp-1",
+		Type:      "security-alert-raised",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusNoContent, resp.StatusCode)
+}
+
+func TestNotifications_Group_ValidationError(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	_, err := client.Notifications.AddGroup(context.Background(), nil)
+	require.Error(t, err)
+
+	_, err = client.Notifications.AddGroup(context.Background(), &NotificationsGroupOptions{Type: "security-alert-raised"})
+	require.Error(t, err)
+
+	_, err = client.Notifications.RemoveGroup(context.Background(), &NotificationsGroupOptions{GroupUuid: "g", Type: "bogus"})
+	require.Error(t, err)
+}
+
+func TestNotifications_ListGroups(t *testing.T) {
+	// Payload captured from a live SonarQube 2026.5 Enterprise instance.
+	response := `{"subscriptions":[{"groupUuid":"2eaac77e-c62e-4295-873f-d281fec20337","groupName":"sonar-users",` +
+		`"notificationType":"security-alert-raised","channelKey":"EmailNotificationChannel"}]}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/notifications/list_groups", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
+
+	result, resp, err := client.Notifications.ListGroups(context.Background())
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, &NotificationsListGroups{
+		Subscriptions: []NotificationsGroupSubscription{{
+			GroupUuid:        "2eaac77e-c62e-4295-873f-d281fec20337",
+			GroupName:        "sonar-users",
+			NotificationType: "security-alert-raised",
+			ChannelKey:       "EmailNotificationChannel",
+		}},
+	}, result)
+}
+
+func TestNotifications_ListGroupSubscriptions(t *testing.T) {
+	// Payload captured from a live SonarQube 2026.5 Enterprise instance.
+	response := `{"groupSubscriptions":[{"groupName":"sonar-users","notificationType":"security-alert-raised"}]}`
+	server := newTestServer(t, mockHandler(t, http.MethodGet, "/notifications/list_group_subscriptions", http.StatusOK, response))
+	client := newTestClient(t, server.URL)
+
+	result, _, err := client.Notifications.ListGroupSubscriptions(context.Background())
+	require.NoError(t, err)
+	assert.Equal(t, &NotificationsListGroupSubscriptions{
+		GroupSubscriptions: []NotificationsUserGroupSubscription{{GroupName: "sonar-users", NotificationType: "security-alert-raised"}},
+	}, result)
+}
+
+func TestNotifications_List_InvalidFilter(t *testing.T) {
+	client := newLocalhostClient(t)
+
+	_, _, err := client.Notifications.List(context.Background(), &NotificationsListOptions{Filter: "bogus"})
+	require.Error(t, err)
+}

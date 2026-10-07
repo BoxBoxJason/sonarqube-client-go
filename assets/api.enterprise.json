@@ -708,6 +708,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027url\u0027 is now rejected with a 400 response when it is not a valid absolute HTTP(S) URL",
+              "version": "2026.5"
+            },
+            {
               "description": "Parameter \u0027URL\u0027 was added",
               "version": "8.6"
             }
@@ -729,7 +733,7 @@
             },
             {
               "key": "url",
-              "description": "Azure API URL",
+              "description": "Azure API URL. Must be a valid absolute HTTP(S) URL, e.g. https://dev.azure.com/myorg",
               "required": true,
               "internal": false,
               "maximumLength": 2000
@@ -881,6 +885,14 @@
           "changelog": [],
           "params": [
             {
+              "key": "allowedOrganizations",
+              "description": "Comma-separated list of GitHub organizations whose members are allowed to sign in. Only used when \u0027auth\u0027 is true, and ignored otherwise. When omitted, the value of \u0027organization\u0027 is used as the allow list. An empty allow list lets any GitHub account sign in.",
+              "required": false,
+              "internal": false,
+              "exampleValue": "my-org,my-other-org",
+              "maximumLength": 4000
+            },
+            {
               "key": "auth",
               "description": "Whether to also set up GitHub authentication (sign-in) using this App.",
               "required": false,
@@ -1009,6 +1021,14 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "GitHub and GitLab bindings now contain a slug field with the repository\u0027s full name or path",
+              "version": "2026.5"
+            },
+            {
+              "description": "Bitbucket Cloud and Bitbucket Server bindings now contain a repositoryUrl field with the URL to the repository",
+              "version": "2026.5"
+            },
+            {
               "description": "GitHub, GitLab and Azure bindings now contain a repositoryUrl field with the URL to the repository",
               "version": "2025.6"
             },
@@ -1094,10 +1114,15 @@
           "key": "set_azure_binding",
           "description": "Bind a Azure DevOps instance to a project.\u003cbr/\u003eIf the project was already bound to a previous Azure DevOps instance, the binding will be updated to the new one.Requires the \u0027Administer\u0027 permission on the project",
           "since": "8.1",
+          "deprecatedSince": "2026.5",
           "internal": false,
           "post": true,
           "hasResponseExample": false,
           "changelog": [
+            {
+              "description": "This endpoint is deprecated, please use POST api/v2/dop-translation/bound-projects instead. Parameters \u0027projectName\u0027 and \u0027repositoryName\u0027 are now rejected with a 400 response when they contain any of the Azure DevOps reserved characters: \\ / : \u003c \u003e | ? *",
+              "version": "2026.5"
+            },
             {
               "description": "Add inline annotations parameter",
               "version": "2025.1"
@@ -1133,14 +1158,14 @@
             },
             {
               "key": "projectName",
-              "description": "Azure project name",
+              "description": "Azure project name. Must not contain any of the Azure DevOps reserved characters: \\ / : \u003c \u003e | ? *",
               "since": "8.6",
               "required": true,
               "internal": false
             },
             {
               "key": "repositoryName",
-              "description": "Azure repository name",
+              "description": "Azure repository name. Must not contain any of the Azure DevOps reserved characters: \\ / : \u003c \u003e | ? *",
               "since": "8.6",
               "required": true,
               "internal": false
@@ -1151,10 +1176,16 @@
           "key": "set_bitbucket_binding",
           "description": "Bind a Bitbucket instance to a project.\u003cbr/\u003eIf the project was already bound to a previous Bitbucket instance, the binding will be updated to the new one.Requires the \u0027Administer\u0027 permission on the project",
           "since": "8.1",
+          "deprecatedSince": "2026.5",
           "internal": false,
           "post": true,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "This endpoint is deprecated, please use POST api/v2/dop-translation/bound-projects instead",
+              "version": "2026.5"
+            }
+          ],
           "params": [
             {
               "key": "almSetting",
@@ -1193,10 +1224,16 @@
           "key": "set_bitbucketcloud_binding",
           "description": "Bind a Bitbucket Cloud setting to a project.\u003cbr/\u003eIf the project was already bound to a different Bitbucket Cloud setting, the binding will be updated to the new one.Requires the \u0027Administer\u0027 permission on the project",
           "since": "8.7",
+          "deprecatedSince": "2026.5",
           "internal": false,
           "post": true,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "This endpoint is deprecated, please use POST api/v2/dop-translation/bound-projects instead",
+              "version": "2026.5"
+            }
+          ],
           "params": [
             {
               "key": "almSetting",
@@ -1229,10 +1266,15 @@
           "key": "set_github_binding",
           "description": "Bind a GitHub instance to a project.\u003cbr/\u003eIf the project was already bound to a previous GitHub instance, the binding will be updated to the new one.Requires the \u0027Administer\u0027 permission on the project",
           "since": "8.1",
+          "deprecatedSince": "2026.5",
           "internal": false,
           "post": true,
           "hasResponseExample": false,
           "changelog": [
+            {
+              "description": "This endpoint is deprecated, please use POST api/v2/dop-translation/bound-projects instead",
+              "version": "2026.5"
+            },
             {
               "description": "Add \u0027summaryCommentEnabled\u0027 param to enable/disable of putting analysis summary in a conversation tab of GitHub",
               "version": "8.3"
@@ -1278,10 +1320,15 @@
           "key": "set_gitlab_binding",
           "description": "Bind a GitLab instance to a project.\u003cbr/\u003eIf the project was already bound to a previous Gitlab instance, the binding will be updated to the new one.Requires the \u0027Administer\u0027 permission on the project",
           "since": "8.1",
+          "deprecatedSince": "2026.5",
           "internal": false,
           "post": true,
           "hasResponseExample": false,
           "changelog": [
+            {
+              "description": "This endpoint is deprecated, please use POST api/v2/dop-translation/bound-projects instead",
+              "version": "2026.5"
+            },
             {
               "description": "Parameter \u0027repository\u0027 was added",
               "version": "8.2"
@@ -1324,6 +1371,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027url\u0027 is now rejected with a 400 response when its value changes and is not a valid absolute HTTP(S) URL",
+              "version": "2026.5"
+            },
+            {
               "description": "Parameter \u0027personalAccessToken\u0027 is no longer required",
               "version": "8.7"
             },
@@ -1356,7 +1407,7 @@
             },
             {
               "key": "url",
-              "description": "Azure API URL",
+              "description": "Azure API URL. Must be a valid absolute HTTP(S) URL, e.g. https://dev.azure.com/myorg. The format is only enforced when the value differs from the currently stored URL, so existing pre-validation settings can still be updated without fixing the URL first.",
               "required": true,
               "internal": false,
               "maximumLength": 2000
@@ -2337,7 +2388,9 @@
                 "REPORT",
                 "ISSUE_SYNC",
                 "AUDIT_PURGE",
+                "HISTORY_PURGE",
                 "PROJECT_EXPORT",
+                "A3S_FRONTEND_CONTEXT_ZIP_PROCESSOR",
                 "APP_REFRESH",
                 "SCA_RESCAN_BRANCH",
                 "PROJECT_IMPORT",
@@ -2346,7 +2399,8 @@
                 "GITHUB_AUTH_PROVISIONING",
                 "GITHUB_PROJECT_PERMISSIONS_PROVISIONING",
                 "GITLAB_AUTH_PROVISIONING",
-                "GITLAB_PROJECT_PERMISSIONS_PROVISIONING"
+                "GITLAB_PROJECT_PERMISSIONS_PROVISIONING",
+                "SANDBOX_DEFERRAL_REOPEN"
               ]
             }
           ]
@@ -2883,6 +2937,7 @@
                 "new_duplicated_lines_density",
                 "new_lines",
                 "new_maintainability_rating",
+                "new_ncloc",
                 "new_reliability_rating",
                 "new_sca_rating_any_issue",
                 "new_security_hotspots_reviewed",
@@ -2906,7 +2961,7 @@
             },
             {
               "key": "filter",
-              "description": "Filter of projects on name, key, measure value, quality gate, language, tag or whether a project is a favorite or not.\u003cbr\u003eThe filter must be encoded to form a valid URL (for example \u0027\u003d\u0027 must be replaced by \u0027%3D\u0027).\u003cbr\u003eExamples of use:\u003cul\u003e \u003cli\u003eto filter my favorite projects with a failed quality gate and a coverage greater than or equals to 60% and a coverage strictly lower than 80%:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"alert_status \u003d ERROR and isFavorite and coverage \u003e\u003d 60 and coverage \u003c 80\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects with a reliability, security and maintainability rating equals or worse than B:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"reliability_rating\u003e\u003d2 and security_rating\u003e\u003d2 and sqale_rating\u003e\u003d2\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects without duplication data:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"duplicated_lines_density \u003d NO_DATA\"\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on project name or key, use the \u0027query\u0027 keyword, for instance : \u003ccode\u003efilter\u003d\u0027query \u003d \"Sonar\"\u0027\u003c/code\u003e.\u003cbr\u003e\u003cbr\u003eTo filter on a numeric metric, provide the metric key.\u003cbr\u003eThese are the supported metric keys:\u003cbr\u003e\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003ecoverage\u003c/li\u003e\u003cli\u003eduplicated_lines_density\u003c/li\u003e\u003cli\u003elines\u003c/li\u003e\u003cli\u003encloc\u003c/li\u003e\u003cli\u003encloc_language_distribution\u003c/li\u003e\u003cli\u003enew_coverage\u003c/li\u003e\u003cli\u003enew_duplicated_lines_density\u003c/li\u003e\u003cli\u003enew_lines\u003c/li\u003e\u003cli\u003enew_maintainability_rating\u003c/li\u003e\u003cli\u003enew_reliability_rating\u003c/li\u003e\u003cli\u003enew_sca_rating_any_issue\u003c/li\u003e\u003cli\u003enew_security_hotspots_reviewed\u003c/li\u003e\u003cli\u003enew_security_rating\u003c/li\u003e\u003cli\u003enew_security_review_rating\u003c/li\u003e\u003cli\u003enew_software_quality_maintainability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_reliability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_security_rating\u003c/li\u003e\u003cli\u003ereliability_rating\u003c/li\u003e\u003cli\u003esca_rating_any_issue\u003c/li\u003e\u003cli\u003esecurity_hotspots_reviewed\u003c/li\u003e\u003cli\u003esecurity_rating\u003c/li\u003e\u003cli\u003esecurity_review_rating\u003c/li\u003e\u003cli\u003esoftware_quality_maintainability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_reliability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_security_rating\u003c/li\u003e\u003cli\u003esqale_rating\u003c/li\u003e\u003c/ul\u003e\u003cbr\u003eTo filter on a rating, provide the corresponding metric key (ex: reliability_rating for reliability rating).\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u00271\u0027 for rating A\u003c/li\u003e \u003cli\u003e\u00272\u0027 for rating B\u003c/li\u003e \u003cli\u003e\u00273\u0027 for rating C\u003c/li\u003e \u003cli\u003e\u00274\u0027 for rating D\u003c/li\u003e \u003cli\u003e\u00275\u0027 for rating E\u003c/li\u003e\u003c/ul\u003eTo filter on a Quality Gate status use the metric key \u0027alert_status\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u0027OK\u0027 for Passed\u003c/li\u003e \u003cli\u003e\u0027WARN\u0027 for Warning\u003c/li\u003e \u003cli\u003e\u0027ERROR\u0027 for Failed\u003c/li\u003e\u003c/ul\u003eTo filter on languages use the \u0027languages\u0027 keyword: \u003cul\u003e \u003cli\u003eto filter on a single language you can use \u0027languages \u003d java\u0027\u003c/li\u003e \u003cli\u003eto filter on several languages you must use \u0027languages IN (java, js)\u0027\u003c/li\u003e\u003c/ul\u003eUse the WS api/languages/list to find the key of a language.\u003cbr\u003e To filter on tags use the \u0027tags\u0027 keyword:\u003cul\u003e \u003cli\u003eto filter on one tag you can use \u003ccode\u003etags \u003d finance\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter on several tags you must use \u003ccode\u003etags in (offshore, java)\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on a qualifier use key \u0027qualifier\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003eTRK - for projects\u003c/li\u003e \u003cli\u003eAPP - for applications\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Filter of projects on name, key, measure value, quality gate, language, tag or whether a project is a favorite or not.\u003cbr\u003eThe filter must be encoded to form a valid URL (for example \u0027\u003d\u0027 must be replaced by \u0027%3D\u0027).\u003cbr\u003eExamples of use:\u003cul\u003e \u003cli\u003eto filter my favorite projects with a failed quality gate and a coverage greater than or equals to 60% and a coverage strictly lower than 80%:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"alert_status \u003d ERROR and isFavorite and coverage \u003e\u003d 60 and coverage \u003c 80\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects with a reliability, security and maintainability rating equals or worse than B:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"reliability_rating\u003e\u003d2 and security_rating\u003e\u003d2 and sqale_rating\u003e\u003d2\"\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter projects without duplication data:\u003cbr\u003e   \u003ccode\u003efilter\u003d\"duplicated_lines_density \u003d NO_DATA\"\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on project name or key, use the \u0027query\u0027 keyword, for instance : \u003ccode\u003efilter\u003d\u0027query \u003d \"Sonar\"\u0027\u003c/code\u003e.\u003cbr\u003e\u003cbr\u003eTo filter on a numeric metric, provide the metric key.\u003cbr\u003eThese are the supported metric keys:\u003cbr\u003e\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003ecoverage\u003c/li\u003e\u003cli\u003eduplicated_lines_density\u003c/li\u003e\u003cli\u003elines\u003c/li\u003e\u003cli\u003encloc\u003c/li\u003e\u003cli\u003encloc_language_distribution\u003c/li\u003e\u003cli\u003enew_coverage\u003c/li\u003e\u003cli\u003enew_duplicated_lines_density\u003c/li\u003e\u003cli\u003enew_lines\u003c/li\u003e\u003cli\u003enew_maintainability_rating\u003c/li\u003e\u003cli\u003enew_ncloc\u003c/li\u003e\u003cli\u003enew_reliability_rating\u003c/li\u003e\u003cli\u003enew_sca_rating_any_issue\u003c/li\u003e\u003cli\u003enew_security_hotspots_reviewed\u003c/li\u003e\u003cli\u003enew_security_rating\u003c/li\u003e\u003cli\u003enew_security_review_rating\u003c/li\u003e\u003cli\u003enew_software_quality_maintainability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_reliability_rating\u003c/li\u003e\u003cli\u003enew_software_quality_security_rating\u003c/li\u003e\u003cli\u003ereliability_rating\u003c/li\u003e\u003cli\u003esca_rating_any_issue\u003c/li\u003e\u003cli\u003esecurity_hotspots_reviewed\u003c/li\u003e\u003cli\u003esecurity_rating\u003c/li\u003e\u003cli\u003esecurity_review_rating\u003c/li\u003e\u003cli\u003esoftware_quality_maintainability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_reliability_rating\u003c/li\u003e\u003cli\u003esoftware_quality_security_rating\u003c/li\u003e\u003cli\u003esqale_rating\u003c/li\u003e\u003c/ul\u003e\u003cbr\u003eTo filter on a rating, provide the corresponding metric key (ex: reliability_rating for reliability rating).\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u00271\u0027 for rating A\u003c/li\u003e \u003cli\u003e\u00272\u0027 for rating B\u003c/li\u003e \u003cli\u003e\u00273\u0027 for rating C\u003c/li\u003e \u003cli\u003e\u00274\u0027 for rating D\u003c/li\u003e \u003cli\u003e\u00275\u0027 for rating E\u003c/li\u003e\u003c/ul\u003eTo filter on a Quality Gate status use the metric key \u0027alert_status\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003e\u0027OK\u0027 for Passed\u003c/li\u003e \u003cli\u003e\u0027WARN\u0027 for Warning\u003c/li\u003e \u003cli\u003e\u0027ERROR\u0027 for Failed\u003c/li\u003e\u003c/ul\u003eTo filter on languages use the \u0027languages\u0027 keyword: \u003cul\u003e \u003cli\u003eto filter on a single language you can use \u0027languages \u003d java\u0027\u003c/li\u003e \u003cli\u003eto filter on several languages you must use \u0027languages IN (java, js)\u0027\u003c/li\u003e\u003c/ul\u003eUse the WS api/languages/list to find the key of a language.\u003cbr\u003e To filter on tags use the \u0027tags\u0027 keyword:\u003cul\u003e \u003cli\u003eto filter on one tag you can use \u003ccode\u003etags \u003d finance\u003c/code\u003e\u003c/li\u003e \u003cli\u003eto filter on several tags you must use \u003ccode\u003etags in (offshore, java)\u003c/code\u003e\u003c/li\u003e\u003c/ul\u003eTo filter on a qualifier use key \u0027qualifier\u0027. Only the \u0027\u003d\u0027 operator can be used.\u003cbr\u003eThe possible values are:\u003cul\u003e \u003cli\u003eTRK - for projects\u003c/li\u003e \u003cli\u003eAPP - for applications\u003c/li\u003e\u003c/ul\u003e",
               "required": false,
               "internal": false,
               "minimumLength": 2
@@ -2949,6 +3004,7 @@
                 "new_duplicated_lines_density",
                 "new_lines",
                 "new_maintainability_rating",
+                "new_ncloc",
                 "new_reliability_rating",
                 "new_sca_rating_any_issue",
                 "new_security_hotspots_reviewed",
@@ -3075,6 +3131,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Response field \u0027refQualifier\u0027 has been added.",
+              "version": "2026.5"
+            },
             {
               "description": "The use of module keys in parameter \u0027component\u0027 is removed",
               "version": "10.1"
@@ -4112,6 +4172,53 @@
                 "TO_REVIEW",
                 "REVIEWED"
               ]
+            }
+          ]
+        },
+        {
+          "key": "migrate_to_issues",
+          "description": "Migrate Security Hotspots to Issues. Requires \u0027Administer System\u0027 permission. Reports \u0027migrated\u0027 per project, plus a scope-wide \u0027skipped\u0027 count of findings that cannot migrate because their rule is still a Security Hotspot.",
+          "since": "2026.4",
+          "internal": true,
+          "post": true,
+          "hasResponseExample": false,
+          "changelog": [],
+          "params": [
+            {
+              "key": "dryRun",
+              "description": "If true, only count hotspots to migrate without performing any writes.",
+              "required": false,
+              "internal": false,
+              "defaultValue": "false",
+              "possibleValues": [
+                "true",
+                "false",
+                "yes",
+                "no"
+              ]
+            },
+            {
+              "key": "project",
+              "description": "Project key. If not provided, all projects are migrated.",
+              "required": false,
+              "internal": false
+            }
+          ]
+        },
+        {
+          "key": "migration_status",
+          "description": "Report how many Security Hotspots remain to be migrated to Issues (optionally scoped to a project). The migration is complete for the scope once \u0027remainingHotspots\u0027 reaches zero. Findings whose rule is still a Security Hotspot cannot be migrated yet and are reported separately as \u0027notConvertedHotspots\u0027; they move into \u0027remainingHotspots\u0027 once their rule is converted. Requires \u0027Administer System\u0027 permission.",
+          "since": "2026.4",
+          "internal": true,
+          "post": false,
+          "hasResponseExample": false,
+          "changelog": [],
+          "params": [
+            {
+              "key": "project",
+              "description": "Project key. If not provided, the status is reported for the whole instance.",
+              "required": false,
+              "internal": false
             }
           ]
         },
@@ -6261,15 +6368,15 @@
               "required": false,
               "internal": false,
               "possibleValues": [
-                "CREATION_DATE",
-                "HOTSPOTS",
-                "TYPE_SEVERITY",
                 "UPDATE_DATE",
-                "CLOSE_DATE",
-                "QUALITY_SEVERITY",
-                "FILE_LINE",
+                "TYPE_SEVERITY",
+                "HOTSPOTS",
+                "IMPACT_RANK",
+                "CREATION_DATE",
+                "SEVERITY",
                 "STATUS",
-                "SEVERITY"
+                "FILE_LINE",
+                "CLOSE_DATE"
               ]
             },
             {
@@ -7103,7 +7210,7 @@
             },
             {
               "key": "metricKeys",
-              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues, security_issues metrics are supported",
+              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only reliability_issues, maintainability_issues, security_issues, new_reliability_issues, new_security_issues, new_maintainability_issues metrics are supported",
               "required": true,
               "internal": false,
               "exampleValue": "ncloc,complexity,violations",
@@ -7208,8 +7315,8 @@
               "defaultValue": "all",
               "possibleValues": [
                 "all",
-                "children",
-                "leaves"
+                "leaves",
+                "children"
               ]
             }
           ]
@@ -7608,11 +7715,11 @@
     {
       "path": "api/new_code_periods",
       "since": "8.0",
-      "description": "Manage \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.4/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.",
+      "description": "Manage \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.5/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.",
       "actions": [
         {
           "key": "list",
-          "description": "Lists the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.4/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for all branches in a project.\u003cbr\u003eRequires the permission to browse the project",
+          "description": "Lists the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.5/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for all branches in a project.\u003cbr\u003eRequires the permission to browse the project",
           "since": "8.0",
           "internal": false,
           "post": false,
@@ -7629,7 +7736,7 @@
         },
         {
           "key": "set",
-          "description": "Updates the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.4/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e on different levels:\u003cbr\u003e\u003cul\u003e\u003cli\u003eNot providing a project key and a branch key will update the default value at global level. Existing projects or branches having a specific new code definition will not be impacted\u003c/li\u003e\u003cli\u003eProject key must be provided to update the value for a project\u003c/li\u003e\u003cli\u003eBoth project and branch keys must be provided to update the value for a branch\u003c/li\u003e\u003c/ul\u003eRequires one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified project to change the project setting\u003c/li\u003e\u003c/ul\u003e",
+          "description": "Updates the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.5/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e on different levels:\u003cbr\u003e\u003cul\u003e\u003cli\u003eNot providing a project key and a branch key will update the default value at global level. Existing projects or branches having a specific new code definition will not be impacted\u003c/li\u003e\u003cli\u003eProject key must be provided to update the value for a project\u003c/li\u003e\u003cli\u003eBoth project and branch keys must be provided to update the value for a branch\u003c/li\u003e\u003c/ul\u003eRequires one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified project to change the project setting\u003c/li\u003e\u003c/ul\u003e",
           "since": "8.0",
           "internal": false,
           "post": true,
@@ -7664,7 +7771,7 @@
         },
         {
           "key": "show",
-          "description": "Shows the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.4/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.\u003cbr\u003e If the component requested doesn\u0027t exist or if no new code definition is set for it, a value is inherited from the project or from the global setting.Requires one of the following permissions if a component is specified: \u003cul\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified component\u003c/li\u003e\u003cli\u003e\u0027Execute analysis\u0027 rights on the specified component\u003c/li\u003e\u003c/ul\u003e",
+          "description": "Shows the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.5/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e.\u003cbr\u003e If the component requested doesn\u0027t exist or if no new code definition is set for it, a value is inherited from the project or from the global setting.Requires one of the following permissions if a component is specified: \u003cul\u003e\u003cli\u003e\u0027Administer\u0027 rights on the specified component\u003c/li\u003e\u003cli\u003e\u0027Execute analysis\u0027 rights on the specified component\u003c/li\u003e\u003c/ul\u003e",
           "since": "8.0",
           "internal": false,
           "post": false,
@@ -7687,7 +7794,7 @@
         },
         {
           "key": "unset",
-          "description": "Unsets the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.4/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for a branch, project or global. It requires the inherited New Code Definition to be compatible with the Clean as You Code methodology, and one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights for a specified component\u003c/li\u003e\u003c/ul\u003e",
+          "description": "Unsets the \u003ca href\u003d\"https://docs.sonarsource.com/sonarqube-server/2026.5/project-administration/configuring-new-code-calculation#setting-specific-new-code-definition-for-project\" target\u003d\"_blank\" rel\u003d\"noopener noreferrer\"\u003enew code definition\u003c/a\u003e for a branch, project or global. It requires the inherited New Code Definition to be compatible with the Clean as You Code methodology, and one of the following permissions: \u003cul\u003e\u003cli\u003e\u0027Administer System\u0027 to change the global setting\u003c/li\u003e\u003cli\u003e\u0027Administer\u0027 rights for a specified component\u003c/li\u003e\u003c/ul\u003e",
           "since": "8.0",
           "internal": false,
           "post": true,
@@ -7758,6 +7865,33 @@
           ]
         },
         {
+          "key": "add_group",
+          "description": "Subscribe a group to a notification type. Requires system administration permission.",
+          "since": "2026.5",
+          "internal": true,
+          "post": true,
+          "hasResponseExample": false,
+          "changelog": [],
+          "params": [
+            {
+              "key": "groupUuid",
+              "description": "Group UUID",
+              "required": true,
+              "internal": false,
+              "exampleValue": "AU-TpxcA-iU5OvuD2FL7"
+            },
+            {
+              "key": "type",
+              "description": "Notification type",
+              "required": true,
+              "internal": false,
+              "possibleValues": [
+                "security-alert-raised"
+              ]
+            }
+          ]
+        },
+        {
           "key": "list",
           "description": "List notifications of the authenticated user.\u003cbr\u003eRequires one of the following permissions:\u003cul\u003e  \u003cli\u003eAuthentication if no login is provided\u003c/li\u003e  \u003cli\u003eSystem administration if a login is provided\u003c/li\u003e\u003c/ul\u003e",
           "since": "6.3",
@@ -7767,6 +7901,19 @@
           "changelog": [],
           "params": [
             {
+              "key": "filter",
+              "description": "Category of notification types to return.",
+              "since": "2026.5",
+              "required": false,
+              "internal": false,
+              "defaultValue": "all",
+              "possibleValues": [
+                "user",
+                "groupSubscription",
+                "all"
+              ]
+            },
+            {
               "key": "login",
               "description": "User login",
               "since": "6.4",
@@ -7774,6 +7921,24 @@
               "internal": false
             }
           ]
+        },
+        {
+          "key": "list_group_subscriptions",
+          "description": "List notification group subscriptions for the current user\u0027s groups. Requires authentication.",
+          "since": "2026.5",
+          "internal": true,
+          "post": false,
+          "hasResponseExample": true,
+          "changelog": []
+        },
+        {
+          "key": "list_groups",
+          "description": "List group notification subscriptions. Requires system administration permission.",
+          "since": "2026.5",
+          "internal": true,
+          "post": false,
+          "hasResponseExample": true,
+          "changelog": []
         },
         {
           "key": "remove",
@@ -7816,6 +7981,33 @@
               "exampleValue": "SQ-MyNewIssues"
             }
           ]
+        },
+        {
+          "key": "remove_group",
+          "description": "Remove a group notification subscription. No-op if not found. Requires system administration permission.",
+          "since": "2026.5",
+          "internal": true,
+          "post": true,
+          "hasResponseExample": false,
+          "changelog": [],
+          "params": [
+            {
+              "key": "groupUuid",
+              "description": "Group UUID",
+              "required": true,
+              "internal": false,
+              "exampleValue": "AU-TpxcA-iU5OvuD2FL7"
+            },
+            {
+              "key": "type",
+              "description": "Notification type",
+              "required": true,
+              "internal": false,
+              "possibleValues": [
+                "security-alert-raised"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -7851,7 +8043,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to grant to the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to grant to the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, architectureadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -7985,7 +8177,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to grant to the user\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to grant to the user\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, architectureadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -8271,7 +8463,7 @@
             },
             {
               "key": "permission",
-              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, architectureadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": false,
               "internal": false
             },
@@ -8335,7 +8527,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to revoke from the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to revoke from the group.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, architectureadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -8469,7 +8661,7 @@
             },
             {
               "key": "permission",
-              "description": "The permission you would like to revoke from the user.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "The permission you would like to revoke from the user.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, architectureadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false
             },
@@ -8807,7 +8999,7 @@
             },
             {
               "key": "permission",
-              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Permission.\u003cul\u003e\u003cli\u003ePossible values for global permissions: admin, gateadmin, profileadmin, architectureadmin, provisioning, scan, applicationcreator, portfoliocreator\u003c/li\u003e\u003cli\u003ePossible values for project permissions admin, codeviewer, issueadmin, securityhotspotadmin, architectureadmin, scan, user\u003c/li\u003e\u003c/ul\u003e",
               "required": false,
               "internal": false
             },
@@ -9127,6 +9319,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Add response field \u0027relativePathFromScmRoot\u0027",
+              "version": "2026.5"
+            },
             {
               "description": "Add response field \u0027qualityProfile\u0027 for events related to quality profile changes",
               "version": "10.3"
@@ -10713,7 +10909,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -11514,7 +11710,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -11912,12 +12108,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "name",
+              "exampleValue": "key",
               "possibleValues": [
-                "name",
-                "createdAt",
+                "key",
                 "updatedAt",
-                "key"
+                "createdAt",
+                "name"
               ]
             },
             {
@@ -12070,8 +12266,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -12110,8 +12306,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -12145,8 +12343,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -12185,8 +12383,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -12227,8 +12427,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -12267,8 +12467,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -12318,8 +12520,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -12358,8 +12560,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -12393,8 +12597,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -12433,8 +12637,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -12520,8 +12726,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -12560,8 +12766,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -12703,6 +12911,7 @@
                 "cs",
                 "css",
                 "dart",
+                "dataweave",
                 "docker",
                 "flex",
                 "githubactions",
@@ -12724,6 +12933,7 @@
                 "postgres",
                 "powershell",
                 "py",
+                "r",
                 "rpg",
                 "ruby",
                 "rust",
@@ -13048,12 +13258,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "name",
+              "exampleValue": "key",
               "possibleValues": [
-                "name",
-                "createdAt",
+                "key",
                 "updatedAt",
-                "key"
+                "createdAt",
+                "name"
               ]
             },
             {
@@ -13186,8 +13396,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -13226,8 +13436,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -13277,6 +13489,7 @@
                 "cs",
                 "css",
                 "dart",
+                "dataweave",
                 "docker",
                 "flex",
                 "githubactions",
@@ -13298,6 +13511,7 @@
                 "postgres",
                 "powershell",
                 "py",
+                "r",
                 "rpg",
                 "ruby",
                 "rust",
@@ -13368,8 +13582,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -13408,8 +13622,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -13533,8 +13749,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -13573,8 +13789,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -13608,8 +13826,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -13648,8 +13866,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -13690,8 +13910,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -13730,8 +13950,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -13863,6 +14085,7 @@
                 "cs",
                 "css",
                 "dart",
+                "dataweave",
                 "docker",
                 "flex",
                 "githubactions",
@@ -13884,6 +14107,7 @@
                 "postgres",
                 "powershell",
                 "py",
+                "r",
                 "rpg",
                 "ruby",
                 "rust",
@@ -13936,8 +14160,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -13976,8 +14200,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -14046,8 +14272,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -14086,8 +14312,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -14156,8 +14384,8 @@
                 "kubernetes",
                 "css",
                 "py",
-                "plsql",
                 "apex",
+                "plsql",
                 "java",
                 "xml",
                 "powershell",
@@ -14196,8 +14424,10 @@
                 "tsql",
                 "ruby",
                 "cs",
+                "r",
                 "cobol",
                 "php",
+                "dataweave",
                 "gosu",
                 "objc",
                 "ts",
@@ -14912,7 +15142,7 @@
               "description": "Comma-separated list of additional fields to be returned in the response. All the fields are returned by default, except actives.",
               "required": false,
               "internal": false,
-              "exampleValue": "sysTags,gapDescription",
+              "exampleValue": "noteLogin,isExternal",
               "possibleValues": [
                 "actives",
                 "cleanCodeAttribute",
@@ -15170,12 +15400,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "name",
+              "exampleValue": "key",
               "possibleValues": [
-                "name",
-                "createdAt",
+                "key",
                 "updatedAt",
-                "key"
+                "createdAt",
+                "name"
               ]
             },
             {
@@ -15292,6 +15522,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "The \u0027contextKey\u0027 parameter has been added.",
+              "version": "2026.5"
+            },
+            {
               "description": "Description-related fields in the response are obfuscated for anonymous users.",
               "version": "2026.2"
             },
@@ -15405,6 +15639,15 @@
                 "yes",
                 "no"
               ]
+            },
+            {
+              "key": "contextKey",
+              "description": "Return only the description sections matching the given rule-description context key, along with sections that have no context. When not set, all description sections are returned.",
+              "since": "2026.5",
+              "required": false,
+              "internal": false,
+              "exampleValue": "spring",
+              "maximumLength": 50
             },
             {
               "key": "key",
@@ -16458,6 +16701,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "The field \u0027lta\u0027 is added to each upgrade entry to indicate whether it belongs to a Long-Term Active line",
+              "version": "2026.5"
+            },
+            {
               "description": "The field \u0027documentationUrl\u0027 is added to each upgrade entry to point to the target version\u0027s documentation",
               "version": "2026.2"
             },
@@ -17200,6 +17447,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Support for new notice \u0027showProjectCoverageTour\u0027 was added.",
+              "version": "2026.5"
+            },
+            {
               "description": "Support for new notice \u0027showSandboxedIssuesIntro\u0027 was added.",
               "version": "2026.1"
             },
@@ -17235,6 +17486,7 @@
                 "educationPrinciples",
                 "sonarlintAd",
                 "showDesignAndArchitectureBanner",
+                "showProjectCoverageTour",
                 "showNewModesBanner",
                 "showSandboxedIssuesIntro",
                 "issueCleanCodeGuide",
@@ -17325,13 +17577,17 @@
         },
         {
           "key": "search",
-          "description": "Get a list of users. By default, only active users are returned.\u003cbr/\u003eThe following fields are only returned when user has Administer System permission or for logged-in in user :\u003cul\u003e   \u003cli\u003e\u0027email\u0027\u003c/li\u003e   \u003cli\u003e\u0027externalIdentity\u0027\u003c/li\u003e   \u003cli\u003e\u0027externalProvider\u0027\u003c/li\u003e   \u003cli\u003e\u0027groups\u0027\u003c/li\u003e   \u003cli\u003e\u0027lastConnectionDate\u0027\u003c/li\u003e   \u003cli\u003e\u0027sonarLintLastConnectionDate\u0027\u003c/li\u003e   \u003cli\u003e\u0027tokensCount\u0027\u003c/li\u003e\u003c/ul\u003eField \u0027lastConnectionDate\u0027 is only updated every hour, so it may not be accurate, for instance when a user authenticates many times in less than one hour.",
+          "description": "Get a list of users. By default, only active users are returned.\u003cbr/\u003eThe following fields are only returned when user has Administer System permission or for logged-in in user :\u003cul\u003e   \u003cli\u003e\u0027email\u0027\u003c/li\u003e   \u003cli\u003e\u0027externalIdentity\u0027\u003c/li\u003e   \u003cli\u003e\u0027externalProvider\u0027\u003c/li\u003e   \u003cli\u003e\u0027groups\u0027\u003c/li\u003e   \u003cli\u003e\u0027lastConnectionDate\u0027\u003c/li\u003e   \u003cli\u003e\u0027scmAccounts\u0027\u003c/li\u003e   \u003cli\u003e\u0027sonarLintLastConnectionDate\u0027\u003c/li\u003e   \u003cli\u003e\u0027tokensCount\u0027\u003c/li\u003e\u003c/ul\u003eField \u0027lastConnectionDate\u0027 is only updated every hour, so it may not be accurate, for instance when a user authenticates many times in less than one hour.",
           "since": "3.6",
           "deprecatedSince": "10.4",
           "internal": false,
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Field \u0027scmAccounts\u0027 is only returned when user has Administer System permission or for the logged-in user",
+              "version": "26.9"
+            },
             {
               "description": "Deprecated. Use GET api/v2/users-management/users instead",
               "version": "10.4"
@@ -18746,7 +19002,7 @@
         },
         {
           "key": "delivery",
-          "description": "Get a webhook delivery by its id.\u003cbr/\u003eRequire \u0027Administer System\u0027 permission.\u003cbr/\u003eNote that additional information are returned by api/webhooks/delivery.",
+          "description": "Get a webhook delivery by its id.\u003cbr/\u003eRequire \u0027Administer\u0027 permission on the related project.",
           "since": "6.2",
           "internal": false,
           "post": false,

@@ -8,6 +8,8 @@ import (
 const (
 	// MaxAlmKeyLength is the maximum length for DevOps Platform setting keys.
 	MaxAlmKeyLength = 200
+	// MaxAlmAllowedOrganizationsLength is the maximum length for the GitHub allowed organizations list.
+	MaxAlmAllowedOrganizationsLength = 4000
 	// MaxAlmURLLength is the maximum length for DevOps Platform URLs.
 	MaxAlmURLLength = 2000
 	// MaxPersonalAccessTokenLength is the maximum length for Personal Access Tokens.
@@ -274,6 +276,11 @@ type AlmSettingsCreateGithubFromManifestOptions struct {
 	// Allowed values: true, false, yes, no
 	// This field is optional. Default: false.
 	Auth string `url:"auth,omitempty"`
+	// AllowedOrganizations is a comma-separated list of GitHub organizations whose members are allowed to sign in.
+	// Only used when Auth is true. When omitted, the value of Organization is used as the allow list.
+	// An empty allow list lets any GitHub account sign in.
+	// This field is optional. Maximum length: 4000 characters. Since 2026.5.
+	AllowedOrganizations string `url:"allowedOrganizations,omitempty"`
 	// Devops indicates whether to create the DevOps Platform integration (project import / PR analysis) for this App.
 	// Allowed values: true, false, yes, no
 	// This field is optional. Default: true.
@@ -796,6 +803,11 @@ func (s *AlmSettingsService) ValidateCreateGithubFromManifestOpt(opt *AlmSetting
 		if err != nil {
 			return err
 		}
+	}
+
+	err := ValidateMaxLength(opt.AllowedOrganizations, MaxAlmAllowedOrganizationsLength, "AllowedOrganizations")
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -1545,6 +1557,7 @@ func (s *AlmSettingsService) DeleteBinding(ctx context.Context, opt *AlmSettings
 // If the project is already bound to a previous Azure DevOps instance, the binding will be updated to the new one.
 // Requires the 'Administer' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.5.
 // API endpoint: POST /api/alm_settings/set_azure_binding.
 // Since: 8.1.
 func (s *AlmSettingsService) SetAzureBinding(ctx context.Context, opt *AlmSettingsSetAzureBindingOptions) (*http.Response, error) {
@@ -1570,6 +1583,7 @@ func (s *AlmSettingsService) SetAzureBinding(ctx context.Context, opt *AlmSettin
 // If the project is already bound to a previous Bitbucket instance, the binding will be updated to the new one.
 // Requires the 'Administer' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.5.
 // API endpoint: POST /api/alm_settings/set_bitbucket_binding.
 // Since: 8.1.
 func (s *AlmSettingsService) SetBitbucketBinding(ctx context.Context, opt *AlmSettingsSetBitbucketBindingOptions) (*http.Response, error) {
@@ -1595,6 +1609,7 @@ func (s *AlmSettingsService) SetBitbucketBinding(ctx context.Context, opt *AlmSe
 // If the project is already bound to a different Bitbucket Cloud setting, the binding will be updated to the new one.
 // Requires the 'Administer' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.5.
 // API endpoint: POST /api/alm_settings/set_bitbucketcloud_binding.
 // Since: 8.7.
 func (s *AlmSettingsService) SetBitbucketCloudBinding(ctx context.Context, opt *AlmSettingsSetBitbucketCloudBindingOptions) (*http.Response, error) {
@@ -1620,6 +1635,7 @@ func (s *AlmSettingsService) SetBitbucketCloudBinding(ctx context.Context, opt *
 // If the project is already bound to a previous GitHub instance, the binding will be updated to the new one.
 // Requires the 'Administer' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.5.
 // API endpoint: POST /api/alm_settings/set_github_binding.
 // Since: 8.1.
 func (s *AlmSettingsService) SetGithubBinding(ctx context.Context, opt *AlmSettingsSetGithubBindingOptions) (*http.Response, error) {
@@ -1645,6 +1661,7 @@ func (s *AlmSettingsService) SetGithubBinding(ctx context.Context, opt *AlmSetti
 // If the project is already bound to a previous GitLab instance, the binding will be updated to the new one.
 // Requires the 'Administer' permission on the project.
 //
+// Deprecated: Since SonarQube 2026.5.
 // API endpoint: POST /api/alm_settings/set_gitlab_binding.
 // Since: 8.1.
 func (s *AlmSettingsService) SetGitlabBinding(ctx context.Context, opt *AlmSettingsSetGitlabBindingOptions) (*http.Response, error) {

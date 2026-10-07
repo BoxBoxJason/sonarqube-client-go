@@ -162,6 +162,36 @@ type ServicesV2 struct {
 
 	// SoftwareQualityReports provides methods for the Software Quality Reports V2 API.
 	SoftwareQualityReports *SoftwareQualityReportsService
+
+	// A3s provides methods for the A3S V2 API.
+	A3s *A3sService
+
+	// Agentic provides methods for the Agentic V2 API.
+	Agentic *AgenticService
+
+	// Billing provides methods for the Billing V2 API.
+	Billing *BillingService
+
+	// Cag provides methods for the Context Augmentation (CAG) V2 API.
+	Cag *CagService
+
+	// Dashboards provides methods for the Dashboards V2 API.
+	Dashboards *DashboardsService
+
+	// DetectionAgent provides methods for the Detection Agent V2 API.
+	DetectionAgent *DetectionAgentService
+
+	// LlmConnectivity provides methods for the LLM Connectivity V2 API.
+	LlmConnectivity *LlmConnectivityService
+
+	// Onboarding provides methods for the Onboarding V2 API.
+	Onboarding *OnboardingService
+
+	// RemediationAgent provides methods for the Remediation Agent V2 API.
+	RemediationAgent *RemediationAgentService
+
+	// SecurityAlerts provides methods for the Security Alerts V2 API.
+	SecurityAlerts *SecurityAlertsService
 }
 
 // ClientCreateOptions contains options for creating a new Client.
@@ -610,6 +640,16 @@ func initServicesV2(client *Client) {
 		SoftwareQualityReports: &SoftwareQualityReportsService{client: client},
 		System:                 &SystemServiceV2{client: client},
 		UsersManagement:        &UsersManagementService{client: client},
+		A3s:                    &A3sService{client: client},
+		Agentic:                &AgenticService{client: client},
+		Billing:                &BillingService{client: client},
+		Cag:                    &CagService{client: client},
+		Dashboards:             &DashboardsService{client: client},
+		DetectionAgent:         &DetectionAgentService{client: client},
+		LlmConnectivity:        &LlmConnectivityService{client: client},
+		Onboarding:             &OnboardingService{client: client},
+		RemediationAgent:       &RemediationAgentService{client: client},
+		SecurityAlerts:         &SecurityAlertsService{client: client},
 	}
 }
 
