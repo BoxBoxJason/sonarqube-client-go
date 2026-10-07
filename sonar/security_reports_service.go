@@ -30,6 +30,8 @@ type SecurityReportCategory struct {
 	// Version is the standard revision this category belongs to (e.g. "2017", "2021"
 	// for owaspTop10, "3.2", "4.0" for pciDss). Empty for standards without revisions.
 	Version string `json:"version,omitempty"`
+	// Level is the verification level of the category (owaspAsvs only, e.g. "1").
+	Level string `json:"level,omitempty"`
 	// Distribution is the CWE breakdown for this category. Only populated when
 	// includeDistribution is requested (and non-empty for CWE-oriented standards).
 	Distribution []SecurityReportCWEDistribution `json:"distribution,omitempty"`
@@ -45,8 +47,12 @@ type SecurityReportCategory struct {
 	ToReviewSecurityHotspots int `json:"toReviewSecurityHotspots,omitempty"`
 	// ReviewedSecurityHotspots is the number of reviewed security hotspots.
 	ReviewedSecurityHotspots int `json:"reviewedSecurityHotspots,omitempty"`
+	// DependencyRisks is the number of dependency risks in this category.
+	DependencyRisks int `json:"dependencyRisks,omitempty"`
 	// HasMoreRules indicates whether more rules exist beyond TotalRules.
 	HasMoreRules bool `json:"hasMoreRules,omitempty"`
+	// HasDependencyRisks indicates whether the category tracks dependency risks.
+	HasDependencyRisks bool `json:"hasDependencyRisks,omitempty"`
 }
 
 // SecurityReportCWEDistribution represents the per-CWE breakdown within a security
@@ -54,6 +60,9 @@ type SecurityReportCategory struct {
 type SecurityReportCWEDistribution struct {
 	// CWE is the CWE identifier (e.g. "89").
 	CWE string `json:"cwe,omitempty"`
+	// Category is the sub-category identifier, used instead of CWE by standards whose
+	// distribution is not CWE-oriented (e.g. "1.1" for cra).
+	Category string `json:"category,omitempty"`
 	// Vulnerabilities is the number of vulnerabilities for this CWE.
 	Vulnerabilities int `json:"vulnerabilities,omitempty"`
 	// VulnerabilityRating is the vulnerability rating (1-5, A-E) for this CWE.
@@ -68,8 +77,12 @@ type SecurityReportCWEDistribution struct {
 	ToReviewSecurityHotspots int `json:"toReviewSecurityHotspots,omitempty"`
 	// ReviewedSecurityHotspots is the number of reviewed security hotspots.
 	ReviewedSecurityHotspots int `json:"reviewedSecurityHotspots,omitempty"`
+	// DependencyRisks is the number of dependency risks for this entry.
+	DependencyRisks int `json:"dependencyRisks,omitempty"`
 	// HasMoreRules indicates whether more rules exist beyond TotalRules.
 	HasMoreRules bool `json:"hasMoreRules,omitempty"`
+	// HasDependencyRisks indicates whether the entry tracks dependency risks.
+	HasDependencyRisks bool `json:"hasDependencyRisks,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

@@ -33,6 +33,8 @@ const (
 	LanguageCS = "cs"
 	// LanguageCSS is the language key for CSS.
 	LanguageCSS = "css"
+	// LanguageDataWeave is the language key for DataWeave.
+	LanguageDataWeave = "dataweave"
 	// LanguageDocker is the language key for Docker.
 	LanguageDocker = "docker"
 	// LanguageFlex is the language key for Flex.
@@ -63,6 +65,8 @@ const (
 	LanguagePowershell = "powershell"
 	// LanguagePython is the language key for Python.
 	LanguagePython = "py"
+	// LanguageR is the language key for R.
+	LanguageR = "r"
 	// LanguageRuby is the language key for Ruby On Rails.
 	LanguageRuby = "ruby"
 	// LanguageRust is the language key for Rust.

@@ -9,6 +9,8 @@ import (
 const (
 	// MaxRuleKeyLength is the maximum allowed length for rule keys and names.
 	MaxRuleKeyLength = 200
+	// MaxRuleContextKeyLength is the maximum allowed length for a rule description context key.
+	MaxRuleContextKeyLength = 50
 	// MinSearchQueryLength is the minimum required length for search queries.
 	MinSearchQueryLength = 2
 
@@ -573,6 +575,10 @@ type RulesSearchOptions struct {
 type RulesShowOptions struct {
 	// Key is the unique identifier of the rule to be retrieved (required).
 	Key string `url:"key,omitempty"`
+	// ContextKey restricts the returned description sections to those matching the given rule-description
+	// context key, along with sections that have no context. When empty, all sections are returned.
+	// Maximum length: 50 characters. Since 2026.5.
+	ContextKey string `url:"contextKey,omitempty"`
 	// Actives determines whether to include the list of quality profiles where the rule is active.
 	Actives bool `url:"actives,omitempty"`
 }
@@ -1081,6 +1087,11 @@ func (s *RulesService) ValidateShowOpt(opt *RulesShowOptions) error {
 	}
 
 	err := ValidateRequired(opt.Key, "Key")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateMaxLength(opt.ContextKey, MaxRuleContextKeyLength, "ContextKey")
 	if err != nil {
 		return err
 	}

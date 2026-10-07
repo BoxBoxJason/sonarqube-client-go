@@ -50,6 +50,8 @@ const (
 	NoticeTypeOverviewZeroNewIssuesSimplification = "overviewZeroNewIssuesSimplification"
 	// NoticeTypeShowDesignAndArchitectureTour represents the show design and architecture tour notice type.
 	NoticeTypeShowDesignAndArchitectureTour = "showDesignAndArchitectureTour"
+	// NoticeTypeShowProjectCoverageTour represents the show project coverage tour notice type.
+	NoticeTypeShowProjectCoverageTour = "showProjectCoverageTour"
 	// NoticeTypeShowEnableSca represents the show enable SCA notice type.
 	NoticeTypeShowEnableSca = "showEnableSca"
 )
@@ -87,6 +89,7 @@ var (
 		NoticeTypeOverviewZeroNewIssuesSimplification:   {},
 		NoticeTypeShowDesignAndArchitectureTour:         {},
 		NoticeTypeShowEnableSca:                         {},
+		NoticeTypeShowProjectCoverageTour:               {},
 	}
 )
 
@@ -226,6 +229,8 @@ type UsersDismissedNotices struct {
 	ShowDesignAndArchitectureOptInBanner bool `json:"showDesignAndArchitectureOptInBanner,omitempty"`
 	// ShowDesignAndArchitectureTour indicates whether the design and architecture tour notice was dismissed.
 	ShowDesignAndArchitectureTour bool `json:"showDesignAndArchitectureTour,omitempty"`
+	// ShowProjectCoverageTour indicates whether the project coverage tour notice was dismissed.
+	ShowProjectCoverageTour bool `json:"showProjectCoverageTour,omitempty"`
 	// ShowEnableSca indicates whether the enable SCA notice was dismissed.
 	ShowEnableSca bool `json:"showEnableSca,omitempty"`
 	// ShowNewModesBanner indicates whether the new modes banner notice was dismissed.
@@ -389,7 +394,7 @@ type UsersDismissNoticeOptions struct {
 	// Allowed values: educationPrinciples, sonarlintAd, showDesignAndArchitectureBanner,
 	// showNewModesBanner, showSandboxedIssuesIntro, issueCleanCodeGuide,
 	// issueNewIssueStatusAndTransitionGuide, showDesignAndArchitectureOptInBanner,
-	// overviewZeroNewIssuesSimplification, showDesignAndArchitectureTour, showEnableSca.
+	// overviewZeroNewIssuesSimplification, showDesignAndArchitectureTour, showEnableSca, showProjectCoverageTour.
 	Notice string `url:"notice"`
 }
 

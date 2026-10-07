@@ -82,6 +82,8 @@ type ApplicationProject struct {
 	Enabled bool `json:"enabled,omitempty"`
 	// Selected indicates whether the project is selected in the application.
 	Selected bool `json:"selected,omitempty"`
+	// Accessible indicates whether the current user can browse the project.
+	Accessible bool `json:"accessible,omitempty"`
 }
 
 // ApplicationsShow represents the response from the show endpoint.

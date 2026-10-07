@@ -799,7 +799,7 @@ type ArchitectureProjectConfiguration struct {
 }
 
 // ArchitectureProjectConfigurationsOptions contains parameters for the
-// GetProjectConfigurations and GetPrivateProjectConfigurations methods. At least
+// GetProjectConfigurations method. At least
 // one of ProjectId or ProjectKey should be provided.
 type ArchitectureProjectConfigurationsOptions struct {
 	// ProjectId filters by project identifier. Optional.
@@ -814,16 +814,6 @@ type ArchitectureProjectConfigurationsOptions struct {
 // Enterprise Edition only.
 func (s *ArchitectureService) GetProjectConfigurations(ctx context.Context, opt *ArchitectureProjectConfigurationsOptions) ([]ArchitectureProjectConfiguration, *http.Response, error) {
 	return s.getProjectConfigurations(ctx, "architecture/project-configurations", opt)
-}
-
-// GetPrivateProjectConfigurations returns architecture configurations for one or
-// more projects via the internal variant of the endpoint.
-//
-// API endpoint: GET /api/v2/architecture/private/architecture/project-configurations.
-// Enterprise Edition only. Marked internal by SonarQube and subject to change
-// without notice.
-func (s *ArchitectureService) GetPrivateProjectConfigurations(ctx context.Context, opt *ArchitectureProjectConfigurationsOptions) ([]ArchitectureProjectConfiguration, *http.Response, error) {
-	return s.getProjectConfigurations(ctx, "architecture/private/architecture/project-configurations", opt)
 }
 
 // -----------------------------------------------------------------------------

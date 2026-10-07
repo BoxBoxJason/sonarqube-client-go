@@ -339,18 +339,6 @@ var _ = Describe("Architecture V2 Service", Ordered, func() {
 					Expect(result).NotTo(BeNil())
 				}
 			})
-
-			It("should return private project configurations or an expected error", func() {
-				result, resp, err := client.V2.Architecture.GetPrivateProjectConfigurations(context.Background(), &sonar.ArchitectureProjectConfigurationsOptions{
-					ProjectKey: "nonexistent-project-arch-v2",
-				})
-				if err != nil {
-					Expect(resp).NotTo(BeNil())
-				} else {
-					Expect(resp.StatusCode).To(BeNumerically("<", 400))
-					Expect(result).NotTo(BeNil())
-				}
-			})
 		})
 	})
 

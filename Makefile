@@ -8,7 +8,7 @@ password := admin
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
 sonarqube_version := 26.8.0.126808-community
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
-sonarqube_enterprise_version := 2026.4.1-enterprise
+sonarqube_enterprise_version := 2026.5.0-enterprise
 
 # Versions of the Go tools installed on demand by the targets below.
 # Kept as annotated variables so Renovate bumps them (see renovate.json customManagers).
@@ -17,7 +17,7 @@ gotestsum_version := v1.13.0
 # renovate: datasource=go depName=github.com/onsi/ginkgo/v2
 ginkgo_version := v2.33.0
 # renovate: datasource=go depName=github.com/golangci/golangci-lint/v2
-golangci_lint_version := v2.13.2
+golangci_lint_version := v2.14.0
 # renovate: datasource=go depName=golang.org/x/vuln
 govulncheck_version := v1.8.0
 

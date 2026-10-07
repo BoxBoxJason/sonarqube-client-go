@@ -54,6 +54,8 @@ type UserToken struct {
 	ExpirationDate string `json:"expirationDate,omitempty"`
 	// IsExpired indicates whether the token has expired.
 	IsExpired bool `json:"isExpired,omitempty"`
+	// LastConnectionDate is the date the token was last used to authenticate. Absent if never used.
+	LastConnectionDate string `json:"lastConnectionDate,omitempty"`
 	// Name is the name of the token.
 	Name string `json:"name,omitempty"`
 	// Project is the project associated with a PROJECT_ANALYSIS_TOKEN.
