@@ -6,9 +6,9 @@ enterprise_endpoint := http://127.0.0.1:9001
 username := admin
 password := admin
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
-sonarqube_version := 26.8.0.126808-community
+sonarqube_version := 26.9.0.129388-community
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
-sonarqube_enterprise_version := 2026.5.0-enterprise
+sonarqube_enterprise_version := 2026.5.1-enterprise
 
 # Versions of the Go tools installed on demand by the targets below.
 # Kept as annotated variables so Renovate bumps them (see renovate.json customManagers).
