@@ -75,7 +75,8 @@ type AlmSettingsGetBinding struct {
 	Repository string `json:"repository,omitempty"`
 	// RepositoryURL is the URL to the repository (GitHub, GitLab, Azure since 2025.6).
 	RepositoryURL string `json:"repositoryUrl,omitempty"`
-	// Slug is the repository slug (Bitbucket).
+	// Slug is the repository slug (Bitbucket), or the repository's full name or path
+	// (GitHub, GitLab since 2026.5).
 	Slug string `json:"slug,omitempty"`
 	// SummaryCommentEnabled indicates if summary comments are enabled.
 	SummaryCommentEnabled bool `json:"summaryCommentEnabled,omitempty"`

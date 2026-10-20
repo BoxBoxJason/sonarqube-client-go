@@ -444,6 +444,47 @@ func TestIssues_Search(t *testing.T) {
 	assert.Len(t, result.Issues, 1)
 }
 
+func TestIssues_Search_LiveIssueShape(t *testing.T) {
+	// Issue captured from a SonarQube Community Build 26.9 analysis.
+	body := `{
+		"issues": [{
+			"key": "f7c0d371-c177-4599-9237-3605600bdace", "rule": "python:S1764", "severity": "MAJOR",
+			"component": "probe-ce:src/app.py", "project": "probe-ce", "line": 24,
+			"hash": "603b3b3324f162551fb61a3bf932bb76",
+			"textRange": {"startLine": 24, "endLine": 24, "startOffset": 12, "endOffset": 13},
+			"flows": [{"locations": [{"component": "probe-ce:src/app.py",
+				"textRange": {"startLine": 24, "endLine": 24, "startOffset": 7, "endOffset": 8}, "msgFormattings": []}]}],
+			"status": "OPEN", "message": "Correct one of the identical sub-expressions.", "effort": "2min", "debt": "2min",
+			"author": "", "tags": ["suspicious"], "creationDate": "2026-10-20T19:59:39+0000",
+			"updateDate": "2026-10-20T19:59:39+0000", "type": "BUG", "scope": "MAIN", "quickFixAvailable": false,
+			"messageFormattings": [], "codeVariants": [], "cleanCodeAttribute": "LOGICAL",
+			"cleanCodeAttributeCategory": "INTENTIONAL", "impacts": [{"softwareQuality": "RELIABILITY", "severity": "MEDIUM"}],
+			"issueStatus": "OPEN", "prioritizedRule": false, "fromSonarQubeUpdate": true, "internalTags": [],
+			"linkedTicketStatus": "NOT_LINKED"
+		}],
+		"paging": {"pageIndex": 1, "pageSize": 100, "total": 1}
+	}`
+
+	mismatches, err := CheckSchema("GET /issues/search", []byte(body), &IssuesSearch{})
+	require.NoError(t, err)
+	assert.Empty(t, mismatches)
+
+	server := newTestServer(t, func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(body))
+	})
+	client := newTestClient(t, server.URL)
+
+	result, _, err := client.Issues.Search(context.Background(), &IssuesSearchOptions{Components: []string{"probe-ce"}})
+	require.NoError(t, err)
+	require.Len(t, result.Issues, 1)
+	assert.Equal(t, "MAIN", result.Issues[0].Scope)
+	assert.True(t, result.Issues[0].FromSonarQubeUpdate)
+	require.Len(t, result.Issues[0].Flows, 1)
+	require.Len(t, result.Issues[0].Flows[0].Locations, 1)
+	assert.Equal(t, "probe-ce:src/app.py", result.Issues[0].Flows[0].Locations[0].Component)
+}
+
 func TestIssues_Search_ValidationError(t *testing.T) {
 	client := newLocalhostClient(t)
 

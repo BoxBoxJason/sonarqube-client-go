@@ -29,8 +29,9 @@ func TestHistoryService_GetIssueCountHistory(t *testing.T) {
 		map[string]string{
 			"entityId":   "00000000-0000-0000-0000-000000000000",
 			"entityType": "PROJECT_BRANCH",
-			"startDate":  "2026-01-01T00:00:00Z",
-			"sliceBy":    "issueType",
+			"startDate":      "2026-01-01T00:00:00Z",
+			"sliceBy":        "TYPE",
+			"typeSeverities": "MAJOR",
 		}, response))
 	client := newTestClient(t, server.url())
 
@@ -38,8 +39,9 @@ func TestHistoryService_GetIssueCountHistory(t *testing.T) {
 		EntityID:   "00000000-0000-0000-0000-000000000000",
 		EntityType: "PROJECT_BRANCH",
 		StartDate:  "2026-01-01T00:00:00Z",
-		SliceBy:    "issueType",
-		IssueTypes: []string{"BUG", "CODE_SMELL"},
+		SliceBy:        "TYPE",
+		IssueTypes:     []string{"BUG", "CODE_SMELL"},
+		TypeSeverities: []string{"MAJOR"},
 	})
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
@@ -61,6 +63,8 @@ func TestHistoryService_GetIssueCountHistory_ValidationError(t *testing.T) {
 		{&HistoryIssueCountHistoryOptions{EntityType: "PROJECT_BRANCH", StartDate: "2026-01-01T00:00:00Z"}, "missing EntityID"},
 		{&HistoryIssueCountHistoryOptions{EntityID: "id", StartDate: "2026-01-01T00:00:00Z"}, "missing EntityType"},
 		{&HistoryIssueCountHistoryOptions{EntityID: "id", EntityType: "PROJECT_BRANCH"}, "missing StartDate"},
+		{&HistoryIssueCountHistoryOptions{EntityID: "id", EntityType: "BRANCH", StartDate: "d"}, "invalid EntityType"},
+		{&HistoryIssueCountHistoryOptions{EntityID: "id", EntityType: "PROJECT_BRANCH", StartDate: "d", SliceBy: "issueType"}, "invalid SliceBy"},
 	}
 
 	for _, tt := range tests {
@@ -108,6 +112,25 @@ func TestHistoryService_GetMeasuresHistory(t *testing.T) {
 	require.Len(t, result.MeasuresHistory[0].Measures, 1)
 	assert.Equal(t, "coverage", result.MeasuresHistory[0].Measures[0].Metric)
 	assert.Equal(t, "81.2", result.MeasuresHistory[0].Measures[0].Value)
+}
+
+func TestHistoryService_GetMeasuresHistory_Application(t *testing.T) {
+	server := newTestServer(t, mockHandlerWithParams(t, http.MethodGet, "/v2/history/measures-history", http.StatusOK,
+		map[string]string{
+			"entityType": HistoryEntityTypeApplication,
+			"entityId":   "00000000-0000-0000-0000-000000000000",
+		}, HistoryMeasuresHistoryResponse{}))
+	client := newTestClient(t, server.url())
+
+	result, resp, err := client.V2.History.GetMeasuresHistory(context.Background(), &HistoryMeasuresHistoryOptions{
+		EntityType: HistoryEntityTypeApplication,
+		EntityID:   "00000000-0000-0000-0000-000000000000",
+		MetricKeys: []string{"ncloc"},
+		StartDate:  "2026-01-01T00:00:00Z",
+	})
+	require.NoError(t, err)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.NotNil(t, result)
 }
 
 func TestHistoryService_GetMeasuresHistory_ValidationError(t *testing.T) {
@@ -192,6 +215,7 @@ func TestHistoryService_GetProjectIssueCounts_ValidationError(t *testing.T) {
 		{&HistoryProjectIssueCountsOptions{PortfolioID: "p", EntityType: "PORTFOLIO", EntityID: "e"}, "both selector forms"},
 		{&HistoryProjectIssueCountsOptions{EntityType: "PORTFOLIO"}, "entityType without entityId"},
 		{&HistoryProjectIssueCountsOptions{EntityID: "e"}, "entityId without entityType"},
+		{&HistoryProjectIssueCountsOptions{EntityType: "PROJECT_BRANCH", EntityID: "e"}, "invalid EntityType"},
 	}
 
 	for _, tt := range tests {
@@ -261,6 +285,7 @@ func TestHistoryService_GetProjectMeasures_ValidationError(t *testing.T) {
 		{&HistoryProjectMeasuresOptions{MetricKey: "coverage"}, "no selector"},
 		{&HistoryProjectMeasuresOptions{MetricKey: "coverage", PortfolioID: "p", EntityID: "e"}, "both selector forms"},
 		{&HistoryProjectMeasuresOptions{MetricKey: "coverage", EntityType: "PORTFOLIO"}, "entityType without entityId"},
+		{&HistoryProjectMeasuresOptions{MetricKey: "coverage", EntityType: "PROJECT_BRANCH", EntityID: "e"}, "invalid EntityType"},
 	}
 
 	for _, tt := range tests {

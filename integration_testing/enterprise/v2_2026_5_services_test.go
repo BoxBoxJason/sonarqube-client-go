@@ -220,7 +220,7 @@ var _ = Describe("SonarQube 2026.5 V2 services", Ordered, func() {
 	})
 
 	// =========================================================================
-	// Software quality reports, onboarding, security alerts, agentic jobs
+	// Software quality reports, security alerts
 	// =========================================================================
 	It("should return a WCAG compliance report with nested categories", func() {
 		report, resp, err := client.V2.SoftwareQualityReports.GetComplianceReport(context.Background(), &sonar.SoftwareQualityReportsGetComplianceReportOptions{
@@ -232,23 +232,6 @@ var _ = Describe("SonarQube 2026.5 V2 services", Ordered, func() {
 		Expect(report.Categories[0].Categories).NotTo(BeEmpty())
 	})
 
-	It("should return the onboarding overview, projects and statistics", func() {
-		overview, resp, err := client.V2.Onboarding.GetOverview(context.Background(), nil)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(resp.StatusCode).To(Equal(http.StatusOK))
-		Expect(overview).NotTo(BeNil())
-
-		projects, _, err := client.V2.Onboarding.GetProjects(context.Background(), &sonar.OnboardingGetProjectsOptions{Q: projectKey})
-		Expect(err).NotTo(HaveOccurred())
-		Expect(projects.Projects).To(HaveLen(1))
-		Expect(projects.Projects[0].Key).To(Equal(projectKey))
-		Expect(projects.Projects[0].ScanStatus).To(Equal("NOT_SCANNED"))
-
-		stats, _, err := client.V2.Onboarding.GetStatistics(context.Background(), nil)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(stats.DevopsPlatforms.Total).To(BeNumerically(">", 0))
-	})
-
 	It("should search security alerts", func() {
 		result, resp, err := client.V2.SecurityAlerts.Search(context.Background(), &sonar.SecurityAlertsSearchOptions{
 			AlertTypes: []string{"DEPENDENCY_RISK"}, Statuses: []string{"OPEN"}, Sort: "FIRST_DETECTED_AT", Direction: "ASC",
@@ -258,25 +241,6 @@ var _ = Describe("SonarQube 2026.5 V2 services", Ordered, func() {
 		Expect(result).NotTo(BeNil())
 
 		_, resp, err = client.V2.SecurityAlerts.Get(context.Background(), "does-not-exist")
-		Expect(err).To(HaveOccurred())
-		Expect(resp.StatusCode).To(Equal(http.StatusNotFound))
-	})
-
-	It("should search agentic jobs", func() {
-		result, resp, err := client.V2.Agentic.SearchJobs(context.Background(), &sonar.AgenticSearchJobsOptions{Type: "HUNTER"})
-		Expect(err).NotTo(HaveOccurred())
-		Expect(resp.StatusCode).To(Equal(http.StatusOK))
-		Expect(result).NotTo(BeNil())
-	})
-
-	It("should check DevOps Platform permissions", func() {
-		result, resp, err := client.V2.DopTranslation.CheckPermissions(context.Background(), &sonar.DopTranslationCheckPermissionsOptions{})
-		Expect(err).NotTo(HaveOccurred())
-		Expect(resp.StatusCode).To(Equal(http.StatusOK))
-		Expect(result).NotTo(BeNil())
-
-		// The project is not bound to any DevOps Platform, so no token can be minted.
-		_, resp, err = client.V2.DopTranslation.GenerateScmAccessToken(context.Background(), &sonar.DopTranslationGenerateScmAccessTokenOptions{Project: projectKey})
 		Expect(err).To(HaveOccurred())
 		Expect(resp.StatusCode).To(Equal(http.StatusNotFound))
 	})

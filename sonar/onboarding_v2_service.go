@@ -7,7 +7,8 @@ import (
 )
 
 // OnboardingService handles communication with the onboarding related methods of the
-// SonarQube V2 API. This service is only available in Enterprise Edition.
+// SonarQube V2 API. This service is available in Community Build since 26.9 and
+// in Enterprise Edition since 2026.5.
 type OnboardingService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
@@ -226,7 +227,7 @@ func (s *OnboardingService) ValidateGetProjectsOpt(opt *OnboardingGetProjectsOpt
 // GetOverview calls GET /api/v2/onboarding/overview.
 //
 // API endpoint: GET /api/v2/onboarding/overview.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *OnboardingService) GetOverview(ctx context.Context, opt *OnboardingGetOverviewOptions) (*OnboardingOnboardingOverviewResponse, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "onboarding/overview", opt, nil)
 	if err != nil {
@@ -246,7 +247,7 @@ func (s *OnboardingService) GetOverview(ctx context.Context, opt *OnboardingGetO
 // GetProjects calls GET /api/v2/onboarding/projects.
 //
 // API endpoint: GET /api/v2/onboarding/projects.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *OnboardingService) GetProjects(ctx context.Context, opt *OnboardingGetProjectsOptions) (*OnboardingOnboardingProjectsResponse, *http.Response, error) {
 	err := s.ValidateGetProjectsOpt(opt)
 	if err != nil {
@@ -271,7 +272,7 @@ func (s *OnboardingService) GetProjects(ctx context.Context, opt *OnboardingGetP
 // GetStatistics calls GET /api/v2/onboarding/statistics.
 //
 // API endpoint: GET /api/v2/onboarding/statistics.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *OnboardingService) GetStatistics(ctx context.Context, opt *OnboardingGetStatisticsOptions) (*OnboardingOnboardingStatisticsResponse, *http.Response, error) {
 	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "onboarding/statistics", opt, nil)
 	if err != nil {

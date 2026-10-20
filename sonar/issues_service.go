@@ -138,6 +138,10 @@ type Issue struct {
 	QuickFixAvailable bool `json:"quickFixAvailable,omitempty"`
 	// PrioritizedRule indicates if the rule is prioritized.
 	PrioritizedRule bool `json:"prioritizedRule,omitempty"`
+	// Scope is the scope of the file the issue is on (MAIN or TEST).
+	Scope string `json:"scope,omitempty"`
+	// FromSonarQubeUpdate indicates if the issue was detected because of a SonarQube update.
+	FromSonarQubeUpdate bool `json:"fromSonarQubeUpdate,omitempty"`
 }
 
 // IssueComment represents a comment on an issue.
@@ -174,6 +178,8 @@ type IssueFlow struct {
 //
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type FlowLocation struct {
+	// Component is the key of the component this location is in.
+	Component string `json:"component,omitempty"`
 	// Msg is the message for this location.
 	Msg string `json:"msg,omitempty"`
 	// TextRange is the text range of this location.
@@ -315,8 +321,6 @@ type ComponentTag struct {
 // =============================================================================
 
 // IssuesAddComment represents the response from adding a comment to an issue.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesAddComment struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`
@@ -325,8 +329,6 @@ type IssuesAddComment struct {
 }
 
 // IssuesAssign represents the response from assigning an issue.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesAssign struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`
@@ -365,8 +367,6 @@ type IssuesComponentTags struct {
 }
 
 // IssuesDeleteComment represents the response from deleting a comment.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesDeleteComment struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`
@@ -375,8 +375,6 @@ type IssuesDeleteComment struct {
 }
 
 // IssuesDoTransition represents the response from performing a transition.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesDoTransition struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`
@@ -385,8 +383,6 @@ type IssuesDoTransition struct {
 }
 
 // IssuesEditComment represents the response from editing a comment.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesEditComment struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`
@@ -420,8 +416,6 @@ type IssuesSearch struct {
 }
 
 // IssuesSetSeverity represents the response from setting severity.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesSetSeverity struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`
@@ -430,8 +424,6 @@ type IssuesSetSeverity struct {
 }
 
 // IssuesSetTags represents the response from setting tags.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesSetTags struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`
@@ -440,8 +432,6 @@ type IssuesSetTags struct {
 }
 
 // IssuesSetType represents the response from setting type.
-//
-//nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type IssuesSetType struct {
 	Components []IssueComponent `json:"components,omitempty"`
 	Issue      Issue            `json:"issue,omitzero"`

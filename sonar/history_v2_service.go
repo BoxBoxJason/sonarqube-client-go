@@ -11,6 +11,8 @@ const (
 	HistoryEntityTypePortfolio = "PORTFOLIO"
 	// HistoryEntityTypeProjectBranch identifies a project branch entity.
 	HistoryEntityTypeProjectBranch = "PROJECT_BRANCH"
+	// HistoryEntityTypeApplication identifies an application entity.
+	HistoryEntityTypeApplication = "APPLICATION"
 )
 
 // HistoryService handles communication with the history related methods of the
@@ -22,11 +24,32 @@ type HistoryService struct {
 	client *Client
 }
 
-//nolint:gochecknoglobals // constant set of allowed values
-var allowedHistoryMeasuresEntityTypes = map[string]struct{}{
-	HistoryEntityTypePortfolio:     {},
-	HistoryEntityTypeProjectBranch: {},
-}
+//nolint:gochecknoglobals,goconst // constant sets of allowed values
+var (
+	// allowedHistoryEntityTypes is the set of entity types accepted by the
+	// entity-scoped history endpoints (measures and issue count history).
+	allowedHistoryEntityTypes = map[string]struct{}{
+		HistoryEntityTypePortfolio:     {},
+		HistoryEntityTypeProjectBranch: {},
+		HistoryEntityTypeApplication:   {},
+	}
+	// allowedHistorySelectionEntityTypes is the set of entity types accepted by
+	// the flattened per-project history endpoints.
+	allowedHistorySelectionEntityTypes = map[string]struct{}{
+		HistoryEntityTypePortfolio:   {},
+		HistoryEntityTypeApplication: {},
+	}
+	// allowedHistoryIssueCountSliceBy is the set of allowed values for
+	// HistoryIssueCountHistoryOptions.SliceBy.
+	allowedHistoryIssueCountSliceBy = map[string]struct{}{
+		"RULE_KEY":         {},
+		"SEVERITY":         {},
+		"TYPE_SEVERITY":    {},
+		"SOFTWARE_QUALITY": {},
+		"STATUS":           {},
+		"TYPE":             {},
+	}
+)
 
 // -----------------------------------------------------------------------------
 // Response Types
@@ -168,6 +191,7 @@ type HistoryIssueCountHistoryOptions struct {
 	// This field is required.
 	EntityID string `json:"entityId"`
 	// EntityType is the entity's type. This field is required.
+	// Allowed values: PORTFOLIO, PROJECT_BRANCH, APPLICATION.
 	EntityType string `json:"entityType"`
 	// StartDate is the inclusive start of the date range in ISO 8601 format.
 	// This field is required and may not be more than 1 year in the past.
@@ -177,15 +201,26 @@ type HistoryIssueCountHistoryOptions struct {
 	EndDate string `json:"endDate,omitempty"`
 	// Impacts limits results to issues with specific impacts.
 	Impacts []string `json:"impacts,omitempty"`
-	// IssueTypes limits results to issues with specific types.
+	// IssueTypes limits results to issues with specific types. Allowed
+	// values: BUG, CODE_SMELL, VULNERABILITY, plus SECURITY_HOTSPOT on
+	// Community Build.
 	IssueTypes []string `json:"issueTypes,omitempty"`
 	// RuleKeys limits results to issues raised by specific rules.
 	RuleKeys []string `json:"ruleKeys,omitempty"`
-	// Severities limits results to issues with specific severities.
+	// Severities limits results to issues with specific impact severities.
+	// Allowed values: BLOCKER, HIGH, INFO, LOW, MEDIUM.
 	Severities []string `json:"severities,omitempty"`
-	// SliceBy optionally groups issue counts by a specific dimension.
+	// TypeSeverities limits results to issues with specific stored issue
+	// severities. Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER.
+	// Ignored by Community Build.
+	TypeSeverities []string `json:"typeSeverities,omitempty"`
+	// SliceBy optionally groups issue counts by a specific dimension. Allowed
+	// values: RULE_KEY, SEVERITY, TYPE_SEVERITY, SOFTWARE_QUALITY, STATUS, TYPE.
+	// TYPE_SEVERITY is rejected by Community Build.
 	SliceBy string `json:"sliceBy,omitempty"`
-	// Statuses limits results to issues with specific statuses.
+	// Statuses limits results to issues with specific statuses. Allowed values:
+	// ACCEPTED, CONFIRMED, FALSE_POSITIVE, FIXED, OPEN, plus REVIEWED, SAFE and
+	// TO_REVIEW on Community Build.
 	Statuses []string `json:"statuses,omitempty"`
 }
 
@@ -194,7 +229,8 @@ type HistoryIssueCountHistoryOptions struct {
 //nolint:govet // Field alignment less important than maintaining consistent field order for readability
 type HistoryMeasuresHistoryOptions struct {
 	// EntityType is the type of entity to retrieve measures history for.
-	// This field is required. Allowed values: PORTFOLIO, PROJECT_BRANCH.
+	// This field is required. Allowed values: PORTFOLIO, PROJECT_BRANCH,
+	// APPLICATION.
 	EntityType string `json:"entityType"`
 	// EntityID is the UUID of the entity. This field is required.
 	EntityID string `json:"entityId"`
@@ -219,18 +255,28 @@ type HistoryProjectIssueCountsOptions struct {
 	// PortfolioID is the legacy portfolio ID.
 	PortfolioID string `json:"portfolioId,omitempty"`
 	// EntityType is the type of the selection whose projects are returned as a
-	// flattened list. Must be provided together with EntityID.
+	// flattened list. Must be provided together with EntityID. Allowed values:
+	// PORTFOLIO, APPLICATION.
 	EntityType string `json:"entityType,omitempty"`
 	// EntityID is the portfolio ID or application branch ID, according to
 	// EntityType. Must be provided together with EntityType.
 	EntityID string `json:"entityId,omitempty"`
 	// RuleKeys limits results to issues raised by specific rules.
 	RuleKeys []string `json:"ruleKeys,omitempty"`
-	// Severities limits results to issues with specific severities.
+	// Severities limits results to issues with specific impact severities.
+	// Allowed values: BLOCKER, HIGH, INFO, LOW, MEDIUM.
 	Severities []string `json:"severities,omitempty"`
-	// IssueTypes limits results to issues with specific types.
+	// TypeSeverities limits results to issues with specific stored issue
+	// severities. Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER.
+	// Ignored by Community Build.
+	TypeSeverities []string `json:"typeSeverities,omitempty"`
+	// IssueTypes limits results to issues with specific types. Allowed
+	// values: BUG, CODE_SMELL, VULNERABILITY, plus SECURITY_HOTSPOT on
+	// Community Build.
 	IssueTypes []string `json:"issueTypes,omitempty"`
-	// Statuses limits results to issues with specific statuses.
+	// Statuses limits results to issues with specific statuses. Allowed values:
+	// ACCEPTED, CONFIRMED, FALSE_POSITIVE, FIXED, OPEN, plus REVIEWED, SAFE and
+	// TO_REVIEW on Community Build.
 	Statuses []string `json:"statuses,omitempty"`
 	// Impacts limits results to issues with specific impacts.
 	Impacts []string `json:"impacts,omitempty"`
@@ -272,7 +318,8 @@ type HistoryProjectMeasuresOptions struct {
 	// PortfolioID is the legacy portfolio ID.
 	PortfolioID string `json:"portfolioId,omitempty"`
 	// EntityType is the type of the selection whose projects are returned as a
-	// flattened list. Must be provided together with EntityID.
+	// flattened list. Must be provided together with EntityID. Allowed values:
+	// PORTFOLIO, APPLICATION.
 	EntityType string `json:"entityType,omitempty"`
 	// EntityID is the portfolio ID or application branch ID, according to
 	// EntityType. Must be provided together with EntityType.
@@ -307,7 +354,17 @@ func (s *HistoryService) ValidateIssueCountHistoryOpt(opt *HistoryIssueCountHist
 		return err
 	}
 
-	return ValidateRequired(opt.StartDate, "StartDate")
+	err = IsValueAuthorized(opt.EntityType, allowedHistoryEntityTypes, "EntityType")
+	if err != nil {
+		return err
+	}
+
+	err = ValidateRequired(opt.StartDate, "StartDate")
+	if err != nil {
+		return err
+	}
+
+	return IsValueAuthorized(opt.SliceBy, allowedHistoryIssueCountSliceBy, "SliceBy")
 }
 
 // ValidateMeasuresHistoryOpt validates the options for GetMeasuresHistory.
@@ -321,7 +378,7 @@ func (s *HistoryService) ValidateMeasuresHistoryOpt(opt *HistoryMeasuresHistoryO
 		return err
 	}
 
-	err = IsValueAuthorized(opt.EntityType, allowedHistoryMeasuresEntityTypes, "EntityType")
+	err = IsValueAuthorized(opt.EntityType, allowedHistoryEntityTypes, "EntityType")
 	if err != nil {
 		return err
 	}
@@ -355,7 +412,7 @@ func validateHistorySelector(portfolioID, entityType, entityID string) error {
 		return NewValidationError("EntityType", "EntityType and EntityID must be provided together", ErrMissingRequired)
 	}
 
-	return nil
+	return IsValueAuthorized(entityType, allowedHistorySelectionEntityTypes, "EntityType")
 }
 
 // ValidateProjectIssueCountsOpt validates the options for GetProjectIssueCounts.
