@@ -8,7 +8,8 @@ import (
 )
 
 // AgenticService handles communication with the Agentic orchestration jobs (Hunter and Remediation agents) related methods of the
-// SonarQube V2 API. This service is only available in Enterprise Edition.
+// SonarQube V2 API. Job search is also available in Community Build since 26.9;
+// downloading job logs is only available in Enterprise Edition.
 type AgenticService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
@@ -169,7 +170,7 @@ func (s *AgenticService) ValidateDownloadJobLogsOpt(opt *AgenticDownloadJobLogsO
 // agents), most recent first. Requires system administration permission.
 //
 // API endpoint: GET /api/v2/agentic/jobs.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *AgenticService) SearchJobs(ctx context.Context, opt *AgenticSearchJobsOptions) (*AgenticAgenticJobsSearchRestResponse, *http.Response, error) {
 	err := s.ValidateSearchJobsOpt(opt)
 	if err != nil {

@@ -8,7 +8,8 @@ import (
 )
 
 // DashboardsService handles communication with the custom and built-in dashboards related methods of the
-// SonarQube V2 API. This service is only available in Enterprise Edition.
+// SonarQube V2 API. Custom dashboards are only available in Enterprise Edition;
+// the built-in dashboard endpoints are also available in Community Build since 26.9.
 type DashboardsService struct {
 	// client is used to communicate with the SonarQube API.
 	client *Client
@@ -343,7 +344,7 @@ func (s *DashboardsService) List(ctx context.Context, opt *DashboardsListOptions
 // ListBuiltIn lists built-in dashboards.
 //
 // API endpoint: GET /api/v2/dashboards/built-ins.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *DashboardsService) ListBuiltIn(ctx context.Context, opt *DashboardsListBuiltInOptions) (*DashboardsBuiltInDashboardsResponse, *http.Response, error) {
 	err := s.ValidateListBuiltInOpt(opt)
 	if err != nil {
@@ -368,7 +369,7 @@ func (s *DashboardsService) ListBuiltIn(ctx context.Context, opt *DashboardsList
 // GetBuiltIn gets a built-in dashboard.
 //
 // API endpoint: GET /api/v2/dashboards/built-ins/{key}.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *DashboardsService) GetBuiltIn(ctx context.Context, key string) (*DashboardsBuiltInDashboardResponse, *http.Response, error) {
 	err := ValidateRequired(key, "key")
 	if err != nil {

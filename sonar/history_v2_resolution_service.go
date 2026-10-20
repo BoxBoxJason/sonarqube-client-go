@@ -98,8 +98,8 @@ type HistoryGetIssueDensityHistoryOptions struct {
 	// Impacts limit results to issues with specific impacts (comma-separated). An impact is a
 	// combination of software quality and severity.
 	Impacts []string `json:"impacts,omitempty"`
-	// IssueTypes limit results to issues with specific types (comma-separated). Allowed values are
-	// the SonarQube issue types.
+	// IssueTypes limit results to issues with specific types (comma-separated). Allowed
+	// values: BUG, CODE_SMELL, VULNERABILITY, plus SECURITY_HOTSPOT on Community Build.
 	IssueTypes []string `json:"issueTypes,omitempty"`
 	// RuleKeys comma separated list of ruleKeys.
 	RuleKeys []string `json:"ruleKeys,omitempty"`
@@ -107,14 +107,17 @@ type HistoryGetIssueDensityHistoryOptions struct {
 	// Allowed values: BLOCKER, HIGH, INFO, LOW, MEDIUM.
 	Severities []string `json:"severities,omitempty"`
 	// TypeSeverities limit results to issues with specific stored issue severities (comma-
-	// separated). Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER.
+	// separated). Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER. Ignored by Community
+	// Build.
 	TypeSeverities []string `json:"typeSeverities,omitempty"`
 	// SliceBy optionally group issue counts by a specific dimension. If not provided, issue counts
 	// will contain a single distribution with the count of all issues. Allowed values: RULE_KEY,
-	// SEVERITY, TYPE_SEVERITY, SOFTWARE_QUALITY, STATUS, TYPE.
+	// SEVERITY, TYPE_SEVERITY, SOFTWARE_QUALITY, STATUS, TYPE. TYPE_SEVERITY is rejected by
+	// Community Build.
 	SliceBy string `json:"sliceBy,omitempty"`
 	// Statuses limit results to issues with specific statuses (comma-separated). Allowed values:
-	// ACCEPTED, CONFIRMED, FALSE_POSITIVE, FIXED, OPEN.
+	// ACCEPTED, CONFIRMED, FALSE_POSITIVE, FIXED, OPEN, plus REVIEWED, SAFE and TO_REVIEW on
+	// Community Build.
 	Statuses []string `json:"statuses,omitempty"`
 }
 
@@ -163,17 +166,18 @@ type HistoryGetIssueResolutionHistoryOptions struct {
 	// Impacts limit results to issues with specific impacts (comma-separated). An impact is a
 	// combination of software quality and severity.
 	Impacts []string `json:"impacts,omitempty"`
-	// IssueTypes limit results to issues with specific types (comma-separated). Allowed values are
-	// the SonarQube issue types.
+	// IssueTypes limit results to issues with specific types (comma-separated). Allowed
+	// values: BUG, CODE_SMELL, VULNERABILITY, plus SECURITY_HOTSPOT on Community Build.
 	IssueTypes []string `json:"issueTypes,omitempty"`
 	// Severities limit results to issues with specific impact severities (comma-separated).
 	// Allowed values: BLOCKER, HIGH, INFO, LOW, MEDIUM.
 	Severities []string `json:"severities,omitempty"`
 	// TypeSeverities limit results to issues with specific stored issue severities (comma-
-	// separated). Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER.
+	// separated). Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER. Ignored by Community
+	// Build.
 	TypeSeverities []string `json:"typeSeverities,omitempty"`
 	// SliceBy optionally group issue resolution metrics by a dimension. Allowed values: SEVERITY,
-	// TYPE_SEVERITY, SOFTWARE_QUALITY, TYPE.
+	// TYPE_SEVERITY, SOFTWARE_QUALITY, TYPE. TYPE_SEVERITY is rejected by Community Build.
 	SliceBy string `json:"sliceBy,omitempty"`
 }
 
@@ -225,10 +229,11 @@ type HistoryGetProjectIssueResolutionOptions struct {
 	// Allowed values: BLOCKER, HIGH, INFO, LOW, MEDIUM.
 	Severities []string `json:"severities,omitempty"`
 	// TypeSeverities limit results to issues with specific stored issue severities (comma-
-	// separated). Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER.
+	// separated). Allowed values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER. Ignored by Community
+	// Build.
 	TypeSeverities []string `json:"typeSeverities,omitempty"`
-	// IssueTypes limit results to issues with specific types (comma-separated). Allowed values are
-	// the SonarQube issue types.
+	// IssueTypes limit results to issues with specific types (comma-separated). Allowed
+	// values: BUG, CODE_SMELL, VULNERABILITY, plus SECURITY_HOTSPOT on Community Build.
 	IssueTypes []string `json:"issueTypes,omitempty"`
 	// Impacts limit results to issues with specific impacts (comma-separated). An impact is a
 	// combination of software quality and severity.
@@ -591,7 +596,7 @@ func (s *HistoryService) ValidateGetScaResolutionHistoryOpt(opt *HistoryGetScaRe
 // changes. Density is calculated as (issue count / NCLOC) * 1000.
 //
 // API endpoint: GET /api/v2/history/issue-density-history.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *HistoryService) GetIssueDensityHistory(ctx context.Context, opt *HistoryGetIssueDensityHistoryOptions) (*HistoryIssueDensityHistoryResponse, *http.Response, error) {
 	err := s.ValidateGetIssueDensityHistoryOpt(opt)
 	if err != nil {
@@ -619,7 +624,7 @@ func (s *HistoryService) GetIssueDensityHistory(ctx context.Context, opt *Histor
 // than one year under the approved history date-range policy.
 //
 // API endpoint: GET /api/v2/history/issue-resolution-history.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *HistoryService) GetIssueResolutionHistory(ctx context.Context, opt *HistoryGetIssueResolutionHistoryOptions) (*HistoryIssueResolutionHistoryResponse, *http.Response, error) {
 	err := s.ValidateGetIssueResolutionHistoryOpt(opt)
 	if err != nil {
@@ -647,7 +652,7 @@ func (s *HistoryService) GetIssueResolutionHistory(ctx context.Context, opt *His
 // mutually exclusive.
 //
 // API endpoint: GET /api/v2/history/project-issue-resolution.
-// Enterprise Edition only.
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
 func (s *HistoryService) GetProjectIssueResolution(ctx context.Context, opt *HistoryGetProjectIssueResolutionOptions) (*HistoryProjectIssueResolutionResponse, *http.Response, error) {
 	err := s.ValidateGetProjectIssueResolutionOpt(opt)
 	if err != nil {

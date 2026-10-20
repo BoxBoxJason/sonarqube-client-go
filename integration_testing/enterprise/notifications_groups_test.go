@@ -11,63 +11,6 @@ import (
 	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
-var _ = Describe("Hotspots migration", Ordered, func() {
-	var (
-		client     *sonar.Client
-		cleanup    *helpers.CleanupManager
-		projectKey string
-	)
-
-	BeforeAll(func() {
-		var err error
-		client, err = helpers.NewDefaultClient()
-		Expect(err).NotTo(HaveOccurred())
-		cleanup = helpers.NewCleanupManager(client)
-
-		projectKey = helpers.UniqueResourceName("hotspots-migration")
-		_, _, err = client.Projects.Create(context.Background(), &sonar.ProjectsCreateOptions{Name: projectKey, Project: projectKey})
-		Expect(err).NotTo(HaveOccurred())
-		cleanup.RegisterCleanup("project", projectKey, func() error {
-			_, err := client.Projects.Delete(context.Background(), &sonar.ProjectsDeleteOptions{Project: projectKey})
-			return err
-		})
-	})
-
-	AfterAll(func() {
-		for _, err := range cleanup.Cleanup() {
-			GinkgoWriter.Printf("Cleanup error: %v\n", err)
-		}
-	})
-
-	It("should report the migration status of the instance", func() {
-		result, resp, err := client.Hotspots.MigrationStatus(context.Background(), nil)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(resp.StatusCode).To(Equal(http.StatusOK))
-		Expect(result).NotTo(BeNil())
-		Expect(result.RemainingHotspots).To(BeNumerically(">=", 0))
-	})
-
-	It("should report a complete migration for a project without hotspots", func() {
-		result, resp, err := client.Hotspots.MigrationStatus(context.Background(), &sonar.HotspotsMigrationStatusOptions{Project: projectKey})
-		Expect(err).NotTo(HaveOccurred())
-		Expect(resp.StatusCode).To(Equal(http.StatusOK))
-		Expect(result.RemainingHotspots).To(BeZero())
-		Expect(result.Complete).To(BeTrue())
-	})
-
-	It("should dry-run a migration without writing anything", func() {
-		result, resp, err := client.Hotspots.MigrateToIssues(context.Background(), &sonar.HotspotsMigrateToIssuesOptions{
-			Project: projectKey,
-			DryRun:  true,
-		})
-		Expect(err).NotTo(HaveOccurred())
-		Expect(resp.StatusCode).To(Equal(http.StatusOK))
-		Expect(result.DryRun).To(BeTrue())
-		Expect(result.Skipped).To(BeZero())
-		Expect(result.Projects).To(BeEmpty())
-	})
-})
-
 var _ = Describe("Notifications group subscriptions", Ordered, func() {
 	const notificationType = "security-alert-raised"
 

@@ -3,7 +3,7 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "26.8.0.126808"
+    "version": "26.9.0.129388"
   },
   "servers": [
     {
@@ -17,16 +17,32 @@
       "description": "the project-measures API"
     },
     {
+      "name": "issue-density-history",
+      "description": "the issue-density-history API"
+    },
+    {
       "name": "measures-history",
       "description": "the measures-history API"
+    },
+    {
+      "name": "built-in-dashboards",
+      "description": "the built-in-dashboards API"
     },
     {
       "name": "issue-count-history",
       "description": "the issue-count-history API"
     },
     {
+      "name": "issue-resolution-history",
+      "description": "the issue-resolution-history API"
+    },
+    {
       "name": "project-issue-counts",
       "description": "the project-issue-counts API"
+    },
+    {
+      "name": "project-issue-resolution",
+      "description": "the project-issue-resolution API"
     }
   ],
   "paths": {
@@ -400,6 +416,40 @@
             }
           }
         }
+      }
+    },
+    "/dop-translation/scm-access-tokens": {
+      "post": {
+        "tags": [
+          "Dop Translation"
+        ],
+        "summary": "Mint a scoped, short-lived SCM access token",
+        "description": "Mint a scoped, short-lived git credential for the given project's bound DevOps Platform (GitHub or\nGitLab). Internal endpoint used by the agentic-workflows remediation orchestrator (SONAR-31165).\nRequires the 'Administer System' permission or trusted privileged-service authentication.\n",
+        "operationId": "generateScmAccessToken",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "query",
+            "description": "Project key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScmAccessTokenRestResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-sonar-internal": "true"
       }
     },
     "/dop-translation/gitlab-configurations": {
@@ -1447,6 +1497,194 @@
         }
       }
     },
+    "/onboarding/statistics": {
+      "get": {
+        "tags": [
+          "onboarding-controller"
+        ],
+        "operationId": "getOnboardingStatistics",
+        "parameters": [
+          {
+            "name": "organizationKey",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingStatisticsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/onboarding/projects": {
+      "get": {
+        "tags": [
+          "onboarding-controller"
+        ],
+        "operationId": "getOnboardingProjects",
+        "parameters": [
+          {
+            "name": "organizationKey",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "scanStatus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "SCANNED",
+                "NOT_SCANNED"
+              ]
+            }
+          },
+          {
+            "name": "analysisMode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "CI",
+                "AUTOMATIC",
+                "NONE"
+              ]
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingProjectsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/onboarding/overview": {
+      "get": {
+        "tags": [
+          "onboarding-controller"
+        ],
+        "operationId": "getOnboardingOverview",
+        "parameters": [
+          {
+            "name": "organizationKey",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingOverviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/history/project-measures": {
       "get": {
         "tags": [
@@ -1534,6 +1772,10 @@
               "type": [
                 "string",
                 "null"
+              ],
+              "enum": [
+                "PORTFOLIO",
+                "APPLICATION"
               ]
             }
           },
@@ -1667,6 +1909,257 @@
         ]
       }
     },
+    "/history/project-issue-resolution": {
+      "get": {
+        "tags": [
+          "project-issue-resolution"
+        ],
+        "summary": "Get project issue resolution",
+        "description": "Get issue resolution values for the flattened list of projects in a portfolio or application. Identify the selection with either the legacy portfolioId parameter, or with both entityType and entityId. The two selector forms are mutually exclusive. ",
+        "operationId": "getProjectIssueResolution",
+        "parameters": [
+          {
+            "name": "statistic",
+            "in": "query",
+            "description": "The project issue resolution statistic to return.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "MTTR",
+                "RECENT_MTTR",
+                "RESOLVED_ISSUES"
+              ]
+            }
+          },
+          {
+            "name": "portfolioId",
+            "in": "query",
+            "description": "Legacy portfolio ID. Either portfolioId or both entityType and entityId must be provided, but not both forms. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "Type of the selection whose projects are returned as a flattened list. Must be provided together with entityId and cannot be combined with portfolioId. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "PORTFOLIO",
+                "APPLICATION"
+              ]
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "Portfolio ID or application branch ID, according to entityType. Must be provided together with entityType and cannot be combined with portfolioId. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "severities",
+            "in": "query",
+            "description": "Limit results to issues with specific severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BLOCKER",
+                  "HIGH",
+                  "INFO",
+                  "LOW",
+                  "MEDIUM"
+                ]
+              }
+            }
+          },
+          {
+            "name": "issueTypes",
+            "in": "query",
+            "description": "Limit results to issues with specific types (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUG",
+                  "CODE_SMELL",
+                  "SECURITY_HOTSPOT",
+                  "VULNERABILITY"
+                ]
+              }
+            }
+          },
+          {
+            "name": "impacts",
+            "in": "query",
+            "description": "Limit results to issues with specific impacts (comma-separated). An impact is a combination of software quality and severity. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "nameContains",
+            "in": "query",
+            "description": "Search query for project names, case insensitive",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "trendSince",
+            "in": "query",
+            "description": "Date used as the trend comparison point.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "description": "Index of the page to fetch",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of projects to return. A value of 0 returns pagination only.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "maximum": 5000,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully got project issue resolution values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectIssueResolutionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
     "/history/project-issue-counts": {
       "get": {
         "tags": [
@@ -1697,6 +2190,10 @@
               "type": [
                 "string",
                 "null"
+              ],
+              "enum": [
+                "PORTFOLIO",
+                "APPLICATION"
               ]
             }
           },
@@ -1982,7 +2479,8 @@
               "type": "string",
               "enum": [
                 "PORTFOLIO",
-                "PROJECT_BRANCH"
+                "PROJECT_BRANCH",
+                "APPLICATION"
               ]
             }
           },
@@ -2112,6 +2610,486 @@
         ]
       }
     },
+    "/history/issue-resolution-history": {
+      "get": {
+        "tags": [
+          "issue-resolution-history"
+        ],
+        "summary": "Provides issue resolution history data for an entity",
+        "description": "Returns issue resolution metrics for an entity. All history is recorded at UTC midnight. MTTR and RECENT_MTTR use a trailing 30-day window ending on each returned day. SQS deliberately permits dates older than one year under the approved history date-range policy. ",
+        "operationId": "getIssueResolutionHistory",
+        "parameters": [
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "The ID of the entity to retrieve issue resolution history for.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 36,
+              "minLength": 36
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "The entity's type.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PORTFOLIO",
+                "PROJECT_BRANCH",
+                "APPLICATION"
+              ]
+            }
+          },
+          {
+            "name": "statistic",
+            "in": "query",
+            "description": "The issue resolution statistic to return.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "MTTR",
+                "RECENT_MTTR",
+                "RESOLVED_ISSUES"
+              ]
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "The inclusive start of the history range in ISO 8601 format.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "The inclusive end of the history range. Defaults to the current date.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "impacts",
+            "in": "query",
+            "description": "Limit results to issues with specific impacts (comma-separated). An impact is a combination of software quality and severity. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "issueTypes",
+            "in": "query",
+            "description": "Limit results to issues with specific types (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUG",
+                  "CODE_SMELL",
+                  "SECURITY_HOTSPOT",
+                  "VULNERABILITY"
+                ]
+              }
+            }
+          },
+          {
+            "name": "severities",
+            "in": "query",
+            "description": "Limit results to issues with specific severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BLOCKER",
+                  "HIGH",
+                  "INFO",
+                  "LOW",
+                  "MEDIUM"
+                ]
+              }
+            }
+          },
+          {
+            "name": "sliceBy",
+            "in": "query",
+            "description": "Optionally group issue resolution metrics by a dimension.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "SEVERITY",
+                "SOFTWARE_QUALITY",
+                "TYPE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueResolutionHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
+    "/history/issue-density-history": {
+      "get": {
+        "tags": [
+          "issue-density-history"
+        ],
+        "summary": "Provides issue density history data for an entity",
+        "description": "Returns the history of issue density (issues per 1000 NCLOC) for an entity. The maximum resolution for history data is 1 day. All history is recorded in UTC timezone. Issue density values carry-forward for days with no changes. Density is calculated as (issue count / NCLOC) * 1000. ",
+        "operationId": "getIssueDensityHistory",
+        "parameters": [
+          {
+            "name": "entityId",
+            "in": "query",
+            "description": "The ID of the entity to retrieve issue density history for.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 36,
+              "minLength": 36
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "query",
+            "description": "The entity's type.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PORTFOLIO",
+                "PROJECT_BRANCH",
+                "APPLICATION"
+              ]
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "The date and time to begin returning issue density history in ISO 8601 format (inclusive). The start date may not be more than 1 year in the past. ",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "The date and time to stop returning issue density history in ISO 8601 format (inclusive). If not specified, the current date and time at UTC offset 0 will be used. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "impacts",
+            "in": "query",
+            "description": "Limit results to issues with specific impacts (comma-separated). An impact is a combination of software quality and severity. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "issueTypes",
+            "in": "query",
+            "description": "Limit results to issues with specific types (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BUG",
+                  "CODE_SMELL",
+                  "SECURITY_HOTSPOT",
+                  "VULNERABILITY"
+                ]
+              }
+            }
+          },
+          {
+            "name": "ruleKeys",
+            "in": "query",
+            "description": "Comma separated list of ruleKeys",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "severities",
+            "in": "query",
+            "description": "Limit results to issues with specific severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "BLOCKER",
+                  "HIGH",
+                  "INFO",
+                  "LOW",
+                  "MEDIUM"
+                ]
+              }
+            }
+          },
+          {
+            "name": "sliceBy",
+            "in": "query",
+            "description": "Optionally group issue counts by a specific dimension. If not provided, issue counts will contain a single distribution with the count of all issues. ",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "RULE_KEY",
+                "SEVERITY",
+                "SOFTWARE_QUALITY",
+                "STATUS",
+                "TYPE"
+              ]
+            }
+          },
+          {
+            "name": "statuses",
+            "in": "query",
+            "description": "Limit results to issues with specific statuses (comma-separated). Reviewed security hotspots also support SAFE and FIXED.",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "ACCEPTED",
+                  "CONFIRMED",
+                  "FALSE_POSITIVE",
+                  "FIXED",
+                  "OPEN",
+                  "REVIEWED",
+                  "SAFE",
+                  "TO_REVIEW"
+                ]
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueDensityHistoryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "TokenAuth": []
+          }
+        ]
+      }
+    },
     "/history/issue-count-history": {
       "get": {
         "tags": [
@@ -2138,7 +3116,12 @@
             "description": "The entity's type.",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "PORTFOLIO",
+                "PROJECT_BRANCH",
+                "APPLICATION"
+              ]
             }
           },
           {
@@ -2246,6 +3229,13 @@
               "type": [
                 "string",
                 "null"
+              ],
+              "enum": [
+                "RULE_KEY",
+                "SEVERITY",
+                "SOFTWARE_QUALITY",
+                "STATUS",
+                "TYPE"
               ]
             }
           },
@@ -2478,6 +3468,43 @@
         "x-sonar-internal": "true"
       }
     },
+    "/dop-translation/permission-checks": {
+      "get": {
+        "tags": [
+          "Dop Translation"
+        ],
+        "summary": "Check DevOps Platform permissions for the Remediation Agent",
+        "description": "Validates whether the configured DevOps Platforms (GitHub, GitLab, Azure DevOps) grant the write permissions the\nSonarQube Remediation Agent needs to clone a repository, push a branch and open a pull/merge request. Without a\n'project' parameter it checks every configuration and requires the 'Administer System' permission or trusted\nprivileged-service authentication. With a 'project' parameter it checks the platform bound to that project and\nrequires 'Browse' permission on the project. Results are cached for a short time. Internal endpoint used by the\nRemediation Agent UI.\n",
+        "operationId": "checkDopPermissions",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "query",
+            "description": "Key of the project whose bound DevOps Platform should be checked",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionChecksRestResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-sonar-internal": "true"
+      }
+    },
     "/dop-translation/dop-settings": {
       "get": {
         "tags": [
@@ -2493,6 +3520,249 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DopSettingsRestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboards/built-ins": {
+      "get": {
+        "tags": [
+          "built-in-dashboards"
+        ],
+        "summary": "List built-in dashboards",
+        "operationId": "listBuiltInDashboards",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "resourceType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "project",
+                "portfolio"
+              ]
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "maximum": 5000,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuiltInDashboardsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not Implemented",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboards/built-ins/{key}": {
+      "get": {
+        "tags": [
+          "built-in-dashboards"
+        ],
+        "summary": "Get a built-in dashboard",
+        "operationId": "getBuiltInDashboard",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuiltInDashboardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not Implemented",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2663,6 +3933,133 @@
                   "items": {
                     "$ref": "#/components/schemas/ActiveRule"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agentic/jobs": {
+      "get": {
+        "tags": [
+          "Agentic"
+        ],
+        "summary": "Search agentic jobs",
+        "description": "List agentic orchestration jobs (Hunter and Remediation agents), most recent first.\nRequires system administration permission.\n",
+        "operationId": "search_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Comma-separated list of job ids to filter on.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Comma-separated list of job ids to filter on."
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Comma-separated list of statuses to filter on.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Comma-separated list of statuses to filter on.",
+              "enum": [
+                "PENDING",
+                "IN_PROGRESS",
+                "COMPLETED",
+                "FAILED"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Comma-separated list of agent types to filter on.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Comma-separated list of agent types to filter on.",
+              "enum": [
+                "HUNTER",
+                "REMEDIATION"
+              ]
+            }
+          },
+          {
+            "name": "createdAfter",
+            "in": "query",
+            "description": "Only return jobs created on or after this date (or date-time), e.g. 2026-01-01 or 2026-01-01T12:00:00+0000.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Only return jobs created on or after this date (or date-time), e.g. 2026-01-01 or 2026-01-01T12:00:00+0000."
+            }
+          },
+          {
+            "name": "createdBefore",
+            "in": "query",
+            "description": "Only return jobs created on or before this date (or date-time), e.g. 2026-01-01 or 2026-01-01T12:00:00+0000.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Only return jobs created on or before this date (or date-time), e.g. 2026-01-01 or 2026-01-01T12:00:00+0000."
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of results per page. A value of 0 will only return the pagination information.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "description": "Number of results per page. A value of 0 will only return the pagination information.",
+              "maximum": 500,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "description": "1-based page index",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "description": "1-based page index",
+              "exclusiveMinimum": 0,
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgenticJobsSearchRestResponse"
                 }
               }
             }
@@ -3109,6 +4506,23 @@
               "string",
               "null"
             ]
+          }
+        }
+      },
+      "ScmAccessTokenRestResponse": {
+        "type": "object",
+        "properties": {
+          "alm": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "secret": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
           }
         }
       },
@@ -3568,7 +4982,7 @@
         ]
       },
       "RuleDescriptionSectionContextRestResponse": {
-        "type": "null",
+        "type": "object",
         "properties": {
           "key": {
             "type": "string"
@@ -4242,6 +5656,295 @@
           }
         }
       },
+      "DevopsPlatforms": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlatformShare"
+            }
+          }
+        },
+        "required": [
+          "shares",
+          "total"
+        ]
+      },
+      "OnboardingStatisticsResponse": {
+        "type": "object",
+        "properties": {
+          "discoveredTotal": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimelinePoint"
+            }
+          },
+          "devopsPlatforms": {
+            "$ref": "#/components/schemas/DevopsPlatforms"
+          }
+        },
+        "required": [
+          "devopsPlatforms",
+          "timeline"
+        ]
+      },
+      "PlatformShare": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "percentage": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "count",
+          "percentage",
+          "platform"
+        ]
+      },
+      "TimelinePoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "repositoriesImported": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "projectsScanned": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "date",
+          "projectsScanned",
+          "repositoriesImported"
+        ]
+      },
+      "OnboardingProjectRow": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "alm": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "scanStatus": {
+            "type": "string",
+            "enum": [
+              "SCANNED",
+              "NOT_SCANNED"
+            ]
+          },
+          "analysisMode": {
+            "type": "string",
+            "enum": [
+              "CI",
+              "AUTOMATIC",
+              "NONE"
+            ]
+          },
+          "lastScan": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          }
+        },
+        "required": [
+          "analysisMode",
+          "key",
+          "name",
+          "scanStatus"
+        ]
+      },
+      "OnboardingProjectsPage": {
+        "type": "object",
+        "properties": {
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "pageIndex",
+          "pageSize",
+          "total"
+        ]
+      },
+      "OnboardingProjectsResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "$ref": "#/components/schemas/OnboardingProjectsPage"
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OnboardingProjectRow"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "projects"
+        ]
+      },
+      "DevopsPlatformsStep": {
+        "type": "object",
+        "properties": {
+          "configured": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "configured"
+        ]
+      },
+      "OnboardingOverviewResponse": {
+        "type": "object",
+        "properties": {
+          "progressPct": {
+            "type": "number",
+            "format": "double"
+          },
+          "steps": {
+            "$ref": "#/components/schemas/OnboardingSteps"
+          }
+        },
+        "required": [
+          "progressPct",
+          "steps"
+        ]
+      },
+      "OnboardingSteps": {
+        "type": "object",
+        "properties": {
+          "devopsPlatforms": {
+            "$ref": "#/components/schemas/DevopsPlatformsStep"
+          },
+          "repositories": {
+            "$ref": "#/components/schemas/RepositoriesStep"
+          },
+          "projects": {
+            "$ref": "#/components/schemas/ProjectsStep"
+          }
+        },
+        "required": [
+          "devopsPlatforms",
+          "projects",
+          "repositories"
+        ]
+      },
+      "ProjectsStep": {
+        "type": "object",
+        "properties": {
+          "analyzed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "notScanned": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "notImported": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "total": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "percent": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          }
+        },
+        "required": [
+          "analyzed",
+          "notScanned"
+        ]
+      },
+      "RepositoriesStep": {
+        "type": "object",
+        "properties": {
+          "imported": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "discovered": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "percent": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          }
+        },
+        "required": [
+          "imported"
+        ]
+      },
       "Pagination": {
         "type": "object",
         "properties": {
@@ -4361,13 +6064,80 @@
         "type": "object",
         "properties": {
           "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ProjectIssueResolution": {
+        "type": "object",
+        "properties": {
+          "branchId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string",
+            "example": "My Project"
+          },
+          "projectKey": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "branchName": {
             "type": [
               "string",
               "null"
             ],
-            "description": "Error message"
+            "example": "develop"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "trendPercentage": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Percentage change in value relative to trendSince."
           }
-        }
+        },
+        "required": [
+          "branchId",
+          "projectKey",
+          "projectName",
+          "value"
+        ]
+      },
+      "ProjectIssueResolutionResponse": {
+        "type": "object",
+        "properties": {
+          "statistic": {
+            "type": "string",
+            "enum": [
+              "MTTR",
+              "RECENT_MTTR",
+              "RESOLVED_ISSUES"
+            ]
+          },
+          "projectIssueResolution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectIssueResolution"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": [
+          "page",
+          "projectIssueResolution",
+          "statistic"
+        ]
       },
       "ProjectIssueCount": {
         "type": "object",
@@ -4492,6 +6262,116 @@
           }
         }
       },
+      "IssueResolutionDistribution": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "value": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "IssueResolutionHistory": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Date and time in ISO 8601 format, including timezone offset",
+            "example": "2024-01-01T12:00Z"
+          },
+          "distribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueResolutionDistribution"
+            }
+          }
+        }
+      },
+      "IssueResolutionHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "statistic": {
+            "type": "string",
+            "enum": [
+              "MTTR",
+              "RECENT_MTTR",
+              "RESOLVED_ISSUES"
+            ]
+          },
+          "issueResolutionHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueResolutionHistory"
+            }
+          }
+        },
+        "required": [
+          "issueResolutionHistory",
+          "statistic"
+        ]
+      },
+      "IssueDensityDistribution": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "value": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "IssueDensityHistory": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Date and time in ISO 8601 format, including timezone offset",
+            "example": "2024-01-01T12:00Z"
+          },
+          "distribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueDensityDistribution"
+            }
+          }
+        }
+      },
+      "IssueDensityHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "issueDensityHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueDensityHistory"
+            }
+          }
+        }
+      },
       "IssueCountDistribution": {
         "type": "object",
         "properties": {
@@ -4590,6 +6470,47 @@
           }
         }
       },
+      "PermissionCheckResource": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Key of the DevOps Platform configuration",
+            "readOnly": true
+          },
+          "type": {
+            "type": "string",
+            "description": "DevOps Platform type of the configuration (github, gitlab, azure)"
+          },
+          "status": {
+            "type": "string",
+            "description": "Whether the configuration grants the write permissions the Remediation Agent needs to clone and open pull requests",
+            "enum": [
+              "SUFFICIENT",
+              "INSUFFICIENT",
+              "UNKNOWN",
+              "CHECK_FAILED"
+            ]
+          },
+          "checkedAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Epoch milliseconds when this status was last computed. May reflect a cached result.",
+            "readOnly": true
+          }
+        }
+      },
+      "PermissionChecksRestResponse": {
+        "type": "object",
+        "properties": {
+          "permissionChecks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionCheckResource"
+            }
+          }
+        }
+      },
       "GitlabConfigurationSearchRestResponse": {
         "type": "object",
         "properties": {
@@ -4659,6 +6580,126 @@
             "$ref": "#/components/schemas/PageRestResponse"
           }
         }
+      },
+      "BuiltInDashboardItem": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 0
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "resourceType": {
+            "type": "string",
+            "enum": [
+              "project",
+              "portfolio"
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "resourceType",
+          "updatedAt"
+        ]
+      },
+      "BuiltInDashboardsResponse": {
+        "type": "object",
+        "properties": {
+          "dashboards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BuiltInDashboardItem"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/DashboardPage"
+          }
+        },
+        "required": [
+          "dashboards",
+          "page"
+        ]
+      },
+      "DashboardPage": {
+        "type": "object",
+        "properties": {
+          "pageIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "pageIndex",
+          "pageSize",
+          "total"
+        ]
+      },
+      "BuiltInDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 0
+          },
+          "layout": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500,
+            "minLength": 0
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "resourceType": {
+            "type": "string",
+            "enum": [
+              "project",
+              "portfolio"
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "layout",
+          "name",
+          "resourceType",
+          "updatedAt"
+        ]
       },
       "GroupsSearchRestResponse": {
         "type": "object",
@@ -4804,6 +6845,142 @@
           },
           "rule": {
             "type": "string"
+          }
+        }
+      },
+      "AgenticJobRestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "projectId": {
+            "type": "string",
+            "readOnly": true
+          },
+          "projectKey": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Not set if the project has been deleted.",
+            "readOnly": true
+          },
+          "projectName": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Not set if the project has been deleted.",
+            "readOnly": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "HUNTER",
+              "REMEDIATION"
+            ],
+            "readOnly": true
+          },
+          "analysisType": {
+            "type": "string",
+            "enum": [
+              "FULL",
+              "INCREMENTAL"
+            ],
+            "readOnly": true
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "FAILED"
+            ],
+            "readOnly": true
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "repositoryUrl": {
+            "type": "string",
+            "readOnly": true
+          },
+          "revision": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "workflowType": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "findingsCount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64",
+            "readOnly": true
+          },
+          "startedAt": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "readOnly": true
+          },
+          "finishedAt": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "readOnly": true
+          },
+          "failureReason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Only set when status is FAILED.",
+            "readOnly": true
+          }
+        }
+      },
+      "AgenticJobsSearchRestResponse": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgenticJobRestResponse"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/PageRestResponse"
           }
         }
       }

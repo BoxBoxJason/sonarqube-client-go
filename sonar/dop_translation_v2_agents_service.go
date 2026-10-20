@@ -127,6 +127,24 @@ type DopTranslationScmAccessTokenRestResponse struct {
 // Validation Functions
 // -----------------------------------------------------------------------------
 
+// ValidateCheckPermissionsOpt validates the options for the CheckPermissions method. A nil opt is
+// valid and checks every configuration instance-wide.
+func (s *DopTranslationService) ValidateCheckPermissionsOpt(opt *DopTranslationCheckPermissionsOptions) error {
+	if opt == nil {
+		return nil
+	}
+
+	if opt.Project != "" && opt.Configuration != "" {
+		return NewValidationError("Configuration", "cannot be combined with Project", ErrInvalidValue)
+	}
+
+	if opt.Refresh != nil && *opt.Refresh && opt.Configuration == "" {
+		return NewValidationError("Configuration", "is required when Refresh is true", ErrMissingRequired)
+	}
+
+	return nil
+}
+
 // ValidateGenerateScmAccessTokenOpt validates the options for the GenerateScmAccessToken method.
 func (s *DopTranslationService) ValidateGenerateScmAccessTokenOpt(opt *DopTranslationGenerateScmAccessTokenOptions) error {
 	if opt == nil {
@@ -162,9 +180,15 @@ func (s *DopTranslationService) ValidateGenerateScmAccessTokenOpt(opt *DopTransl
 // response does not include the counts or list.
 //
 // API endpoint: GET /api/v2/dop-translation/permission-checks.
-// Enterprise Edition only. Marked internal by SonarQube and subject to change
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
+// Marked internal by SonarQube and subject to change
 // without notice.
 func (s *DopTranslationService) CheckPermissions(ctx context.Context, opt *DopTranslationCheckPermissionsOptions) (*DopTranslationPermissionChecksRestResponse, *http.Response, error) {
+	err := s.ValidateCheckPermissionsOpt(opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "dop-translation/permission-checks", opt, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
@@ -188,7 +212,8 @@ func (s *DopTranslationService) CheckPermissions(ctx context.Context, opt *DopTr
 // authentication.
 //
 // API endpoint: POST /api/v2/dop-translation/scm-access-tokens.
-// Enterprise Edition only. Marked internal by SonarQube and subject to change
+// Available in Community Build since 26.9 and Enterprise Edition since 2026.5.
+// Marked internal by SonarQube and subject to change
 // without notice.
 func (s *DopTranslationService) GenerateScmAccessToken(ctx context.Context, opt *DopTranslationGenerateScmAccessTokenOptions) (*DopTranslationScmAccessTokenRestResponse, *http.Response, error) {
 	err := s.ValidateGenerateScmAccessTokenOpt(opt)
