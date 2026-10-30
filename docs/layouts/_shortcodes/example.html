@@ -1,0 +1,29 @@
+{{- /*
+  Renders the body of a Go example function of the sonar package:
+
+    {{% example "ExampleWithRetry" %}}
+
+  The examples live in sonar/example*_test.go (mounted under assets/examples), so the
+  snippets shown here are compiled and vetted with the tests. The build fails when the
+  example does not exist anymore.
+*/ -}}
+{{- $name := .Get 0 -}}
+{{- $source := "" -}}
+{{- range resources.Match "examples/*.go" -}}
+  {{- $source = printf "%s\n%s" $source .Content -}}
+{{- end -}}
+{{- $matches := findRESubmatch (printf `(?s)\nfunc %s\(\) \{\n(.*?)\n\}\n` $name) $source 1 -}}
+{{- if not $matches -}}
+  {{- errorf "%s: example %q not found in sonar/example*_test.go" .Position $name -}}
+{{- end -}}
+{{- $body := index (index $matches 0) 1 -}}
+{{- $body = replaceRE `(?m)^\t` "" $body -}}
+{{- $body = replaceRE `(?m)^\s*(_ = client|// Output:.*)\n?` "" $body -}}
+{{- $body = strings.TrimRight "\n" $body -}}
+{{- $anchor := strings.TrimPrefix "Example" $name | default "package" | replaceRE "_" "." -}}
+{{- /* Emitted as Markdown (call it with {{% %}}) so the theme renders it like any other code block. */ -}}
+```go
+{{ $body | safeHTML }}
+```
+
+[Example on pkg.go.dev](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#example-{{ $anchor }})

@@ -10,6 +10,7 @@ Thank you for your interest in contributing to the SonarQube Go Client! This gui
 - [Development Workflow](#development-workflow)
 - [Testing](#testing)
 - [Makefile Commands](#makefile-commands)
+- [Documentation](#documentation)
 - [Pull Request Guidelines](#pull-request-guidelines)
 - [Reporting Issues](#reporting-issues)
 
@@ -90,6 +91,7 @@ sonarqube-client-go/
 │       ├── client.go          # Shared test client
 │       ├── cleanup.go         # Resource cleanup helpers
 │       └── wait.go            # Wait and retry utilities
+├── docs/                       # Documentation site (Hugo), published to GitHub Pages
 ├── assets/                     # API specifications and resources
 ├── codequality/               # Generated test reports and coverage
 ├── .github/                   # GitHub workflows and issue templates
@@ -290,6 +292,9 @@ The project includes several Make targets for common development tasks:
 |---------|-------------|
 | `make changelog` | Generate CHANGELOG.md using git-cliff |
 | `make changelog-check` | Verify CHANGELOG.md is up-to-date |
+| `make docs-generate` | Regenerate the generated documentation pages |
+| `make docs` | Build the documentation site into `docs/public` |
+| `make docs-serve` | Serve the documentation site locally with live reload |
 
 ### Configuration Variables
 
@@ -306,6 +311,17 @@ Available variables:
 - `username` - SonarQube username (default: `admin`)
 - `password` - SonarQube password (default: `admin`)
 - `sonarqube_version` - Docker image version (default: `26.1.0.118079-community`)
+
+## Documentation
+
+The documentation lives in the [`docs`](./docs) directory, as Markdown rendered by [Hugo](https://gohugo.io/) (extended edition) with the shared [hugo-theme](https://github.com/boxboxjason/hugo-theme), and is published to <https://boxboxjason.github.io/sonarqube-client-go/> from `main`. It holds the guides; the API reference stays on [pkg.go.dev](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar), generated from the godoc comments.
+
+- Change the documentation in the same pull request as the code it describes.
+- `make docs-serve` serves the site locally with live reload, `make docs` builds it into `docs/public`.
+- The Go snippets of the guides are the `Example` functions of `sonar/example*_test.go`, rendered with `{{% example "ExampleName" %}}`: they are compiled and vetted with the tests, and the site build fails when one of them is renamed or removed. Add an `Example` function rather than a Go code block.
+- The [services](./docs/content/docs/services.md) page is generated from the SDK and the CLI: run `make docs-generate` after adding or changing a service, and commit the result.
+- `make test` fails when the generated page is stale, when a CLI global flag or an environment variable (`SONAR_CLI_*`, `SONAR_*`) is not documented, or when a `sonar-cli` example of the documentation or of the README uses a command or a flag that does not exist.
+- Look and feel (colors, footer, ...) belong to the shared theme, do not restyle a single site.
 
 ## Pull Request Guidelines
 

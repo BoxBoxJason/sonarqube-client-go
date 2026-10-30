@@ -46,7 +46,7 @@ else
   container_engine := docker
 endif
 
-.PHONY: setup.sonar setup.sonar.enterprise test lint vuln coverage api api.enterprise build
+.PHONY: setup.sonar setup.sonar.enterprise test lint vuln coverage api api.enterprise build docs-generate docs docs-serve
 
 # Run all unit tests (use target=sdk|cli|all to filter)
 test:
@@ -76,6 +76,21 @@ e2e.enterprise: setup.sonar.enterprise
 # Build time is stamped automatically at build time.
 build:
 	go build -o bin/sonar-cli -ldflags "-X github.com/boxboxjason/sonarqube-client-go/v2/internal/cli.version=$(version) -X github.com/boxboxjason/sonarqube-client-go/v2/internal/cli.buildTime=$(build_time)" ./cmd/sonar-cli
+
+# Regenerate the documentation pages derived from the code (docs/content/docs/services.md).
+# `make test` fails when the committed page is stale.
+docs-generate:
+	UPDATE_DOCS=1 go test ./internal/cli -run '^TestServicesReference$$' -count=1
+
+# Build the documentation site into docs/public (needs the extended Hugo, see CONTRIBUTING.md).
+docs: docs-generate
+	@command -v hugo >/dev/null 2>&1 || { echo "hugo (extended) is required, see https://gohugo.io/installation/"; exit 1; }
+	hugo --source docs --gc --minify
+
+# Serve the documentation site with live reload.
+docs-serve:
+	@command -v hugo >/dev/null 2>&1 || { echo "hugo (extended) is required, see https://gohugo.io/installation/"; exit 1; }
+	hugo server --source docs
 
 # Generate changelog using git-cliff
 changelog:
