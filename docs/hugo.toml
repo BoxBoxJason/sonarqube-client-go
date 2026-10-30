@@ -1,0 +1,59 @@
+baseURL = "https://boxboxjason.github.io/sonarqube-client-go/"
+title = "sonarqube-client-go"
+locale = "en-US"
+
+# "Last updated" dates on pages come from git history, so CI must check out all of it.
+enableGitInfo = true
+enableRobotsTXT = true
+
+# Hugo does not merge `markup` from a theme: keep this block in every site.
+[markup]
+  [markup.highlight]
+    noClasses = false
+
+# Look and feel (colours, favicon, footer, search, ...) come from the shared theme,
+# which is the same for every documentation site. Only project specifics live here.
+[module]
+  [[module.imports]]
+    path = "github.com/boxboxjason/hugo-theme"
+  [[module.mounts]]
+    source = "content"
+    target = "content"
+  [[module.mounts]]
+    source = "layouts"
+    target = "layouts"
+  # The Go examples of the SDK, rendered by the `example` shortcode: the code
+  # shown in the guides is compiled and vetted with the rest of the tests.
+  [[module.mounts]]
+    source = "../sonar"
+    target = "assets/examples"
+    files = ["example*_test.go"]
+
+[menu]
+  [[menu.main]]
+    name = "Documentation"
+    pageRef = "/docs"
+    weight = 1
+  [[menu.main]]
+    name = "API reference"
+    url = "https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar"
+    weight = 2
+  [[menu.main]]
+    name = "Releases"
+    url = "https://github.com/BoxBoxJason/sonarqube-client-go/releases"
+    weight = 3
+  [[menu.main]]
+    name = "Search"
+    weight = 4
+    [menu.main.params]
+      type = "search"
+  [[menu.main]]
+    name = "GitHub"
+    weight = 5
+    url = "https://github.com/BoxBoxJason/sonarqube-client-go"
+    [menu.main.params]
+      icon = "github"
+
+[params]
+  [params.editURL]
+    base = "https://github.com/BoxBoxJason/sonarqube-client-go/edit/main/docs/content"
