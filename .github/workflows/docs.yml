@@ -31,7 +31,7 @@ jobs:
       pages: write
       id-token: write
     # The build, the checks and the deployment are shared by all the documentation sites.
-    uses: boxboxjason/hugo-theme/.github/workflows/docs.yml@b0b783694aa719b11bd004274bdf6c0c52b70367 # main, same commit as docs/go.mod
+    uses: boxboxjason/hugo-theme/.github/workflows/docs.yml@5d0d231b4bb8356e1e53e6a74d3906c44621147d # main, same commit as docs/go.mod
     with:
       deploy: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
       check-external-links: ${{ github.event_name == 'schedule' }}
