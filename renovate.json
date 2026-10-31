@@ -30,7 +30,8 @@
   "minimumReleaseAge": "7 days",
   "minimumReleaseAgeBehaviour": "timestamp-optional",
   "lockFileMaintenance": {
-    "enabled": true
+    "enabled": true,
+    "automerge": true
   },
   "updateInternalDeps": true,
   "dependencyDashboardAutoclose": true,
@@ -65,5 +66,6 @@
       ],
       "pinDigests": false
     }
-  ]
+  ],
+  "automerge": true
 }
