@@ -1,5 +1,6 @@
 ---
 title: sonarqube-client-go
+description: "Type-safe Go client library and CLI for the SonarQube web API: V1 and V2 endpoints, token auth, retries, pagination and JSON, YAML or table output."
 layout: hextra-home
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: CLI
+description: "Use sonar-cli to call every SonarQube web API service from the terminal, with JSON, YAML or table output, automatic pagination and shell completion."
 weight: 20
 ---
 

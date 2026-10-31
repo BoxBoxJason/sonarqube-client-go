@@ -1,5 +1,6 @@
 ---
 title: Compatibility
+description: "SonarQube Server versions supported by sonarqube-client-go, Go version requirements, and how the SDK is tested against real SonarQube instances."
 weight: 60
 ---
 

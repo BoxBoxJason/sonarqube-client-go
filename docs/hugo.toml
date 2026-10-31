@@ -22,6 +22,9 @@ enableRobotsTXT = true
   [[module.mounts]]
     source = "layouts"
     target = "layouts"
+  [[module.mounts]]
+    source = "static"
+    target = "static"
   # The Go examples of the SDK, rendered by the `example` shortcode: the code
   # shown in the guides is compiled and vetted with the rest of the tests.
   [[module.mounts]]
@@ -55,5 +58,11 @@ enableRobotsTXT = true
       icon = "github"
 
 [params]
+  description = "Type-safe Go client library and CLI for the SonarQube web API: V1 and V2 endpoints, token auth, retries, pagination and JSON, YAML or table output."
+  images = ["images/social.png"]
+  [params.project]
+    repository = "https://github.com/BoxBoxJason/sonarqube-client-go"
+    license = "https://www.apache.org/licenses/LICENSE-2.0"
+    programmingLanguage = "Go"
   [params.editURL]
     base = "https://github.com/BoxBoxJason/sonarqube-client-go/edit/main/docs/content"

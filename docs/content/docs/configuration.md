@@ -1,5 +1,6 @@
 ---
 title: Client configuration
+description: "Configure the sonarqube-client-go client: timeouts, custom HTTP clients and transports, retries with backoff, middleware and the user agent."
 weight: 40
 ---
 

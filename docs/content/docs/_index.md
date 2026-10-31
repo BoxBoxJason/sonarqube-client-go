@@ -1,5 +1,6 @@
 ---
 title: Documentation
+description: "Documentation for sonarqube-client-go, the Go SDK and sonar-cli command-line tool for automating SonarQube through its web API."
 weight: 1
 ---
 
