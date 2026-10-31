@@ -2,10 +2,20 @@ name: Documentation
 
 on:
   workflow_dispatch:
+  # Only when something the site is built from changes: the site is not rebuilt for
+  # code-only changes. The weekly schedule below still checks links every week.
   pull_request:
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+      - "sonar/example*_test.go"
   push:
     branches:
       - main
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+      - "sonar/example*_test.go"
   schedule:
     # Weekly, to catch links to other websites that went dead.
     - cron: "41 5 * * 1"
