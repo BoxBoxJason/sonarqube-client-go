@@ -1,5 +1,6 @@
 ---
 title: Go SDK
+description: "Create a SonarQube client in Go, authenticate, and call V1 and V2 web API services with strongly typed request options and responses."
 weight: 30
 ---
 

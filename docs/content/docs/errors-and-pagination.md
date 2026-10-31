@@ -1,5 +1,6 @@
 ---
 title: Errors and pagination
+description: "Handle validation and SonarQube response errors in the Go SDK, and page through large SonarQube API results manually or automatically."
 weight: 50
 ---
 

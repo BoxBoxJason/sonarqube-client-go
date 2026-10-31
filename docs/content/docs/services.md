@@ -1,5 +1,6 @@
 ---
 title: Services
+description: "Every SonarQube web API service of the Go SDK, with its methods and the matching sonar-cli commands, generated from the code."
 weight: 70
 ---
 

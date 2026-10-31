@@ -1,5 +1,6 @@
 ---
 title: Installation
+description: "Install sonar-cli with go install or a release binary, and add the sonarqube-client-go Go SDK to your module with go get."
 weight: 10
 ---
 
