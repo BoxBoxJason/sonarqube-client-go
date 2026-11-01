@@ -20,7 +20,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27.2"
+          go-version: "1.27.3"
           cache: true
 
       - name: Cache Go tools
@@ -45,7 +45,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27.2"
+          go-version: "1.27.3"
           cache: true
 
       - name: Cache Go tools
@@ -93,7 +93,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27.2"
+          go-version: "1.27.3"
           cache: true
 
       - name: Cache Go tools
@@ -125,7 +125,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27.2"
+          go-version: "1.27.3"
           cache: true
 
       - name: Cache Go tools
@@ -149,7 +149,7 @@ jobs:
     # secret to also exercise license-dependent behavior.
     services:
       sonarqube-enterprise:
-        image: docker.io/library/sonarqube:2026.5.1-enterprise@sha256:0f80c7c321803470eff5fff84a220aea8af964df5c5c05246601acc9a4d51a89
+        image: docker.io/library/sonarqube:2026.5.2-enterprise@sha256:ef92865c9c225c93d560e4231cb19e9533f8949ef51736fb92c0447f778671de
         ports:
           - 9001:9000
         env:
@@ -161,7 +161,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27.2"
+          go-version: "1.27.3"
           cache: true
 
       - name: Cache Go tools
@@ -189,7 +189,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.27.2"
+          go-version: "1.27.3"
 
       - name: Build
         run: make build
