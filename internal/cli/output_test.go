@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -158,6 +159,37 @@ func TestRenderTable(t *testing.T) {
 	assert.Contains(t, output, "hello")
 	assert.Contains(t, output, "bar")
 	assert.Contains(t, output, "---")
+}
+
+// TestRenderTable_SeparatorAligned tests that every "+" in the separator sits under a "|" in the rows.
+func TestRenderTable_SeparatorAligned(t *testing.T) {
+	var buf bytes.Buffer
+
+	renderTable(&buf, []string{"KEY", "NAME", "VISIBILITY"}, [][]string{{"my-project", "My Project", "public"}})
+
+	lines := strings.Split(strings.TrimRight(buf.String(), "\n"), "\n")
+	require.Len(t, lines, 3)
+
+	header, separator, row := lines[0], lines[1], lines[2]
+
+	var plusPositions, pipePositions []int
+
+	for idx, char := range separator {
+		if char == '+' {
+			plusPositions = append(plusPositions, idx)
+		}
+	}
+
+	for idx, char := range header {
+		if char == '|' {
+			pipePositions = append(pipePositions, idx)
+		}
+	}
+
+	assert.Len(t, plusPositions, 2)
+	assert.Equal(t, pipePositions, plusPositions)
+	assert.Equal(t, strings.Index(row, "|"), plusPositions[0])
+	assert.Len(t, separator, len(header))
 }
 
 // TestRenderTable_Empty tests that an empty headers slice produces no output.

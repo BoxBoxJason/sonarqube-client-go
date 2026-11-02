@@ -374,7 +374,8 @@ func renderTable(writer io.Writer, headers []string, rows [][]string) {
 		sep[colIdx] = strings.Repeat("-", width+tablePadding)
 	}
 
-	_, _ = fmt.Fprintln(writer, strings.Join(sep, "+"))
+	// Rows join cells with "| ", so the separator joins with "+-" to keep each "+" under its "|".
+	_, _ = fmt.Fprintln(writer, strings.Join(sep, "+-"))
 
 	// Print data rows.
 	for _, row := range rows {

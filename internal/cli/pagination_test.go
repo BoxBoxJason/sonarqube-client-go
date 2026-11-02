@@ -7,6 +7,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
 
 // paginatedOptions is a test option struct with pagination support.
@@ -122,6 +125,41 @@ func TestFindSliceField(t *testing.T) {
 			typ:    reflect.TypeOf(&fakeResponse{}),
 			wantOK: false,
 		},
+		{
+			name:     "issues search skips leading components",
+			typ:      reflect.TypeOf(&sonar.IssuesSearch{}),
+			wantName: "Issues",
+			wantOK:   true,
+		},
+		{
+			name:     "hotspots search skips leading components",
+			typ:      reflect.TypeOf(&sonar.HotspotsSearch{}),
+			wantName: "Hotspots",
+			wantOK:   true,
+		},
+		{
+			name:     "rules search skips leading facets",
+			typ:      reflect.TypeOf(&sonar.RulesSearch{}),
+			wantName: "Rules",
+			wantOK:   true,
+		},
+		{
+			name:     "component tree falls back to first candidate",
+			typ:      reflect.TypeOf(&sonar.MeasuresComponentTree{}),
+			wantName: "Components",
+			wantOK:   true,
+		},
+		{
+			name:     "facets skipped when no name matches",
+			typ:      reflect.TypeOf(&facetsFirstResponse{}),
+			wantName: "Items",
+			wantOK:   true,
+		},
+		{
+			name:   "non-struct type",
+			typ:    reflect.TypeOf([]fakeResponse{}),
+			wantOK: false,
+		},
 	}
 
 	for _, tc := range tests {
@@ -199,4 +237,92 @@ func TestSetPageField(t *testing.T) {
 
 	setPageField(optVal, "PageSize", 100)
 	assert.Equal(t, int64(100), opt.PageSize)
+}
+
+// facetsFirstResponse declares Facets before the paginated items.
+type facetsFirstResponse struct {
+	Facets []fakeResponse
+	Items  []fakeResponse
+	Paging testPaging
+}
+
+// ItemsSearch mimics IssuesSearch (named <Items><Method> like SDK response types): a side-data slice that is the same on every page
+// precedes the paginated items, and Paging.Total only counts the paginated items.
+type ItemsSearch struct {
+	Components []fakeResponse
+	Items      []fakeResponse
+	Paging     testPaging
+}
+
+// sideDataService serves ItemsSearch pages.
+type sideDataService struct {
+	callCount int
+}
+
+// Search returns one component per page and two items per page, three items in total.
+func (s *sideDataService) Search(_ context.Context, opt *paginatedOptions) (*ItemsSearch, *http.Response, error) {
+	s.callCount++
+
+	resp := &ItemsSearch{
+		Components: []fakeResponse{{Name: "project"}},
+		Paging:     testPaging{PageIndex: opt.Page, PageSize: 2, Total: 3},
+	}
+
+	switch opt.Page {
+	case 1:
+		resp.Items = []fakeResponse{{Name: "a"}, {Name: "b"}}
+	case 2:
+		resp.Items = []fakeResponse{{Name: "c"}}
+	}
+
+	return resp, nil, nil
+}
+
+// TestPaginateAll_SideDataSlice tests that items are collected from the paginated field,
+// not from a side-data slice declared before it.
+func TestPaginateAll_SideDataSlice(t *testing.T) {
+	svc := &sideDataService{}
+	optValue := reflect.New(reflect.TypeOf(paginatedOptions{}))
+
+	result, err := PaginateAll(reflect.ValueOf(svc), "Search", optValue, PatternResponseBody,
+		reflect.TypeOf(&ItemsSearch{}))
+	require.NoError(t, err)
+
+	resp, ok := result.(*ItemsSearch)
+	require.True(t, ok)
+	assert.Len(t, resp.Items, 3)
+	assert.Equal(t, 2, svc.callCount)
+}
+
+// overreportingService always reports more items than it ever returns.
+type overreportingService struct {
+	callCount int
+}
+
+// Search returns one item on page 1, then empty pages, while claiming a total of 1000.
+func (s *overreportingService) Search(_ context.Context, opt *paginatedOptions) (*paginatedResponse, *http.Response, error) {
+	s.callCount++
+
+	resp := &paginatedResponse{Paging: testPaging{PageIndex: opt.Page, PageSize: 2, Total: 1000}}
+	if opt.Page == 1 {
+		resp.Items = []fakeResponse{{Name: "a"}}
+	}
+
+	return resp, nil, nil
+}
+
+// TestPaginateAll_StopsOnEmptyPage tests that pagination stops on an empty page
+// even when Paging.Total has not been reached.
+func TestPaginateAll_StopsOnEmptyPage(t *testing.T) {
+	svc := &overreportingService{}
+	optValue := reflect.New(reflect.TypeOf(paginatedOptions{}))
+
+	result, err := PaginateAll(reflect.ValueOf(svc), "Search", optValue, PatternResponseBody,
+		reflect.TypeOf(&paginatedResponse{}))
+	require.NoError(t, err)
+
+	resp, ok := result.(*paginatedResponse)
+	require.True(t, ok)
+	assert.Len(t, resp.Items, 1)
+	assert.Equal(t, 2, svc.callCount)
 }

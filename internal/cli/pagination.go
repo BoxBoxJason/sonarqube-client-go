@@ -2,6 +2,7 @@ package cli
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/boxboxjason/sonarqube-client-go/v2/sonar"
 )
@@ -39,31 +40,74 @@ func responseHasPaging(responseType reflect.Type) bool {
 	return found
 }
 
-// findSliceField returns the name and type of the first exported []struct field in a response type.
-// This is the field that contains the paginated items (e.g., Issues, Components, Projects).
+// facetsFieldName is the name of the facets slice found on search responses.
+// Facets are aggregated metadata, never the paginated items themselves.
+const facetsFieldName = "Facets"
+
+// findSliceField returns the name of the exported []struct field that holds the paginated items
+// of a response type (e.g., Issues, Components, Projects).
+//
+// Many responses carry several []struct fields alongside the paginated ones (e.g., IssuesSearch has
+// Components, Facets, Issues, Rules and Users), and Paging.Total only describes the paginated one.
+// The field is chosen as follows:
+//  1. the only candidate, if there is exactly one;
+//  2. the candidate whose name prefixes the response type name (IssuesSearch -> Issues);
+//  3. the first candidate that is not Facets;
+//  4. the first candidate.
 func findSliceField(responseType reflect.Type) (string, bool) {
 	for responseType.Kind() == reflect.Pointer {
 		responseType = responseType.Elem()
 	}
 
-	for field := range responseType.Fields() {
-		if !field.IsExported() {
-			continue
-		}
+	if responseType.Kind() != reflect.Struct {
+		return "", false
+	}
 
-		if field.Type.Kind() == reflect.Slice {
-			elemType := field.Type.Elem()
-			for elemType.Kind() == reflect.Pointer {
-				elemType = elemType.Elem()
-			}
+	candidates := structSliceFields(responseType)
 
-			if elemType.Kind() == reflect.Struct {
-				return field.Name, true
-			}
+	switch len(candidates) {
+	case 0:
+		return "", false
+	case 1:
+		return candidates[0], true
+	}
+
+	typeName := responseType.Name()
+	for _, name := range candidates {
+		if strings.HasPrefix(typeName, name) {
+			return name, true
 		}
 	}
 
-	return "", false
+	for _, name := range candidates {
+		if name != facetsFieldName {
+			return name, true
+		}
+	}
+
+	return candidates[0], true
+}
+
+// structSliceFields returns the names of all exported []struct (or []*struct) fields, in declaration order.
+func structSliceFields(structType reflect.Type) []string {
+	var names []string
+
+	for field := range structType.Fields() {
+		if !field.IsExported() || field.Type.Kind() != reflect.Slice {
+			continue
+		}
+
+		elemType := field.Type.Elem()
+		for elemType.Kind() == reflect.Pointer {
+			elemType = elemType.Elem()
+		}
+
+		if elemType.Kind() == reflect.Struct {
+			names = append(names, field.Name)
+		}
+	}
+
+	return names
 }
 
 // PaginateAll calls a paginated service method repeatedly until all results are collected.
@@ -130,15 +174,7 @@ func PaginateAll(
 
 		allItems = reflect.AppendSlice(allItems, itemsField)
 
-		// Check if we've fetched all items.
-		pagingField := resultVal.FieldByName("Paging")
-		if !pagingField.IsValid() {
-			break
-		}
-
-		total := pagingField.FieldByName("Total").Int()
-
-		if int64(allItems.Len()) >= total {
+		if isLastPage(resultVal, itemsField.Len(), pageNum) {
 			break
 		}
 
@@ -149,6 +185,27 @@ func PaginateAll(
 	setPaginatedResult(firstResult, allItems, sliceFieldName)
 
 	return firstResult, nil
+}
+
+// isLastPage reports whether no further page should be requested after the given page.
+// It stops on an empty page or once the pages fetched so far cover Paging.Total, so a response
+// whose item count disagrees with Paging.Total can never cause an endless loop.
+func isLastPage(resultVal reflect.Value, pageItems int, pageNum int64) bool {
+	if pageItems == 0 {
+		return true
+	}
+
+	pagingField := resultVal.FieldByName("Paging")
+	if !pagingField.IsValid() {
+		return true
+	}
+
+	pageSize := pagingField.FieldByName("PageSize").Int()
+	if pageSize <= 0 {
+		pageSize = int64(sonar.MaxPageSize)
+	}
+
+	return pageNum*pageSize >= pagingField.FieldByName("Total").Int()
 }
 
 // setPageField sets a pagination field (Page or PageSize) on an option struct
