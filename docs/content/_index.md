@@ -32,3 +32,7 @@ layout: hextra-home
     subtitle="Opt-in retries with backoff, HTTP middleware for logging and tracing, and tests against real SonarQube instances."
   >}}
 {{< /hextra/feature-grid >}}
+
+{{< spacer "3rem" >}}
+
+{{< video "videos/discover.mp4" >}}

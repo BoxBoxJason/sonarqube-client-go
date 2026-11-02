@@ -1,0 +1,2 @@
+{{- /* Usage: {{< video "videos/discover.mp4" >}}. The path is relative to static/ and honours baseURL. */ -}}
+<video controls playsinline preload="metadata" style="width:100%;border-radius:0.5rem" src="{{ .Get 0 | relURL }}"></video>

@@ -8,6 +8,8 @@ A comprehensive, type-safe Go client library **and command-line interface** for 
 
 📖 **Documentation: <https://boxboxjason.github.io/sonarqube-client-go/>** · 📚 **API reference: [pkg.go.dev](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar)**
 
+[![Watch the sonarqube-client-go video](./docs/static/images/discover.jpg)](https://boxboxjason.github.io/sonarqube-client-go/videos/discover.mp4)
+
 ## Features
 
 - **Go SDK**: strongly typed options and responses for every SonarQube V1 and V2 API service, token or basic authentication, opt-in retries with backoff, HTTP middleware for logging and tracing.
