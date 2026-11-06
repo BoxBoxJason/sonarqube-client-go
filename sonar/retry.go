@@ -12,7 +12,13 @@ import (
 	"time"
 )
 
-const retryBackoffBase = 2
+const (
+	retryBackoffBase = 2
+	// maxRetryAfterSeconds is the largest delay-seconds value a time.Duration
+	// can hold. A larger one is clamped to it rather than overflowing into a
+	// negative delay, which would retry immediately.
+	maxRetryAfterSeconds = int64(math.MaxInt64 / time.Second)
+)
 
 // RetryOptions configures opt-in retry with exponential backoff and full jitter.
 // The zero value disables retrying (default behaviour).
@@ -24,10 +30,22 @@ type RetryOptions struct {
 	MaxAttempts int
 	// InitialDelay is the base delay used in the exponential backoff calculation.
 	InitialDelay time.Duration
-	// MaxDelay caps the computed backoff delay.
+	// MaxDelay caps the computed backoff delay. It does not apply to a delay
+	// requested by a Retry-After header: see MaxRetryAfter.
 	MaxDelay time.Duration
+	// MaxRetryAfter is the longest Retry-After wait that is honoured on a 429
+	// response. A response asking for more is returned to the caller at once
+	// instead of being retried, as retrying sooner would ignore the server and
+	// waiting would hold the request for that long. Zero sets no limit.
+	MaxRetryAfter time.Duration
 	// RetryableStatusCodes lists HTTP status codes that should trigger a retry.
 	RetryableStatusCodes []int
+	// RetryableError reports whether a transport error should trigger a retry.
+	// Returning false fails the request with that error at once, for example
+	// to avoid repeating a timeout that took long to expire. When nil, every
+	// transport error is retried. It is not called once the request context
+	// is done, as that always stops the retries.
+	RetryableError func(err error) bool
 	// RetryNonIdempotent enables automatic retries for non-idempotent methods
 	// (POST, PATCH). It is disabled by default: only idempotent methods (GET,
 	// HEAD, PUT, DELETE, OPTIONS, TRACE) are retried, because resending a
@@ -55,9 +73,9 @@ type retryRoundTripper struct {
 	opts RetryOptions
 }
 
-// RoundTrip executes the request, retrying on configured status codes or network
-// errors with exponential backoff and full jitter. Retries stop immediately when
-// the request context is cancelled or its deadline is exceeded.
+// RoundTrip executes the request, retrying on configured status codes or
+// transport errors with exponential backoff and full jitter. Retries stop
+// immediately when the request context is cancelled or its deadline is exceeded.
 //
 // Only idempotent methods are retried by default; non-idempotent methods (POST,
 // PATCH) are passed straight through unless RetryNonIdempotent is set, so a
@@ -130,13 +148,21 @@ func (r *retryRoundTripper) retryLoop(req *http.Request, hasBody bool) (*http.Re
 // over the computed exponential backoff. A Retry-After of zero is honoured as an
 // explicit instruction to retry immediately rather than falling back to backoff.
 func (r *retryRoundTripper) retryDelay(resp *http.Response, attempt int) time.Duration {
-	if resp != nil && resp.StatusCode == http.StatusTooManyRequests {
-		if d, ok := parseRetryAfterHeader(resp.Header.Get("Retry-After")); ok {
-			return d
-		}
+	if delay, ok := requestedRetryDelay(resp); ok {
+		return delay
 	}
 
 	return r.computeDelay(attempt)
+}
+
+// requestedRetryDelay returns the wait a 429 response asks for in its
+// Retry-After header, if it carries a valid one.
+func requestedRetryDelay(resp *http.Response) (time.Duration, bool) {
+	if resp == nil || resp.StatusCode != http.StatusTooManyRequests {
+		return 0, false
+	}
+
+	return parseRetryAfterHeader(resp.Header.Get("Retry-After"))
 }
 
 // doAttempt clones the request (replaying the body when present) and executes it.
@@ -167,14 +193,14 @@ func (r *retryRoundTripper) evaluate(ctx context.Context, resp *http.Response, e
 			return true, nil, ctxErr //nolint:wrapcheck // context error is the direct cause
 		}
 
-		if isLast {
+		if isLast || !r.isRetryableError(err) {
 			return true, nil, err
 		}
 
 		return false, nil, nil
 	}
 
-	if !r.isRetryable(resp.StatusCode) || isLast {
+	if !r.isRetryable(resp.StatusCode) || isLast || r.exceedsMaxRetryAfter(resp) {
 		return true, resp, nil
 	}
 
@@ -186,6 +212,23 @@ func (r *retryRoundTripper) evaluate(ctx context.Context, resp *http.Response, e
 // isRetryable reports whether statusCode is in the configured retry list.
 func (r *retryRoundTripper) isRetryable(statusCode int) bool {
 	return slices.Contains(r.opts.RetryableStatusCodes, statusCode)
+}
+
+// isRetryableError reports whether a transport error should trigger a retry.
+func (r *retryRoundTripper) isRetryableError(err error) bool {
+	return r.opts.RetryableError == nil || r.opts.RetryableError(err)
+}
+
+// exceedsMaxRetryAfter reports whether resp asks for a longer wait than
+// MaxRetryAfter allows.
+func (r *retryRoundTripper) exceedsMaxRetryAfter(resp *http.Response) bool {
+	if r.opts.MaxRetryAfter <= 0 {
+		return false
+	}
+
+	delay, ok := requestedRetryDelay(resp)
+
+	return ok && delay > r.opts.MaxRetryAfter
 }
 
 // computeDelay returns the backoff duration for the given attempt index using full
@@ -240,7 +283,7 @@ func parseRetryAfterHeader(header string) (time.Duration, bool) {
 	secs, secsErr := strconv.Atoi(header)
 	if secsErr == nil {
 		if secs >= 0 {
-			return time.Duration(secs) * time.Second, true
+			return time.Duration(min(int64(secs), maxRetryAfterSeconds)) * time.Second, true
 		}
 
 		return 0, false

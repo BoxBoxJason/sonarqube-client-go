@@ -36,6 +36,26 @@ Retries are disabled by default. `WithRetry` enables them, with exponential back
 
 Only idempotent methods (`GET`, `HEAD`, `PUT`, `DELETE`, ...) are retried. `RetryNonIdempotent` extends retries to `POST` and `PATCH`: enable it only for endpoints that are safe to repeat, as a retried request can otherwise create a resource twice.
 
+Two options bound how long a request can take when the server misbehaves:
+
+- `RetryableError` chooses which transport errors are retried, all of them when unset. Each attempt can take as long as the transport's own timeouts allow, so a server that stops answering costs that much per attempt. Returning `false` for timeouts fails the request after the first one:
+
+  ```go
+  sonar.WithRetry(sonar.RetryOptions{
+  	MaxAttempts:          3,
+  	InitialDelay:         500 * time.Millisecond,
+  	MaxDelay:             5 * time.Second,
+  	RetryableStatusCodes: []int{502, 503, 504},
+  	RetryableError: func(err error) bool {
+  		var netErr net.Error
+
+  		return !errors.As(err, &netErr) || !netErr.Timeout()
+  	},
+  })
+  ```
+
+- `MaxRetryAfter` limits the `Retry-After` wait honoured on a `429`, which `MaxDelay` does not cap. A response asking for longer is returned to the caller right away, rather than retried early or waited out. There is no limit when unset.
+
 ## Middleware and observability
 
 `WithMiddleware` wraps the transport with `http.RoundTripper` middleware, the place for request logging, metrics or tracing. Middleware sits inside the retry layer, so it observes every attempt, not only the first one:

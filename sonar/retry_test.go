@@ -3,6 +3,7 @@ package sonar
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -640,4 +641,239 @@ func TestWithRetry_SliceIsolatedFromCaller(t *testing.T) {
 	// The client's retry transport should still use 503, not 200.
 	transport := client.httpClient.Transport.(*retryRoundTripper)
 	assert.Equal(t, []int{503}, transport.opts.RetryableStatusCodes)
+}
+
+func TestRetryRoundTripper_TransportErrorHandling(t *testing.T) {
+	t.Parallel()
+
+	errFirst := errors.New("first attempt failed")
+
+	tests := map[string]struct {
+		retryableError func(err error) bool
+		wantCalls      int
+		wantErr        error
+	}{
+		"NilRetriesEveryError": {
+			wantCalls: 2,
+		},
+		"PredicateAcceptsError": {
+			retryableError: func(error) bool { return true },
+			wantCalls:      2,
+		},
+		"PredicateRejectsError": {
+			retryableError: func(error) bool { return false },
+			wantCalls:      1,
+			wantErr:        errFirst,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			transport := &countingTransport{errors: []error{errFirst}}
+			rt := &retryRoundTripper{
+				base: transport,
+				opts: RetryOptions{
+					MaxAttempts:    3,
+					InitialDelay:   time.Millisecond,
+					MaxDelay:       5 * time.Millisecond,
+					RetryableError: test.retryableError,
+				},
+			}
+
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+			resp, err := rt.RoundTrip(req)
+
+			if test.wantErr != nil {
+				require.ErrorIs(t, err, test.wantErr)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, http.StatusOK, resp.StatusCode)
+			}
+
+			assert.Equal(t, test.wantCalls, transport.calls)
+		})
+	}
+}
+
+func TestRetryRoundTripper_RetryableErrorReceivesTransportError(t *testing.T) {
+	t.Parallel()
+
+	errTransport := errors.New("connection reset")
+
+	var got []error
+
+	transport := &countingTransport{errors: []error{errTransport, errTransport}}
+	rt := &retryRoundTripper{
+		base: transport,
+		opts: RetryOptions{
+			MaxAttempts:  2,
+			InitialDelay: time.Millisecond,
+			MaxDelay:     5 * time.Millisecond,
+			RetryableError: func(err error) bool {
+				got = append(got, err)
+
+				return true
+			},
+		},
+	}
+
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+	_, err := rt.RoundTrip(req)
+
+	// The last attempt fails regardless, so the predicate is not consulted.
+	require.ErrorIs(t, err, errTransport)
+	assert.Equal(t, []error{errTransport}, got)
+}
+
+func TestEvaluate_RetryableErrorNotCalledOnceContextDone(t *testing.T) {
+	t.Parallel()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	rt := &retryRoundTripper{
+		base: http.DefaultTransport,
+		opts: RetryOptions{
+			MaxAttempts: 3,
+			RetryableError: func(error) bool {
+				t.Error("RetryableError called with a done context")
+
+				return true
+			},
+		},
+	}
+
+	done, result, err := rt.evaluate(ctx, nil, errors.New("connection refused"), false)
+
+	assert.True(t, done)
+	assert.Nil(t, result)
+	assert.ErrorIs(t, err, context.Canceled)
+}
+
+func TestRetryRoundTripper_MaxRetryAfter(t *testing.T) {
+	t.Parallel()
+
+	tests := map[string]struct {
+		response      func() *http.Response
+		maxRetryAfter time.Duration
+		wantStatus    int
+		wantCalls     int
+	}{
+		"LongerWaitReturnsResponse": {
+			response: func() *http.Response {
+				return makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "60")
+			},
+			maxRetryAfter: time.Minute - time.Second,
+			wantStatus:    http.StatusTooManyRequests,
+			wantCalls:     1,
+		},
+		"LongerHTTPDateReturnsResponse": {
+			response: func() *http.Response {
+				future := time.Now().Add(time.Hour).UTC().Format(http.TimeFormat)
+
+				return makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", future)
+			},
+			maxRetryAfter: time.Minute,
+			wantStatus:    http.StatusTooManyRequests,
+			wantCalls:     1,
+		},
+		"OverflowingWaitReturnsResponse": {
+			response: func() *http.Response {
+				return makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "9223372037")
+			},
+			maxRetryAfter: time.Minute,
+			wantStatus:    http.StatusTooManyRequests,
+			wantCalls:     1,
+		},
+		"ShorterWaitIsRetried": {
+			response: func() *http.Response {
+				return makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "0")
+			},
+			maxRetryAfter: time.Nanosecond,
+			wantStatus:    http.StatusOK,
+			wantCalls:     2,
+		},
+		"MissingHeaderFallsBackToBackoff": {
+			response:      func() *http.Response { return makeResponse(http.StatusTooManyRequests) },
+			maxRetryAfter: time.Second,
+			wantStatus:    http.StatusOK,
+			wantCalls:     2,
+		},
+		"LimitIgnoresOtherStatuses": {
+			response: func() *http.Response {
+				return makeResponseWithHeader(http.StatusServiceUnavailable, "Retry-After", "60")
+			},
+			maxRetryAfter: time.Second,
+			wantStatus:    http.StatusOK,
+			wantCalls:     2,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			transport := &countingTransport{responses: []*http.Response{test.response(), makeResponse(http.StatusOK)}}
+			rt := &retryRoundTripper{
+				base: transport,
+				opts: RetryOptions{
+					MaxAttempts:          3,
+					InitialDelay:         time.Millisecond,
+					MaxDelay:             5 * time.Millisecond,
+					MaxRetryAfter:        test.maxRetryAfter,
+					RetryableStatusCodes: []int{429, 503},
+				},
+			}
+
+			req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+
+			start := time.Now()
+			resp, err := rt.RoundTrip(req)
+
+			require.NoError(t, err)
+			assert.Equal(t, test.wantStatus, resp.StatusCode)
+			assert.Equal(t, test.wantCalls, transport.calls)
+			assert.Less(t, time.Since(start), time.Second)
+		})
+	}
+}
+
+func TestExceedsMaxRetryAfter_WaitAtTheLimitIsAllowed(t *testing.T) {
+	t.Parallel()
+
+	rt := &retryRoundTripper{opts: RetryOptions{MaxRetryAfter: 5 * time.Second}}
+
+	assert.False(t, rt.exceedsMaxRetryAfter(makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "5")))
+	assert.True(t, rt.exceedsMaxRetryAfter(makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "6")))
+}
+
+func TestRetryRoundTripper_MaxRetryAfterKeepsResponseBodyReadable(t *testing.T) {
+	t.Parallel()
+
+	response := makeResponseWithHeader(http.StatusTooManyRequests, "Retry-After", "60")
+	response.Body = io.NopCloser(bytes.NewReader([]byte("slow down")))
+
+	rt := &retryRoundTripper{
+		base: &countingTransport{responses: []*http.Response{response}},
+		opts: RetryOptions{MaxAttempts: 3, MaxRetryAfter: time.Second, RetryableStatusCodes: []int{429}},
+	}
+
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "http://example.com", http.NoBody)
+	resp, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	assert.Equal(t, "slow down", string(body))
+}
+
+func TestParseRetryAfterHeader_ClampsOverflowingSeconds(t *testing.T) {
+	t.Parallel()
+
+	d, ok := parseRetryAfterHeader("9223372037")
+
+	assert.True(t, ok)
+	assert.Equal(t, time.Duration(maxRetryAfterSeconds)*time.Second, d)
 }
