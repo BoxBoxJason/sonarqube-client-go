@@ -96,6 +96,9 @@ type ProjectAnalysis struct {
 	ManualNewCodePeriodBaseline bool `json:"manualNewCodePeriodBaseline,omitempty"`
 	// ProjectVersion is the project version.
 	ProjectVersion string `json:"projectVersion,omitempty"`
+	// RelativePathFromScmRoot is the path of the analyzed project base directory relative to the SCM root.
+	// Only set when the analysis ran inside a repository subdirectory. Since 2026.5.
+	RelativePathFromScmRoot string `json:"relativePathFromScmRoot,omitempty"`
 	// Revision is the revision.
 	Revision string `json:"revision,omitempty"`
 }

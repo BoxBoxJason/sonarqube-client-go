@@ -45,6 +45,9 @@ type WebservicesDefinition struct {
 type WebservicesAction struct {
 	// Changelog is the list of changes.
 	Changelog []WebservicesChangelog `json:"changelog,omitempty"`
+	// ContentType is the kind of response content of the action (e.g. NO_CONTENT or BINARY).
+	// Absent for regular JSON responses. Since 2026.5.
+	ContentType string `json:"contentType,omitempty"`
 	// DeprecatedSince indicates when the action was deprecated.
 	DeprecatedSince string `json:"deprecatedSince,omitempty"`
 	// Description is the action description.

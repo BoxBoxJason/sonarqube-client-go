@@ -150,6 +150,9 @@ type UsersUpdateOptionsV2 struct {
 	ExternalLogin string `json:"externalLogin,omitempty"`
 	// ExternalProvider is the new identity provider.
 	ExternalProvider string `json:"externalProvider,omitempty"`
+	// Local is the expected local status of the user once the update is applied. It is a safety check:
+	// if the resulting local status does not match, the server rejects the request instead of applying it.
+	Local *bool `json:"local,omitempty"`
 	// Login is the user's login.
 	Login string `json:"login,omitempty"`
 	// Name is the user's display name.

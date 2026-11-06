@@ -304,7 +304,7 @@ type PermissionsUsers struct {
 
 // PermissionsAddGroupOptions contains parameters for the AddGroup method.
 type PermissionsAddGroupOptions struct {
-	// GroupName is the group name or 'anyone' (case insensitive).
+	// GroupName is the group name. 'anyone' is no longer accepted.
 	// This field is required.
 	GroupName string `url:"groupName"`
 	// Permission is the permission to grant.
@@ -320,7 +320,7 @@ type PermissionsAddGroupOptions struct {
 
 // PermissionsAddGroupToTemplateOptions contains parameters for the AddGroupToTemplate method.
 type PermissionsAddGroupToTemplateOptions struct {
-	// GroupName is the group name or 'anyone' (case insensitive).
+	// GroupName is the group name. 'anyone' is no longer accepted.
 	// This field is required.
 	GroupName string `url:"groupName"`
 	// Permission is the permission to grant.
@@ -450,7 +450,7 @@ type PermissionsGroupsOptions struct {
 
 // PermissionsRemoveGroupOptions contains parameters for the RemoveGroup method.
 type PermissionsRemoveGroupOptions struct {
-	// GroupName is the group name or 'anyone' (case insensitive).
+	// GroupName is the group name. 'anyone' is no longer accepted.
 	// This field is required.
 	GroupName string `url:"groupName"`
 	// Permission is the permission to revoke.
@@ -466,7 +466,7 @@ type PermissionsRemoveGroupOptions struct {
 
 // PermissionsRemoveGroupFromTemplateOptions contains parameters for the RemoveGroupFromTemplate method.
 type PermissionsRemoveGroupFromTemplateOptions struct {
-	// GroupName is the group name or 'anyone' (case insensitive).
+	// GroupName is the group name. 'anyone' is no longer accepted.
 	// This field is required.
 	GroupName string `url:"groupName"`
 	// Permission is the permission to revoke.
