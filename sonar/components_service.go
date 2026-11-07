@@ -335,6 +335,9 @@ type ComponentTreeItem struct {
 	Path string `json:"path,omitempty"`
 	// Qualifier is the component qualifier.
 	Qualifier string `json:"qualifier,omitempty"`
+	// RefQualifier is the qualifier of the referenced component, for components that reference
+	// another one (e.g. projects or applications inside a portfolio). Since 2026.5.
+	RefQualifier string `json:"refQualifier,omitempty"`
 }
 
 // =============================================================================

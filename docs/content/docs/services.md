@@ -31,7 +31,7 @@ Each service is a field of the client, and a command of `sonar-cli` whose subcom
 - **`batch`** ([`client.Batch`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#BatchService)): Provides scanner batch operation data  
   `get-file`, `get-index`, `get-project`
 - **`ce`** ([`client.Ce`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#CeService)): Manages Compute Engine tasks and workers  
-  `activity`, `activity-status`, `analysis-status`, `cancel`, `cancel-all`, `component`, `dismiss-analysis-warning`, `indexation-status`, `info`, `pause`, `resume`, `submit`, `task`, `task-types`, `worker-count`
+  `activity`, `activity-status`, `analysis-status`, `cancel`, `cancel-all`, `component`, `dismiss-analysis-warning`, `indexation-status`, `info`, `pause`, `resume`, `set-worker-count`, `submit`, `task`, `task-types`, `worker-count`
 - **`components`** ([`client.Components`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ComponentsService)): Manages project components and navigation  
   `app`, `search`, `search-projects`, `show`, `suggestions`, `tree`
 - **`developers`** ([`client.Developers`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#DevelopersService)): Provides developer-specific event data  
@@ -47,13 +47,13 @@ Each service is a field of the client, and a command of `sonar-cli` whose subcom
 - **`features`** ([`client.Features`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#FeaturesService)): Lists available SonarQube features  
   `list`
 - **`github-provisioning`** ([`client.GithubProvisioning`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#GithubProvisioningService)): Manages GitHub provisioning status  
-  `check`
+  `check`, `status`, `sync`
 - **`governance-reports`** ([`client.GovernanceReports`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#GovernanceReportsService))  
   `download`, `status`, `subscribe`, `unsubscribe`, `update-frequency`, `update-recipients`
 - **`hotspots`** ([`client.Hotspots`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#HotspotsService)): Manages security hotspots  
   `add-comment`, `assign`, `change-status`, `delete-comment`, `edit-comment`, `list`, `list-all`, `migrate-to-issues`, `migration-status`, `pull`, `search`, `search-all`, `show`
 - **`issues`** ([`client.Issues`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#IssuesService)): Manages code issues and their lifecycle  
-  `add-comment`, `anticipated-transitions`, `assign`, `authors`, `bulk-change`, `changelog`, `component-tags`, `delete-comment`, `do-transition`, `edit-comment`, `list`, `list-all`, `pull`, `pull-taint`, `reindex`, `search`, `search-all`, `set-severity`, `set-tags`, `set-type`, `tags`
+  `add-comment`, `anticipated-transitions`, `assign`, `authors`, `bulk-change`, `changelog`, `component-tags`, `delete-comment`, `do-transition`, `edit-comment`, `gitlab-sast-export`, `list`, `list-all`, `pull`, `pull-taint`, `reindex`, `search`, `search-all`, `set-severity`, `set-tags`, `set-type`, `tags`
 - **`l10n`** ([`client.L10N`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#L10NService)): Manages localization and internationalization  
   `get-index`
 - **`editions`** ([`client.Editions`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#EditionsService))  
@@ -81,11 +81,11 @@ Each service is a field of the client, and a command of `sonar-cli` whose subcom
 - **`project-analyses`** ([`client.ProjectAnalyses`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectAnalysesService)): Manages project analysis events  
   `create-event`, `delete`, `delete-event`, `search`, `search-all`, `update-event`
 - **`project-badges`** ([`client.ProjectBadges`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectBadgesService)): Manages project badge generation  
-  `measure`, `quality-gate`, `renew-token`, `token`
+  `ai-code-assurance`, `measure`, `quality-gate`, `renew-token`, `token`
 - **`project-branches`** ([`client.ProjectBranches`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectBranchesService)): Manages project branches  
-  `delete`, `list`, `rename`, `set-automatic-deletion-protection`, `set-main`
+  `delete`, `get-ai-code-assurance`, `list`, `rename`, `set-automatic-deletion-protection`, `set-main`
 - **`project-dump`** ([`client.ProjectDump`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectDumpService)): Manages project data export and import  
-  `export`, `status`
+  `export`, `import`, `status`
 - **`project-links`** ([`client.ProjectLinks`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectLinksService)): Manages project links  
   `create`, `delete`, `search`
 - **`project-pull-requests`** ([`client.ProjectPullRequests`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectPullRequestsService))  
@@ -93,11 +93,11 @@ Each service is a field of the client, and a command of `sonar-cli` whose subcom
 - **`project-tags`** ([`client.ProjectTags`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectTagsService)): Manages project tags  
   `search`, `set`
 - **`projects`** ([`client.Projects`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ProjectsService)): Manages SonarQube projects  
-  `bulk-delete`, `create`, `delete`, `search`, `search-all`, `search-my-projects`, `search-my-projects-all`, `search-my-scannable-projects`, `update-default-visibility`, `update-key`, `update-visibility`
+  `bulk-delete`, `create`, `delete`, `export-findings`, `get-contains-ai-code`, `get-detected-ai-code`, `search`, `search-all`, `search-my-projects`, `search-my-projects-all`, `search-my-scannable-projects`, `set-contains-ai-code`, `update-default-visibility`, `update-key`, `update-visibility`
 - **`push`** ([`client.Push`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#PushService)): Manages server-sent events for SonarLint  
   `sonarlint-events`
 - **`qualitygates`** ([`client.Qualitygates`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#QualitygatesService)): Manages quality gates and conditions  
-  `add-group`, `add-user`, `assign`, `copy`, `create`, `create-condition`, `delete`, `delete-condition`, `get-by-project`, `list`, `project-status`, `remove-group`, `remove-user`, `rename`, `search`, `search-all`, `search-groups`, `search-groups-all`, `search-users`, `search-users-all`, `set-default`, `show`, `unassign`, `update-condition`
+  `add-group`, `add-user`, `application-status`, `assign`, `copy`, `create`, `create-condition`, `delete`, `delete-condition`, `get-by-project`, `list`, `project-status`, `remove-group`, `remove-user`, `rename`, `search`, `search-all`, `search-groups`, `search-groups-all`, `search-users`, `search-users-all`, `set-ai-code-assurance`, `set-default`, `show`, `unassign`, `update-condition`
 - **`qualityprofiles`** ([`client.Qualityprofiles`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#QualityprofilesService)): Manages quality profiles and rule activation  
   `activate-rule`, `activate-rules`, `add-group`, `add-project`, `add-user`, `backup`, `change-parent`, `changelog`, `changelog-all`, `compare`, `copy`, `create`, `deactivate-rule`, `deactivate-rules`, `delete`, `export`, `exporters`, `importers`, `inheritance`, `projects`, `projects-all`, `remove-group`, `remove-project`, `remove-user`, `rename`, `restore`, `search`, `search-groups`, `search-groups-all`, `search-users`, `search-users-all`, `set-default`, `show`
 - **`regulatory-reports`** ([`client.RegulatoryReports`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#RegulatoryReportsService))  

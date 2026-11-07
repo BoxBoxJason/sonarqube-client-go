@@ -82,6 +82,10 @@ type DopTranslationBoundProjectOptions struct {
 	// DevOpsPlatformSettingId is the identifier of the DevOps platform configuration.
 	// This field is required.
 	DevOpsPlatformSettingId string `json:"devOpsPlatformSettingId"`
+	// InlineAnnotationsEnabled enables or disables inline annotations during Pull Request decoration.
+	// Azure DevOps bindings only (rejected for other platforms). When rebinding an existing project,
+	// omit to preserve the current value. Defaults to true on new bindings.
+	InlineAnnotationsEnabled *bool `json:"inlineAnnotationsEnabled,omitempty"`
 	// Monorepo indicates whether the project is part of a monorepo.
 	// This field is required.
 	Monorepo bool `json:"monorepo"`
@@ -102,6 +106,10 @@ type DopTranslationBoundProjectOptions struct {
 	// RepositoryIdentifier is the identifier of the DevOps platform repository to import.
 	// This field is required.
 	RepositoryIdentifier string `json:"repositoryIdentifier"`
+	// SummaryCommentEnabled enables or disables posting the analysis summary as a Pull Request comment.
+	// GitHub bindings only (rejected for other platforms). When rebinding an existing project,
+	// omit to preserve the current value. Defaults to true on new bindings.
+	SummaryCommentEnabled *bool `json:"summaryCommentEnabled,omitempty"`
 }
 
 // DopTranslationGenerateInstallationTokenOptions contains parameters for minting

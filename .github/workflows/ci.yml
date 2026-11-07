@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       sonarqube:
-        image: docker.io/library/sonarqube:26.9.0.129388-community@sha256:c0f1160bccfa435db4168c2d7df69af3c3ea7bfeb87395613014048fb33a68c1
+        image: docker.io/library/sonarqube:26.10.0.133078-community@sha256:f95aaa9016dd4e92c7d70691167a6d96dbb5d8acffd61eba1cb4335d364a7840
         ports:
           - 9000:9000
         env:
@@ -149,7 +149,7 @@ jobs:
     # secret to also exercise license-dependent behavior.
     services:
       sonarqube-enterprise:
-        image: docker.io/library/sonarqube:2026.5.2-enterprise@sha256:ef92865c9c225c93d560e4231cb19e9533f8949ef51736fb92c0447f778671de
+        image: docker.io/library/sonarqube:2026.5.3-enterprise@sha256:d98a5736f33c14354fd9a598245124dfc9f3f76a22b9d1b4f4e1f94d776ec64b
         ports:
           - 9001:9000
         env:

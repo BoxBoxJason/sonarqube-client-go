@@ -3,7 +3,7 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "2026.5.1.132435"
+    "version": "2026.5.3.133540"
   },
   "servers": [
     {
@@ -523,9 +523,9 @@
     "/a3s/context-uploads/{contextId}": {
       "put": {
         "tags": [
-          "y"
+          "t"
         ],
-        "operationId": "悛",
+        "operationId": "렇",
         "parameters": [
           {
             "name": "contextId",
@@ -1545,7 +1545,7 @@
         ],
         "summary": "Fetch Jira work items",
         "description": "Fetch the Jira work items for a specific Sonar project and resource.\nAccepts only authenticated requests.\n",
-        "operationId": "悛_1",
+        "operationId": "렇_1",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1596,7 +1596,7 @@
         ],
         "summary": "Create Jira work item",
         "description": "Create a Jira work item for a specific resource.\nAccepts only authenticated requests with issue administration permission.\n",
-        "operationId": "悛_2",
+        "operationId": "렇_2",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1627,7 +1627,7 @@
         ],
         "summary": "Delete Jira work items",
         "description": "Delete the Jira work items associated with a specific resource.\n",
-        "operationId": "嬊",
+        "operationId": "潇",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1673,7 +1673,7 @@
         ],
         "summary": "Fetch Jira project bindings",
         "description": "Fetch the Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "悛_3",
+        "operationId": "렇_3",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1704,7 +1704,7 @@
         ],
         "summary": "Create or update Jira project binding",
         "description": "Create or update a Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "悛_4",
+        "operationId": "렇_4",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1735,7 +1735,7 @@
         ],
         "summary": "Delete Jira project binding",
         "description": "Delete the Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "嬊_1",
+        "operationId": "潇_1",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1759,7 +1759,7 @@
         ],
         "summary": "Update Jira project binding",
         "description": "Update an existing Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "悛_5",
+        "operationId": "렇_5",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1792,7 +1792,7 @@
         ],
         "summary": "Fetch the Jira instance binding",
         "description": "Fetch the Jira instance binding.\nRequires global administrator permission.\n",
-        "operationId": "嬊_2",
+        "operationId": "潇_2",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -1824,7 +1824,7 @@
         ],
         "summary": "Create a new Jira instance binding",
         "description": "Receives the 3LO state and authorization code parameters and attempts to create an instance binding.\nIf successful, returns the binding. Otherwise, returns a list of available resources.\nRequires global administrator permission.\n",
-        "operationId": "悛_6",
+        "operationId": "렇_6",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1855,7 +1855,7 @@
         ],
         "summary": "Delete the Jira instance binding",
         "description": "Deletes the Jira instance binding from the database.\nRequires global administrator permission.\n",
-        "operationId": "悛_7",
+        "operationId": "렇_7",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -1880,7 +1880,7 @@
         ],
         "summary": "Binds the specified pending instance binding with the specified jira cloud ID",
         "description": "Binds the specified pending instance binding with the specified jira cloud ID\n",
-        "operationId": "悛_8",
+        "operationId": "렇_8",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2814,9 +2814,9 @@
     "/detection-agent/jobs/results": {
       "post": {
         "tags": [
-          "h"
+          "l"
         ],
-        "operationId": "悛_9",
+        "operationId": "렇_9",
         "parameters": [
           {
             "name": "jobId",
@@ -3593,7 +3593,7 @@
         ],
         "summary": "Fetch the Atlassian Authentication details if they exist",
         "description": "Fetch the Atlassian Authentication details if they exist.\nSpecifically, only the client ID is returned for security purposes.\n",
-        "operationId": "悛_10",
+        "operationId": "렇_10",
         "responses": {
           "200": {
             "description": "OK",
@@ -3614,7 +3614,7 @@
         ],
         "summary": "Create/Update the Atlassian Authentication details",
         "description": "Create/Update the Atlassian Authentication details.\n",
-        "operationId": "悛_11",
+        "operationId": "렇_11",
         "requestBody": {
           "content": {
             "application/json": {
@@ -6560,7 +6560,7 @@
         ],
         "summary": "Returns a list of all the available Jira work types for a specific Jira project",
         "description": "Returns a list of all the available Jira work types for a specific Jira project.\nAlso checks which work types are selected for a given sonar project. Conditionally, also includes field metadata.\n",
-        "operationId": "悛_12",
+        "operationId": "렇_12",
         "parameters": [
           {
             "name": "jiraProjectKey",
@@ -6619,7 +6619,7 @@
         ],
         "summary": "Saves the selected Jira work types for a project",
         "description": "Receives a Jira project key and a list of work type and stores the work types.\n",
-        "operationId": "悛_13",
+        "operationId": "렇_13",
         "requestBody": {
           "content": {
             "application/json": {
@@ -6645,7 +6645,7 @@
         ],
         "summary": "Update Jira organization binding properties",
         "description": "Update properties of an existing Jira organization binding, such as token sharing configuration.\nRequires global administrator permission.\n",
-        "operationId": "悛_14",
+        "operationId": "렇_14",
         "requestBody": {
           "content": {
             "application/json": {
@@ -9763,7 +9763,7 @@
         ],
         "summary": "Get compliance report",
         "description": "Get the compliance report for a project, application, or portfolio.",
-        "operationId": "悛_15",
+        "operationId": "렇_15",
         "parameters": [
           {
             "name": "branchKey",
@@ -9850,7 +9850,7 @@
         ],
         "summary": "Get accessibility report",
         "description": "Get the accessibility report for a project branch.",
-        "operationId": "悛_16",
+        "operationId": "렇_16",
         "parameters": [
           {
             "name": "branchKey",
@@ -11951,7 +11951,7 @@
         ],
         "summary": "Returns a list of available user actions for a project",
         "description": "Returns a list of available user actions for the authenticated user in the context of a specific project.\nIf the user is not authenticated, returns an empty list.\n",
-        "operationId": "悛_17",
+        "operationId": "렇_17",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -11987,7 +11987,7 @@
         ],
         "summary": "Returns a list of all the available Jira projects",
         "description": "Returns a list of all the available Jira projects",
-        "operationId": "悛_18",
+        "operationId": "렇_18",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -12024,7 +12024,7 @@
         ],
         "summary": "Count linked Jira issues",
         "description": "Count the number of Jira issues linked to a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "悛_19",
+        "operationId": "렇_19",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -14556,7 +14556,7 @@
         ],
         "summary": "Get JFrog evidence for a Compute Engine task",
         "description": "Returns a JFrog evidence statement for the specified Compute Engine task.\nThe evidence contains quality gate status and conditions in the in-toto Statement format.\nRequires 'Browse' permission on the project associated with the task.",
-        "operationId": "悛_20",
+        "operationId": "렇_20",
         "parameters": [
           {
             "name": "taskId",
@@ -14574,7 +14574,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/H"
+                  "$ref": "#/components/schemas/l"
                 }
               }
             }
@@ -15693,7 +15693,7 @@
         ],
         "summary": "Generate Jira authentication URL",
         "description": "Generate the authentication URL for Jira OAuth flow.\nRequires authenticated user.\n",
-        "operationId": "悛_21",
+        "operationId": "렇_21",
         "parameters": [
           {
             "name": "sonarOrganizationKey",
@@ -20945,7 +20945,7 @@
           "name": {
             "type": "string",
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "layout": {
             "type": "string"
@@ -21012,7 +21012,7 @@
           "name": {
             "type": "string",
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "layout": {
             "type": "string"
@@ -21852,11 +21852,17 @@
             "description": "UUID v4 of the organization."
           },
           "id": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "format": "uuid"
           },
           "targetComponentId": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "format": "uuid",
             "description": "Id of the organization component the SDK leads into (the provider)."
           },
@@ -21877,8 +21883,7 @@
           "id",
           "name",
           "sdkBoundaryDescriptors",
-          "sdkKey",
-          "targetComponentId"
+          "sdkKey"
         ]
       },
       "SdkBoundaryDescriptor": {
@@ -22156,7 +22161,9 @@
               "string",
               "null"
             ],
-            "description": "Display name of the pattern."
+            "description": "Display name of the pattern.",
+            "maxLength": 2147483647,
+            "minLength": 1
           }
         },
         "required": [
@@ -22212,7 +22219,9 @@
           },
           "name": {
             "type": "string",
-            "description": "Display name of the pattern."
+            "description": "Display name of the pattern.",
+            "maxLength": 2147483647,
+            "minLength": 1
           }
         },
         "required": [
@@ -22560,15 +22569,21 @@
           },
           "name": {
             "type": "string",
-            "description": "Name of the boundary descriptor."
+            "description": "Name of the boundary descriptor.",
+            "maxLength": 2147483647,
+            "minLength": 1
           },
           "keyTemplate": {
             "type": "string",
-            "description": "Template for generating boundary keys."
+            "description": "Template for generating boundary keys.",
+            "maxLength": 2147483647,
+            "minLength": 1
           },
           "query": {
             "type": "string",
-            "description": "Query to match boundaries."
+            "description": "Query to match boundaries.",
+            "maxLength": 2147483647,
+            "minLength": 1
           },
           "id": {
             "type": "string",
@@ -22615,11 +22630,15 @@
           },
           "keyTemplate": {
             "type": "string",
-            "description": "Template for generating boundary keys."
+            "description": "Template for generating boundary keys.",
+            "maxLength": 2147483647,
+            "minLength": 1
           },
           "query": {
             "type": "string",
-            "description": "Query to match boundaries."
+            "description": "Query to match boundaries.",
+            "maxLength": 2147483647,
+            "minLength": 1
           },
           "direction": {
             "type": "string",
@@ -22634,7 +22653,9 @@
           },
           "name": {
             "type": "string",
-            "description": "Name of the boundary descriptor."
+            "description": "Name of the boundary descriptor.",
+            "maxLength": 2147483647,
+            "minLength": 1
           }
         },
         "required": [
@@ -24333,7 +24354,7 @@
               "null"
             ],
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "layout": {
             "type": [
@@ -24455,7 +24476,9 @@
               "string",
               "null"
             ],
-            "description": "Updated display name."
+            "description": "Updated display name.",
+            "maxLength": 2147483647,
+            "minLength": 1
           }
         }
       },
@@ -24529,15 +24552,21 @@
           },
           "keyTemplate": {
             "type": "string",
-            "description": "Template for generating boundary keys."
+            "description": "Template for generating boundary keys.",
+            "maxLength": 2147483647,
+            "minLength": 1
           },
           "query": {
             "type": "string",
-            "description": "Query to match boundaries."
+            "description": "Query to match boundaries.",
+            "maxLength": 2147483647,
+            "minLength": 1
           },
           "name": {
             "type": "string",
-            "description": "Name of the boundary descriptor."
+            "description": "Name of the boundary descriptor.",
+            "maxLength": 2147483647,
+            "minLength": 1
           }
         },
         "required": [
@@ -27191,9 +27220,6 @@
           "supported": {
             "type": "boolean"
           },
-          "legacy": {
-            "type": "boolean"
-          },
           "expired": {
             "type": "boolean"
           },
@@ -27204,6 +27230,9 @@
             "type": "boolean"
           },
           "officialDistribution": {
+            "type": "boolean"
+          },
+          "legacy": {
             "type": "boolean"
           },
           "disabled": {
@@ -27409,7 +27438,7 @@
           }
         }
       },
-      "E": {
+      "B": {
         "type": "object",
         "properties": {
           "status": {
@@ -27444,42 +27473,18 @@
           }
         }
       },
-      "H": {
-        "type": "object",
-        "properties": {
-          "_type": {
-            "type": "string"
-          },
-          "predicateType": {
-            "type": "string"
-          },
-          "predicate": {
-            "$ref": "#/components/schemas/N"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "markdown": {
-            "type": "string"
-          }
-        }
-      },
-      "N": {
+      "J": {
         "type": "object",
         "properties": {
           "gates": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/l"
+              "$ref": "#/components/schemas/U"
             }
           }
         }
       },
-      "l": {
+      "U": {
         "type": "object",
         "properties": {
           "type": {
@@ -27503,8 +27508,32 @@
           "conditions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/E"
+              "$ref": "#/components/schemas/B"
             }
+          }
+        }
+      },
+      "l": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string"
+          },
+          "predicateType": {
+            "type": "string"
+          },
+          "predicate": {
+            "$ref": "#/components/schemas/J"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "markdown": {
+            "type": "string"
           }
         }
       },
@@ -27790,7 +27819,7 @@
           "name": {
             "type": "string",
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "description": {
             "type": [
@@ -27885,7 +27914,7 @@
           "name": {
             "type": "string",
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "description": {
             "type": [
@@ -27941,7 +27970,7 @@
           "name": {
             "type": "string",
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "layout": {
             "type": "string"

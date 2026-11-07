@@ -3,7 +3,7 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "26.9.0.129388"
+    "version": "26.10.0.133078"
   },
   "servers": [
     {
@@ -423,8 +423,8 @@
         "tags": [
           "Dop Translation"
         ],
-        "summary": "Mint a scoped, short-lived SCM access token",
-        "description": "Mint a scoped, short-lived git credential for the given project's bound DevOps Platform (GitHub or\nGitLab). Internal endpoint used by the agentic-workflows remediation orchestrator (SONAR-31165).\nRequires the 'Administer System' permission or trusted privileged-service authentication.\n",
+        "summary": "Provide a scoped SCM access token",
+        "description": "Provide a scoped git credential for the given project's bound DevOps Platform (GitHub or GitLab).\nGitHub credentials are short-lived and minted per call; GitLab credentials are cached in memory per\nSonarQube Server node and refreshed before expiry. Internal endpoint used by the agentic-workflows\nremediation orchestrator (SONAR-31165).\nRequires the 'Administer System' permission or trusted privileged-service authentication.\n",
         "operationId": "generateScmAccessToken",
         "parameters": [
           {
@@ -1748,6 +1748,7 @@
               "type": "integer",
               "format": "int32",
               "default": 50,
+              "maximum": 5000,
               "minimum": 0
             }
           },
@@ -1975,7 +1976,7 @@
           {
             "name": "severities",
             "in": "query",
-            "description": "Limit results to issues with specific severities (comma-separated).",
+            "description": "Limit results to issues with specific impact severities (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -1995,6 +1996,28 @@
             }
           },
           {
+            "name": "typeSeverities",
+            "in": "query",
+            "description": "Limit results to issues with specific stored issue severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INFO",
+                  "MINOR",
+                  "MAJOR",
+                  "CRITICAL",
+                  "BLOCKER"
+                ]
+              }
+            }
+          },
+          {
             "name": "issueTypes",
             "in": "query",
             "description": "Limit results to issues with specific types (comma-separated).",
@@ -2009,7 +2032,6 @@
                 "enum": [
                   "BUG",
                   "CODE_SMELL",
-                  "SECURITY_HOTSPOT",
                   "VULNERABILITY"
                 ]
               }
@@ -2227,7 +2249,7 @@
           {
             "name": "severities",
             "in": "query",
-            "description": "Limit results to issues with specific severities (comma-separated).",
+            "description": "Limit results to issues with specific impact severities (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -2247,6 +2269,28 @@
             }
           },
           {
+            "name": "typeSeverities",
+            "in": "query",
+            "description": "Limit results to issues with specific stored issue severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INFO",
+                  "MINOR",
+                  "MAJOR",
+                  "CRITICAL",
+                  "BLOCKER"
+                ]
+              }
+            }
+          },
+          {
             "name": "issueTypes",
             "in": "query",
             "description": "Limit results to issues with specific types (comma-separated).",
@@ -2261,7 +2305,6 @@
                 "enum": [
                   "BUG",
                   "CODE_SMELL",
-                  "SECURITY_HOTSPOT",
                   "VULNERABILITY"
                 ]
               }
@@ -2270,7 +2313,7 @@
           {
             "name": "statuses",
             "in": "query",
-            "description": "Limit results to issues with specific statuses (comma-separated). Reviewed security hotspots also support SAFE and FIXED.",
+            "description": "Limit results to issues with specific statuses (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -2284,10 +2327,7 @@
                   "CONFIRMED",
                   "FALSE_POSITIVE",
                   "FIXED",
-                  "OPEN",
-                  "REVIEWED",
-                  "SAFE",
-                  "TO_REVIEW"
+                  "OPEN"
                 ]
               }
             }
@@ -2353,6 +2393,7 @@
               "type": "integer",
               "format": "int32",
               "default": 50,
+              "maximum": 5000,
               "minimum": 0
             }
           },
@@ -2490,21 +2531,21 @@
             "description": "UUID of the entity",
             "required": true,
             "schema": {
-              "type": "string",
-              "maxLength": 36,
-              "minLength": 36
+              "type": "string"
             }
           },
           {
             "name": "metricKeys",
             "in": "query",
-            "description": "Comma-separated list of metric keys to filter by",
+            "description": "Comma-separated list of at least one supported metric key to filter by.",
             "required": true,
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              }
+              },
+              "maxItems": 2147483647,
+              "minItems": 1
             }
           },
           {
@@ -2625,9 +2666,7 @@
             "description": "The ID of the entity to retrieve issue resolution history for.",
             "required": true,
             "schema": {
-              "type": "string",
-              "maxLength": 36,
-              "minLength": 36
+              "type": "string"
             }
           },
           {
@@ -2711,7 +2750,6 @@
                 "enum": [
                   "BUG",
                   "CODE_SMELL",
-                  "SECURITY_HOTSPOT",
                   "VULNERABILITY"
                 ]
               }
@@ -2720,7 +2758,7 @@
           {
             "name": "severities",
             "in": "query",
-            "description": "Limit results to issues with specific severities (comma-separated).",
+            "description": "Limit results to issues with specific impact severities (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -2740,6 +2778,28 @@
             }
           },
           {
+            "name": "typeSeverities",
+            "in": "query",
+            "description": "Limit results to issues with specific stored issue severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INFO",
+                  "MINOR",
+                  "MAJOR",
+                  "CRITICAL",
+                  "BLOCKER"
+                ]
+              }
+            }
+          },
+          {
             "name": "sliceBy",
             "in": "query",
             "description": "Optionally group issue resolution metrics by a dimension.",
@@ -2751,6 +2811,7 @@
               ],
               "enum": [
                 "SEVERITY",
+                "TYPE_SEVERITY",
                 "SOFTWARE_QUALITY",
                 "TYPE"
               ]
@@ -2851,9 +2912,7 @@
             "description": "The ID of the entity to retrieve issue density history for.",
             "required": true,
             "schema": {
-              "type": "string",
-              "maxLength": 36,
-              "minLength": 36
+              "type": "string"
             }
           },
           {
@@ -2923,7 +2982,6 @@
                 "enum": [
                   "BUG",
                   "CODE_SMELL",
-                  "SECURITY_HOTSPOT",
                   "VULNERABILITY"
                 ]
               }
@@ -2947,7 +3005,7 @@
           {
             "name": "severities",
             "in": "query",
-            "description": "Limit results to issues with specific severities (comma-separated).",
+            "description": "Limit results to issues with specific impact severities (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -2967,6 +3025,28 @@
             }
           },
           {
+            "name": "typeSeverities",
+            "in": "query",
+            "description": "Limit results to issues with specific stored issue severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INFO",
+                  "MINOR",
+                  "MAJOR",
+                  "CRITICAL",
+                  "BLOCKER"
+                ]
+              }
+            }
+          },
+          {
             "name": "sliceBy",
             "in": "query",
             "description": "Optionally group issue counts by a specific dimension. If not provided, issue counts will contain a single distribution with the count of all issues. ",
@@ -2979,6 +3059,7 @@
               "enum": [
                 "RULE_KEY",
                 "SEVERITY",
+                "TYPE_SEVERITY",
                 "SOFTWARE_QUALITY",
                 "STATUS",
                 "TYPE"
@@ -2988,7 +3069,7 @@
           {
             "name": "statuses",
             "in": "query",
-            "description": "Limit results to issues with specific statuses (comma-separated). Reviewed security hotspots also support SAFE and FIXED.",
+            "description": "Limit results to issues with specific statuses (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -3002,10 +3083,7 @@
                   "CONFIRMED",
                   "FALSE_POSITIVE",
                   "FIXED",
-                  "OPEN",
-                  "REVIEWED",
-                  "SAFE",
-                  "TO_REVIEW"
+                  "OPEN"
                 ]
               }
             }
@@ -3105,9 +3183,7 @@
             "description": "The ID of the entity to retrieve issue count history for.",
             "required": true,
             "schema": {
-              "type": "string",
-              "maxLength": 36,
-              "minLength": 36
+              "type": "string"
             }
           },
           {
@@ -3177,7 +3253,6 @@
                 "enum": [
                   "BUG",
                   "CODE_SMELL",
-                  "SECURITY_HOTSPOT",
                   "VULNERABILITY"
                 ]
               }
@@ -3201,7 +3276,7 @@
           {
             "name": "severities",
             "in": "query",
-            "description": "Limit results to issues with specific severities (comma-separated).",
+            "description": "Limit results to issues with specific impact severities (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -3221,6 +3296,28 @@
             }
           },
           {
+            "name": "typeSeverities",
+            "in": "query",
+            "description": "Limit results to issues with specific stored issue severities (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "enum": [
+                  "INFO",
+                  "MINOR",
+                  "MAJOR",
+                  "CRITICAL",
+                  "BLOCKER"
+                ]
+              }
+            }
+          },
+          {
             "name": "sliceBy",
             "in": "query",
             "description": "Optionally group issue counts by a specific dimension. If not provided, issue counts will contain a single distribution with the count of all issues. ",
@@ -3233,6 +3330,7 @@
               "enum": [
                 "RULE_KEY",
                 "SEVERITY",
+                "TYPE_SEVERITY",
                 "SOFTWARE_QUALITY",
                 "STATUS",
                 "TYPE"
@@ -3242,7 +3340,7 @@
           {
             "name": "statuses",
             "in": "query",
-            "description": "Limit results to issues with specific statuses (comma-separated). Reviewed security hotspots also support SAFE and FIXED.",
+            "description": "Limit results to issues with specific statuses (comma-separated).",
             "required": false,
             "schema": {
               "type": [
@@ -3256,10 +3354,7 @@
                   "CONFIRMED",
                   "FALSE_POSITIVE",
                   "FIXED",
-                  "OPEN",
-                  "REVIEWED",
-                  "SAFE",
-                  "TO_REVIEW"
+                  "OPEN"
                 ]
               }
             }
@@ -3474,7 +3569,7 @@
           "Dop Translation"
         ],
         "summary": "Check DevOps Platform permissions for the Remediation Agent",
-        "description": "Validates whether the configured DevOps Platforms (GitHub, GitLab, Azure DevOps) grant the write permissions the\nSonarQube Remediation Agent needs to clone a repository, push a branch and open a pull/merge request. Without a\n'project' parameter it checks every configuration and requires the 'Administer System' permission or trusted\nprivileged-service authentication. With a 'project' parameter it checks the platform bound to that project and\nrequires 'Browse' permission on the project. Results are cached for a short time. Internal endpoint used by the\nRemediation Agent UI.\n",
+        "description": "Validates whether the configured DevOps Platforms (GitHub, GitLab, Azure DevOps) grant the write permissions the\nSonarQube Remediation Agent needs to clone a repository, push a branch and open a pull/merge request. Results are\ncached for a short time. Internal endpoint used by the Remediation Agent UI.\n\nWithout 'project' it checks configurations instance-wide and requires the 'Administer System' permission or\ntrusted privileged-service authentication; 'configuration' narrows that to a single configuration. With 'project'\nit checks the platform bound to that project and requires 'Browse' permission on the project; a GitHub project is\nchecked against the installation covering its own repository, so two projects sharing one configuration can get\ndifferent results. 'project' and 'configuration' cannot be combined.\n\nFor GitHub, the response also reports permissions the app itself is not configured to request, and — for\nadministrator requests — every installation that has not approved the permissions it does request, whether an\norganization or a personal account owns it. The counts and list are valid only when 'installationCheckStatus' is\nCOMPLETE. If the scan cannot finish, 'installationCheckStatus' is FAILED and 'status' is CHECK_FAILED. The\nresponse does not include the counts or list.\n",
         "operationId": "checkDopPermissions",
         "parameters": [
           {
@@ -3487,6 +3582,28 @@
                 "string",
                 "null"
               ]
+            }
+          },
+          {
+            "name": "configuration",
+            "in": "query",
+            "description": "Key of a single DevOps Platform configuration to check, instead of all of them. Cannot be combined with 'project'.\n",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "refresh",
+            "in": "query",
+            "description": "Bypass the cache and run a live check, then store its result. Requires 'configuration' and the\n'Administer System' permission.\n",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
             }
           }
         ],
@@ -4143,6 +4260,20 @@
           "monorepo": {
             "type": "boolean",
             "description": "True if project is part of a mono repo."
+          },
+          "summaryCommentEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "For GitHub bindings only: enable/disable posting the analysis summary as a Pull Request comment. When rebinding an existing project, omit to preserve the current value. Defaults to true on new bindings."
+          },
+          "inlineAnnotationsEnabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "For Azure DevOps bindings only: enable/disable inline annotations during Pull Request decoration. When rebinding an existing project, omit to preserve the current value. Defaults to true on new bindings."
           }
         },
         "required": [
@@ -4403,6 +4534,13 @@
               "null"
             ],
             "description": "For OAuth authentication: Microsoft tenant"
+          },
+          "oauthScope": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "For OAuth authentication: scope for the OAuth token request. Defaults to 'https://outlook.office365.com/.default'"
           }
         },
         "required": [
@@ -4492,6 +4630,13 @@
               "null"
             ],
             "description": "For OAuth authentication: Microsoft tenant"
+          },
+          "oauthScope": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "For OAuth authentication: scope for the OAuth token request"
           }
         }
       },
@@ -5309,7 +5454,7 @@
           },
           "externalProvider": {
             "type": "string",
-            "description": "New identity provider. Only providers configured in your platform are supported. This could be: github, gitlab, bitbucket, saml, LDAP, LDAP_{serverKey}\n(according to your server configuration file).\nWarning: when this is updated, the user will only be able to authenticate using the new identity provider. Also, it is not possible to remove the identity provider of a user.\n"
+            "description": "New identity provider. Only providers configured in your platform are supported. This could be: github, gitlab, bitbucket, saml, LDAP, LDAP_{serverKey}\n(according to your server configuration file).\nWarning: when this is updated, the user will only be able to authenticate using the new identity provider. The account is turned back into a local one\nonly when 'externalProvider', 'externalLogin' and 'externalId' are all null or absent from the request; the resulting local account has no password\n(it was cleared when the account was originally bound to an external identity) and an administrator must set one before it can authenticate locally\nagain. Binding a local account to an external identity provider requires this field to be explicitly set together with 'externalLogin' and/or 'externalId'.\n"
           },
           "externalLogin": {
             "type": "string",
@@ -5322,6 +5467,10 @@
             "description": "New external id in the authentication system.",
             "maxLength": 255,
             "minLength": 1
+          },
+          "local": {
+            "type": "boolean",
+            "description": "Expected local status of the user once this update is applied. Provided as a safety check: if the resulting local status of the\nuser does not match this value, the request is rejected instead of applied.\n"
           }
         }
       },
@@ -5388,6 +5537,10 @@
           "oauthTenant": {
             "type": "string",
             "description": "For OAuth authentication: Microsoft tenant"
+          },
+          "oauthScope": {
+            "type": "string",
+            "description": "For OAuth authentication: scope for the OAuth token request"
           }
         }
       },
@@ -6470,6 +6623,35 @@
           }
         }
       },
+      "AffectedInstallationResource": {
+        "type": "object",
+        "description": "A GitHub App installation that has not approved every permission the Remediation Agent requires. Only permissions the\napp itself requests appear here; a permission the app does not request is reported once in 'appMissingPermissions'\ninstead, because no installation owner can approve it. Suspension alone does not put an installation in this list.\n",
+        "properties": {
+          "installationId": {
+            "type": "string",
+            "description": "Identifier of the GitHub App installation",
+            "readOnly": true
+          },
+          "installationOwner": {
+            "type": "string",
+            "description": "Login of whoever the app is installed on. May be an organization or a personal account.",
+            "readOnly": true
+          },
+          "settingsUrl": {
+            "type": "string",
+            "description": "URL of the installation settings page, where the missing permissions can be approved",
+            "readOnly": true
+          },
+          "missingPermissions": {
+            "type": "array",
+            "description": "Permissions this installation still has to approve",
+            "items": {
+              "$ref": "#/components/schemas/PermissionDeficitResource"
+            },
+            "readOnly": true
+          }
+        }
+      },
       "PermissionCheckResource": {
         "type": "object",
         "properties": {
@@ -6489,13 +6671,68 @@
               "SUFFICIENT",
               "INSUFFICIENT",
               "UNKNOWN",
-              "CHECK_FAILED"
+              "CHECK_FAILED",
+              "UNSUPPORTED_TOKEN_TYPE"
             ]
           },
           "checkedAt": {
             "type": "integer",
             "format": "int64",
             "description": "Epoch milliseconds when this status was last computed. May reflect a cached result.",
+            "readOnly": true
+          },
+          "appMissingPermissions": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "description": "GitHub only. Permissions that the GitHub App does not request. Add these permissions to the app before an\ninstallation can approve them. If the system cannot read the app configuration, 'status' is CHECK_FAILED. In this\ncase, an empty list means that no app permission result is available.\n",
+            "items": {
+              "$ref": "#/components/schemas/PermissionDeficitResource"
+            },
+            "readOnly": true
+          },
+          "installationCheckStatus": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "GitHub only. Whether the per-installation scan produced a trustworthy answer. The counts and the list are\nauthoritative only when this is COMPLETE. On a project request, NOT_INSTALLED means the app is not installed on\nthat project's repository — a definite answer, unlike FAILED. NOT_RUN means that the system did not check an\ninstallation because the project has no bound repository. In this case, 'status' covers only the app configuration.\n",
+            "enum": [
+              "COMPLETE",
+              "FAILED",
+              "NOT_INSTALLED",
+              "NOT_RUN"
+            ],
+            "readOnly": true
+          },
+          "totalInstallationCount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "GitHub administrator requests only. How many installations the app has at all. Tells an app nobody has installed\napart from an app whose installations have all approved, which both report zero affected installations. Omitted\nunless 'installationCheckStatus' is COMPLETE.\n",
+            "readOnly": true
+          },
+          "affectedInstallationCount": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "GitHub administrator requests only. Exact number of installations with missing permissions. Omitted unless\n'installationCheckStatus' is COMPLETE.\n",
+            "readOnly": true
+          },
+          "affectedInstallations": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "description": "GitHub administrator requests only. Every installation with missing permissions, in a stable order. Omitted unless\n'installationCheckStatus' is COMPLETE.\n",
+            "items": {
+              "$ref": "#/components/schemas/AffectedInstallationResource"
+            },
             "readOnly": true
           }
         }
@@ -6508,6 +6745,30 @@
             "items": {
               "$ref": "#/components/schemas/PermissionCheckResource"
             }
+          }
+        }
+      },
+      "PermissionDeficitResource": {
+        "type": "object",
+        "description": "A permission the Remediation Agent requires that is not granted at the level it needs",
+        "properties": {
+          "permission": {
+            "type": "string",
+            "description": "Name of the DevOps Platform permission, e.g. 'contents'",
+            "readOnly": true
+          },
+          "required": {
+            "type": "string",
+            "description": "Access level the Remediation Agent requires, e.g. 'write'",
+            "readOnly": true
+          },
+          "granted": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Access level actually granted, or null when the permission is not granted at all",
+            "readOnly": true
           }
         }
       },
@@ -6590,7 +6851,7 @@
           "name": {
             "type": "string",
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "description": {
             "type": [
@@ -6668,7 +6929,7 @@
           "name": {
             "type": "string",
             "maxLength": 300,
-            "minLength": 0
+            "minLength": 1
           },
           "layout": {
             "type": "string"
@@ -6965,7 +7226,16 @@
               "string",
               "null"
             ],
-            "description": "Only set when status is FAILED.",
+            "deprecated": true,
+            "description": "Deprecated. Use errorKey instead.",
+            "readOnly": true
+          },
+          "errorKey": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Stable customer-safe failure identifier. Only set when status is FAILED.",
             "readOnly": true
           }
         }

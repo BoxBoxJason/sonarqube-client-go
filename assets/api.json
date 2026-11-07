@@ -12,6 +12,7 @@
           "internal": true,
           "post": false,
           "hasResponseExample": false,
+          "contentType": "NO_CONTENT",
           "changelog": [
             {
               "description": "Bitbucket Cloud support was added",
@@ -699,6 +700,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027url\u0027 is now rejected with a 400 response when it is not a valid absolute HTTP(S) URL",
+              "version": "2026.5"
+            },
+            {
               "description": "Parameter \u0027URL\u0027 was added",
               "version": "8.6"
             }
@@ -720,7 +725,7 @@
             },
             {
               "key": "url",
-              "description": "Azure API URL",
+              "description": "Azure API URL. Must be a valid absolute HTTP(S) URL, e.g. https://dev.azure.com/myorg",
               "required": true,
               "internal": false,
               "maximumLength": 2000
@@ -872,6 +877,14 @@
           "changelog": [],
           "params": [
             {
+              "key": "allowedOrganizations",
+              "description": "Comma-separated list of GitHub organizations whose members are allowed to sign in. Only used when \u0027auth\u0027 is true, and ignored otherwise. When omitted, the value of \u0027organization\u0027 is used as the allow list. An empty allow list lets any GitHub account sign in.",
+              "required": false,
+              "internal": false,
+              "exampleValue": "my-org,my-other-org",
+              "maximumLength": 4000
+            },
+            {
               "key": "auth",
               "description": "Whether to also set up GitHub authentication (sign-in) using this App.",
               "required": false,
@@ -987,6 +1000,10 @@
               "version": "2026.5"
             },
             {
+              "description": "Bitbucket Cloud and Bitbucket Server bindings now contain a repositoryUrl field with the URL to the repository",
+              "version": "2026.5"
+            },
+            {
               "description": "GitHub, GitLab and Azure bindings now contain a repositoryUrl field with the URL to the repository",
               "version": "2025.6"
             },
@@ -1077,6 +1094,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027url\u0027 is now rejected with a 400 response when its value changes and is not a valid absolute HTTP(S) URL",
+              "version": "2026.5"
+            },
+            {
               "description": "Parameter \u0027personalAccessToken\u0027 is no longer required",
               "version": "8.7"
             },
@@ -1109,7 +1130,7 @@
             },
             {
               "key": "url",
-              "description": "Azure API URL",
+              "description": "Azure API URL. Must be a valid absolute HTTP(S) URL, e.g. https://dev.azure.com/myorg. The format is only enforced when the value differs from the currently stored URL, so existing pre-validation settings can still be updated without fixing the URL first.",
               "required": true,
               "internal": false,
               "maximumLength": 2000
@@ -1393,6 +1414,7 @@
           "internal": false,
           "post": false,
           "hasResponseExample": false,
+          "contentType": "BINARY",
           "changelog": [
             {
               "description": "The web service is no longer internal",
@@ -1815,21 +1837,39 @@
         },
         {
           "key": "pause",
-          "description": "Requests pause of Compute Engine workers. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
+          "description": "Requests pause of Compute Engine workers. Requires the system administration permission.",
           "since": "7.2",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
-          "changelog": []
+          "changelog": [
+            {
+              "description": "System passcode is no longer supported, the system administration permission is now required.",
+              "version": "2026.6"
+            },
+            {
+              "description": "System passcode is no longer supported, the system administration permission is now required.",
+              "version": "26.10"
+            }
+          ]
         },
         {
           "key": "resume",
-          "description": "Resumes pause of Compute Engine workers. Requires the system administration permission or system passcode (see sonar.web.systemPasscode in sonar.properties).",
+          "description": "Resumes pause of Compute Engine workers. Requires the system administration permission.",
           "since": "7.2",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
-          "changelog": []
+          "changelog": [
+            {
+              "description": "System passcode is no longer supported, the system administration permission is now required.",
+              "version": "2026.6"
+            },
+            {
+              "description": "System passcode is no longer supported, the system administration permission is now required.",
+              "version": "26.10"
+            }
+          ]
         },
         {
           "key": "submit",
@@ -2332,6 +2372,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Response field \u0027refQualifier\u0027 has been added.",
+              "version": "2026.5"
+            },
             {
               "description": "The use of module keys in parameter \u0027component\u0027 is removed",
               "version": "10.1"
@@ -3059,7 +3103,7 @@
         },
         {
           "key": "migrate_to_issues",
-          "description": "Migrate Security Hotspots to Issues. Requires \u0027Administer System\u0027 permission.",
+          "description": "Migrate Security Hotspots to Issues. Requires \u0027Administer System\u0027 permission. Reports \u0027migrated\u0027 per project, plus a scope-wide \u0027skipped\u0027 count of findings that cannot migrate because their rule is still a Security Hotspot.",
           "since": "2026.4",
           "internal": true,
           "post": true,
@@ -3089,7 +3133,7 @@
         },
         {
           "key": "migration_status",
-          "description": "Report how many Security Hotspots remain to be migrated to Issues (optionally scoped to a project). The migration is complete for the scope once this reaches zero. Requires \u0027Administer System\u0027 permission.",
+          "description": "Report how many Security Hotspots remain to be migrated to Issues (optionally scoped to a project). The migration is complete for the scope once \u0027remainingHotspots\u0027 reaches zero. Findings whose rule is still a Security Hotspot cannot be migrated yet and are reported separately as \u0027notConvertedHotspots\u0027; they move into \u0027remainingHotspots\u0027 once their rule is converted. Requires \u0027Administer System\u0027 permission.",
           "since": "2026.4",
           "internal": true,
           "post": false,
@@ -3162,6 +3206,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Parameter \u0027projectKey\u0027 is removed. Use \u0027project\u0027 instead.",
+              "version": "2026.5"
+            },
             {
               "description": "Hotspots are deprecated and replaced by security issues (software quality) and vulnerabilities (type). Please use the API of security issues / vulnerabilities instead.",
               "version": "2026.4"
@@ -3265,7 +3313,7 @@
             },
             {
               "key": "onlyMine",
-              "description": "If \u0027projectKey\u0027 is provided, returns only Security Hotspots assigned to the current user",
+              "description": "If \u0027project\u0027 is provided, returns only Security Hotspots assigned to the current user",
               "required": false,
               "internal": false,
               "possibleValues": [
@@ -3363,9 +3411,7 @@
               "description": "Key of the project or application. This parameter is required unless hotspots is provided.",
               "required": false,
               "internal": false,
-              "exampleValue": "my_project",
-              "deprecatedKey": "projectKey",
-              "deprecatedKeySince": "10.2"
+              "exampleValue": "my_project"
             },
             {
               "key": "ps",
@@ -5193,15 +5239,15 @@
               "required": false,
               "internal": false,
               "possibleValues": [
-                "CLOSE_DATE",
-                "UPDATE_DATE",
-                "TYPE_SEVERITY",
-                "HOTSPOTS",
                 "IMPACT_RANK",
-                "CREATION_DATE",
-                "SEVERITY",
+                "HOTSPOTS",
+                "TYPE_SEVERITY",
+                "UPDATE_DATE",
+                "CLOSE_DATE",
+                "FILE_LINE",
                 "STATUS",
-                "FILE_LINE"
+                "SEVERITY",
+                "CREATION_DATE"
               ]
             },
             {
@@ -6035,7 +6081,7 @@
             },
             {
               "key": "metricKeys",
-              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only new_maintainability_issues, reliability_issues, maintainability_issues, security_issues, new_reliability_issues, new_security_issues metrics are supported",
+              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues, security_issues metrics are supported",
               "required": true,
               "internal": false,
               "exampleValue": "ncloc,complexity,violations",
@@ -6137,8 +6183,8 @@
               "defaultValue": "all",
               "possibleValues": [
                 "all",
-                "leaves",
-                "children"
+                "children",
+                "leaves"
               ]
             }
           ]
@@ -6687,6 +6733,30 @@
           ]
         },
         {
+          "key": "add_group",
+          "description": "Subscribe a group to a notification type. Requires system administration permission.",
+          "since": "2026.5",
+          "internal": true,
+          "post": true,
+          "hasResponseExample": false,
+          "changelog": [],
+          "params": [
+            {
+              "key": "groupUuid",
+              "description": "Group UUID",
+              "required": true,
+              "internal": false,
+              "exampleValue": "AU-TpxcA-iU5OvuD2FL7"
+            },
+            {
+              "key": "type",
+              "description": "Notification type",
+              "required": true,
+              "internal": false
+            }
+          ]
+        },
+        {
           "key": "list",
           "description": "List notifications of the authenticated user.\u003cbr\u003eRequires one of the following permissions:\u003cul\u003e  \u003cli\u003eAuthentication if no login is provided\u003c/li\u003e  \u003cli\u003eSystem administration if a login is provided\u003c/li\u003e\u003c/ul\u003e",
           "since": "6.3",
@@ -6696,6 +6766,19 @@
           "changelog": [],
           "params": [
             {
+              "key": "filter",
+              "description": "Category of notification types to return.",
+              "since": "2026.5",
+              "required": false,
+              "internal": false,
+              "defaultValue": "all",
+              "possibleValues": [
+                "user",
+                "groupSubscription",
+                "all"
+              ]
+            },
+            {
               "key": "login",
               "description": "User login",
               "since": "6.4",
@@ -6703,6 +6786,24 @@
               "internal": false
             }
           ]
+        },
+        {
+          "key": "list_group_subscriptions",
+          "description": "List notification group subscriptions for the current user\u0027s groups. Requires authentication.",
+          "since": "2026.5",
+          "internal": true,
+          "post": false,
+          "hasResponseExample": true,
+          "changelog": []
+        },
+        {
+          "key": "list_groups",
+          "description": "List group notification subscriptions. Requires system administration permission.",
+          "since": "2026.5",
+          "internal": true,
+          "post": false,
+          "hasResponseExample": true,
+          "changelog": []
         },
         {
           "key": "remove",
@@ -6745,6 +6846,30 @@
               "exampleValue": "SQ-MyNewIssues"
             }
           ]
+        },
+        {
+          "key": "remove_group",
+          "description": "Remove a group notification subscription. No-op if not found. Requires system administration permission.",
+          "since": "2026.5",
+          "internal": true,
+          "post": true,
+          "hasResponseExample": false,
+          "changelog": [],
+          "params": [
+            {
+              "key": "groupUuid",
+              "description": "Group UUID",
+              "required": true,
+              "internal": false,
+              "exampleValue": "AU-TpxcA-iU5OvuD2FL7"
+            },
+            {
+              "key": "type",
+              "description": "Notification type",
+              "required": true,
+              "internal": false
+            }
+          ]
         }
       ]
     },
@@ -6762,6 +6887,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027groupName\u0027 no longer accepts \u0027Anyone\u0027, which is not a recognized group name anymore.",
+              "version": "2026.6"
+            },
+            {
               "description": "Parameter \u0027groupId\u0027 is removed. Use \u0027groupName\u0027 instead.",
               "version": "10.0"
             },
@@ -6773,7 +6902,7 @@
           "params": [
             {
               "key": "groupName",
-              "description": "Group name or \u0027anyone\u0027 (case insensitive)",
+              "description": "Group name",
               "required": true,
               "internal": false,
               "exampleValue": "sonar-administrators"
@@ -6809,6 +6938,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027groupName\u0027 no longer accepts \u0027Anyone\u0027, which is not a recognized group name anymore.",
+              "version": "2026.6"
+            },
+            {
               "description": "Parameter \u0027groupId\u0027 is removed. Use \u0027groupName\u0027 instead.",
               "version": "10.0"
             },
@@ -6820,7 +6953,7 @@
           "params": [
             {
               "key": "groupName",
-              "description": "Group name or \u0027anyone\u0027 (case insensitive)",
+              "description": "Group name",
               "required": true,
               "internal": false,
               "exampleValue": "sonar-administrators"
@@ -7241,6 +7374,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027groupName\u0027 no longer accepts \u0027Anyone\u0027, which is not a recognized group name anymore.",
+              "version": "2026.6"
+            },
+            {
               "description": "Parameter \u0027groupId\u0027 is removed. Use \u0027groupName\u0027 instead.",
               "version": "10.0"
             },
@@ -7252,7 +7389,7 @@
           "params": [
             {
               "key": "groupName",
-              "description": "Group name or \u0027anyone\u0027 (case insensitive)",
+              "description": "Group name",
               "required": true,
               "internal": false,
               "exampleValue": "sonar-administrators"
@@ -7288,6 +7425,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Parameter \u0027groupName\u0027 no longer accepts \u0027Anyone\u0027, which is not a recognized group name anymore.",
+              "version": "2026.6"
+            },
+            {
               "description": "Parameter \u0027groupId\u0027 is removed. Use \u0027groupName\u0027 instead.",
               "version": "10.0"
             },
@@ -7299,7 +7440,7 @@
           "params": [
             {
               "key": "groupName",
-              "description": "Group name or \u0027anyone\u0027 (case insensitive)",
+              "description": "Group name",
               "required": true,
               "internal": false,
               "exampleValue": "sonar-administrators"
@@ -7793,6 +7934,7 @@
           "internal": true,
           "post": false,
           "hasResponseExample": false,
+          "contentType": "BINARY",
           "changelog": [
             {
               "description": "Parameter \u0027acceptCompressions\u0027 removed",
@@ -8044,6 +8186,10 @@
           "post": false,
           "hasResponseExample": true,
           "changelog": [
+            {
+              "description": "Add response field \u0027relativePathFromScmRoot\u0027",
+              "version": "2026.5"
+            },
             {
               "description": "Add response field \u0027qualityProfile\u0027 for events related to quality profile changes",
               "version": "10.3"
@@ -9110,6 +9256,7 @@
           "internal": true,
           "post": false,
           "hasResponseExample": false,
+          "contentType": "NO_CONTENT",
           "changelog": [],
           "params": [
             {
@@ -9310,7 +9457,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -10081,7 +10228,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -10479,12 +10626,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "key",
+              "exampleValue": "name",
               "possibleValues": [
-                "key",
-                "updatedAt",
+                "name",
                 "createdAt",
-                "name"
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -11461,12 +11608,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "key",
+              "exampleValue": "name",
               "possibleValues": [
-                "key",
-                "updatedAt",
+                "name",
                 "createdAt",
-                "name"
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -13073,7 +13220,7 @@
               "description": "Comma-separated list of additional fields to be returned in the response. All the fields are returned by default, except actives.",
               "required": false,
               "internal": false,
-              "exampleValue": "htmlDesc,langName",
+              "exampleValue": "params,descriptionSections",
               "possibleValues": [
                 "actives",
                 "cleanCodeAttribute",
@@ -13331,12 +13478,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "key",
+              "exampleValue": "name",
               "possibleValues": [
-                "key",
-                "updatedAt",
+                "name",
                 "createdAt",
-                "name"
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -13453,6 +13600,10 @@
           "hasResponseExample": true,
           "changelog": [
             {
+              "description": "The \u0027contextKey\u0027 parameter has been added.",
+              "version": "2026.5"
+            },
+            {
               "description": "Description-related fields in the response are obfuscated for anonymous users.",
               "version": "2026.2"
             },
@@ -13566,6 +13717,15 @@
                 "yes",
                 "no"
               ]
+            },
+            {
+              "key": "contextKey",
+              "description": "Return only the description sections matching the given rule-description context key, along with sections that have no context. When not set, all description sections are returned.",
+              "since": "2026.5",
+              "required": false,
+              "internal": false,
+              "exampleValue": "spring",
+              "maximumLength": 50
             },
             {
               "key": "key",
@@ -14330,6 +14490,7 @@
           "internal": true,
           "post": false,
           "hasResponseExample": false,
+          "contentType": "NO_CONTENT",
           "changelog": [
             {
               "description": "The endpoint doesn\u0027t log an error anymore when the liveness check fails. The failed HTTP status code changed from 500 to 503.",
@@ -14410,12 +14571,17 @@
         },
         {
           "key": "status",
-          "description": "Get state information about SonarQube.\u003cp\u003estatus: the running status \u003cul\u003e \u003cli\u003eSTARTING: SonarQube Web Server is up and serving some Web Services (eg. api/system/status) but initialization is still ongoing\u003c/li\u003e \u003cli\u003eUP: SonarQube instance is up and running\u003c/li\u003e \u003cli\u003eDOWN: SonarQube instance is up but not running because migration has failed (refer to WS /api/system/migrate_db for details) or some other reason (check logs).\u003c/li\u003e \u003cli\u003eRESTARTING: SonarQube instance is still up but a restart has been requested (refer to WS /api/system/restart for details).\u003c/li\u003e \u003cli\u003eDB_MIGRATION_NEEDED: database migration is required. DB migration can be started using WS /api/system/migrate_db.\u003c/li\u003e \u003cli\u003eDB_MIGRATION_RUNNING: DB migration is running (refer to WS /api/system/migrate_db for details)\u003c/li\u003e \u003c/ul\u003e\u003c/p\u003e",
+          "description": "Get state information about SonarQube.\u003cp\u003estatus: the running status \u003cul\u003e \u003cli\u003eSTARTING: SonarQube Web Server is up and serving some Web Services (eg. api/system/status) but initialization is still ongoing, or Elasticsearch cluster health is not GREEN or YELLOW\u003c/li\u003e \u003cli\u003eUP: SonarQube instance is up and running and Elasticsearch cluster health is GREEN or YELLOW\u003c/li\u003e \u003cli\u003eDOWN: SonarQube instance is up but not running because migration has failed (refer to WS /api/system/migrate_db for details) or some other reason (check logs).\u003c/li\u003e \u003cli\u003eRESTARTING: SonarQube instance is still up but a restart has been requested (refer to WS /api/system/restart for details).\u003c/li\u003e \u003cli\u003eDB_MIGRATION_NEEDED: database migration is required. DB migration can be started using WS /api/system/migrate_db.\u003c/li\u003e \u003cli\u003eDB_MIGRATION_RUNNING: DB migration is running (refer to WS /api/system/migrate_db for details)\u003c/li\u003e \u003c/ul\u003e\u003c/p\u003e",
           "since": "5.2",
           "internal": false,
           "post": false,
           "hasResponseExample": true,
-          "changelog": []
+          "changelog": [
+            {
+              "description": "Status UP requires Elasticsearch cluster to be healthy While Elasticsearch is unreachable, the status is STARTING.",
+              "version": "2026.6"
+            }
+          ]
         },
         {
           "key": "upgrades",
@@ -15172,6 +15338,10 @@
           "hasResponseExample": false,
           "changelog": [
             {
+              "description": "Support for new notice \u0027showProjectCoverageTour\u0027 was added.",
+              "version": "2026.5"
+            },
+            {
               "description": "Support for new notice \u0027showSandboxedIssuesIntro\u0027 was added.",
               "version": "2026.1"
             },
@@ -15207,6 +15377,7 @@
                 "educationPrinciples",
                 "sonarlintAd",
                 "showDesignAndArchitectureBanner",
+                "showProjectCoverageTour",
                 "showNewModesBanner",
                 "showSandboxedIssuesIntro",
                 "issueCleanCodeGuide",
@@ -15777,7 +15948,7 @@
         },
         {
           "key": "delivery",
-          "description": "Get a webhook delivery by its id.\u003cbr/\u003eRequire \u0027Administer System\u0027 permission.\u003cbr/\u003eNote that additional information are returned by api/webhooks/delivery.",
+          "description": "Get a webhook delivery by its id.\u003cbr/\u003eRequire \u0027Administer\u0027 permission on the related project.",
           "since": "6.2",
           "internal": false,
           "post": false,
@@ -16042,6 +16213,7 @@
           "internal": true,
           "post": false,
           "hasResponseExample": false,
+          "contentType": "NO_CONTENT",
           "changelog": []
         }
       ]

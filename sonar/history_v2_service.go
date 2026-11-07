@@ -287,7 +287,7 @@ type HistoryProjectIssueCountsOptions struct {
 	ReferenceDate string `json:"referenceDate,omitempty"`
 	// PageIndex is the 1-based index of the page to fetch. Default is 1.
 	PageIndex int32 `json:"pageIndex,omitempty"`
-	// PageSize is the size of the page to fetch. Default is 50.
+	// PageSize is the size of the page to fetch. Must be between 0 and 5000. Default is 50.
 	PageSize int32 `json:"pageSize,omitempty"`
 	// Sort defines the sort order. Each field is prefixed with '+' for ascending
 	// or '-' for descending. Valid fields: issueCount, projectName.
@@ -313,7 +313,7 @@ type HistoryProjectMeasuresOptions struct {
 	NameContains string `json:"nameContains,omitempty"`
 	// PageIndex is the 1-based index of the page to fetch. Default is 1.
 	PageIndex int32 `json:"pageIndex,omitempty"`
-	// PageSize is the size of the page to fetch. Default is 50.
+	// PageSize is the size of the page to fetch. Must be between 0 and 5000. Default is 50.
 	PageSize int32 `json:"pageSize,omitempty"`
 	// PortfolioID is the legacy portfolio ID.
 	PortfolioID string `json:"portfolioId,omitempty"`
@@ -421,6 +421,10 @@ func (s *HistoryService) ValidateProjectIssueCountsOpt(opt *HistoryProjectIssueC
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
 
+	if opt.PageSize < 0 || opt.PageSize > 5000 {
+		return NewValidationError("PageSize", "must be between 0 and 5000", ErrOutOfRange)
+	}
+
 	return validateHistorySelector(opt.PortfolioID, opt.EntityType, opt.EntityID)
 }
 
@@ -433,6 +437,10 @@ func (s *HistoryService) ValidateProjectMeasuresOpt(opt *HistoryProjectMeasuresO
 	err := ValidateRequired(opt.MetricKey, "MetricKey")
 	if err != nil {
 		return err
+	}
+
+	if opt.PageSize < 0 || opt.PageSize > 5000 {
+		return NewValidationError("PageSize", "must be between 0 and 5000", ErrOutOfRange)
 	}
 
 	return validateHistorySelector(opt.PortfolioID, opt.EntityType, opt.EntityID)

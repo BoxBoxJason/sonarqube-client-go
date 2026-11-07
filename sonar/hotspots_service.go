@@ -220,6 +220,9 @@ type HotspotsMigratedProject struct {
 type HotspotsMigrateToIssues struct {
 	// DryRun indicates whether the call only counted hotspots without performing any writes.
 	DryRun bool `json:"dryRun,omitempty"`
+	// Migrated is the scope-wide number of hotspots migrated (or that would be migrated for a dry run).
+	// Only returned by Enterprise Edition and above.
+	Migrated int64 `json:"migrated,omitempty"`
 	// Skipped is the scope-wide number of findings that cannot be migrated because their rule is still a Security Hotspot.
 	Skipped int64 `json:"skipped,omitempty"`
 	// Projects is the per-project migration result.

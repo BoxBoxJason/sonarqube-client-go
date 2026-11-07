@@ -4177,12 +4177,17 @@
         },
         {
           "key": "migrate_to_issues",
-          "description": "Migrate Security Hotspots to Issues. Requires \u0027Administer System\u0027 permission. Reports \u0027migrated\u0027 per project, plus a scope-wide \u0027skipped\u0027 count of findings that cannot migrate because their rule is still a Security Hotspot.",
+          "description": "Migrate Security Hotspots to Issues. Requires \u0027Administer System\u0027 permission. Reports \u0027migrated\u0027 per project, plus a scope-wide \u0027skipped\u0027 count of findings that cannot migrate because their rule is still a Security Hotspot. Also repairs findings migrated by 2026.5.0 to 2026.5.2, reported as \u0027repaired\u0027 when there are any. Running the action again is safe.",
           "since": "2026.4",
           "internal": true,
           "post": true,
           "hasResponseExample": false,
-          "changelog": [],
+          "changelog": [
+            {
+              "description": "Reviewed/Safe and Reviewed/Fixed hotspots are migrated to Accepted instead of closed. Response contains \u0027repaired\u0027 when findings migrated by an earlier version were repaired.",
+              "version": "2026.5.3"
+            }
+          ],
           "params": [
             {
               "key": "dryRun",
@@ -6368,15 +6373,15 @@
               "required": false,
               "internal": false,
               "possibleValues": [
-                "FILE_LINE",
-                "STATUS",
                 "SEVERITY",
                 "CREATION_DATE",
                 "IMPACT_RANK",
                 "HOTSPOTS",
                 "TYPE_SEVERITY",
                 "UPDATE_DATE",
-                "CLOSE_DATE"
+                "CLOSE_DATE",
+                "FILE_LINE",
+                "STATUS"
               ]
             },
             {
@@ -7314,9 +7319,9 @@
               "internal": false,
               "defaultValue": "all",
               "possibleValues": [
+                "all",
                 "children",
-                "leaves",
-                "all"
+                "leaves"
               ]
             }
           ]
@@ -10909,7 +10914,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -11710,7 +11715,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -12108,12 +12113,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "updatedAt",
+              "exampleValue": "name",
               "possibleValues": [
-                "updatedAt",
-                "key",
                 "name",
-                "createdAt"
+                "createdAt",
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -13258,12 +13263,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "updatedAt",
+              "exampleValue": "name",
               "possibleValues": [
-                "updatedAt",
-                "key",
                 "name",
-                "createdAt"
+                "createdAt",
+                "updatedAt",
+                "key"
               ]
             },
             {
@@ -15142,7 +15147,7 @@
               "description": "Comma-separated list of additional fields to be returned in the response. All the fields are returned by default, except actives.",
               "required": false,
               "internal": false,
-              "exampleValue": "mdNote,actives",
+              "exampleValue": "isTemplate,templateKey",
               "possibleValues": [
                 "actives",
                 "cleanCodeAttribute",
@@ -15400,12 +15405,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "updatedAt",
+              "exampleValue": "name",
               "possibleValues": [
-                "updatedAt",
-                "key",
                 "name",
-                "createdAt"
+                "createdAt",
+                "updatedAt",
+                "key"
               ]
             },
             {
