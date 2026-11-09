@@ -15,7 +15,7 @@ sonarqube_enterprise_version := 2026.5.3-enterprise
 # renovate: datasource=go depName=gotest.tools/gotestsum
 gotestsum_version := v1.13.0
 # renovate: datasource=go depName=github.com/onsi/ginkgo/v2
-ginkgo_version := v2.33.1
+ginkgo_version := v2.34.0
 # renovate: datasource=go depName=github.com/golangci/golangci-lint/v2
 golangci_lint_version := v2.15.0
 # renovate: datasource=go depName=golang.org/x/vuln
