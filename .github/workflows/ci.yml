@@ -149,7 +149,7 @@ jobs:
     # secret to also exercise license-dependent behavior.
     services:
       sonarqube-enterprise:
-        image: docker.io/library/sonarqube:2026.5.3-enterprise@sha256:d98a5736f33c14354fd9a598245124dfc9f3f76a22b9d1b4f4e1f94d776ec64b
+        image: docker.io/library/sonarqube:2026.5.4-enterprise@sha256:20073d76ef37c42512ec23d5995dbd1f20ecc162b53f5be24ba267af0d4cb48c
         ports:
           - 9001:9000
         env:
