@@ -65,12 +65,10 @@ jobs:
           CGO_ENABLED: 0
           GO111MODULE: on
 
+      - name: Rename binary
+        run: mv "./bin/sonar-cli" "sonar-cli_${{ github.ref_name }}_${{ matrix.os }}_${{ matrix.arch }}"
+
       - name: Upload binaries
-        uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./bin/sonar-cli
-          asset_name: sonar-cli_${{ github.ref_name }}_${{ matrix.os }}_${{ matrix.arch }}
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: sonar-cli_${{ github.ref_name }}_${{ matrix.os }}_${{ matrix.arch }}
