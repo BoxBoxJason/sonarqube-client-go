@@ -34,11 +34,10 @@
     "automerge": true
   },
   "updateInternalDeps": true,
-  "dependencyDashboardAutoclose": true,
-  "dependencyDashboardLabels": [
-    "deps",
-    "source::bot"
-  ],
+  "dependencyDashboard": {
+    "autoclose": true,
+    "labels": ["deps", "source::bot"]
+  },
   "postUpdateOptions": [
     "gomodTidy"
   ],
