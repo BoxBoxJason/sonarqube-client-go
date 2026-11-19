@@ -3,7 +3,7 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "26.10.0.133078"
+    "version": "26.11.0.134175"
   },
   "servers": [
     {
@@ -3887,6 +3887,111 @@
         }
       }
     },
+    "/components/projects": {
+      "get": {
+        "tags": [
+          "Components"
+        ],
+        "summary": "Get projects",
+        "description": "Get projects using query parameters. At least one of ids or keys is required.\nFilters are combined with AND; tags match any supplied tag.\nOnly projects for which the caller has Browse permission are returned.\nResults are ordered by creation time, then project ID, in ascending order.\nSet pageSize to 0 to return only the total number of matching projects.\n",
+        "operationId": "getProjects",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "description": "Project IDs to query by.",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "description": "Project IDs to query by.",
+              "items": {
+                "type": "string",
+                "description": "Project IDs to query by."
+              },
+              "uniqueItems": true
+            }
+          },
+          {
+            "name": "keys",
+            "in": "query",
+            "description": "Project keys to query by.",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "description": "Project keys to query by.",
+              "items": {
+                "type": "string",
+                "description": "Project keys to query by."
+              },
+              "uniqueItems": true
+            }
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "Match projects with any of these tags.",
+            "required": false,
+            "schema": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "description": "Match projects with any of these tags.",
+              "items": {
+                "type": "string",
+                "description": "Match projects with any of these tags."
+              },
+              "uniqueItems": true
+            }
+          },
+          {
+            "name": "pageIndex",
+            "in": "query",
+            "description": "The 1-based page index.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1,
+              "description": "The 1-based page index.",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Page size. Use 0 to return only the total.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50,
+              "description": "Page size. Use 0 to return only the total.",
+              "maximum": 5000,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectsSearchRestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/analysis/version": {
       "get": {
         "tags": [
@@ -4339,7 +4444,7 @@
               "string",
               "null"
             ],
-            "description": "User password. Only mandatory when creating local user, otherwise it should not be set",
+            "description": "User password. Only mandatory when creating local user, otherwise it should not be set. The password needs to fulfill the following requirements: at least 12 characters and contain at least one uppercase character, one lowercase character, one digit and one special character.",
             "writeOnly": true
           },
           "scmAccounts": {
@@ -6961,6 +7066,84 @@
           "resourceType",
           "updatedAt"
         ]
+      },
+      "ProjectLinkRestResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectRestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private"
+            ]
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectLinkRestResponse"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProjectsSearchRestResponse": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectRestResponse"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/PageRestResponse"
+          }
+        }
       },
       "GroupsSearchRestResponse": {
         "type": "object",

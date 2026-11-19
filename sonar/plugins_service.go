@@ -99,6 +99,16 @@ type PluginsInstalled struct {
 	Plugins []PluginInstalled `json:"plugins,omitempty"`
 }
 
+// PluginStaticResource represents a static resource shipped with an installed plugin.
+type PluginStaticResource struct {
+	// Hash is the SHA-256 hash of the resource.
+	Hash string `json:"hash,omitempty"`
+	// Path is the resource file name.
+	Path string `json:"path,omitempty"`
+	// Size is the resource size in bytes.
+	Size int64 `json:"size,omitempty"`
+}
+
 // PluginInstalled represents an installed plugin.
 //
 //nolint:govet // fieldalignment - structure kept for readability
@@ -133,6 +143,10 @@ type PluginInstalled struct {
 	OrganizationURL string `json:"organizationUrl,omitempty"`
 	// RequiredForLanguages is the list of languages requiring this plugin.
 	RequiredForLanguages []string `json:"requiredForLanguages,omitempty"`
+	// StaticResourceFolder is the folder holding the plugin static resources.
+	StaticResourceFolder string `json:"staticResourceFolder,omitempty"`
+	// StaticResources is the list of static resources shipped with the plugin.
+	StaticResources []PluginStaticResource `json:"staticResources,omitempty"`
 	// Type is the plugin type (bundled or external).
 	Type string `json:"type,omitempty"`
 	// SonarLintSupported indicates if SonarLint is supported.

@@ -6373,15 +6373,15 @@
               "required": false,
               "internal": false,
               "possibleValues": [
-                "SEVERITY",
-                "CREATION_DATE",
-                "IMPACT_RANK",
-                "HOTSPOTS",
-                "TYPE_SEVERITY",
-                "UPDATE_DATE",
                 "CLOSE_DATE",
-                "FILE_LINE",
-                "STATUS"
+                "UPDATE_DATE",
+                "TYPE_SEVERITY",
+                "HOTSPOTS",
+                "IMPACT_RANK",
+                "CREATION_DATE",
+                "SEVERITY",
+                "STATUS",
+                "FILE_LINE"
               ]
             },
             {
@@ -7215,7 +7215,7 @@
             },
             {
               "key": "metricKeys",
-              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only security_issues, maintainability_issues, reliability_issues, new_maintainability_issues, new_security_issues, new_reliability_issues metrics are supported",
+              "description": "Comma-separated list of metric keys. Types DISTRIB are not allowed. For type DATA only new_maintainability_issues, reliability_issues, maintainability_issues, security_issues, new_reliability_issues, new_security_issues metrics are supported",
               "required": true,
               "internal": false,
               "exampleValue": "ncloc,complexity,violations",
@@ -7320,8 +7320,8 @@
               "defaultValue": "all",
               "possibleValues": [
                 "all",
-                "children",
-                "leaves"
+                "leaves",
+                "children"
               ]
             }
           ]
@@ -10914,7 +10914,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -11715,7 +11715,7 @@
             },
             {
               "key": "metric",
-              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003c/ul\u003e",
+              "description": "Condition metric.\u003cbr/\u003e Only metric of the following types are allowed:\u003cul\u003e\u003cli\u003eINT\u003c/li\u003e\u003cli\u003eMILLISEC\u003c/li\u003e\u003cli\u003eRATING\u003c/li\u003e\u003cli\u003eWORK_DUR\u003c/li\u003e\u003cli\u003eFLOAT\u003c/li\u003e\u003cli\u003ePERCENT\u003c/li\u003e\u003cli\u003eLEVEL\u003c/li\u003e\u003c/ul\u003eFollowing metrics are forbidden:\u003cul\u003e\u003cli\u003ealert_status\u003c/li\u003e\u003cli\u003enew_security_hotspots\u003c/li\u003e\u003cli\u003esecurity_hotspots\u003c/li\u003e\u003c/ul\u003e",
               "required": true,
               "internal": false,
               "exampleValue": "blocker_violations, vulnerabilities, new_code_smells"
@@ -12113,12 +12113,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "name",
+              "exampleValue": "key",
               "possibleValues": [
-                "name",
-                "createdAt",
+                "key",
                 "updatedAt",
-                "key"
+                "createdAt",
+                "name"
               ]
             },
             {
@@ -13263,12 +13263,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "name",
+              "exampleValue": "key",
               "possibleValues": [
-                "name",
-                "createdAt",
+                "key",
                 "updatedAt",
-                "key"
+                "createdAt",
+                "name"
               ]
             },
             {
@@ -15147,7 +15147,7 @@
               "description": "Comma-separated list of additional fields to be returned in the response. All the fields are returned by default, except actives.",
               "required": false,
               "internal": false,
-              "exampleValue": "isTemplate,templateKey",
+              "exampleValue": "langName,tags",
               "possibleValues": [
                 "actives",
                 "cleanCodeAttribute",
@@ -15405,12 +15405,12 @@
               "description": "Sort field",
               "required": false,
               "internal": false,
-              "exampleValue": "name",
+              "exampleValue": "key",
               "possibleValues": [
-                "name",
-                "createdAt",
+                "key",
                 "updatedAt",
-                "key"
+                "createdAt",
+                "name"
               ]
             },
             {
