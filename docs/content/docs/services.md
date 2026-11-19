@@ -141,6 +141,7 @@ The V2 services are grouped under `client.V2`. They are available in the Go SDK 
 | `client.V2.Architecture` | [`ArchitectureService`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ArchitectureService) |
 | `client.V2.Authorizations` | [`AuthorizationsService`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#AuthorizationsService) |
 | `client.V2.CleanCodePolicy` | [`CleanCodePolicyService`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#CleanCodePolicyService) |
+| `client.V2.Components` | [`ComponentsServiceV2`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#ComponentsServiceV2) |
 | `client.V2.DopTranslation` | [`DopTranslationService`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#DopTranslationService) |
 | `client.V2.FixSuggestions` | [`FixSuggestionsService`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#FixSuggestionsService) |
 | `client.V2.History` | [`HistoryService`](https://pkg.go.dev/github.com/boxboxjason/sonarqube-client-go/v2/sonar#HistoryService) |

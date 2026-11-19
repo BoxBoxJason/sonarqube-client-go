@@ -127,6 +127,8 @@ type ServicesV2 struct {
 	Authorizations *AuthorizationsService
 	// CleanCodePolicy provides methods for the Clean Code Policy V2 API.
 	CleanCodePolicy *CleanCodePolicyService
+	// Components provides methods for the Components V2 API.
+	Components *ComponentsServiceV2
 	// DopTranslation provides methods for the Dop Translation V2 API.
 	DopTranslation *DopTranslationService
 	// FixSuggestions provides methods for the Fix Suggestions V2 API.
@@ -627,6 +629,7 @@ func initServicesV2(client *Client) {
 		Atlassian:              &AtlassianService{client: client},
 		Authorizations:         &AuthorizationsService{client: client},
 		CleanCodePolicy:        &CleanCodePolicyService{client: client},
+		Components:             &ComponentsServiceV2{client: client},
 		DopTranslation:         &DopTranslationService{client: client},
 		Entitlements:           &EntitlementsService{client: client},
 		FixSuggestions:         &FixSuggestionsService{client: client},

@@ -3,7 +3,7 @@
   "info": {
     "title": "SonarQube Web API v2",
     "description": "The SonarQube API v2 is a REST API which enables you to interact with SonarQube programmatically.\nWhile not all endpoints of the former Web API are available yet, the ones available are stable and can be used in production environments.\n",
-    "version": "2026.5.3.133540"
+    "version": "2026.5.4.134003"
   },
   "servers": [
     {
@@ -523,9 +523,9 @@
     "/a3s/context-uploads/{contextId}": {
       "put": {
         "tags": [
-          "t"
+          "l"
         ],
-        "operationId": "렇",
+        "operationId": "ਰ",
         "parameters": [
           {
             "name": "contextId",
@@ -1545,7 +1545,7 @@
         ],
         "summary": "Fetch Jira work items",
         "description": "Fetch the Jira work items for a specific Sonar project and resource.\nAccepts only authenticated requests.\n",
-        "operationId": "렇_1",
+        "operationId": "ਰ_1",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1596,7 +1596,7 @@
         ],
         "summary": "Create Jira work item",
         "description": "Create a Jira work item for a specific resource.\nAccepts only authenticated requests with issue administration permission.\n",
-        "operationId": "렇_2",
+        "operationId": "ਰ_2",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1627,7 +1627,7 @@
         ],
         "summary": "Delete Jira work items",
         "description": "Delete the Jira work items associated with a specific resource.\n",
-        "operationId": "潇",
+        "operationId": "婌",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1673,7 +1673,7 @@
         ],
         "summary": "Fetch Jira project bindings",
         "description": "Fetch the Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "렇_3",
+        "operationId": "ਰ_3",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1704,7 +1704,7 @@
         ],
         "summary": "Create or update Jira project binding",
         "description": "Create or update a Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "렇_4",
+        "operationId": "ਰ_4",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1735,7 +1735,7 @@
         ],
         "summary": "Delete Jira project binding",
         "description": "Delete the Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "潇_1",
+        "operationId": "婌_1",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -1759,7 +1759,7 @@
         ],
         "summary": "Update Jira project binding",
         "description": "Update an existing Jira project binding for a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "렇_5",
+        "operationId": "ਰ_5",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1792,7 +1792,7 @@
         ],
         "summary": "Fetch the Jira instance binding",
         "description": "Fetch the Jira instance binding.\nRequires global administrator permission.\n",
-        "operationId": "潇_2",
+        "operationId": "婌_2",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -1824,7 +1824,7 @@
         ],
         "summary": "Create a new Jira instance binding",
         "description": "Receives the 3LO state and authorization code parameters and attempts to create an instance binding.\nIf successful, returns the binding. Otherwise, returns a list of available resources.\nRequires global administrator permission.\n",
-        "operationId": "렇_6",
+        "operationId": "ਰ_6",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1855,7 +1855,7 @@
         ],
         "summary": "Delete the Jira instance binding",
         "description": "Deletes the Jira instance binding from the database.\nRequires global administrator permission.\n",
-        "operationId": "렇_7",
+        "operationId": "ਰ_7",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -1880,7 +1880,7 @@
         ],
         "summary": "Binds the specified pending instance binding with the specified jira cloud ID",
         "description": "Binds the specified pending instance binding with the specified jira cloud ID\n",
-        "operationId": "렇_8",
+        "operationId": "ਰ_8",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2814,9 +2814,9 @@
     "/detection-agent/jobs/results": {
       "post": {
         "tags": [
-          "l"
+          "d"
         ],
-        "operationId": "렇_9",
+        "operationId": "ਰ_9",
         "parameters": [
           {
             "name": "jobId",
@@ -3593,7 +3593,7 @@
         ],
         "summary": "Fetch the Atlassian Authentication details if they exist",
         "description": "Fetch the Atlassian Authentication details if they exist.\nSpecifically, only the client ID is returned for security purposes.\n",
-        "operationId": "렇_10",
+        "operationId": "ਰ_10",
         "responses": {
           "200": {
             "description": "OK",
@@ -3614,7 +3614,7 @@
         ],
         "summary": "Create/Update the Atlassian Authentication details",
         "description": "Create/Update the Atlassian Authentication details.\n",
-        "operationId": "렇_11",
+        "operationId": "ਰ_11",
         "requestBody": {
           "content": {
             "application/json": {
@@ -6560,7 +6560,7 @@
         ],
         "summary": "Returns a list of all the available Jira work types for a specific Jira project",
         "description": "Returns a list of all the available Jira work types for a specific Jira project.\nAlso checks which work types are selected for a given sonar project. Conditionally, also includes field metadata.\n",
-        "operationId": "렇_12",
+        "operationId": "ਰ_12",
         "parameters": [
           {
             "name": "jiraProjectKey",
@@ -6619,7 +6619,7 @@
         ],
         "summary": "Saves the selected Jira work types for a project",
         "description": "Receives a Jira project key and a list of work type and stores the work types.\n",
-        "operationId": "렇_13",
+        "operationId": "ਰ_13",
         "requestBody": {
           "content": {
             "application/json": {
@@ -6645,7 +6645,7 @@
         ],
         "summary": "Update Jira organization binding properties",
         "description": "Update properties of an existing Jira organization binding, such as token sharing configuration.\nRequires global administrator permission.\n",
-        "operationId": "렇_14",
+        "operationId": "ਰ_14",
         "requestBody": {
           "content": {
             "application/json": {
@@ -9763,7 +9763,7 @@
         ],
         "summary": "Get compliance report",
         "description": "Get the compliance report for a project, application, or portfolio.",
-        "operationId": "렇_15",
+        "operationId": "ਰ_15",
         "parameters": [
           {
             "name": "branchKey",
@@ -9850,7 +9850,7 @@
         ],
         "summary": "Get accessibility report",
         "description": "Get the accessibility report for a project branch.",
-        "operationId": "렇_16",
+        "operationId": "ਰ_16",
         "parameters": [
           {
             "name": "branchKey",
@@ -11951,7 +11951,7 @@
         ],
         "summary": "Returns a list of available user actions for a project",
         "description": "Returns a list of available user actions for the authenticated user in the context of a specific project.\nIf the user is not authenticated, returns an empty list.\n",
-        "operationId": "렇_17",
+        "operationId": "ਰ_17",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -11987,7 +11987,7 @@
         ],
         "summary": "Returns a list of all the available Jira projects",
         "description": "Returns a list of all the available Jira projects",
-        "operationId": "렇_18",
+        "operationId": "ਰ_18",
         "parameters": [
           {
             "name": "sonarOrganizationUuid",
@@ -12024,7 +12024,7 @@
         ],
         "summary": "Count linked Jira issues",
         "description": "Count the number of Jira issues linked to a specific Sonar project.\nAccepts only authenticated requests.\n",
-        "operationId": "렇_19",
+        "operationId": "ਰ_19",
         "parameters": [
           {
             "name": "sonarProjectId",
@@ -14556,7 +14556,7 @@
         ],
         "summary": "Get JFrog evidence for a Compute Engine task",
         "description": "Returns a JFrog evidence statement for the specified Compute Engine task.\nThe evidence contains quality gate status and conditions in the in-toto Statement format.\nRequires 'Browse' permission on the project associated with the task.",
-        "operationId": "렇_20",
+        "operationId": "ਰ_20",
         "parameters": [
           {
             "name": "taskId",
@@ -14574,7 +14574,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/l"
+                  "$ref": "#/components/schemas/D"
                 }
               }
             }
@@ -15693,7 +15693,7 @@
         ],
         "summary": "Generate Jira authentication URL",
         "description": "Generate the authentication URL for Jira OAuth flow.\nRequires authenticated user.\n",
-        "operationId": "렇_21",
+        "operationId": "ਰ_21",
         "parameters": [
           {
             "name": "sonarOrganizationKey",
@@ -22585,10 +22585,6 @@
             "maxLength": 2147483647,
             "minLength": 1
           },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
           "ecosystem": {
             "type": "string",
             "description": "Language ecosystem of the boundary.",
@@ -22599,6 +22595,10 @@
               "py",
               "cs"
             ]
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid"
           },
           "projectId": {
             "type": "string"
@@ -27438,7 +27438,31 @@
           }
         }
       },
-      "B": {
+      "D": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string"
+          },
+          "predicateType": {
+            "type": "string"
+          },
+          "predicate": {
+            "$ref": "#/components/schemas/W"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "markdown": {
+            "type": "string"
+          }
+        }
+      },
+      "J": {
         "type": "object",
         "properties": {
           "status": {
@@ -27473,18 +27497,18 @@
           }
         }
       },
-      "J": {
+      "W": {
         "type": "object",
         "properties": {
           "gates": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/U"
+              "$ref": "#/components/schemas/X"
             }
           }
         }
       },
-      "U": {
+      "X": {
         "type": "object",
         "properties": {
           "type": {
@@ -27508,32 +27532,8 @@
           "conditions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/B"
+              "$ref": "#/components/schemas/J"
             }
-          }
-        }
-      },
-      "l": {
-        "type": "object",
-        "properties": {
-          "_type": {
-            "type": "string"
-          },
-          "predicateType": {
-            "type": "string"
-          },
-          "predicate": {
-            "$ref": "#/components/schemas/J"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "createdBy": {
-            "type": "string"
-          },
-          "markdown": {
-            "type": "string"
           }
         }
       },
