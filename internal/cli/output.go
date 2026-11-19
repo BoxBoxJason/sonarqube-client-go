@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 )
 
 // OutputFormat represents the supported output formats for CLI responses.
