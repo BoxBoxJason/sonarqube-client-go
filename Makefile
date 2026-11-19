@@ -6,7 +6,7 @@ enterprise_endpoint := http://127.0.0.1:9001
 username := admin
 password := admin
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
-sonarqube_version := 26.10.0.133078-community
+sonarqube_version := 26.11.0.134175-community
 # renovate: datasource=docker depName=docker.io/library/sonarqube versioning=docker
 sonarqube_enterprise_version := 2026.5.4-enterprise
 
