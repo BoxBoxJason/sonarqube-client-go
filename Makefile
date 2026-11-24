@@ -19,7 +19,7 @@ ginkgo_version := v2.34.0
 # renovate: datasource=go depName=github.com/golangci/golangci-lint/v2
 golangci_lint_version := v2.15.0
 # renovate: datasource=go depName=golang.org/x/vuln
-govulncheck_version := v1.9.0
+govulncheck_version := v1.10.0
 
 version := $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 build_time := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
