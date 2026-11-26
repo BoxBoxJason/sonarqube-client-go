@@ -40,6 +40,16 @@ func deleteV2(ctx context.Context, client *Client, path string) (*http.Response,
 	return resp, nil
 }
 
+// addEmptyQueryParam adds a parameter with an empty value to the request URL,
+// for required parameters the query encoder omits because their value is empty.
+func addEmptyQueryParam(req *http.Request, name string) {
+	if req.URL.RawQuery != "" {
+		req.URL.RawQuery += "&"
+	}
+
+	req.URL.RawQuery += name + "="
+}
+
 // v2PathWithID returns prefix + "/" + the escaped ident, after checking that ident is not empty.
 func v2PathWithID(prefix, ident, fieldName string) (string, error) {
 	err := ValidateRequired(ident, fieldName)

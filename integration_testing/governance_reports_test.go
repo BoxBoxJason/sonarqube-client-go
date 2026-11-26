@@ -124,15 +124,6 @@ var _ = Describe("Governance Reports Service", Ordered, func() {
 				Expect(err.Error()).To(ContainSubstring("required"))
 				Expect(resp).To(BeNil())
 			})
-
-			It("should fail without required recipients", func() {
-				resp, err := client.GovernanceReports.UpdateRecipients(context.Background(), &sonar.GovernanceReportsUpdateRecipientsOptions{
-					ComponentKey: "my-portfolio",
-				})
-				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("Recipients"))
-				Expect(resp).To(BeNil())
-			})
 		})
 
 		Context("Functional Tests", func() {

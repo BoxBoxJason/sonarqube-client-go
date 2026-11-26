@@ -33,6 +33,9 @@ type GovernanceReportsStatus struct {
 	// GlobalRecipients is the list of recipient emails configured at the
 	// global level. Only present when global recipients exist.
 	GlobalRecipients []string `json:"globalRecipients,omitempty"`
+	// ComponentFrequency is the report frequency configured on the component
+	// itself (e.g. "weekly"). Only present when one is configured.
+	ComponentFrequency string `json:"componentFrequency,omitempty"`
 	// GlobalFrequency is the report frequency configured at the global level
 	// (e.g. "monthly").
 	GlobalFrequency string `json:"globalFrequency,omitempty"`
@@ -111,7 +114,8 @@ type GovernanceReportsUpdateRecipientsOptions struct {
 	ComponentID string `url:"componentId,omitempty"`
 	// ComponentKey is the component key. Optional.
 	ComponentKey string `url:"componentKey,omitempty"`
-	// Recipients is the list of recipient emails. This field is required.
+	// Recipients is the comma-separated list of recipient emails. An empty
+	// value removes every recipient.
 	Recipients string `url:"recipients"`
 }
 
@@ -125,7 +129,7 @@ func (s *GovernanceReportsService) ValidateUpdateRecipientsOpt(opt *GovernanceRe
 		return NewValidationError("opt", "option struct is required", ErrMissingRequired)
 	}
 
-	return ValidateRequired(opt.Recipients, "Recipients")
+	return nil
 }
 
 // -----------------------------------------------------------------------------
