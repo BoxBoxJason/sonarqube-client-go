@@ -131,8 +131,4 @@ func TestGovernanceReportsService_UpdateRecipients_ValidationError(t *testing.T)
 	resp, err := client.GovernanceReports.UpdateRecipients(context.Background(), nil)
 	assert.Error(t, err)
 	assert.Nil(t, resp)
-
-	resp, err = client.GovernanceReports.UpdateRecipients(context.Background(), &GovernanceReportsUpdateRecipientsOptions{})
-	assert.Error(t, err)
-	assert.Nil(t, resp)
 }

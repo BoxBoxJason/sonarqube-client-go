@@ -41,6 +41,14 @@ type View struct {
 	Qualifier string `json:"qualifier,omitempty"`
 	// Visibility is the visibility of the portfolio (public or private).
 	Visibility string `json:"visibility,omitempty"`
+	// SelectionMode describes how projects are selected, for a sub-portfolio
+	// nested within ViewDetails.SubViews.
+	SelectionMode string `json:"selectionMode,omitempty"`
+	// SelectedBranches is the list of selected branches, for an application
+	// (qualifier APP) nested within ViewDetails.SubViews.
+	SelectedBranches []string `json:"selectedBranches,omitempty"`
+	// SubViews is the list of sub-portfolios of a nested sub-portfolio.
+	SubViews []View `json:"subViews,omitempty"`
 }
 
 // ViewDetails is an extended portfolio with sub-portfolios and selection modes.

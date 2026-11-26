@@ -58,6 +58,9 @@ type IssuesSandboxSettings struct {
 	Enabled           bool                                  `json:"enabled,omitempty"`
 	DefaultValue      bool                                  `json:"defaultValue,omitempty"`
 	AllowOverride     bool                                  `json:"allowOverride,omitempty"`
+	// DeferralDays is the number of days after which a sandboxed issue is
+	// reopened.
+	DeferralDays int64 `json:"deferralDays,omitempty"`
 }
 
 // IssuesSandboxProjectSettings represents the project-level issue sandbox settings.
@@ -66,6 +69,9 @@ type IssuesSandboxProjectSettings struct {
 	Types             []IssuesSandboxRuleTypeMapping        `json:"types,omitempty"`
 	Enabled           bool                                  `json:"enabled,omitempty"`
 	Overridden        bool                                  `json:"overridden,omitempty"`
+	// DeferralDays is the number of days after which a sandboxed issue is
+	// reopened.
+	DeferralDays int64 `json:"deferralDays,omitempty"`
 }
 
 // -----------------------------------------------------------------------------
@@ -75,6 +81,8 @@ type IssuesSandboxProjectSettings struct {
 // IssuesV2UpdateSandboxSettingsOptions contains parameters for updating the
 // instance-level sandbox settings. All fields are optional (PATCH merge
 // semantics): a nil field is left unchanged server-side.
+//
+//nolint:govet // fieldalignment: keeping logical field grouping for readability
 type IssuesV2UpdateSandboxSettingsOptions struct {
 	// Enabled enables or disables sandbox globally.
 	Enabled *bool `json:"enabled,omitempty"`
@@ -87,16 +95,24 @@ type IssuesV2UpdateSandboxSettingsOptions struct {
 	SoftwareQualities []IssuesSandboxSoftwareQualityMapping `json:"softwareQualities,omitempty"`
 	// Types is the list of rule type mappings (Standard Experience mode).
 	Types []IssuesSandboxRuleTypeMapping `json:"types,omitempty"`
+	// DeferralDays is the number of days after which a sandboxed issue is
+	// reopened. 0 disables reopening.
+	DeferralDays *int64 `json:"deferralDays,omitempty"`
 }
 
 // IssuesV2UpdateProjectSandboxSettingsOptions contains parameters for updating
 // the sandbox settings of a specific project. All fields are optional (PATCH
 // merge semantics): a nil field is left unchanged server-side.
+//
+//nolint:govet // fieldalignment: keeping logical field grouping for readability
 type IssuesV2UpdateProjectSandboxSettingsOptions struct {
 	Enabled           *bool                                 `json:"enabled,omitempty"`
 	Overridden        *bool                                 `json:"overridden,omitempty"`
 	SoftwareQualities []IssuesSandboxSoftwareQualityMapping `json:"softwareQualities,omitempty"`
 	Types             []IssuesSandboxRuleTypeMapping        `json:"types,omitempty"`
+	// DeferralDays is the number of days after which a sandboxed issue is
+	// reopened.
+	DeferralDays *int64 `json:"deferralDays,omitempty"`
 }
 
 // -----------------------------------------------------------------------------

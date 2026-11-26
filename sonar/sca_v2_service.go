@@ -1258,7 +1258,7 @@ func (s *ScaService) UpdateLicenseProfileCategory(ctx context.Context, opt *ScaL
 	}
 
 	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch,
-		"sca/license-profiles/"+opt.LicenseProfileKey+"/categories/"+opt.CategoryKey, nil, body)
+		"sca/license-profiles/"+url.PathEscape(opt.LicenseProfileKey)+"/categories/"+url.PathEscape(opt.CategoryKey), nil, body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -1285,7 +1285,7 @@ func (s *ScaService) UpdateLicenseProfileLicense(ctx context.Context, opt *ScaLi
 	}
 
 	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch,
-		"sca/license-profiles/"+opt.LicenseProfileKey+"/licenses/"+opt.LicensePolicyId, nil, body)
+		"sca/license-profiles/"+url.PathEscape(opt.LicenseProfileKey)+"/licenses/"+url.PathEscape(opt.LicensePolicyId), nil, body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
