@@ -669,6 +669,7 @@ type SonarAPIRequestParameters struct {
 	Method string
 	// Path is the URL path for the API endpoint, relative to the base URL
 	// (e.g. "components/search" for V1 or "v2/system/health" for V2).
+	// It is read as percent-encoded: escape identifiers with url.PathEscape.
 	// This field is required.
 	Path string
 	// RawQuery contains pre-encoded URL query parameters to include in the
@@ -816,13 +817,32 @@ func (c *Client) buildRequestURL(params SonarAPIRequestParameters) string {
 		baseURLCopy.Path = strings.TrimSuffix(baseURLCopy.Path, "api/")
 	}
 
-	baseURLCopy.Path += params.Path
+	appendEscapedPath(&baseURLCopy, params.Path)
 
 	if params.RawQuery != nil {
 		baseURLCopy.RawQuery = params.RawQuery.Encode()
 	}
 
 	return baseURLCopy.String()
+}
+
+// appendEscapedPath appends a percent-encoded path to the URL. Both Path and
+// RawPath are set so that escape sequences, such as those produced by
+// url.PathEscape, are sent as they are instead of being escaped a second time.
+// A path that is not valid percent-encoding is appended literally.
+func appendEscapedPath(target *url.URL, path string) {
+	escaped := target.EscapedPath() + path
+
+	decoded, err := url.PathUnescape(escaped)
+	if err != nil {
+		target.Path += path
+		target.RawPath = ""
+
+		return
+	}
+
+	target.Path = decoded
+	target.RawPath = escaped
 }
 
 // marshalBody encodes the request body if non-nil. Returns http.NoBody when

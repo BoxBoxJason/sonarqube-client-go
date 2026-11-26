@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 // AuthorizationsService handles communication with the Authorizations related
@@ -277,7 +278,7 @@ func (s *AuthorizationsService) GetGroup(ctx context.Context, groupID string) (*
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "authorizations/groups/"+groupID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "authorizations/groups/"+url.PathEscape(groupID), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -299,7 +300,7 @@ func (s *AuthorizationsService) DeleteGroup(ctx context.Context, groupID string)
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "authorizations/groups/"+groupID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "authorizations/groups/"+url.PathEscape(groupID), nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -319,7 +320,7 @@ func (s *AuthorizationsService) UpdateGroup(ctx context.Context, groupID string,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "authorizations/groups/"+groupID, nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "authorizations/groups/"+url.PathEscape(groupID), nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -385,7 +386,7 @@ func (s *AuthorizationsService) DeleteGroupMembership(ctx context.Context, membe
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "authorizations/group-memberships/"+membershipID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "authorizations/group-memberships/"+url.PathEscape(membershipID), nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

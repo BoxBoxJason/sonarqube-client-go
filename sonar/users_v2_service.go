@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -358,7 +359,7 @@ func (s *UsersManagementService) Get(ctx context.Context, userID string) (*UserV
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "users-management/users/"+userID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "users-management/users/"+url.PathEscape(userID), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -381,7 +382,7 @@ func (s *UsersManagementService) Deactivate(ctx context.Context, opt *UsersDeact
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "users-management/users/"+opt.Id, opt, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "users-management/users/"+url.PathEscape(opt.Id), opt, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -401,7 +402,7 @@ func (s *UsersManagementService) Update(ctx context.Context, userID string, opt 
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "users-management/users/"+userID, nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "users-management/users/"+url.PathEscape(userID), nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

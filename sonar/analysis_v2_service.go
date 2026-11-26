@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 // AnalysisService handles communication with the Analysis related methods of
@@ -180,7 +181,7 @@ func (s *AnalysisService) DownloadJre(ctx context.Context, jreID string, writer 
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/jres/"+jreID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/jres/"+url.PathEscape(jreID), nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -202,7 +203,7 @@ func (s *AnalysisService) GetJreMetadata(ctx context.Context, jreID string) (*An
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/jres/"+jreID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "analysis/jres/"+url.PathEscape(jreID), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

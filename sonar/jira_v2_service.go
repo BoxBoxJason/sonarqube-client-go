@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -593,7 +594,7 @@ func (s *JiraService) GetLinkedIssuesCount(ctx context.Context, sonarProjectID s
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "jira/linked-issues-count/"+sonarProjectID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "jira/linked-issues-count/"+url.PathEscape(sonarProjectID), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
