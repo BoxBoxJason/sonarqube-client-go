@@ -218,7 +218,8 @@ type ApplicationsUpdateBranchOptions struct {
 type ApplicationsSetTagsOptions struct {
 	// Application is the application key. This field is required.
 	Application string `url:"application"`
-	// Tags is the list of tags to set on the application. This field is required.
+	// Tags is the list of tags to set on the application. This field is required:
+	// use an empty, non-nil slice to remove every tag.
 	Tags []string `url:"tags,comma"`
 }
 
@@ -430,7 +431,7 @@ func (s *ApplicationsService) ValidateSetTagsOpt(opt *ApplicationsSetTagsOptions
 		return err
 	}
 
-	if len(opt.Tags) == 0 {
+	if opt.Tags == nil {
 		return NewValidationError("Tags", "is required", ErrMissingRequired)
 	}
 
@@ -696,6 +697,10 @@ func (s *ApplicationsService) SetTags(ctx context.Context, opt *ApplicationsSetT
 	req, err := s.client.NewSonarQubeV1APIRequest(ctx, http.MethodPost, "applications/set_tags", opt)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(opt.Tags) == 0 {
+		addEmptyQueryParam(req, "tags")
 	}
 
 	return s.client.Do(req, nil)
