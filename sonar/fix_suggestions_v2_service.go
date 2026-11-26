@@ -178,10 +178,42 @@ type FixSuggestionsCreateOptions struct {
 }
 
 // FixSuggestionsSetEnablementOptions contains parameters for the SetEnablement method.
+//
+//nolint:govet // fieldalignment: keeping logical field grouping for readability
 type FixSuggestionsSetEnablementOptions struct {
 	// Enablement is the desired feature enablement state. This field is required.
 	// Allowed values: ENABLED_FOR_ALL_PROJECTS, DISABLED, ENABLED_FOR_SOME_PROJECTS.
 	Enablement string `json:"enablement"`
+	// EnabledProjectKeys lists the projects the feature is enabled for. Only
+	// used when Enablement is ENABLED_FOR_SOME_PROJECTS. A nil slice is not
+	// sent, an empty one is sent as an empty list. Optional.
+	EnabledProjectKeys []string `json:"enabledProjectKeys,omitzero"`
+	// Provider is the LLM provider to use. The server rejects an enablement
+	// other than DISABLED without it. Optional.
+	Provider *FixSuggestionsProviderOptions `json:"provider,omitempty"`
+}
+
+// FixSuggestionsProviderOptions selects the LLM provider used by AI CodeFix.
+type FixSuggestionsProviderOptions struct {
+	// Type is the provider type, as listed by GetEnablement (e.g. OPENAI,
+	// AZURE_OPENAI, AWS_BEDROCK, CUSTOM). This field is required.
+	Type string `json:"type"`
+	// Model is the selected model, for managed providers. Optional.
+	Model string `json:"model,omitempty"`
+	// Config is the configuration of self-hosted providers. Optional.
+	Config map[string]string `json:"config,omitempty"`
+	// Headers are the custom HTTP headers of the CUSTOM provider. Optional.
+	Headers []FixSuggestionsProviderHeader `json:"headers,omitempty"`
+}
+
+// FixSuggestionsProviderHeader is a custom HTTP header sent to an LLM provider.
+type FixSuggestionsProviderHeader struct {
+	// Name is the header name.
+	Name string `json:"name"`
+	// Value is the header value.
+	Value string `json:"value"`
+	// Secret indicates whether the value is stored encrypted.
+	Secret bool `json:"secret"`
 }
 
 // FixSuggestionsAwarenessBannerOptions contains parameters for the AwarenessBannerInteraction method.
@@ -221,7 +253,16 @@ func (s *FixSuggestionsService) ValidateSetEnablementOpt(opt *FixSuggestionsSetE
 		return err
 	}
 
-	return IsValueAuthorized(opt.Enablement, allowedFixSuggestionsEnablements, "Enablement")
+	err = IsValueAuthorized(opt.Enablement, allowedFixSuggestionsEnablements, "Enablement")
+	if err != nil {
+		return err
+	}
+
+	if opt.Provider != nil {
+		return ValidateRequired(opt.Provider.Type, "Provider.Type")
+	}
+
+	return nil
 }
 
 // ValidateAwarenessBannerOpt validates the options for the AwarenessBannerInteraction method.

@@ -234,3 +234,14 @@ func mockTextHandler(t *testing.T, method, path string, statusCode int, text str
 		_, _ = w.Write([]byte(text))
 	}
 }
+
+// wireHandler checks the path and query exactly as they are received.
+func wireHandler(t *testing.T, path, query string) http.HandlerFunc {
+	t.Helper()
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, path, r.URL.EscapedPath())
+		assert.Equal(t, query, r.URL.RawQuery)
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
