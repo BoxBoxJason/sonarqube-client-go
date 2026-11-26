@@ -274,7 +274,7 @@ func (s *IntegrationsService) GetUserBinding(ctx context.Context, bindingID stri
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "integrations/user-bindings/"+bindingID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "integrations/user-bindings/"+url.PathEscape(bindingID), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -405,7 +405,7 @@ func (s *IntegrationsService) DeleteIntegrationConfiguration(ctx context.Context
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "integrations/integration-configurations/"+configurationID, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "integrations/integration-configurations/"+url.PathEscape(configurationID), nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -426,7 +426,7 @@ func (s *IntegrationsService) UpdateIntegrationConfiguration(ctx context.Context
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "integrations/integration-configurations/"+configurationID, nil, opt)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "integrations/integration-configurations/"+url.PathEscape(configurationID), nil, opt)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

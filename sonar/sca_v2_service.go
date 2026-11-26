@@ -437,7 +437,7 @@ func (s *ScaService) GetCli(ctx context.Context, opt *ScaCliGetOptions) (*ScaCli
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/clis/"+opt.Id, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/clis/"+url.PathEscape(opt.Id), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -536,7 +536,7 @@ func (s *ScaService) GetDependencyRisk(ctx context.Context, opt *ScaDependencyRi
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/issues-releases/"+opt.Key, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/issues-releases/"+url.PathEscape(opt.Key), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -588,7 +588,7 @@ func (s *ScaService) GetRelease(ctx context.Context, opt *ScaReleaseGetOptions) 
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/releases/"+opt.Key, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/releases/"+url.PathEscape(opt.Key), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -1152,7 +1152,7 @@ func (s *ScaService) DeleteLicenseProfileAssignment(ctx context.Context, opt *Sc
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "sca/license-profiles/assigned-projects/"+opt.ProjectKey, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "sca/license-profiles/assigned-projects/"+url.PathEscape(opt.ProjectKey), nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -1176,7 +1176,7 @@ func (s *ScaService) GetLicenseProfile(ctx context.Context, opt *ScaLicenseProfi
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/license-profiles/"+opt.Key, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/license-profiles/"+url.PathEscape(opt.Key), nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -1202,7 +1202,7 @@ func (s *ScaService) DeleteLicenseProfile(ctx context.Context, opt *ScaLicensePr
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "sca/license-profiles/"+opt.Key, nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "sca/license-profiles/"+url.PathEscape(opt.Key), nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -1231,7 +1231,7 @@ func (s *ScaService) UpdateLicenseProfile(ctx context.Context, key string, body 
 		return nil, nil, NewValidationError("body", "must not be nil", ErrMissingRequired)
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "sca/license-profiles/"+key, nil, body)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "sca/license-profiles/"+url.PathEscape(key), nil, body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -2199,7 +2199,7 @@ func (s *ScaService) UpdateIssueReleaseSeverity(ctx context.Context, key string,
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "sca/issues-releases/"+key, nil, body)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "sca/issues-releases/"+url.PathEscape(key), nil, body)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -2249,7 +2249,7 @@ func (s *ScaService) GetChangelog(ctx context.Context, opt *ScaChangelogGetOptio
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/issues-releases/"+opt.Key+"/changelogs", nil, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodGet, "sca/issues-releases/"+url.PathEscape(opt.Key)+"/changelogs", nil, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -2275,7 +2275,7 @@ func (s *ScaService) DeleteChangelogEntry(ctx context.Context, opt *ScaChangelog
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "sca/issues-releases/"+opt.Key+"/changelog", opt, nil)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodDelete, "sca/issues-releases/"+url.PathEscape(opt.Key)+"/changelog", opt, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -2299,7 +2299,7 @@ func (s *ScaService) UpdateChangelogComment(ctx context.Context, opt *ScaChangel
 		return nil, err
 	}
 
-	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "sca/issues-releases/"+opt.Key+"/changelog", nil, body)
+	req, err := s.client.NewSonarQubeV2APIRequest(ctx, http.MethodPatch, "sca/issues-releases/"+url.PathEscape(opt.Key)+"/changelog", nil, body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

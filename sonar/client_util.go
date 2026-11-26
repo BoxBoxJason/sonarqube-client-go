@@ -122,9 +122,7 @@ func requestEndpoint(req *http.Request) string {
 		return ""
 	}
 
-	path, _ := url.PathUnescape(req.URL.Path)
-
-	return fmt.Sprintf("%s://%s%s", req.URL.Scheme, req.URL.Host, path)
+	return fmt.Sprintf("%s://%s%s", req.URL.Scheme, req.URL.Host, req.URL.Path)
 }
 
 // ResponseError represents an error response from the SonarQube API.
